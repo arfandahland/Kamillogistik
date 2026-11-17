@@ -7,7 +7,8 @@ export const metadata: Metadata = { title: "Hitung Ongkir" };
 export const dynamic = "force-dynamic";
 
 export default async function Ongkir() {
-  const routes = (await handleRoutes(repo)).body as any[];
+  const rr = await handleRoutes(repo);
+  const routes = (rr.status === 200 ? rr.body : []) as any[];
   return (
     <main className="wrap section">
       <div className="card">

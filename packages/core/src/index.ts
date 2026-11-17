@@ -5,3 +5,4 @@ export * from "./service/repo";
 export * from "./service/publicView";
 export * from "./service/handlers";
 export { createSeedRepo } from "./service/seed";
+export { createSupabaseRepo } from "./service/supabaseRepo";

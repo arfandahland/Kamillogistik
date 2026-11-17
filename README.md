@@ -6,13 +6,13 @@ Platform logistik digital terpadu (lihat PRD v1.0, 18 Nov 2026). Monorepo TypeSc
 |---|---|
 | `apps/web` | Website Next.js (mobile-first): beranda, cek resi dengan garis waktu hijau, hitung ongkir, API. |
 | `packages/core` | Mesin tarif, mesin status resi + serah terima, tampilan publik resi, penanganan API. Murni dan teruji. |
-| `db/migrations` | Skema PostgreSQL penuh sesuai ERD PRD §12 (28 tabel, log append-only). |
+| `db/migrations` | `001` skema (28 tabel, log append-only) · `002` keamanan (tabel terkunci) · `003` fungsi publik aman · `004` data jaringan + tarif. Sudah terpasang di Supabase. |
 | `docs` | `PANDUAN-PEMILIK.md` (untuk Pak Kamil), `ARSITEKTUR.md` (keputusan teknologi). |
 
 ```bash
 npm install
 npm test           # 36 tes
-npm run dev        # http://localhost:3000
+npm run dev        # http://localhost:3000 (data contoh; isi apps/web/.env.local dari .env.example untuk data Supabase)
 ```
 
 ## Catatan data (perlu konfirmasi Fase 0)
@@ -23,4 +23,4 @@ npm run dev        # http://localhost:3000
 Hijau teal (primer), oranye (aksen), kuning (sorotan), tagline "Best Price Best Service", WA 0853-4223-8748, kamillogistik.id.
 
 ## Berikutnya
-Hubungkan ke Supabase (repository + migrasi), login + 2FA + RBAC, order publik, lalu PWA lapangan (Fase 2).
+Login + 2FA + RBAC, order publik, lalu PWA lapangan (Fase 2).

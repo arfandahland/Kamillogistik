@@ -75,16 +75,19 @@ CREATE TABLE routes_services (
   origin_id uuid NOT NULL REFERENCES branches_partners(id),
   dest_id uuid NOT NULL REFERENCES branches_partners(id),
   mode text NOT NULL CHECK (mode IN ('LAUT','DARAT','UDARA')),
+  service text NOT NULL DEFAULT 'PORT_TO_DOOR' CHECK (service IN ('PORT_TO_PORT','PORT_TO_DOOR','DOOR_TO_DOOR')),
   pricing_basis text NOT NULL DEFAULT 'PER_KG' CHECK (pricing_basis IN ('PER_KG','PER_M3')),
   unit_price bigint NOT NULL CHECK (unit_price >= 0),
   volumetric_divisor int NOT NULL DEFAULT 4000 CHECK (volumetric_divisor > 0),
   min_chargeable numeric(12,3) NOT NULL DEFAULT 0,
   min_total bigint,
+  rounding text NOT NULL DEFAULT 'ceil' CHECK (rounding IN ('ceil','round','none')),
+  rounding_step numeric(8,4) NOT NULL DEFAULT 1,
   eta_days int,
   slug text UNIQUE,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
-  UNIQUE (origin_id, dest_id, mode)
+  UNIQUE (origin_id, dest_id, mode, service, pricing_basis)
 );
 
 CREATE TABLE rate_cards (
@@ -175,6 +178,7 @@ CREATE TABLE tracking_logs (
   shipment_id uuid NOT NULL REFERENCES shipments(id),
   status text NOT NULL,
   note text,
+  location text,                             -- teks lokasi yang aman ditampilkan ke pelanggan
   user_id uuid REFERENCES users(id),
   device_id text,
   client_event_id uuid UNIQUE,

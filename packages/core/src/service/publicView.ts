@@ -1,5 +1,5 @@
-import type { ShipmentStatus } from "../status";
-import { SHIPMENT_STATUSES, indexOfStatus } from "../status";
+import type { AnyStatus, ShipmentStatus } from "../status";
+import { SHIPMENT_STATUSES } from "../status";
 import type { ShipmentRecord } from "./repo";
 
 /** Label ramah pelanggan untuk 9 tahap di halaman lacak (PRD §3). */
@@ -18,7 +18,7 @@ export const PUBLIC_STEPS: Record<Exclude<ShipmentStatus, "CREATED">, { title: s
 export type PublicTrack = {
   resi: string;
   route: { origin: string; dest: string };
-  status: ShipmentStatus;
+  status: AnyStatus;
   statusLabel: string;
   eta: string | null;
   progress: { done: number; total: number };
@@ -49,13 +49,18 @@ export function toPublicTrack(s: ShipmentRecord): PublicTrack {
     .map((st) => ({ status: st, title: PUBLIC_STEPS[st as keyof typeof PUBLIC_STEPS].title }));
 
   const cur = s.status;
+  const label =
+    cur === "CREATED" ? "Order diterima"
+    : cur === "CANCELLED" ? "Dibatalkan"
+    : cur === "EXCEPTION" ? "Sedang ditangani petugas kami"
+    : PUBLIC_STEPS[cur].title;
   return {
     resi: s.resiNo,
     route: { origin: s.origin.city, dest: s.dest.city },
     status: cur,
-    statusLabel: cur === "CREATED" ? "Order diterima" : PUBLIC_STEPS[cur as keyof typeof PUBLIC_STEPS].title,
+    statusLabel: label,
     eta: s.status === "DELIVERED" ? null : (s.etaAt ?? null),
-    progress: { done: Math.max(indexOfStatus(cur), 0), total: stepStatuses.length },
+    progress: { done: history.length, total: stepStatuses.length },
     history,
     upcoming,
     pod: s.pod

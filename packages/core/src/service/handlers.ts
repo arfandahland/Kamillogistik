@@ -12,7 +12,18 @@ export const SERVICE_LABEL: Record<RouteService["service"], { title: string; hin
   DOOR_TO_DOOR: { title: "Dijemput dan diantar", hint: "Dijemput dari alamat Anda, diantar ke alamat penerima" },
 };
 
-export async function handleTrack(repo: Repo, rawResi: string): Promise<Reply> {
+const BUSY: Reply = { status: 503, body: { error: "Layanan sedang sibuk. Mohon coba lagi sebentar, atau hubungi kami lewat WhatsApp." } };
+
+/** Galat database tidak boleh bocor ke pelanggan: ubah jadi pesan ramah. */
+async function safe(fn: () => Promise<Reply>): Promise<Reply> {
+  try { return await fn(); } catch (e) { console.error("[layanan]", e instanceof Error ? e.message : e); return BUSY; }
+}
+
+export const handleTrack = (repo: Repo, rawResi: string) => safe(() => track(repo, rawResi));
+export const handleRoutes = (repo: Repo) => safe(() => routes(repo));
+export const handleQuote = (repo: Repo, input: unknown) => safe(() => quote(repo, input));
+
+async function track(repo: Repo, rawResi: string): Promise<Reply> {
   const resi = normalizeResi(rawResi);
   if (!isValidResi(resi))
     return { status: 400, body: { error: "Nomor resi tidak dikenali. Contoh yang benar: KLX-2611-000123" } };
@@ -21,7 +32,7 @@ export async function handleTrack(repo: Repo, rawResi: string): Promise<Reply> {
   return { status: 200, body: toPublicTrack(s) };
 }
 
-export async function handleRoutes(repo: Repo): Promise<Reply> {
+async function routes(repo: Repo): Promise<Reply> {
   const routes = await repo.listRoutes();
   return {
     status: 200,
@@ -60,7 +71,7 @@ const QuoteBody = z.object({
 
 const nf = (n: number) => n.toLocaleString("id-ID");
 
-export async function handleQuote(repo: Repo, input: unknown): Promise<Reply> {
+async function quote(repo: Repo, input: unknown): Promise<Reply> {
   const parsed = QuoteBody.safeParse(input);
   if (!parsed.success)
     return { status: 400, body: { error: "Data belum lengkap. Isi kota asal, kota tujuan, dan berat barang." } };

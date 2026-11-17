@@ -1,5 +1,5 @@
 import type { PricingBasis } from "../tariff";
-import type { ShipmentStatus } from "../status";
+import type { AnyStatus, ShipmentStatus } from "../status";
 
 export type Place = { code: string; name: string; city: string };
 
@@ -26,14 +26,14 @@ export type TrackEvent = {
   location?: string;
   note?: string;
   // Data internal — TIDAK boleh keluar lewat API publik (PRD §3):
-  internal: { userId: string; driverName: string; lat?: number; lng?: number };
+  internal?: { userId: string; driverName: string; lat?: number; lng?: number };
 };
 
 export type ShipmentRecord = {
   resiNo: string;
   origin: Place;
   dest: Place;
-  status: ShipmentStatus;
+  status: AnyStatus;
   etaAt?: string;
   vesselName?: string;
   pod?: { receiverName: string; photoUrl: string; signatureUrl: string; signedAt: string };

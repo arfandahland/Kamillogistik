@@ -1,7 +1,13 @@
-import { createSeedRepo } from "@kamil/core";
+import { createSeedRepo, createSupabaseRepo } from "@kamil/core";
 
 /**
  * Satu-satunya tempat yang menentukan sumber data.
- * Sekarang: data contoh. Nanti: ganti baris ini ke Supabase — halaman lain tidak perlu diubah.
+ * - Ada SUPABASE_URL + SUPABASE_PUBLISHABLE_KEY  -> data sungguhan dari Supabase.
+ * - Tidak ada                                    -> data contoh (untuk pengembangan lokal).
+ * Kunci "publishable" memang dirancang publik; keamanan dijaga di database (lihat db/migrations/002-003).
  */
-export const repo = createSeedRepo();
+const url = process.env.SUPABASE_URL;
+const key = process.env.SUPABASE_PUBLISHABLE_KEY;
+
+export const repo = url && key ? createSupabaseRepo({ url, publishableKey: key }) : createSeedRepo();
+export const usingRealData = Boolean(url && key);
