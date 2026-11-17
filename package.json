@@ -1,0 +1,12 @@
+{
+  "name": "kamil-logistik-express",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": ["packages/*", "apps/*"],
+  "scripts": {
+    "test": "npm test -w @kamil/core && npm test -w @kamil/api",
+    "dev:api": "npm run dev -w @kamil/api",
+    "dev:web": "npm run dev -w @kamil/web",
+    "typecheck": "npm run typecheck -w @kamil/core && npm run typecheck -w @kamil/api"
+  }
+}
