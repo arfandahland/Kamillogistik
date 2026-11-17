@@ -1,18 +1,18 @@
-import type { ShipmentStatus } from "@kamil/core";
-import { SHIPMENT_STATUSES, indexOfStatus } from "@kamil/core";
+import type { ShipmentStatus } from "../status";
+import { SHIPMENT_STATUSES, indexOfStatus } from "../status";
 import type { ShipmentRecord } from "./repo";
 
 /** Label ramah pelanggan untuk 9 tahap di halaman lacak (PRD §3). */
 export const PUBLIC_STEPS: Record<Exclude<ShipmentStatus, "CREATED">, { title: string; detail: (s: ShipmentRecord) => string }> = {
-  PICKED_UP: { title: "Barang dijemput", detail: (s) => `${s.origin.city} · driver pick-up` },
-  AT_ORIGIN_HUB: { title: `Tiba di Hub`, detail: () => "Serah terima ke gudang" },
-  SORTED_INVOICED: { title: "Invoice terbit", detail: () => "Berat tertagih dihitung" },
-  LOADED: { title: "Menuju pelabuhan", detail: () => "Kontainer disegel" },
-  IN_TRANSIT_SEA: { title: "Dalam pelayaran", detail: (s) => (s.vesselName ? `Kapal ${s.vesselName} berangkat` : "Kapal berangkat") },
-  ARRIVED_DEST_PORT: { title: "Tiba di pelabuhan tujuan", detail: () => "Kapal sandar" },
-  AT_DEST_HUB: { title: "Bongkar dan cek koli", detail: () => "Jumlah koli sesuai" },
-  OUT_FOR_DELIVERY: { title: "Sedang diantar", detail: () => "Kurir lokal" },
-  DELIVERED: { title: "Diterima", detail: () => "Foto + tanda tangan" },
+  PICKED_UP: { title: "Barang dijemput", detail: (s) => `Di ${s.origin.city}, diambil petugas kami` },
+  AT_ORIGIN_HUB: { title: "Tiba di gudang", detail: () => "Barang diserahkan ke gudang kami" },
+  SORTED_INVOICED: { title: "Ditimbang dan tagihan dibuat", detail: () => "Barang ditimbang, ongkir pasti sudah dihitung" },
+  LOADED: { title: "Menuju pelabuhan", detail: () => "Barang sudah dimuat ke kontainer dan disegel" },
+  IN_TRANSIT_SEA: { title: "Dalam pelayaran", detail: (s) => (s.vesselName ? `Kapal ${s.vesselName} sudah berangkat` : "Kapal sudah berangkat") },
+  ARRIVED_DEST_PORT: { title: "Tiba di pelabuhan tujuan", detail: () => "Kapal sudah sandar" },
+  AT_DEST_HUB: { title: "Dibongkar dan dicek", detail: () => "Jumlah barang sudah dicocokkan" },
+  OUT_FOR_DELIVERY: { title: "Sedang diantar", detail: () => "Kurir kami menuju alamat penerima" },
+  DELIVERED: { title: "Sudah diterima", detail: () => "Ada foto dan tanda tangan penerima" },
 };
 
 export type PublicTrack = {
@@ -38,7 +38,7 @@ export function toPublicTrack(s: ShipmentRecord): PublicTrack {
     .map((e) => {
       const step = PUBLIC_STEPS[e.status as keyof typeof PUBLIC_STEPS];
       const title =
-        e.status === "AT_ORIGIN_HUB" ? `Tiba di ${s.origin.name}`
+        e.status === "AT_ORIGIN_HUB" ? `Tiba di gudang ${s.origin.city}`
         : e.status === "ARRIVED_DEST_PORT" ? `Tiba di pelabuhan ${s.dest.city}`
         : step.title;
       return { status: e.status, title, detail: step.detail(s), at: e.at, location: e.location ?? null };

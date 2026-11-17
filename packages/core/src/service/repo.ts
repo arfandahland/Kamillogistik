@@ -1,4 +1,5 @@
-import type { PricingBasis, ShipmentStatus } from "@kamil/core";
+import type { PricingBasis } from "../tariff";
+import type { ShipmentStatus } from "../status";
 
 export type Place = { code: string; name: string; city: string };
 

@@ -1,10 +1,10 @@
 import type { Repo, RouteService, ShipmentRecord, Place, TrackEvent } from "./repo";
-import type { ShipmentStatus } from "@kamil/core";
-import { SHIPMENT_STATUSES } from "@kamil/core";
+import type { ShipmentStatus } from "../status";
+import { SHIPMENT_STATUSES } from "../status";
 
 const JKT: Place = { code: "JKT", name: "Hub Jakarta", city: "Jakarta" };
 const SUB: Place = { code: "SUB", name: "Hub Surabaya", city: "Surabaya" };
-const MKS: Place = { code: "MKS", name: "Hub Makassar", city: "Makassar" };
+const MKS: Place = { code: "MKS", name: "Gudang Makassar", city: "Makassar" };
 
 const MRW: Place = { code: "MRW", name: "Morowali", city: "Morowali" };
 
@@ -32,7 +32,7 @@ const TIMES = [
   "2026-11-10T08:15:00Z", "2026-11-10T11:40:00Z", "2026-11-10T15:05:00Z", "2026-11-11T07:30:00Z",
   "2026-11-11T20:00:00Z", "2026-11-16T05:20:00Z", "2026-11-16T09:10:00Z", "2026-11-17T07:45:00Z", "2026-11-17T13:30:00Z",
 ];
-const LOCS = ["Jakarta", "Hub Jakarta", "Hub Jakarta", "Pelabuhan Jakarta", "Dalam pelayaran", "Pelabuhan Makassar", "Hub Makassar", "Makassar", "Makassar"];
+const LOCS = ["Jakarta", "Gudang Jakarta", "Gudang Jakarta", "Pelabuhan Jakarta", "Dalam pelayaran", "Pelabuhan Makassar", "Gudang Makassar", "Makassar", "Makassar"];
 
 function buildEvents(upTo: number): TrackEvent[] {
   return SHIPMENT_STATUSES.slice(1, upTo + 1).map((s, i) => ev(s, TIMES[i]!, LOCS[i]!));
