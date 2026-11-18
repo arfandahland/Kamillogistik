@@ -2,6 +2,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { supabaseServer, staffRpc } from "@/lib/supabase/server";
+import { normalizePhone } from "@kamil/core";
 
 const back = (id: string, kind: "e" | "ok", msg: string): never =>
   redirect(`/app/resi/${id}?${kind}=${encodeURIComponent(msg)}`);
@@ -17,12 +18,15 @@ export async function keluar() {
 }
 
 export async function buatResi(fd: FormData) {
+  const hpS = normalizePhone(String(fd.get("hp_pengirim") ?? "")), hpP = normalizePhone(String(fd.get("hp_penerima") ?? ""));
+  if (!hpS.ok) redirect(`/app/baru?e=${encodeURIComponent("Pengirim: " + hpS.error)}`);
+  if (!hpP.ok) redirect(`/app/baru?e=${encodeURIComponent("Penerima: " + hpP.error)}`);
   const { data, error } = await staffRpc<{ id: string }>("create_shipment", {
     p_route_slug: String(fd.get("rute") ?? ""),
     p_sender_name: String(fd.get("pengirim") ?? ""),
-    p_sender_phone: String(fd.get("hp_pengirim") ?? ""),
+    p_sender_phone: hpS.ok ? hpS.wa : "",
     p_receiver_name: String(fd.get("penerima") ?? ""),
-    p_receiver_phone: String(fd.get("hp_penerima") ?? ""),
+    p_receiver_phone: hpP.ok ? hpP.wa : "",
     p_receiver_address: String(fd.get("alamat") ?? ""),
     p_piece_count: Number(fd.get("jumlah") ?? 1) || 1,
     p_condition_note: String(fd.get("catatan") ?? "") || null,

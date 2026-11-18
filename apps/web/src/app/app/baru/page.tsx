@@ -44,13 +44,15 @@ export default async function Baru({ searchParams }: { searchParams: Promise<{ e
             <label className="f" htmlFor="pengirim">Nama pengirim</label>
             <input id="pengirim" name="pengirim" required autoComplete="off" />
             <label className="f" htmlFor="hp_pengirim">Nomor WhatsApp pengirim</label>
-            <input id="hp_pengirim" name="hp_pengirim" inputMode="tel" placeholder="Contoh: 0812xxxxxxx" />
+            <input id="hp_pengirim" name="hp_pengirim" inputMode="tel" placeholder="Contoh: 0812 3456 7890" required autoComplete="tel" />
+            <p className="hint">Wajib diisi dan benar. Dipakai untuk kabar jemput dan tagihan lewat WhatsApp.</p>
 
             <h3 style={{ marginTop: 20 }}>Penerima</h3>
             <label className="f" htmlFor="penerima">Nama penerima</label>
             <input id="penerima" name="penerima" required autoComplete="off" />
             <label className="f" htmlFor="hp_penerima">Nomor WhatsApp penerima</label>
-            <input id="hp_penerima" name="hp_penerima" inputMode="tel" />
+            <input id="hp_penerima" name="hp_penerima" inputMode="tel" placeholder="Contoh: 0812 3456 7890" required />
+            <p className="hint">Wajib diisi dan benar. Dipakai kurir dan tim untuk menghubungi penerima.</p>
             <label className="f" htmlFor="alamat">Alamat lengkap penerima</label>
             <textarea id="alamat" name="alamat" />
 

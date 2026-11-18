@@ -144,6 +144,10 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await noOverflow(p, "detail resi (HP)");
     await p.screenshot({ path: `${OUT}/e2e-resi-baru.png` });
     kasir.resiUrl = p.url();
+    ok("nomor HP tersimpan baku dan tampil rapi (0812-…)", /0822-3344-5566/.test(await text(p)));
+    const waHref = decodeURIComponent((await p.locator(".fu a.wabtn").nth(1).getAttribute("href")) || "");
+    ok("tombol Chat penerima: wa.me ke nomor benar, memuat kode resi dan tautan lacak", /^https:\/\/wa\.me\/6282233445566\?text=/.test(waHref) && waHref.includes(resiNo) && waHref.includes("/lacak/"), waHref);
+    ok("tombol Telepon penerima tersedia", (await p.locator("a[href='tel:+6282233445566']").count()) === 1);
 
     console.log("\n[C2] Cetak label dan pindai kode");
     await p.goto(`${BASE}/app/resi/${resiId}/cetak`, { waitUntil: "networkidle" });
@@ -458,7 +462,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await selectByText(k, "#rute", "Jakarta → Makassar · Diantar sampai alamat (per kilo)");
     await k.getByText("Perusahaan langganan").click(); await k.selectOption("#company", { label: "PT Sinar Jaya (tempo 14 hari)" });
     await k.getByText("Diantar sendiri").click();
-    await k.fill("#pengirim", "PT Sinar Jaya"); await k.fill("#penerima", "Gudang Penerima"); await k.fill("#alamat", "Jl. Tol Reformasi, Makassar"); await k.fill("#jumlah", "1");
+    await k.fill("#pengirim", "PT Sinar Jaya"); await k.fill("#hp_pengirim", "0811 2223 334"); await k.fill("#penerima", "Gudang Penerima"); await k.fill("#hp_penerima", "0812-9988-7766"); await k.fill("#alamat", "Jl. Tol Reformasi, Makassar"); await k.fill("#jumlah", "1");
     r = await act(k, k.getByRole("button", { name: "Buat resi" }));
     ok("resi korporat dibuat; kode memuat LA (antar sendiri)", r.ok && /-LA-/.test(await k.locator("h1.resicode").innerText()), JSON.stringify(r));
     ok("detail resi menampilkan nama perusahaan", /PT Sinar Jaya/.test(await k.locator(".tag.corp").innerText().catch(() => "")));
@@ -475,7 +479,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await selectByText(k, "#rute", "Jakarta → Makassar · Diantar sampai alamat (per kilo)");
     await k.getByText("Perusahaan langganan").click(); await k.selectOption("#company", { label: "PT Sinar Jaya (tempo 14 hari)" });
     await k.getByText("Diantar sendiri").click();
-    await k.fill("#pengirim", "PT Sinar Jaya"); await k.fill("#penerima", "X"); await k.fill("#alamat", "Y"); await k.fill("#jumlah", "1");
+    await k.fill("#pengirim", "PT Sinar Jaya"); await k.fill("#hp_pengirim", "081122233344"); await k.fill("#penerima", "X"); await k.fill("#hp_penerima", "081299887766"); await k.fill("#alamat", "Y"); await k.fill("#jumlah", "1");
     r = await act(k, k.getByRole("button", { name: "Buat resi" }));
     ok("batas kredit terlampaui: resi baru ditolak dengan alasan jelas", r.err && /Batas kredit/.test(r.err), JSON.stringify(r));
     await p.goto(`${BASE}/app/korporat`, { waitUntil: "networkidle" });
@@ -487,6 +491,17 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("kasir tidak bisa membuka halaman pelanggan korporat (hanya pemilik)", await (async () => { await k.goto(`${BASE}/app/korporat`, { waitUntil: "networkidle" }); return !k.url().includes("/app/korporat"); })());
   }
 
+  // ===== M0. Nomor HP wajib benar =====
+  {
+    const k = kasir.page;
+    await k.goto(`${BASE}/app/baru`, { waitUntil: "networkidle" });
+    await selectByText(k, "#rute", "Jakarta → Makassar · Diantar sampai alamat (per kilo)");
+    await k.getByText("Diantar sendiri").click();
+    await k.fill("#pengirim", "A"); await k.fill("#hp_pengirim", "0211234567"); await k.fill("#penerima", "B"); await k.fill("#hp_penerima", "081299887766"); await k.fill("#alamat", "C"); await k.fill("#jumlah", "1");
+    const r = await act(k, k.getByRole("button", { name: "Buat resi" }));
+    ok("nomor telepon rumah/salah ditolak dengan pesan jelas", r.err && /Pengirim: Nomor HP tidak valid/.test(r.err), JSON.stringify(r));
+  }
+
   // ===== M. Landing futuristik: carousel + asisten tanya-jawab =====
   {
     const pc = await browser.newContext({ viewport: { width: 412, height: 860 } }); const p = await pc.newPage();
@@ -494,7 +509,11 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("M1 carousel punya 5 slide", (await p.locator(".cslide").count()) === 5);
     await p.locator(".cdots button").nth(2).click(); await p.waitForTimeout(700);
     ok("M2 titik carousel menggeser ke slide 3", /Dijemput atau antar sendiri/.test(await p.locator(".cslide.on").innerText()));
-    await p.getByRole("button", { name: "Buka asisten tanya-jawab" }).click();
+    ok("hanya satu tombol bantuan mengambang (tombol WhatsApp terpisah dihapus)", (await p.locator(".wa-fab").count()) === 0 && (await p.locator(".dialmain").count()) === 1);
+    await p.getByRole("button", { name: "Hubungi kami" }).click(); await p.waitForTimeout(500);
+    ok("menu bantuan memuat WhatsApp dan asisten", (await p.locator(".dialitem.wa[href^='https://wa.me/']").count()) === 1 && (await p.locator(".dialitem.ai").count()) === 1);
+    await p.screenshot({ path: `${OUT}/e2e-dial.png` });
+    await p.locator(".dialitem.ai").click();
     const kirim = async (q) => { await p.getByRole("textbox", { name: "Pertanyaan" }).fill(q); await p.getByRole("button", { name: "Kirim" }).click(); await p.waitForTimeout(1200); return (await p.locator(".bub.bot").last().innerText()); };
     const a1 = await kirim("ongkir Jakarta ke Makassar 10 kg");
     ok("M3 asisten menjawab ongkir dengan angka Rp", /Rp\s?[\d.]+/.test(a1), a1.slice(0, 200));

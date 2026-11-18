@@ -4,7 +4,6 @@ export const BRAND = {
   whatsappNumber: "6285342238748",
   whatsappDisplay: "0853-4223-8748",
   instagram: "kamillogistik.id",
-  website: "kamillogistik.id",
 };
 export const waLink = (text?: string) =>
   `https://wa.me/${BRAND.whatsappNumber}${text ? `?text=${encodeURIComponent(text)}` : ""}`;

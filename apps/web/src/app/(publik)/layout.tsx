@@ -34,7 +34,6 @@ export default function PublikLayout({ children }: { children: React.ReactNode }
           <small>© {new Date().getFullYear()} Kamil Logistik Express</small>
         </div>
       </footer>
-      <a className="wa-fab" href={waLink("Halo Kamil Logistik, saya mau tanya soal pengiriman barang.")} aria-label="Tanya lewat WhatsApp"><Icon name="chat" size={26} /></a>
       <ChatBot />
       <TabBar tabs={TABS} variant="pub" />
     </>

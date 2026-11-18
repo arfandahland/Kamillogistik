@@ -34,7 +34,7 @@ Database Supabase sudah jadi dan terisi tarif Anda. Tinggal memasang websitenya 
    - `SUPABASE_URL`
    - `SUPABASE_PUBLISHABLE_KEY`
 5. Tekan **Deploy**. Sekitar 2 menit, website tayang dengan alamat `...vercel.app`.
-6. Alamat sendiri (`kamillogistik.id` atau `www.`): Vercel → **Settings → Domains** → ikuti petunjuknya, lalu ubah DNS di tempat Anda membeli domain. Kabari saya bila perlu dipandu.
+6. Alamat sendiri (domain resmi yang akan dipilih): Vercel → **Settings → Domains** → ikuti petunjuknya, lalu ubah DNS di tempat Anda membeli domain. Kabari saya bila perlu dipandu.
 
 Setelah itu, setiap perubahan yang saya kerjakan **tayang otomatis**, Anda tidak perlu mengulang langkah ini.
 

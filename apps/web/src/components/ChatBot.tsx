@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Icon from "./Icon";
+import { waLink } from "@/lib/brand";
 
 type Aksi = { label: string; href: string };
 type Pesan = { dari: "saya" | "bot"; text: string; aksi?: Aksi[]; chips?: string[] };
@@ -10,6 +11,7 @@ const AWAL: Pesan = { dari: "bot", text: "Halo! Saya asisten Kamil Logistik. Tan
 /** Asisten tanya-jawab di pojok halaman publik. Jawaban dari data tarif dan pelacakan asli. */
 export default function ChatBot() {
   const [buka, setBuka] = useState(false);
+  const [menu, setMenu] = useState(false);
   const [pesan, setPesan] = useState<Pesan[]>([AWAL]);
   const [ctx, setCtx] = useState<Record<string, unknown>>({});
   const [teks, setTeks] = useState("");
@@ -21,6 +23,7 @@ export default function ChatBot() {
   useEffect(() => { try { sessionStorage.setItem("kamil-chat", JSON.stringify({ pesan: pesan.slice(-30), ctx })); } catch { /* abaikan */ } }, [pesan, ctx]);
   useEffect(() => { ujung.current?.scrollIntoView({ behavior: "smooth", block: "end" }); }, [pesan, mengetik, buka]);
   useEffect(() => { if (buka) setTimeout(() => inputRef.current?.focus(), 250); const esc = (e: KeyboardEvent) => e.key === "Escape" && setBuka(false); document.addEventListener("keydown", esc); return () => document.removeEventListener("keydown", esc); }, [buka]);
+  useEffect(() => { if (!menu) return; const esc = (e: KeyboardEvent) => e.key === "Escape" && setMenu(false); const luar = (e: MouseEvent) => { if (!(e.target as HTMLElement).closest(".dial")) setMenu(false); }; document.addEventListener("keydown", esc); document.addEventListener("click", luar); return () => { document.removeEventListener("keydown", esc); document.removeEventListener("click", luar); }; }, [menu]);
 
   const kirim = useCallback(async (isi: string) => {
     const t = isi.trim(); if (!t || mengetik) return;
@@ -41,9 +44,15 @@ export default function ChatBot() {
 
   return (
     <>
-      <button type="button" className={`chatfab ${buka ? "hide" : ""}`} onClick={() => setBuka(true)} aria-label="Buka asisten tanya-jawab" aria-expanded={buka}>
-        <span className="chatfab-ic"><Icon name="sparkle" size={22} /></span><span className="chatfab-t">Tanya Kamil</span>
-      </button>
+      <div className={`dial ${menu ? "open" : ""} ${buka ? "hide" : ""}`}>
+        <div className="dialmenu" role="menu" aria-hidden={!menu}>
+          <a role="menuitem" className="dialitem wa" href={waLink("Halo Kamil Logistik, saya mau tanya soal pengiriman barang.")} target="_blank" rel="noopener noreferrer" tabIndex={menu ? 0 : -1} onClick={() => setMenu(false)}><span className="dic"><Icon name="chat" size={20} /></span><span>Chat WhatsApp<small>Bicara langsung dengan tim</small></span></a>
+          <button role="menuitem" type="button" className="dialitem ai" tabIndex={menu ? 0 : -1} onClick={() => { setMenu(false); setBuka(true); }}><span className="dic"><Icon name="sparkle" size={20} /></span><span>Tanya asisten<small>Jawaban cepat, 24 jam</small></span></button>
+        </div>
+        <button type="button" className="dialmain" onClick={() => setMenu((m) => !m)} aria-haspopup="menu" aria-expanded={menu} aria-label={menu ? "Tutup menu bantuan" : "Hubungi kami"}>
+          <span className="dialic"><Icon name={menu ? "close" : "chat"} size={26} /></span>
+        </button>
+      </div>
       {buka && (
         <section className="chatpanel" role="dialog" aria-label="Asisten Kamil Logistik" aria-modal="false">
           <header>

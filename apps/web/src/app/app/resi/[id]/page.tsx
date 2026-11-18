@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { MASUK_LABEL, MODA_LABEL, nextAction, OWNER_ROLE, ROLE_LABEL, SEES_MONEY, statusLabel, type Actor, type AnyStatus } from "@kamil/core";
+import { chatLink, displayPhone, MASUK_LABEL, MODA_LABEL, nextAction, normalizePhone, telLink, OWNER_ROLE, ROLE_LABEL, SEES_MONEY, statusLabel, type Actor, type AnyStatus } from "@kamil/core";
 import { staffRpc, getMe, type Staff } from "@/lib/supabase/server";
 import { rupiah, tanggalWaktu } from "@/lib/brand";
+import { SITE_URL } from "@/lib/site";
 import SubmitButton from "@/components/SubmitButton";
 import Icon from "@/components/Icon";
 import ResiStepper from "@/components/ResiStepper";
@@ -58,12 +59,25 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
         <KodeResi kode={s.resiNo} kota={{ [s.origin.code]: s.origin.city, [s.dest.code]: s.dest.city }} />
         <ResiStepper status={s.status} masuk={s.pickupType} mode={s.mode} />
         <dl className="kv">
-          <dt>Pengirim</dt><dd>{s.senderName}{s.senderPhone ? ` · ${s.senderPhone}` : ""}</dd>
-          <dt>Penerima</dt><dd>{s.receiverName}{s.receiverPhone ? ` · ${s.receiverPhone}` : ""}</dd>
+          <dt>Pengirim</dt><dd>{s.senderName}{s.senderPhone ? ` · ${displayPhone(s.senderPhone)}` : ""}</dd>
+          <dt>Penerima</dt><dd>{s.receiverName}{s.receiverPhone ? ` · ${displayPhone(s.receiverPhone)}` : ""}</dd>
           {s.receiverAddress && (<><dt>Alamat</dt><dd>{s.receiverAddress}</dd></>)}
           {s.pickupType === "PICKUP" && s.pickupAddress && (<><dt>Alamat jemput</dt><dd>{s.pickupAddress}</dd></>)}
           <dt>Barang dipegang</dt><dd>{s.iAmHolder ? "Anda" : s.holder?.name ?? (s.pickupType === "PICKUP" ? "Belum ada (menunggu dijemput)" : "Belum ada (menunggu diantar pelanggan)")}</dd>
         </dl>
+        <div className="followup" aria-label="Hubungi pelanggan">
+          {([["Pengirim", s.senderName, s.senderPhone, "pengirim"], ["Penerima", s.receiverName, s.receiverPhone, "penerima"]] as const).map(([peran, nama, hp, kind]) => {
+            const n = hp ? normalizePhone(hp) : null;
+            if (!n || !n.ok) return <div key={peran} className="fu none"><b>{peran}</b><small>Nomor HP belum ada atau tidak valid. Minta kasir melengkapi.</small></div>;
+            const pesan = `Halo ${nama}, kami dari Kamil Logistik. Kabar paket ${s.resiNo} (${s.origin.city} → ${s.dest.city}): ${statusLabel(s.status, s.mode)}. ${kind === "penerima" && s.status === "OUT_FOR_DELIVERY" ? "Kurir kami sedang menuju alamat Anda, mohon siap menerima. " : ""}Pantau di ${SITE_URL}/lacak/${s.resiNo}`;
+            return (
+              <div key={peran} className="fu"><span><b>{peran}</b><small>{nama} · {n.display}</small></span>
+                <a className="btn sm wabtn" href={chatLink(n.wa, pesan)} target="_blank" rel="noopener noreferrer"><Icon name="chat" size={18} /> Chat</a>
+                <a className="btn sm ghost" href={telLink(n.wa)} aria-label={`Telepon ${peran.toLowerCase()}`}><Icon name="phone" size={18} /> Telepon</a>
+              </div>
+            );
+          })}
+        </div>
         <div className="resiact">
           <Link className="btn" href={`/app/resi/${s.id}/cetak`}><Icon name="print" size={20} /> Cetak label</Link>
           <Link className="btn ghost" href="/app/pindai"><Icon name="scan" size={20} /> Pindai</Link>
