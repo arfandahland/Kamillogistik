@@ -11,5 +11,8 @@
     "dev": "npm run dev -w @kamil/web",
     "build": "npm run build -w @kamil/web",
     "typecheck": "npm run typecheck -w @kamil/core && npm run typecheck -w @kamil/web"
+  },
+  "devDependencies": {
+    "pg": "^8.23.1"
   }
 }

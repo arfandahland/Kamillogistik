@@ -39,7 +39,7 @@ export default function InvoiceDocument({ inv }: { inv: InvoiceView }) {
 
       <table className="inv-lines">
         <thead><tr><th>Rincian</th><th className="r">Jumlah</th></tr></thead>
-        <tbody>{inv.lines.map((l, i) => <tr key={i}><td>{l.text.replace(/Rp(\d+)/g, (_m, n) => "Rp" + Number(n).toLocaleString("id-ID"))}</td><td className="r">{rupiah(l.amount)}</td></tr>)}</tbody>
+        <tbody>{inv.lines.map((l, i) => <tr key={i}><td>{l.text.replace(/(\d+\.\d+) (kg|m3|m³)/g, (_m, n, u) => `${Number(n).toLocaleString("id-ID", { maximumFractionDigits: 2 })} ${u}`).replace(/Rp(\d+)/g, (_m, n) => "Rp" + Number(n).toLocaleString("id-ID"))}</td><td className="r">{rupiah(l.amount)}</td></tr>)}</tbody>
         <tfoot>
           <tr><td>Total tagihan</td><td className="r">{rupiah(inv.total)}</td></tr>
           {inv.paid > 0 && <tr><td>Sudah dibayar</td><td className="r">− {rupiah(inv.paid)}</td></tr>}

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { rupiahRingkas } from "@kamil/core";
-import { AreaChart, CountUp, Donut, HBars } from "@/components/Charts";
+import { Donut } from "@/components/Charts";
+import { MoneyArea, MoneyCount, MoneyHBars } from "@/components/MoneyCharts";
 import Icon from "@/components/Icon";
 import { requireOwner } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
@@ -29,19 +30,19 @@ export default async function Keuangan({ searchParams }: { searchParams: Promise
         <div className="chips">{[7, 30, 90].map((d) => <Link key={d} href={`/app/keuangan?hari=${d}`} className={`chip ${hari === d ? "on" : ""}`}>{d} hari</Link>)}</div>
       </div>
       <div className="kcards stagger">
-        <div className="kcard"><div className="klabel"><span className="si"><Icon name="file" size={20} /></span>Ditagihkan</div><b className="kval"><CountUp value={k.invoiced} format={rupiahRingkas} /></b><span className="delta flat">{hari} hari terakhir</span></div>
-        <div className="kcard"><div className="klabel"><span className="si"><Icon name="cash" size={20} /></span>Uang masuk</div><b className="kval"><CountUp value={k.collected} format={rupiahRingkas} /></b><span className="delta flat">{ratio === null ? "belum ada tagihan" : `${ratio}% dari yang ditagihkan`}</span></div>
-        <div className="kcard"><div className="klabel"><span className="si warm"><Icon name="clock" size={20} /></span>Belum dibayar</div><b className="kval"><CountUp value={k.outstanding} format={rupiahRingkas} /></b><span className="delta flat">{k.openCount} tagihan terbuka</span></div>
-        <div className="kcard"><div className="klabel"><span className="si warm"><Icon name="alert" size={20} /></span>Lewat jatuh tempo</div><b className="kval"><CountUp value={k.overdue} format={rupiahRingkas} /></b><span className={`delta ${k.overdue > 0 ? "down" : "up"}`}>{k.overdue > 0 ? "perlu ditagih" : "aman"}</span></div>
+        <div className="kcard"><div className="klabel"><span className="si"><Icon name="file" size={20} /></span>Ditagihkan</div><b className="kval"><MoneyCount value={k.invoiced} /></b><span className="delta flat">{hari} hari terakhir</span></div>
+        <div className="kcard"><div className="klabel"><span className="si"><Icon name="cash" size={20} /></span>Uang masuk</div><b className="kval"><MoneyCount value={k.collected} /></b><span className="delta flat">{ratio === null ? "belum ada tagihan" : `${ratio}% dari yang ditagihkan`}</span></div>
+        <div className="kcard"><div className="klabel"><span className="si warm"><Icon name="clock" size={20} /></span>Belum dibayar</div><b className="kval"><MoneyCount value={k.outstanding} /></b><span className="delta flat">{k.openCount} tagihan terbuka</span></div>
+        <div className="kcard"><div className="klabel"><span className="si warm"><Icon name="alert" size={20} /></span>Lewat jatuh tempo</div><b className="kval"><MoneyCount value={k.overdue} /></b><span className={`delta ${k.overdue > 0 ? "down" : "up"}`}>{k.overdue > 0 ? "perlu ditagih" : "aman"}</span></div>
       </div>
       <div className="dgrid">
         <section className="card panel p-area"><h2>Tagihan dan uang masuk per hari</h2><p className="muted sub">{hari} hari terakhir.</p>
-          <AreaChart data={f.daily} series={[{ key: "invoiced", label: "Ditagihkan", color: "#2f9e8a" }, { key: "collected", label: "Uang masuk", color: "#f28c28" }]} fmt={rupiahRingkas} /></section>
+          <MoneyArea data={f.daily} series={[{ key: "invoiced", label: "Ditagihkan", color: "#2f9e8a" }, { key: "collected", label: "Uang masuk", color: "#f28c28" }]} /></section>
         <section className="card panel p-pos"><h2>Cara pembayaran</h2><p className="muted sub">Uang masuk menurut caranya.</p>
           {f.methods.length === 0 ? <p className="muted" style={{ margin: 0 }}>Belum ada pembayaran pada periode ini.</p>
             : <Donut center={rupiahRingkas(f.methods.reduce((s, m) => s + m.amount, 0))} sub="uang masuk" parts={f.methods.map((m) => ({ label: m.method === "TRANSFER" ? "Transfer" : "Tunai", value: m.amount, color: m.method === "TRANSFER" ? "#1d8a76" : "#f28c28" }))} />}</section>
         <section className="card panel p-route"><h2>Umur piutang</h2><p className="muted sub">Berapa lama tagihan menunggu dibayar.</p>
-          <HBars color="var(--amber)" items={f.aging.map((a) => ({ label: a.label, value: a.amount, note: `${a.n} tagihan` }))} fmt={rupiahRingkas} empty="Tidak ada piutang." /></section>
+          <MoneyHBars color="var(--amber)" items={f.aging.map((a) => ({ label: a.label, value: a.amount, note: `${a.n} tagihan` }))} empty="Tidak ada piutang." /></section>
         <section className="card panel p-recent"><h2>Pembayaran terbaru</h2>
           {f.recent.length === 0 ? <p className="muted" style={{ margin: 0 }}>Belum ada pembayaran.</p> : (
             <ul className="feed">{f.recent.map((p, i) => (
