@@ -20,7 +20,7 @@ export default async function Riwayat() {
   const list = r.data ?? [];
   return (
     <main className="wrap narrow stack" style={{ paddingTop: 8 }}>
-      <Link href="/app/tarif" className="muted">← Tarif dan rute</Link>
+      <Link href="/app/tarif" className="muted backlink">← Tarif dan rute</Link>
       <h1>Riwayat perubahan harga</h1>
       <p className="muted" style={{ marginTop: -6 }}>Setiap perubahan harga, minimal berat, estimasi, dan status tayang tercatat otomatis dan tidak bisa dihapus.</p>
       {r.error && <div className="err">{r.error}</div>}

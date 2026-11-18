@@ -18,7 +18,7 @@ export default async function Komisi({ searchParams }: { searchParams: Promise<{
   const tot = rows.reduce((a, x) => ({ revenue: a.revenue + x.revenue, commission: a.commission + x.commission, paid: a.paid + x.commissionPaid }), { revenue: 0, commission: 0, paid: 0 });
   return (
     <main className="wrap narrow stack" style={{ paddingTop: 8 }}>
-      <Link href="/app/keuangan" className="muted">← Keuangan</Link>
+      <Link href="/app/keuangan" className="muted backlink">← Keuangan</Link>
       <h1>Komisi mitra</h1>
       <form className="card kfilter">
         <label className="f" htmlFor="dari">Dari</label><input id="dari" name="dari" type="date" defaultValue={dari} />

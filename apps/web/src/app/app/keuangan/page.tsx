@@ -46,7 +46,7 @@ export default async function Keuangan({ searchParams }: { searchParams: Promise
         <section className="card panel p-recent"><h2>Pembayaran terbaru</h2>
           {f.recent.length === 0 ? <p className="muted" style={{ margin: 0 }}>Belum ada pembayaran.</p> : (
             <ul className="feed">{f.recent.map((p, i) => (
-              <li key={i}><span className="fd" /><Link href={`/app/tagihan/${p.invoiceId}`}><b>{p.invoiceNo}</b> · {rupiah(p.amount)}</Link>
+              <li key={i}><span className="fd" /><Link href={`/app/tagihan/${p.invoiceId}`} className="backlink"><b>{p.invoiceNo}</b> · {rupiah(p.amount)}</Link>
                 <small>{p.method === "TRANSFER" ? "Transfer" : "Tunai"}{p.reference ? ` · ${p.reference}` : ""} · {tanggalWaktu(p.at)}{p.by ? ` · dicatat ${p.by}` : ""}</small></li>
             ))}</ul>
           )}

@@ -124,8 +124,8 @@ input::placeholder { color: color-mix(in srgb, var(--muted) 70%, transparent); }
 .topbar .nav:hover { background: rgba(200, 248, 240, .22); }
 footer.pub { margin-top: 36px; padding: 32px 0 120px; background: var(--grad-hero); color: #d6f4ec; text-align: center; font-size: 14px; border-radius: 32px 32px 0 0; }
 footer.pub img { width: 96px; height: auto; margin: 0 auto 8px; display: block; }
-footer.pub nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 18px; margin: 14px 0 10px; } footer.pub nav a { color: #fff; font-weight: 700; padding: 8px 4px; }
-footer.pub small { display: block; margin-top: 12px; opacity: .7; }
+footer.pub nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 18px; margin: 14px 0 10px; } footer.pub nav a { color: #fff; font-weight: 700; padding: 0 8px; display: inline-flex; align-items: center; min-height: 44px; }
+footer.pub small { display: block; margin-top: 12px; opacity: .8; font-size: 12.5px; }
 .wa-bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); background: linear-gradient(180deg, transparent, var(--bg) 40%); pointer-events: none; }
 .wa-bar a { pointer-events: auto; max-width: 608px; margin: 0 auto; background: linear-gradient(180deg, #3be07f, #1fb85a); color: #04361a; box-shadow: 0 12px 28px rgba(31, 184, 90, .4), inset 0 1px 0 rgba(255, 255, 255, .5); }
 
@@ -832,3 +832,10 @@ details.admitem .admbody { padding: 4px 18px 18px; border-top: 1px dashed var(--
 .stars { display: flex; align-items: center; gap: 4px; } .stars button { border: 0; background: none; font-size: 44px; line-height: 1; color: #d9e6e2; cursor: pointer; padding: 2px 4px; min-width: 52px; min-height: 52px; transition: transform .15s var(--ease), color .15s; } .stars button.on { color: #ffb347; text-shadow: 0 2px 10px rgba(255, 179, 71, .5); } .stars button:hover { transform: scale(1.12); } .starlbl { margin-left: 8px; font-weight: 800; color: var(--teal-700, #0f6b5a); }
 .portalhead { display: grid; gap: 4px; } .ptiles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .plink { word-break: break-all; font-size: 13.5px; padding: 10px 12px; border-radius: 12px; background: var(--teal-soft); border: 1px dashed var(--teal-500); }
+
+/* ----- audit ramah HP: target sentuh 44px, teks tidak terlalu kecil ----- */
+.clink { min-height: 44px; } .backlink { display: inline-flex; align-items: center; min-height: 44px; font-weight: 700; }
+.rolechip { font-size: 13px; } .pill, .delta { font-size: 12.5px; }
+.finlist li a, .fdlist li a { display: inline-flex; align-items: center; min-height: 44px; }
+.scanhint, .pindai small { font-size: 12.5px; }
+.camnote small { font-size: 13px; }
