@@ -64,6 +64,10 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
           {s.pickupType === "PICKUP" && s.pickupAddress && (<><dt>Alamat jemput</dt><dd>{s.pickupAddress}</dd></>)}
           <dt>Barang dipegang</dt><dd>{s.iAmHolder ? "Anda" : s.holder?.name ?? (s.pickupType === "PICKUP" ? "Belum ada (menunggu dijemput)" : "Belum ada (menunggu diantar pelanggan)")}</dd>
         </dl>
+        <div className="resiact">
+          <Link className="btn" href={`/app/resi/${s.id}/cetak`}><Icon name="print" size={20} /> Cetak label</Link>
+          <Link className="btn ghost" href="/app/pindai"><Icon name="scan" size={20} /> Pindai</Link>
+        </div>
       </div>
 
       {pendingToMe && (

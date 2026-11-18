@@ -2,6 +2,7 @@
 import Icon from "./Icon";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import PemindaiPublik from "./PemindaiPublik";
 
 export default function ResiForm({ initial = "", autoFocus = false }: { initial?: string; autoFocus?: boolean }) {
   const [v, setV] = useState(initial);
@@ -24,6 +25,7 @@ export default function ResiForm({ initial = "", autoFocus = false }: { initial?
       <button className="btn" disabled={busy || !v.trim()} style={{ marginTop: 12 }}>
         {busy ? <span className="stepping"><span className="spin" /><span className="stext">Mencari resi…</span></span> : <><Icon name="search" size={22} /> Cek posisi barang</>}
       </button>
+      <PemindaiPublik />
     </form>
   );
 }

@@ -22,9 +22,9 @@ export default function StaffShell({ me, pending, children, forceFull }: { me: M
       ]
     : [
         { href: "/app", label: "Beranda", icon: "home" },
-        ...(CAN_CREATE_ORDER.includes(me.role) ? [{ href: "/app/baru", label: "Resi baru", icon: "plus" }] : []),
-        ...(finance ? [{ href: "/app/tagihan", label: "Tagihan", icon: "file" }] : []),
-        { href: "/app/serah", label: "Serah terima", icon: "swap", badge: pending },
+        ...(me.role === "MITRA_POS" ? [{ href: "/app/baru", label: "Resi baru", icon: "plus" }] : []),
+        { href: "/app/pindai", label: "Pindai", icon: "scan", featured: true },
+        ...(finance ? [{ href: "/app/tagihan", label: "Tagihan", icon: "file" }] : [{ href: "/app/serah", label: "Serah terima", icon: "swap", badge: pending }]),
         { href: "/app/akun", label: "Akun", icon: "user" },
       ];
   const navAll = owner
@@ -39,7 +39,7 @@ export default function StaffShell({ me, pending, children, forceFull }: { me: M
         { href: "/app/pengaturan", label: "Pengaturan", icon: "sliders" },
         { href: "/app/akun", label: "Akun", icon: "user" },
       ]
-    : tabs;
+    : [...tabs.slice(0, -1), { href: "/app/serah", label: "Serah terima", icon: "swap", badge: pending }, tabs[tabs.length - 1]!].filter((t, i, a) => a.findIndex((x) => x.href === t.href) === i);
   const role = ROLE_LABEL[me.role] ?? me.role;
   const tanggal = new Intl.DateTimeFormat("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Makassar" }).format(new Date());
   return (

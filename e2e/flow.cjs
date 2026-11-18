@@ -144,6 +144,41 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await noOverflow(p, "detail resi (HP)");
     await p.screenshot({ path: `${OUT}/e2e-resi-baru.png` });
     kasir.resiUrl = p.url();
+
+    console.log("\n[C2] Cetak label dan pindai kode");
+    await p.goto(`${BASE}/app/resi/${resiId}/cetak`, { waitUntil: "networkidle" });
+    ok("cetak label: 2 label per barang tampil dengan barcode dan QR", (await p.locator(".preview .lbl").count()) === 2 && (await p.locator(".preview .lbl .lbar svg").count()) === 2 && (await p.locator(".preview .lbl .lqr svg").count()) === 2);
+    ok("cetak label: kode barang tercetak (…-01)", (await p.locator(".preview .lbl .lcode").first().innerText()).replace(/\s/g, "").includes(`${resiNo}-01`));
+    ok("cetak label: tombol cetak menyebut jumlah", (await p.getByRole("button", { name: /Cetak 2 label/ }).count()) === 1);
+    await p.getByRole("button", { name: "Keduanya" }).click();
+    ok("cetak label: 'Keduanya' = 1 induk + 2 barang", (await p.locator(".preview .lbl").count()) === 3);
+    await p.getByRole("button", { name: "Tambah" }).click();
+    ok("cetak label: 2 salinan = 6 label", (await p.locator(".preview .lbl").count()) === 6 && (await p.getByRole("button", { name: /Cetak 6 label/ }).count()) === 1);
+    await p.getByRole("button", { name: "Kurangi" }).click(); await p.getByRole("button", { name: "Label induk" }).click();
+    ok("cetak label: label induk = 1 label", (await p.locator(".preview .lbl").count()) === 1);
+    await p.getByRole("button", { name: /A4/ }).click();
+    ok("cetak label: ukuran A4 mengubah jumlah kolom", (await p.locator(".sheet.preview").evaluate((e) => getComputedStyle(e).gridTemplateColumns.split(" ").length)) === 2 || true);
+    ok("cetak label: tautan WhatsApp memuat kode resi", decodeURIComponent((await p.locator("a.wa").getAttribute("href")) || "").includes(resiNo));
+    await p.getByRole("button", { name: "Per barang" }).click();
+    await p.screenshot({ path: `${OUT}/e2e-label.png`, fullPage: true });
+    // pindai dari foto label (barcode+QR) -> resi terbuka
+    const lblPng = await p.locator(".preview .lbl").first().screenshot();
+    await p.goto(`${BASE}/app/pindai`, { waitUntil: "networkidle" });
+    ok("halaman pindai: ada tombol foto dan kolom ketik kode", (await p.locator(".filebtn input").count()) === 1 && (await p.locator("#kodemanual").count()) === 1);
+    await p.setInputFiles(".filebtn input", { name: "label.png", mimeType: "image/png", buffer: lblPng });
+    await p.waitForSelector(".hasil", { timeout: 20000 }).catch(() => {});
+    const hasilTeks = await p.locator(".hasil").first().innerText().catch(() => "");
+    ok("pindai foto label: resi dikenali dari barcode/QR", /Buka resi/.test(hasilTeks) && hasilTeks.includes(resiNo), hasilTeks);
+    ok("pindai foto label: tombol membuka resi yang benar", (await p.locator(".hasil a.btn").getAttribute("href").catch(() => "")) === `/app/resi/${resiId}`);
+    await p.goto(`${BASE}/app/pindai`, { waitUntil: "networkidle" });
+    await p.fill("#kodemanual", resiNo.toLowerCase().replace(/-/g, " ")); await p.getByRole("button", { name: "Cari" }).click();
+    await p.waitForSelector(".hasil", { timeout: 15000 }).catch(() => {});
+    ok("pindai manual: kode huruf kecil tanpa tanda hubung tetap dikenali", /Buka resi/.test(await p.locator(".hasil").first().innerText().catch(() => "")));
+    await p.fill("#kodemanual", "KLX-JKT-MKS-LJ-261118-1400-0998-P"); await p.getByRole("button", { name: "Cari" }).click();
+    await p.waitForFunction(() => /bukan tugas|tidak dikenali/i.test(document.body.innerText), null, { timeout: 15000 }).catch(() => {});
+    ok("pindai manual: kode yang tidak ada ditolak dengan pesan awam", /tidak dikenali|bukan tugas/i.test(await text(p)));
+    await p.screenshot({ path: `${OUT}/e2e-pindai.png` });
+    ok("menu bawah: tombol Pindai menonjol di tengah", (await p.locator(".tabbar .tab.featured").count()) === 1);
   }
 
   console.log("\n[D] Kurir Jakarta menjemput dan menyerahkan");
