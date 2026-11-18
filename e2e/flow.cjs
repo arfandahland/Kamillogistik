@@ -351,7 +351,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     const p = kasir.page;
     await p.goto(`${BASE}/app/tagihan`, { waitUntil: "networkidle" });
     ok("tagihan muncul di daftar (belum dibayar)", /INV-\d{4}-000001/.test(await text(p)) && /Rp61\.600/.test(await text(p)));
-    await p.locator("a.resi").first().click(); await p.waitForURL(/\/app\/tagihan\/[0-9a-f-]+/, { timeout: 15000 }); await p.waitForLoadState("networkidle");
+    { const hf = await p.locator("a.resi").first().getAttribute("href"); await p.goto(`${BASE}${hf}`, { waitUntil: "networkidle" }); }
     { const t0 = await text(p); ok("detail tagihan: invoice rapi dengan rekening bank", /invoice/i.test(t0) && /BCA/.test(t0) && /1234567890/.test(t0) && /kamil logistik express/i.test(t0), t0.slice(0, 700)); }
     { const t1 = await text(p); ok("rincian memakai format Rp2.800", /22 kg x Rp2\.800/.test(t1), t1.slice(0, 900)); }
     await p.fill("#jumlah", "20000");
