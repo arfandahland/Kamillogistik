@@ -14,9 +14,10 @@ const LABEL: Record<string, { t: string; cls: string }> = {
   UNPAID: { t: "Belum dibayar", cls: "new" }, PARTIAL: { t: "Dibayar sebagian", cls: "part" }, OVERDUE: { t: "Lewat tempo", cls: "late" }, PAID: { t: "Lunas", cls: "done" },
 };
 
-export default async function Tagihan({ searchParams }: { searchParams: Promise<{ s?: string; q?: string }> }) {
+export default async function Tagihan({ searchParams }: { searchParams: Promise<{ s?: string; q?: string; n?: string }> }) {
   const sp = await searchParams;
   const tab = TABS.find((t) => t.k === sp.s)?.k ?? "belum", q = (sp.q ?? "").trim();
+  const n = Math.min(200, Math.max(30, Number(sp.n) || 30));
   const r = await staffRpc<Row[]>("staff_list_invoices", { p_q: q || null, p_limit: 200 });
   const all = r.data ?? [];
   const rows = all.filter((x) => tab === "semua" ? true : tab === "lunas" ? x.status === "PAID" : tab === "telat" ? x.status === "OVERDUE" : x.status !== "PAID");
@@ -29,7 +30,7 @@ export default async function Tagihan({ searchParams }: { searchParams: Promise<
       <nav className="chips" aria-label="Saring">{TABS.map((t) => <Link key={t.k} className={`chip ${tab === t.k ? "on" : ""}`} href={`/app/tagihan?s=${t.k}${q ? `&q=${encodeURIComponent(q)}` : ""}`}>{t.t}</Link>)}</nav>
       {r.error && <div className="err">{r.error}</div>}
       <div className="stagger">
-        {rows.map((x) => {
+        {rows.slice(0, n).map((x) => {
           const l = LABEL[x.status] ?? LABEL.UNPAID!;
           return (
             <Link key={x.id} href={`/app/tagihan/${x.id}`} className="card resi lift">
@@ -43,6 +44,7 @@ export default async function Tagihan({ searchParams }: { searchParams: Promise<
             </Link>
           );
         })}
+        {rows.length > n && <Link className="btn ghost" scroll={false} href={`/app/tagihan?${new URLSearchParams({ s: tab, ...(q ? { q } : {}), n: String(n + 30) })}`}>Tampilkan lebih banyak</Link>}
         {!r.error && rows.length === 0 && <div className="card"><p className="muted" style={{ margin: 0 }}>{q ? "Tidak ada tagihan yang cocok." : tab === "lunas" ? "Belum ada tagihan lunas." : "Tidak ada tagihan di sini."}</p></div>}
       </div>
     </main>

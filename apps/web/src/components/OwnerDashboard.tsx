@@ -39,7 +39,7 @@ export default function OwnerDashboard({ initial, initialError, preview }: { ini
     setLoading(false);
   }, []);
 
-  useEffect(() => { if (preview) return; const t = setInterval(() => load(days, true), POLL_MS); return () => clearInterval(t); }, [days, load, preview]);
+  useEffect(() => { if (preview) return; const t = setInterval(() => { if (document.visibilityState === "visible") load(days, true); }, POLL_MS); return () => clearInterval(t); }, [days, load, preview]);
   useEffect(() => { const t = setInterval(() => setAgo(Math.floor((Date.now() - stamp) / 1000)), 1000); return () => clearInterval(t); }, [stamp]);
   useEffect(() => { if (preview) return; const onVis = () => { if (document.visibilityState === "visible") load(days, true); }; document.addEventListener("visibilitychange", onVis); return () => document.removeEventListener("visibilitychange", onVis); }, [days, load, preview]);
 

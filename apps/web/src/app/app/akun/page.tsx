@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ROLE_LABEL } from "@kamil/core";
 import Icon from "@/components/Icon";
-import { staffRpc, type Staff } from "@/lib/supabase/server";
+import { staffRpc, getMe, type Staff } from "@/lib/supabase/server";
 import { keluar } from "../actions";
 
 export const metadata: Metadata = { title: "Akun Saya" };
 
 export default async function Akun() {
-  const me = (await staffRpc<Staff>("staff_me")).data;
+  const me = (await getMe()).data;
   return (
     <main className="wrap narrow stack" style={{ paddingTop: 8 }}>
       <h1>Akun saya</h1>

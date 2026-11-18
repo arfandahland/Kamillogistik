@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { CAN_CREATE_ORDER, handleRoutes } from "@kamil/core";
 import { repo } from "@/lib/repo";
-import { staffRpc, type Staff } from "@/lib/supabase/server";
+import { staffRpc, getMe, type Staff } from "@/lib/supabase/server";
 import SubmitButton from "@/components/SubmitButton";
 import { buatResi } from "../actions";
 
@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: "Buat Resi Baru" };
 
 export default async function Baru({ searchParams }: { searchParams: Promise<{ e?: string }> }) {
   const { e } = await searchParams;
-  const me = (await staffRpc<Staff>("staff_me")).data;
+  const me = (await getMe()).data;
   if (!me || !CAN_CREATE_ORDER.includes(me.role)) redirect("/app");
   const rr = await handleRoutes(repo);
   const all = (rr.status === 200 ? rr.body : []) as any[];

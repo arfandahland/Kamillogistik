@@ -6,7 +6,7 @@ cd "$(dirname "$0")/.."
 DB="kamil_e2e_$(date +%s)"
 run() { if [ "$(id -u)" = 0 ]; then su postgres -c "psql -v ON_ERROR_STOP=1 -q -X $*"; else psql -v ON_ERROR_STOP=1 -q -X "$@"; fi; }
 run "-c \"ALTER USER postgres PASSWORD 'pg'\" -c 'CREATE DATABASE $DB'"
-for f in db/test/00_stub_auth.sql db/migrations/001_init.sql db/migrations/002_security.sql db/migrations/003_public_api.sql db/migrations/004_seed_network.sql db/migrations/005_staff_app.sql db/migrations/006_owner_dashboard.sql db/migrations/007_admin_finance.sql db/migrations/008_pod.sql; do
+for f in db/test/00_stub_auth.sql db/migrations/001_init.sql db/migrations/002_security.sql db/migrations/003_public_api.sql db/migrations/004_seed_network.sql db/migrations/005_staff_app.sql db/migrations/006_owner_dashboard.sql db/migrations/007_admin_finance.sql db/migrations/008_pod.sql db/migrations/009_speed.sql; do
   run "-d $DB" < "$f" > /dev/null
 done
 run "-d $DB" <<'SQL'

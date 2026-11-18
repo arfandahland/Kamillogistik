@@ -22,8 +22,8 @@ function Stat({ icon, n, label, warm, dx }: { icon: string; n: number; label: st
   );
 }
 
-export default function StaffHome({ rows, stats, pending, tab, q, canCreate, error, hideStats, basePath = "/app", title = "Tugas hari ini" }: {
-  rows: Row[]; stats: Stats; pending: Pending[]; tab: string; q: string; canCreate: boolean; error?: string | null; hideStats?: boolean; basePath?: string; title?: string;
+export default function StaffHome({ rows, stats, pending, tab, q, canCreate, error, hideStats, basePath = "/app", title = "Tugas hari ini", more }: {
+  rows: Row[]; stats: Stats; pending: Pending[]; tab: string; q: string; canCreate: boolean; error?: string | null; hideStats?: boolean; basePath?: string; title?: string; more?: string | null;
 }) {
   const hasSide = canCreate || pending.length > 0;
   return (
@@ -112,6 +112,7 @@ export default function StaffHome({ rows, stats, pending, tab, q, canCreate, err
               {q ? "Tidak ada resi yang cocok dengan pencarian." : tab === "aktif" ? "Belum ada tugas untuk Anda saat ini." : "Belum ada data."}
             </p></div>
           )}
+          {more && <Link href={more} className="btn ghost" scroll={false}>Tampilkan lebih banyak</Link>}
         </section>
       </div>
     </main>

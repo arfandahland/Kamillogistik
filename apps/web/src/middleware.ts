@@ -19,7 +19,9 @@ export async function middleware(req: NextRequest) {
       },
     },
   });
-  const { data: { user } } = await sb.auth.getUser();
+  // getClaims memeriksa tanda tangan token di server ini (tanpa perjalanan ke Supabase); bila proyek memakai kunci lama, otomatis kembali ke getUser.
+  const { data } = await sb.auth.getClaims();
+  const user = data?.claims ?? null;
   if (!user && req.nextUrl.pathname.startsWith("/app")) return toLogin();
   if (user && req.nextUrl.pathname === "/masuk") return NextResponse.redirect(new URL("/app", req.url));
   res.headers.set("cache-control", "private, no-store");

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { nextAction, OWNER_ROLE, ROLE_LABEL, SEES_MONEY, STATUS_LABEL, type Actor, type AnyStatus } from "@kamil/core";
-import { staffRpc, type Staff } from "@/lib/supabase/server";
+import { staffRpc, getMe, type Staff } from "@/lib/supabase/server";
 import { rupiah, tanggalWaktu } from "@/lib/brand";
 import SubmitButton from "@/components/SubmitButton";
 import ResiStepper from "@/components/ResiStepper";
@@ -23,7 +23,7 @@ type Pod = { receiverName: string; photo: string; signature: string; signedAt: s
 export default async function ResiDetail({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ e?: string; ok?: string }> }) {
   const { id } = await params;
   const sp = await searchParams;
-  const [me, d] = await Promise.all([staffRpc<Staff>("staff_me"), staffRpc<Detail>("staff_get_shipment", { p_id: id })]);
+  const [me, d] = await Promise.all([getMe(), staffRpc<Detail>("staff_get_shipment", { p_id: id })]);
   if (d.error || !d.data || !me.data) {
     return <main className="wrap section stack"><div className="err">{d.error ?? "Resi tidak ditemukan."}</div><Link className="btn ghost" href="/app">← Kembali</Link></main>;
   }

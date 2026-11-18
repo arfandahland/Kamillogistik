@@ -1,5 +1,6 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { cache } from "react";
 
 export const supabaseConfigured = Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_PUBLISHABLE_KEY);
 
@@ -31,3 +32,6 @@ export async function staffRpc<T = any>(fn: string, args: Record<string, unknown
   }
   return { data: data as T, error: null };
 }
+
+/** Data petugas yang sedang masuk. Dipakai layout dan halaman sekaligus, tetapi hanya 1 kali ke database per permintaan. */
+export const getMe = cache(() => staffRpc<Staff>("staff_me"));
