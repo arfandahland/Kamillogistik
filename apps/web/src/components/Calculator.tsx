@@ -65,6 +65,15 @@ export default function Calculator({ routes, initialOrigin, initialDest }: { rou
 
   const basisLabel = (r: Route) => (r.basis === "PER_M3" ? "Dihitung per ukuran (m³), cocok untuk barang banyak" : "Dihitung per kilo, cocok untuk paket");
 
+  if (routes.length === 0) {
+    return (
+      <div className="stack">
+        <div className="err">Daftar rute dan tarif belum bisa dimuat saat ini. Silakan muat ulang halaman, atau tanyakan tarif langsung lewat WhatsApp.</div>
+        <a className="btn" href={waLink("Halo Kamil Logistik, saya mau tanya tarif pengiriman.")}>Tanya tarif lewat WhatsApp</a>
+      </div>
+    );
+  }
+
   return (
     <form onSubmit={hitung}>
       <div className="row">

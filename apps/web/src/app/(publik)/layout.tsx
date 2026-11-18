@@ -27,7 +27,9 @@ export default function PublikLayout({ children }: { children: React.ReactNode }
         <div className="wrap">
           <img src="/logo-sm.webp" width="220" height="175" alt="Kamil Logistik" />
           <p>{BRAND.tagline}</p>
+          <nav aria-label="Tautan cepat"><Link href="/ongkir">Hitung ongkir</Link><Link href="/lacak">Cek resi</Link><Link href="/ekspedisi">Rute dan tarif</Link><Link href="/masuk">Masuk petugas</Link></nav>
           <p>WhatsApp {BRAND.whatsappDisplay} · Instagram @{BRAND.instagram}</p>
+          <small>© {new Date().getFullYear()} Kamil Logistik Express</small>
         </div>
       </footer>
       <a className="wa-fab" href={waLink("Halo Kamil Logistik, saya mau tanya soal pengiriman barang.")} aria-label="Tanya lewat WhatsApp"><Icon name="chat" size={26} /></a>
