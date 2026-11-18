@@ -4,7 +4,8 @@ import { staffRpc, type Staff } from "@/lib/supabase/server";
 import { rupiah, tanggalWaktu } from "@/lib/brand";
 import SubmitButton from "@/components/SubmitButton";
 import ResiStepper from "@/components/ResiStepper";
-import { lanjut, serahkan, terima, timbang } from "../../actions";
+import PodForm from "@/components/PodForm";
+import { catatTerima, lanjut, serahkan, terima, timbang } from "../../actions";
 
 type Detail = {
   id: string; resiNo: string; status: AnyStatus; next: string | null;
@@ -17,6 +18,8 @@ type Detail = {
   invoice: { invoiceNo: string; total: number; status: string; dueDate: string; calc: any } | null;
 };
 
+type Pod = { receiverName: string; photo: string; signature: string; signedAt: string; lat: number | null; lng: number | null; by: string | null };
+
 export default async function ResiDetail({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ e?: string; ok?: string }> }) {
   const { id } = await params;
   const sp = await searchParams;
@@ -27,6 +30,7 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
   const s = d.data;
   const role = me.data.role as Actor;
   const invId = s.invoice && SEES_MONEY.includes(role) ? (await staffRpc<{ id: string }[]>("staff_list_invoices", { p_q: s.resiNo, p_limit: 1 })).data?.[0]?.id : undefined;
+  const pod = s.status === "DELIVERED" ? (await staffRpc<Pod>("get_pod", { p_id: id })).data : null;
   const viewOnly = role === OWNER_ROLE; // Pemilik hanya memantau
   const action = viewOnly ? null : nextAction(role, s.status);
   const pendingToMe = viewOnly ? undefined : s.handovers.find((h) => h.state === "PENDING_ACK" && h.toMe);
@@ -99,9 +103,22 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
         </form>
       )}
 
-      {action?.kind === "pod" && (
-        <div className="card"><h2>Barang sudah sampai?</h2>
-          <p className="muted" style={{ margin: 0 }}>Pencatatan penerimaan dengan foto dan tanda tangan penerima sedang disiapkan di versi berikutnya.</p></div>
+      {action?.kind === "pod" && <PodForm id={s.id} action={catatTerima} defaultName={s.receiverName} />}
+
+      {pod && (
+        <div className="card podview">
+          <h2>Bukti terima</h2>
+          <dl className="kv">
+            <dt>Diterima oleh</dt><dd>{pod.receiverName}</dd>
+            <dt>Waktu</dt><dd>{tanggalWaktu(pod.signedAt)}</dd>
+            {pod.by && (<><dt>Dicatat oleh</dt><dd>{pod.by}</dd></>)}
+            {pod.lat != null && pod.lng != null && (<><dt>Lokasi</dt><dd><a href={`https://www.google.com/maps?q=${pod.lat},${pod.lng}`} target="_blank" rel="noopener noreferrer">Lihat di peta</a></dd></>)}
+          </dl>
+          <div className="podgrid">
+            <figure><img src={pod.photo} alt={`Foto barang diterima ${pod.receiverName}`} /><figcaption>Foto barang</figcaption></figure>
+            <figure><img className="sigimg" src={pod.signature} alt={`Tanda tangan ${pod.receiverName}`} /><figcaption>Tanda tangan</figcaption></figure>
+          </div>
+        </div>
       )}
 
       {s.iAmHolder && directory.length > 0 && s.status !== "DELIVERED" && (

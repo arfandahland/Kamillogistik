@@ -40,6 +40,17 @@ export async function lanjut(fd: FormData) {
   back(id, "ok", String(fd.get("done") ?? "Tersimpan."));
 }
 
+export async function catatTerima(fd: FormData) {
+  const id = String(fd.get("id"));
+  const { error } = await staffRpc("record_pod", {
+    p_id: id, p_receiver: String(fd.get("penerima") ?? ""), p_photo: String(fd.get("foto") ?? ""), p_signature: String(fd.get("ttd") ?? ""),
+    p_lat: num(fd.get("lat")), p_lng: num(fd.get("lng")), p_client_event_id: crypto.randomUUID(),
+  });
+  revalidatePath("/app");
+  if (error) back(id, "e", error);
+  back(id, "ok", "Bukti terima tersimpan. Pengiriman ini selesai.");
+}
+
 export async function timbang(fd: FormData) {
   const id = String(fd.get("id"));
   const n = Number(fd.get("n") ?? 0);

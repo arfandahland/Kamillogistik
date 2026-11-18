@@ -222,8 +222,37 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("kurir Makassar menerima barang", r.ok && /sudah Anda terima/.test(r.ok), JSON.stringify(r));
     r = await act(p, p.getByRole("button", { name: "Saya berangkat mengantar barang" }));
     ok("kurir berangkat mengantar (Tahap 9 dari 10)", r.ok && /Tahap 9 dari 10/.test(await text(p)), JSON.stringify(r));
-    ok("BATAS YANG DIKETAHUI: bukti terima (foto+tanda tangan) belum tersedia", /sedang disiapkan/.test(await text(p)));
     await p.screenshot({ path: `${OUT}/e2e-resi-tahap9.png`, fullPage: true });
+
+    console.log("\n[G2] Bukti terima (foto, tanda tangan, lokasi)");
+    await kmks.ctx.grantPermissions(["geolocation"]); await kmks.ctx.setGeolocation({ latitude: -5.1477, longitude: 119.4327 });
+    await p.reload({ waitUntil: "networkidle" });
+    ok("form bukti terima tampil, tombol simpan terkunci sampai lengkap", (await p.getByText("Lengkapi dulu").count()) === 1 && (await p.getByRole("button", { name: "Simpan bukti terima" }).count()) === 0);
+    const jpg = await p.screenshot({ type: "jpeg", quality: 60 });
+    await p.setInputFiles('.podpick input[type=file]', { name: "bukti.jpg", mimeType: "image/jpeg", buffer: jpg });
+    await p.waitForSelector(".podphoto img", { timeout: 15000 });
+    ok("foto dikecilkan dan tampil sebagai pratinjau", (await p.locator(".podphoto img").getAttribute("src")).startsWith("data:image/jpeg"));
+    ok("tombol masih terkunci (belum tanda tangan)", (await p.getByRole("button", { name: "Simpan bukti terima" }).count()) === 0);
+    await p.locator(".sigbox").evaluate((el) => el.scrollIntoView({ block: "center", behavior: "instant" })); await p.waitForTimeout(1200);
+    const box = await p.locator(".sigbox canvas").boundingBox();
+    await p.mouse.move(box.x + 30, box.y + 90); await p.mouse.down();
+    for (let i = 0; i < 24; i++) await p.mouse.move(box.x + 30 + i * 9, box.y + 90 + Math.sin(i / 2) * 35, { steps: 2 });
+    await p.mouse.up();
+    await p.waitForFunction(() => document.querySelector('input[name=ttd]').value.startsWith("data:image/png"), null, { timeout: 5000 }).catch(() => {});
+    ok("tanda tangan tergambar di layar", (await p.locator("input[name=ttd]").inputValue()).length > 800);
+    await p.waitForFunction(() => document.querySelector('input[name=lat]').value !== "", null, { timeout: 8000 }).catch(() => {});
+    ok("lokasi GPS ikut tercatat", Math.abs(Number(await p.locator("input[name=lat]").inputValue()) + 5.1477) < 0.01);
+    await p.fill("#penerima", "");
+    ok("nama penerima kosong → tombol terkunci", (await p.getByRole("button", { name: "Simpan bukti terima" }).count()) === 0);
+    await p.fill("#penerima", "Budi Santoso");
+    await p.locator(".pod").screenshot({ path: `${OUT}/e2e-pod-form.png` });
+    r = await act(p, p.getByRole("button", { name: "Simpan bukti terima" }));
+    ok("bukti terima tersimpan", r.ok && /Bukti terima tersimpan/.test(r.ok), JSON.stringify(r));
+    ok("resi selesai: Tahap 10 dari 10, Sudah diterima", /Tahap 10 dari 10/.test(await text(p)) && /Sudah diterima/.test(await text(p)));
+    ok("bukti terima tampil: foto + tanda tangan + peta", (await p.locator(".podgrid img").count()) === 2 && /Lihat di peta/.test(await text(p)));
+    ok("form bukti hilang setelah selesai", (await p.locator(".pod").count()) === 0);
+    await p.waitForTimeout(900);
+    await p.locator(".podview").screenshot({ path: `${OUT}/e2e-pod-selesai.png` });
   }
 
   console.log("\n[H] Kasir: tagihan, pembayaran, invoice");
@@ -267,7 +296,8 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("token invoice salah → pesan awam, tanpa data", /tidak ditemukan/.test(await text(page)));
     await page.goto(`${BASE}/lacak/${resiNo}`, { waitUntil: "networkidle" });
     const tl = await text(page);
-    ok("lacak publik: status Sedang diantar", /Sedang diantar/.test(tl) && /Tahap/.test(tl));
+    ok("lacak publik: status Sudah diterima, Tahap 10 dari 10", /Sudah diterima/.test(tl) && /Tahap 10 dari 10/.test(tl), tl.slice(0, 300));
+    ok("lacak publik: nama penerima disamarkan, foto/tanda tangan TIDAK tampil", /Diterima oleh/.test(tl) && !/Budi Santoso/.test(tl) && (await page.locator("img[src^=\"data:\"]").count()) === 0, tl.slice(0, 600));
     ok("lacak publik TIDAK membocorkan nama petugas", !/Kurir (Jakarta|Makassar)|Sopir Kontainer|Gudang (Jakarta|Makassar) \(|Kasir Jakarta/.test(tl.replace(/Gudang (Jakarta|Makassar)/g, "Gudang")));
     ok("lacak publik TIDAK membocorkan data keuangan", !/Rp61\.600|INV-/.test(tl));
     await page.screenshot({ path: `${OUT}/e2e-lacak-publik.png`, fullPage: true });
@@ -293,6 +323,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await p.goto(`${BASE}/app/resi/${resiId}`, { waitUntil: "networkidle" });
     const d = await text(p);
     ok("pemilik hanya MELIHAT: tidak ada tombol operasional", (await p.getByRole("button", { name: /Barang sudah|Serahkan|Ya, barang|Hitung dan buat/ }).count()) === 0);
+    ok("pemilik melihat bukti terima (foto + tanda tangan), tanpa form", (await p.locator(".podgrid img").count()) === 2 && (await p.locator(".pod").count()) === 0);
     ok("pemilik melihat tagihan dan riwayat lengkap", /Tagihan/.test(d) && /Riwayat/.test(d) && /Rp61\.600/.test(d));
     await p.screenshot({ path: `${OUT}/e2e-owner-resi.png`, fullPage: true });
   }

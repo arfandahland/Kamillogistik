@@ -2,6 +2,7 @@
 export default {
   transpilePackages: ["@kamil/core"],
   poweredByHeader: false,
+  experimental: { serverActions: { bodySizeLimit: "2mb" } },
   async headers() {
     return [{
       source: "/(.*)",

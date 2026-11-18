@@ -7,7 +7,7 @@ Platform logistik digital terpadu (lihat PRD v1.0, 18 Nov 2026). Monorepo TypeSc
 | `apps/web` | Website Next.js (mobile-first): beranda, cek resi dengan garis waktu hijau, hitung ongkir, API. |
 | `packages/core` | Mesin tarif, mesin status resi + serah terima, tampilan publik resi, penanganan API. Murni dan teruji. |
 | `db/test` | Tes database: skenario lima petugas dari order sampai tagihan + kesamaan tarif TS/SQL. Jalankan `bash db/test/run.sh`. |
-| `db/migrations` | `007` keuangan + pusat kendali Pemilik (pembayaran, buku besar, mitra, petugas, tarif, rekening) · `006` dashboard pemilik (ringkasan, grafik, peringatan macet) · `005` aplikasi petugas (hak akses, order, status, serah terima, timbang+tagihan) · `001` skema (28 tabel, log append-only) · `002` keamanan (tabel terkunci) · `003` fungsi publik aman · `004` data jaringan + tarif. Sudah terpasang di Supabase. |
+| `db/migrations` | `008` bukti terima (foto + tanda tangan + GPS, hanya kurir pemegang barang; foto tidak pernah publik) · `007` keuangan + pusat kendali Pemilik (pembayaran, buku besar, mitra, petugas, tarif, rekening) · `006` dashboard pemilik (ringkasan, grafik, peringatan macet) · `005` aplikasi petugas (hak akses, order, status, serah terima, timbang+tagihan) · `001` skema (28 tabel, log append-only) · `002` keamanan (tabel terkunci) · `003` fungsi publik aman · `004` data jaringan + tarif. Sudah terpasang di Supabase. |
 | `docs` | `PANDUAN-PEMILIK.md` (untuk Pak Kamil), `ARSITEKTUR.md` (keputusan teknologi). |
 
 ```bash
@@ -26,3 +26,9 @@ Hijau teal (primer), oranye (aksen), kuning (sorotan), tagline "Best Price Best 
 
 ## Berikutnya
 Bukti terima (foto + tanda tangan), aplikasi petugas offline (PWA), manifest + kontainer + selisih barang, B2B, notifikasi WhatsApp, verifikasi 2 langkah.
+
+## Uji menyeluruh (E2E)
+
+`npm run e2e` menyiapkan database uji baru (semua migrasi asli), tiruan Supabase lokal, build produksi, lalu menjalankan satu siklus pengiriman penuh
+Jakarta → Makassar dengan 7 peran di peramban sungguhan (111 pemeriksaan): pembuatan resi, serah terima, timbang + tagihan, pembayaran,
+bukti terima (foto, tanda tangan, GPS), invoice publik, lacak publik, pantauan Pemilik, dan keamanan akun. Butuh Postgres lokal.
