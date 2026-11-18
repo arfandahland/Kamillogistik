@@ -14,6 +14,12 @@ BEGIN
   END;
   RAISE EXCEPTION 'Seharusnya gagal tetapi berhasil: %', q;
 END $$;
+-- Pembantu uji: catat pemeriksaan fisik langsung (jalur resmi record_inspection diuji di pemeriksaan.sql).
+CREATE FUNCTION t.inspect(sid uuid, stg text) RETURNS void LANGUAGE sql SECURITY DEFINER AS $f$
+  WITH i AS (INSERT INTO public.shipment_inspections(shipment_id, stage, contents, packaging, conditions, reported_by)
+    VALUES (sid, stg, 'barang uji', 'KARDUS', ARRAY['BAIK'], auth.uid()) RETURNING id)
+  INSERT INTO public.inspection_photos(inspection_id, n, data) SELECT id, 1, 'data:image/jpeg;base64,AAAA' FROM i;
+$f$;
 GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA t TO PUBLIC;
 CREATE TABLE t.state (k text PRIMARY KEY, v text);
 GRANT ALL ON t.state TO PUBLIC;
@@ -67,6 +73,8 @@ SELECT t.fails($$select public.advance_shipment((select v::uuid from t.state whe
 SELECT t.as_user('00000000-0000-0000-0000-000000000003');
 DO $$ BEGIN ASSERT jsonb_array_length(public.staff_list_shipments()) = 1, 'driver cabang melihat resi baru'; END $$;
 SELECT t.fails($$select public.advance_shipment((select v::uuid from t.state where k='sid'),'AT_ORIGIN_HUB')$$, 'belum waktunya');
+SELECT t.fails($$select public.advance_shipment((select v::uuid from t.state where k='sid'),'PICKED_UP')$$, 'pemeriksaan barang');
+SELECT t.inspect((SELECT v::uuid FROM t.state WHERE k='sid'), 'PICKUP');
 SELECT public.advance_shipment((SELECT v::uuid FROM t.state WHERE k='sid'), 'PICKED_UP', NULL, NULL, '11111111-1111-1111-1111-111111111111');
 DO $$ DECLARE r jsonb; BEGIN
   r := public.advance_shipment((SELECT v::uuid FROM t.state WHERE k='sid'), 'PICKED_UP', NULL, NULL, '11111111-1111-1111-1111-111111111111');
@@ -99,6 +107,8 @@ DO $$ BEGIN ASSERT (SELECT current_holder_user_id FROM shipments) = '00000000-00
 
 -- ---------- Gudang menerima, menimbang, invoice ----------
 SELECT t.as_user('00000000-0000-0000-0000-000000000004');
+SELECT t.fails($$select public.advance_shipment((select v::uuid from t.state where k='sid'),'AT_ORIGIN_HUB')$$, 'pemeriksaan barang');
+SELECT t.inspect((SELECT v::uuid FROM t.state WHERE k='sid'), 'ORIGIN_HUB');
 SELECT public.advance_shipment((SELECT v::uuid FROM t.state WHERE k='sid'), 'AT_ORIGIN_HUB');
 SELECT t.fails($$select public.advance_shipment((select v::uuid from t.state where k='sid'),'SORTED_INVOICED')$$, 'Timbang dan ukur');
 SELECT t.fails($$select public.measure_shipment((select v::uuid from t.state where k='sid'),'[{"weightKg":5}]')$$, 'Jumlah barang');

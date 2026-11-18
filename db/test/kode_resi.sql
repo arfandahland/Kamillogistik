@@ -30,6 +30,7 @@ SELECT t.fails($$select public.advance_shipment(current_setting('t.drop')::uuid,
 SELECT t.fails($$select public.advance_shipment(current_setting('t.drop')::uuid, 'AT_ORIGIN_HUB')$$, 'tidak boleh');
 SELECT t.as_user('00000000-0000-0000-0000-000000000004');   -- gudang Jakarta
 DO $$ DECLARE r jsonb; g jsonb; BEGIN
+  PERFORM t.inspect(current_setting('t.drop')::uuid, 'ORIGIN_HUB');
   r := public.advance_shipment(current_setting('t.drop')::uuid, 'AT_ORIGIN_HUB');
   ASSERT r->>'status' = 'AT_ORIGIN_HUB', 'gudang menerima barang antaran pelanggan';
   g := public.staff_get_shipment(current_setting('t.drop')::uuid);

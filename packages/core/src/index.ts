@@ -3,6 +3,7 @@ export * from "./status";
 export * from "./resi";
 export * from "./phone";
 export * from "./followup";
+export * from "./inspection";
 export * from "./service/repo";
 export * from "./service/publicView";
 export * from "./service/handlers";

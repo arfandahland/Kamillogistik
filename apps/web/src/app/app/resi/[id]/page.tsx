@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { chatLink, displayPhone, MASUK_LABEL, MODA_LABEL, nextAction, normalizePhone, telLink, OWNER_ROLE, ROLE_LABEL, SEES_MONEY, statusLabel, type Actor, type AnyStatus } from "@kamil/core";
+import { chatLink, displayPhone, isProblem, KEMASAN_LABEL, KONDISI_LABEL, STAGE_LABEL, type Inspection, MASUK_LABEL, MODA_LABEL, nextAction, normalizePhone, telLink, OWNER_ROLE, ROLE_LABEL, SEES_MONEY, statusLabel, type Actor, type AnyStatus } from "@kamil/core";
 import { staffRpc, getMe, type Staff } from "@/lib/supabase/server";
 import { rupiah, tanggalWaktu } from "@/lib/brand";
 import { SITE_URL } from "@/lib/site";
@@ -8,11 +8,12 @@ import Icon from "@/components/Icon";
 import ResiStepper from "@/components/ResiStepper";
 import KodeResi from "@/components/KodeResi";
 import PodForm from "@/components/PodForm";
-import { catatTerima, lanjut, serahkan, terima, timbang } from "../../actions";
+import KondisiForm from "@/components/KondisiForm";
+import { catatTerima, lanjut, periksa, serahkan, terima, timbang } from "../../actions";
 
 type Detail = {
   id: string; resiNo: string; status: AnyStatus; next: string | null;
-  pickupType: "PICKUP" | "DROPOFF"; pickupAddress: string | null; mode: "LAUT" | "DARAT" | "UDARA"; segment: string; company: string | null; manifest: { id: string; code: string; status: string } | null;
+  inspections: Inspection[]; pickupType: "PICKUP" | "DROPOFF"; pickupAddress: string | null; mode: "LAUT" | "DARAT" | "UDARA"; segment: string; company: string | null; manifest: { id: string; code: string; status: string } | null;
   origin: { code: string; city: string; name: string }; dest: { code: string; city: string; name: string };
   senderName: string; senderPhone: string | null; receiverName: string; receiverPhone: string | null; receiverAddress: string | null;
   holder: { id: string; name: string } | null; iAmHolder: boolean;
@@ -93,7 +94,13 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
         </form>
       )}
 
-      {action?.kind === "advance" && (
+      {action?.kind === "advance" && (action.to === "PICKED_UP" || action.to === "AT_ORIGIN_HUB") && (s.status === "CREATED" || s.iAmHolder || role === "SUPER_ADMIN" || role === "HUB_MANAGER") && role !== "SUPER_ADMIN" && (
+        <KondisiForm id={s.id} stage={action.to === "PICKED_UP" ? "PICKUP" : "ORIGIN_HUB"} to={action.to} done={action.done} action={periksa} pieces={s.items.length}
+          title={action.to === "PICKED_UP" ? "Periksa dan foto barang" : "Periksa barang yang diterima"}
+          hint={action.to === "PICKED_UP" ? "Sebelum dibawa, foto barangnya dan catat kondisinya. Ini melindungi Anda dan pelanggan kalau ada sengketa." : "Cocokkan jumlah dengan resi, foto barangnya, dan catat kondisinya sebelum ditimbang."}
+          button={action.label} />
+      )}
+      {action?.kind === "advance" && !((action.to === "PICKED_UP" || action.to === "AT_ORIGIN_HUB") && role !== "SUPER_ADMIN") && (
         s.status === "CREATED" || s.iAmHolder || role === "SUPER_ADMIN" || role === "HUB_MANAGER" ? (
           <form action={lanjut} className="card">
             <h2>Langkah berikutnya</h2>
@@ -144,6 +151,28 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
           <Link className="btn" href={s.manifest ? `/app/manifest/${s.manifest.id}` : "/app/manifest"}><Icon name="layers" size={20} /> {action.label}</Link></div>
       )}
       {action?.kind === "pod" && <PodForm id={s.id} action={catatTerima} defaultName={s.receiverName} />}
+
+      {["ARRIVED_DEST_PORT", "AT_DEST_HUB", "OUT_FOR_DELIVERY"].includes(s.status) && ["WAREHOUSE", "HUB_MANAGER", "DRIVER"].includes(role ?? "") && !s.inspections.some((i) => i.stage === "DEST_HUB") && (
+        <details className="card destlapor"><summary><Icon name="camera" size={20} /> Laporkan kondisi barang di sini</summary>
+          <KondisiForm id={s.id} stage="DEST_HUB" action={periksa} pieces={s.items.length} title="Kondisi barang di kota tujuan" hint="Isi bila ada kerusakan, atau sebagai bukti barang tiba dengan baik. Foto boleh kosong kalau kondisinya baik." button="Simpan laporan kondisi" />
+        </details>
+      )}
+      {s.inspections.length > 0 && (
+        <div className="card inspview">
+          <h2>Pemeriksaan fisik barang</h2>
+          {s.inspections.map((n) => (
+            <div key={n.id} className={`insp ${isProblem(n) ? "bad" : ""}`}>
+              <div className="insph"><b>{STAGE_LABEL[n.stage]}</b><span className={`pill ${isProblem(n) ? "warn" : "done"}`}>{n.conditions.map((c) => KONDISI_LABEL[c] ?? c).join(", ")}</span></div>
+              <p className="muted" style={{ margin: "2px 0" }}>{n.contents} · {KEMASAN_LABEL[n.packaging] ?? n.packaging}{n.pieces ? ` · ${n.pieces} barang` : ""}</p>
+              {n.note && <p style={{ margin: "2px 0" }}>Catatan: {n.note}</p>}
+              <small className="muted">{n.by ?? "Petugas"} · {tanggalWaktu(n.at)}</small>
+              {n.photos > 0 && <div className="inspfotos">{Array.from({ length: n.photos }, (_, i) => (
+                <a key={i} href={`/app/foto/${n.id}/${i + 1}`} target="_blank" rel="noopener noreferrer"><img src={`/app/foto/${n.id}/${i + 1}`} alt={`Foto ${i + 1} ${STAGE_LABEL[n.stage]}`} loading="lazy" width="96" height="96" /></a>
+              ))}</div>}
+            </div>
+          ))}
+        </div>
+      )}
 
       {pod && (
         <div className="card podview">

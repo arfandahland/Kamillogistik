@@ -91,3 +91,26 @@ export async function terima(fd: FormData) {
   if (error) back(id, "e", error);
   back(id, "ok", "Barang sudah Anda terima. Sekarang barang ini tanggung jawab Anda.");
 }
+
+/** Simpan pemeriksaan fisik barang; bila `to` diisi, lanjut menandai langkah berikutnya (jemput / terima di gudang). */
+export async function periksa(fd: FormData) {
+  const id = String(fd.get("id"));
+  let foto: string[] = [];
+  try { const j = JSON.parse(String(fd.get("foto") ?? "[]")); if (Array.isArray(j)) foto = j.filter((x) => typeof x === "string").slice(0, 4); } catch { /* kosong */ }
+  const jumlah = Number(String(fd.get("jumlah_hitung") ?? "").trim());
+  const r = await staffRpc("record_inspection", {
+    p_id: id, p_stage: String(fd.get("stage")), p_contents: String(fd.get("isi") ?? ""), p_packaging: String(fd.get("kemasan") ?? ""),
+    p_conditions: fd.getAll("kondisi").map(String), p_note: String(fd.get("catatan") ?? "") || null, p_photos: foto,
+    p_pieces: Number.isFinite(jumlah) && jumlah >= 1 ? Math.round(jumlah) : null,
+  });
+  if (r.error) back(id, "e", r.error);
+  const to = String(fd.get("to") ?? "");
+  if (to) {
+    const a = await staffRpc("advance_shipment", { p_id: id, p_to: to, p_client_event_id: crypto.randomUUID() });
+    revalidatePath("/app");
+    if (a.error) back(id, "e", a.error);
+    back(id, "ok", String(fd.get("done") ?? "Tersimpan."));
+  }
+  revalidatePath("/app");
+  back(id, "ok", "Pemeriksaan barang tersimpan.");
+}

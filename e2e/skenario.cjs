@@ -23,6 +23,13 @@ async function login(browser, email) {
   await page.waitForLoadState("networkidle");
   return { ctx, page };
 }
+const periksaDulu = async (p, opts = {}) => {
+  await p.fill("#isi", opts.isi || "Pakaian dan perlengkapan");
+  if (opts.bad) { await p.getByText(opts.bad, { exact: true }).click(); await p.fill("#catatan", "Sudut kardus penyok, isi aman"); }
+  const buf = await p.screenshot({ type: "jpeg", quality: 55 });
+  await p.setInputFiles("#fotoKondisi", { name: "barang.jpg", mimeType: "image/jpeg", buffer: buf });
+  await p.waitForSelector(".kfoto img", { timeout: 15000 });
+};
 async function act(page, locator) {
   const before = page.url();
   await locator.click();
@@ -95,12 +102,16 @@ async function direction(browser, cfg, accounts) {
   // Masuk gudang asal
   if (cfg.dropoff) {
     const p = await open(cfg.gudangO);
+    await periksaDulu(p);
+    await shot(p, cfg.labels[cfg.gudangO], "Pemeriksaan barang yang diantar pelanggan", "Petugas gudang mengisi isi barang, kemasan, kondisi, dan memotret barang sebelum menerimanya. Tombol terima baru aktif setelah lengkap.");
     const r = await act(p, p.getByRole("button", { name: "Barang diantar pelanggan sudah saya terima" }));
     ok(`[${cfg.key}] gudang menerima barang yang diantar pelanggan`, r.ok && /diantar sendiri/.test(r.ok), JSON.stringify(r));
     await shot(p, cfg.labels[cfg.gudangO], "Pelanggan mengantar barang sendiri ke gudang", "Tidak ada tahap jemput. Petugas gudang langsung menerima barang dari pelanggan dan mencatatnya (tahap 1 dari 9).");
   } else {
     {
       const p = await open(cfg.kurirO);
+      await periksaDulu(p);
+      await shot(p, cfg.labels[cfg.kurirO], "Pemeriksaan dan foto barang saat dijemput", "Kurir memotret barang, mengisi isi barang, kemasan, dan kondisi. Tanpa ini tombol jemput terkunci, jadi setiap barang punya bukti kondisi sejak awal.");
       const r = await act(p, p.getByRole("button", { name: "Barang sudah saya jemput" }));
       ok(`[${cfg.key}] kurir menjemput`, r.ok && /sudah dijemput/.test(r.ok), JSON.stringify(r));
       await shot(p, cfg.labels[cfg.kurirO], "Driver menjemput barang", "Kurir menekan 'Barang sudah saya jemput'. Barang kini dipegang kurir (tahap 2 dari 10).");
@@ -108,6 +119,7 @@ async function direction(browser, cfg, accounts) {
     await pub("Pelanggan melacak: barang sudah dijemput", "Pelanggan membuka nomor resi tanpa login dan langsung melihat tahap terbaru. Nama petugas dan data keuangan tidak ditampilkan.");
     await handover(cfg.kurirO, cfg.gudangOName, cfg.gudangO, "kurir ke gudang asal");
     const p = await open(cfg.gudangO);
+    await periksaDulu(p);
     const r = await act(p, p.getByRole("button", { name: "Barang sudah saya terima di gudang" }));
     ok(`[${cfg.key}] tiba di gudang asal`, r.ok && /diterima di gudang/.test(r.ok), JSON.stringify(r));
     await shot(p, cfg.labels[cfg.gudangO], "Driver tiba di gudang Kamil", "Petugas gudang mencatat barang sudah tiba di gudang asal (tahap 3 dari 10).");

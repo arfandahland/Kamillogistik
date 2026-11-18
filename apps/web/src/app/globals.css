@@ -800,3 +800,16 @@ details.admitem .admbody { padding: 4px 18px 18px; border-top: 1px dashed var(--
 .homebadge.zero { background: linear-gradient(135deg, #0f6b5a, #1d8a76); box-shadow: 0 14px 30px rgba(15, 107, 90, .25); }
 .hdract { display: flex; align-items: center; gap: 10px; }
 .hdrsearch { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; color: #fff; background: rgba(255, 255, 255, .16); }
+
+/* ----- pemeriksaan fisik barang ----- */
+.kchips { border: 0; padding: 0; margin: 6px 0 0; display: flex; flex-wrap: wrap; gap: 8px; } .kchips legend { padding: 0; }
+.kchip { display: inline-flex; align-items: center; min-height: 46px; padding: 0 16px; border-radius: 99px; background: #fff; border: 1.5px solid var(--line); font-weight: 700; cursor: pointer; }
+.kchip input { position: absolute; opacity: 0; pointer-events: none; } .kchip.on { background: var(--teal-soft); border-color: var(--teal-500); color: var(--teal-700, #0f6b5a); } .kchip.bad.on { background: #fff1e0; border-color: #f2b25c; color: #8a4b00; }
+.kfotos { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+.kfoto, .kadd { width: 96px; height: 96px; border-radius: 16px; overflow: hidden; position: relative; } .kfoto img { width: 100%; height: 100%; object-fit: cover; }
+.kfoto button { position: absolute; top: 4px; right: 4px; width: 34px; height: 34px; border-radius: 50%; border: 0; background: rgba(0, 0, 0, .6); color: #fff; display: grid; place-items: center; cursor: pointer; }
+.kadd { display: grid; place-items: center; align-content: center; gap: 4px; text-align: center; border: 2px dashed var(--teal-500); color: var(--teal-700, #0f6b5a); background: var(--teal-soft); font: 700 13px/1.2 inherit; cursor: pointer; } .kadd input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.destlapor summary { min-height: 48px; display: flex; align-items: center; gap: 10px; font-weight: 800; cursor: pointer; } .destlapor form { box-shadow: none; border: 0; padding: 8px 0 0; }
+.insp { padding: 10px 0; border-top: 1px solid var(--line); } .insp:first-of-type { border-top: 0; } .insph { display: flex; justify-content: space-between; gap: 8px; align-items: center; flex-wrap: wrap; }
+.insp.bad { background: linear-gradient(90deg, #fff7e8, transparent); border-left: 4px solid #f2b25c; padding-left: 10px; margin-left: -2px; }
+.inspfotos { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; } .inspfotos img { width: 84px; height: 84px; object-fit: cover; border-radius: 12px; border: 1px solid var(--line); }

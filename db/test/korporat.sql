@@ -46,6 +46,7 @@ END $$;
 -- Gudang menimbang dua resi dengan berat sama: B2B memakai tarif khusus, ritel memakai tarif normal
 SELECT t.as_user('00000000-0000-0000-0000-000000000004');
 DO $$ DECLARE m1 jsonb; m2 jsonb; BEGIN
+  PERFORM t.inspect(current_setting('t.rb2b')::uuid, 'ORIGIN_HUB'); PERFORM t.inspect(current_setting('t.rret')::uuid, 'ORIGIN_HUB');
   PERFORM public.advance_shipment(current_setting('t.rb2b')::uuid, 'AT_ORIGIN_HUB');
   PERFORM public.advance_shipment(current_setting('t.rret')::uuid, 'AT_ORIGIN_HUB');
   m1 := public.measure_shipment(current_setting('t.rb2b')::uuid, '[{"weightKg":10}]'::jsonb);

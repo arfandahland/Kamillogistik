@@ -38,6 +38,13 @@ async function act(page, locator) {
   return { ok: ok_ > 0 ? (await page.locator(".ok").first().innerText()) : null, err: err > 0 ? (await page.locator(".err").first().innerText()) : null };
 }
 const selectByText = (page, sel, sub) => page.evaluate(([s, t]) => { const el = document.querySelector(s); const o = [...el.options].find((x) => x.text.includes(t)); if (!o) return false; el.value = o.value; el.dispatchEvent(new Event("change", { bubbles: true })); return true; }, [sel, sub]);
+const periksaDulu = async (p, opts = {}) => {
+  await p.fill("#isi", opts.isi || "Pakaian dan perlengkapan");
+  if (opts.bad) { await p.getByText(opts.bad, { exact: true }).click(); await p.fill("#catatan", "Sudut kardus penyok, isi aman"); }
+  const buf = await p.screenshot({ type: "jpeg", quality: 55 });
+  await p.setInputFiles("#fotoKondisi", { name: "barang.jpg", mimeType: "image/jpeg", buffer: buf });
+  await p.waitForSelector(".kfoto img", { timeout: 15000 });
+};
 const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1)));
 
 (async () => {
@@ -194,8 +201,15 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     { await p.waitForFunction((n) => document.body.innerText.includes(n), resiNo, { timeout: 8000 }).catch(() => {}); const t2 = await text(p); ok("kurir melihat resi baru di daftar tugas", new RegExp(resiNo).test(t2), t2.slice(0, 500)); }
     await p.goto(`${BASE}/app/resi/${resiId}`, { waitUntil: "networkidle" });
     ok("kurir tidak melihat data keuangan", !/Tagihan\b/.test(await text(p).then((t) => t.replace(/Barang dijemput/g, ""))) || true);
+    ok("kurir: tombol jemput terkunci sebelum pemeriksaan diisi", (await p.getByRole("button", { name: /Lengkapi dulu/ }).count()) === 1 && (await p.getByRole("button", { name: "Barang sudah saya jemput" }).count()) === 0);
+    await p.screenshot({ path: `${OUT}/e2e-pemeriksaan-kosong.png` });
+    await periksaDulu(p, { bad: "Penyok" });
+    await p.screenshot({ path: `${OUT}/e2e-pemeriksaan-isi.png`, fullPage: true });
     let r = await act(p, p.getByRole("button", { name: "Barang sudah saya jemput" }));
     ok("kurir: barang dijemput", r.ok && /sudah dijemput/.test(r.ok), JSON.stringify(r));
+    ok("pemeriksaan tampil di detail: tahap, kondisi Penyok, catatan", /Pemeriksaan fisik barang/.test(await text(p)) && /Saat dijemput/.test(await text(p)) && /Penyok/.test(await text(p)) && /Sudut kardus penyok/.test(await text(p)));
+    await p.waitForSelector(".inspfotos img", { timeout: 10000 }).catch(() => {});
+    ok("foto pemeriksaan termuat sebagai gambar", await p.locator(".inspfotos img").first().evaluate((i) => i.complete && i.naturalWidth > 0).catch(() => false));
     ok("status berubah + Tahap 2 dari 10", /Tahap 2 dari 10/.test(await text(p)) && /Anda/.test(await text(p)));
     ok("tombol langkah berikutnya TIDAK ada untuk kurir (bukan gilirannya)", (await p.getByRole("button", { name: "Barang sudah saya terima di gudang" }).count()) === 0);
     await selectByText(p, "select[name=ke]", "Gudang Jakarta");
@@ -214,6 +228,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("gudang: belum ada tombol timbang sebelum menerima", (await p.locator("input[name=w0]").count()) === 0);
     let r = await act(p, p.getByRole("button", { name: "Ya, barang sudah saya terima" }));
     ok("gudang menerima serah terima", r.ok && /sudah Anda terima/.test(r.ok), JSON.stringify(r));
+    await periksaDulu(p);
     r = await act(p, p.getByRole("button", { name: "Barang sudah saya terima di gudang" }));
     ok("gudang: barang tiba di gudang asal", r.ok && /diterima di gudang/.test(r.ok), JSON.stringify(r));
     ok("form timbang muncul dengan 2 barang", (await p.locator("input[name=w0]").count()) === 1 && (await p.locator("input[name=w1]").count()) === 1);
@@ -303,7 +318,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     console.log("\n[G2] Bukti terima (foto, tanda tangan, lokasi)");
     await kmks.ctx.grantPermissions(["geolocation"]); await kmks.ctx.setGeolocation({ latitude: -5.1477, longitude: 119.4327 });
     await p.reload({ waitUntil: "networkidle" });
-    ok("form bukti terima tampil, tombol simpan terkunci sampai lengkap", (await p.getByText("Lengkapi dulu").count()) === 1 && (await p.getByRole("button", { name: "Simpan bukti terima" }).count()) === 0);
+    ok("form bukti terima tampil, tombol simpan terkunci sampai lengkap", (await p.locator(".pod").getByText("Lengkapi dulu").count()) === 1 && (await p.getByRole("button", { name: "Simpan bukti terima" }).count()) === 0);
     const jpg = await p.screenshot({ type: "jpeg", quality: 60 });
     await p.setInputFiles('.podpick input[type=file]', { name: "bukti.jpg", mimeType: "image/jpeg", buffer: jpg });
     await p.waitForSelector(".podphoto img", { timeout: 15000 });
@@ -470,6 +485,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     const g = gudang.page;
     await g.goto(`${BASE}/app/resi/${korId}`, { waitUntil: "networkidle" });
     ok("antar sendiri: tahapnya 9 (tanpa 'dijemput')", /Tahap 1 dari 9/.test(await text(g)));
+    await periksaDulu(g);
     r = await act(g, g.getByRole("button", { name: "Barang diantar pelanggan sudah saya terima" }));
     ok("gudang menerima barang yang diantar pelanggan", r.ok && /diantar sendiri/.test(r.ok), JSON.stringify(r));
     await g.fill("input[name=w0]", "10");
