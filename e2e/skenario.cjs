@@ -57,11 +57,12 @@ async function direction(browser, cfg, accounts) {
     ok(`[${cfg.key}] rute ${cfg.routeText} tersedia di form`, await pick(p, "#rute", cfg.routeText));
     await p.fill("#pengirim", cfg.sender); await p.fill("#hp_pengirim", "081234567890");
     await p.fill("#penerima", cfg.receiver); await p.fill("#hp_penerima", "082233445566"); await p.fill("#alamat", cfg.address);
+    if (cfg.dropoff) await p.getByText("Diantar sendiri").click(); else await p.fill("#alamat_jemput", cfg.pickupAddr);
     await p.fill("#jumlah", "2");
     const r = await act(p, p.getByRole("button", { name: "Buat resi" }));
     ok(`[${cfg.key}] resi dibuat`, r.ok && /Resi sudah dibuat/.test(r.ok), JSON.stringify(r));
     resiNo = (await p.locator("h1").first().innerText()).trim(); resiId = p.url().match(/resi\/([0-9a-f-]+)/)?.[1] || "";
-    await shot(p, cfg.labels[cfg.kasirO], "Pesanan diterima dan resi dibuat", `Kasir mengisi pengirim, penerima, alamat, dan jumlah barang. Sistem langsung memberi nomor resi ${resiNo}. Status: Order baru (tahap 1 dari 10). Berat dan ongkir BELUM dihitung, karena baru ditimbang di gudang.`);
+    await shot(p, cfg.labels[cfg.kasirO], "Pesanan diterima dan resi dibuat", `Kasir mengisi pengirim, penerima, alamat, dan jumlah barang. Sistem langsung memberi nomor resi ${resiNo}. Cara barang masuk: ${cfg.dropoff ? "diantar sendiri oleh pelanggan ke gudang" : "dijemput kurir"}. Kode resi terbaca: asal, tujuan, jalur+cara masuk, tanggal, jam, urutan, huruf pemeriksa. Berat dan ongkir BELUM dihitung, karena baru ditimbang di gudang.`);
   }
   const open = async (who) => { const p = A[who].page; await p.goto(`${BASE}/app/resi/${resiId}`, { waitUntil: "networkidle" }); await p.waitForTimeout(600); return p; };
   const pub = async (title, detail) => {
@@ -84,56 +85,97 @@ async function direction(browser, cfg, accounts) {
     return q;
   };
 
-  // 2. Kurir asal menjemput
+  // Label cetak dan pindai kode
   {
-    const p = await open(cfg.kurirO);
-    const r = await act(p, p.getByRole("button", { name: "Barang sudah saya jemput" }));
-    ok(`[${cfg.key}] kurir menjemput`, r.ok && /sudah dijemput/.test(r.ok), JSON.stringify(r));
-    await shot(p, cfg.labels[cfg.kurirO], "Driver menjemput barang", "Kurir menekan 'Barang sudah saya jemput'. Barang kini dipegang kurir (tahap 2 dari 10).");
+    const p = A[cfg.kasirO].page;
+    await p.goto(`${BASE}/app/resi/${resiId}/cetak`, { waitUntil: "networkidle" }); await p.waitForTimeout(900);
+    ok(`[${cfg.key}] label: 2 label dengan barcode dan QR`, (await p.locator(".preview .lbl .lbar svg").count()) === 2 && (await p.locator(".preview .lbl .lqr svg").count()) === 2);
+    await shot(p, cfg.labels[cfg.kasirO], "Cetak label resi (barcode dan QR)", "Setiap barang mendapat label sendiri: barcode, QR, dan kode yang bisa dibaca mata (…-01, …-02). Ada pilihan ukuran, jumlah salinan, tombol cetak dan kirim WhatsApp.");
   }
-  await pub("Pelanggan melacak: barang sudah dijemput", "Pelanggan membuka nomor resi tanpa login dan langsung melihat tahap terbaru. Nama petugas dan data keuangan tidak ditampilkan.");
-  // 3. Kurir -> gudang asal
-  await handover(cfg.kurirO, cfg.gudangOName, cfg.gudangO, "kurir ke gudang asal");
-  {
+  // Masuk gudang asal
+  if (cfg.dropoff) {
+    const p = await open(cfg.gudangO);
+    const r = await act(p, p.getByRole("button", { name: "Barang diantar pelanggan sudah saya terima" }));
+    ok(`[${cfg.key}] gudang menerima barang yang diantar pelanggan`, r.ok && /diantar sendiri/.test(r.ok), JSON.stringify(r));
+    await shot(p, cfg.labels[cfg.gudangO], "Pelanggan mengantar barang sendiri ke gudang", "Tidak ada tahap jemput. Petugas gudang langsung menerima barang dari pelanggan dan mencatatnya (tahap 1 dari 9).");
+  } else {
+    {
+      const p = await open(cfg.kurirO);
+      const r = await act(p, p.getByRole("button", { name: "Barang sudah saya jemput" }));
+      ok(`[${cfg.key}] kurir menjemput`, r.ok && /sudah dijemput/.test(r.ok), JSON.stringify(r));
+      await shot(p, cfg.labels[cfg.kurirO], "Driver menjemput barang", "Kurir menekan 'Barang sudah saya jemput'. Barang kini dipegang kurir (tahap 2 dari 10).");
+    }
+    await pub("Pelanggan melacak: barang sudah dijemput", "Pelanggan membuka nomor resi tanpa login dan langsung melihat tahap terbaru. Nama petugas dan data keuangan tidak ditampilkan.");
+    await handover(cfg.kurirO, cfg.gudangOName, cfg.gudangO, "kurir ke gudang asal");
     const p = await open(cfg.gudangO);
     const r = await act(p, p.getByRole("button", { name: "Barang sudah saya terima di gudang" }));
     ok(`[${cfg.key}] tiba di gudang asal`, r.ok && /diterima di gudang/.test(r.ok), JSON.stringify(r));
     await shot(p, cfg.labels[cfg.gudangO], "Driver tiba di gudang Kamil", "Petugas gudang mencatat barang sudah tiba di gudang asal (tahap 3 dari 10).");
-    // 4. Sortir / marking / timbang
+  }
+  let manifestId = "", manifestCode = "";
+  {
+    const p = A[cfg.gudangO].page;
+    await p.goto(`${BASE}/app/resi/${resiId}`, { waitUntil: "networkidle" });
     await p.fill("input[name=w0]", "12"); await p.fill("input[name=w1]", "18");
     await p.evaluate(() => scrollTo(0, 0));
     const r2 = await act(p, p.getByRole("button", { name: "Hitung dan buat tagihan" }));
     ok(`[${cfg.key}] sortir, timbang, tagihan terbit`, r2.ok && /Tagihan INV/.test(r2.ok), JSON.stringify(r2));
-    await shot(p, cfg.labels[cfg.gudangO], "Sortir, penandaan (marking), dan penimbangan", `Tiap barang diberi kode unik (${resiNo}-01, -02) dan ditimbang. Ongkir dihitung otomatis dari berat nyata: ${r2.ok}`);
-    // 5. Muat ke kontainer
-    const r3 = await act(p, p.getByRole("button", { name: "Barang sudah dimuat ke kontainer" }));
-    ok(`[${cfg.key}] dimuat ke kontainer`, r3.ok && /sudah dimuat/.test(r3.ok), JSON.stringify(r3));
-    await shot(p, cfg.labels[cfg.gudangO], "Menuju pelabuhan: dimuat ke kontainer", "Barang dimuat ke kontainer untuk dibawa ke pelabuhan (tahap 5 dari 10).");
+    await shot(p, cfg.labels[cfg.gudangO], "Sortir, penandaan (marking), dan penimbangan", `Tiap barang ditandai kode unik (${resiNo}-01, -02) dan ditimbang. Ongkir dihitung otomatis dari berat nyata (atau berat volume bila lebih besar): ${r2.ok}`);
+    // Manifest
+    await p.goto(`${BASE}/app/manifest/baru`, { waitUntil: "networkidle" });
+    await p.selectOption("#tujuan", cfg.destCode); await p.fill("#kontainer", "MSKU1234567"); await p.fill("#pengangkut", "KM Sinar Laut");
+    let r = await act(p, p.getByRole("button", { name: "Buat manifest" }));
+    ok(`[${cfg.key}] manifest dibuat dengan kode MNF terbaca`, r.ok && /Manifest MNF-[A-Z]{3}-[A-Z]{3}-L-\d{6}-\d{4}-\d{2}-[A-Z]{2} dibuat/.test(r.ok), JSON.stringify(r));
+    manifestId = p.url().match(/manifest\/([0-9a-f-]+)/)?.[1] || ""; manifestCode = (await p.locator("h1.resicode").innerText()).trim();
+    r = await act(p, p.locator(".cand form").first().getByRole("button", { name: "Tambah" }));
+    ok(`[${cfg.key}] resi dimasukkan ke manifest`, r.ok && /Resi ditambahkan/.test(r.ok), JSON.stringify(r));
+    await shot(p, cfg.labels[cfg.gudangO], `Manifest muatan dibuat (${manifestCode})`, "Satu manifest = satu muatan (kontainer) dari satu kota ke kota lain. Resi yang sudah ditimbang tinggal ditambahkan, atau dipindai lewat kamera. Satu kode manifest mewakili semua resi di dalamnya.");
+    await p.fill("#segel", "SEG-001");
+    r = await act(p, p.getByRole("button", { name: /Segel manifest/ }));
+    ok(`[${cfg.key}] manifest disegel, semua resi tercatat dimuat`, r.ok && /disegel/.test(r.ok), JSON.stringify(r));
+    await shot(p, cfg.labels[cfg.gudangO], "Menuju pelabuhan: manifest disegel dan dimuat", "Setelah disegel, isi manifest tidak bisa ditambah. Semua resi di dalamnya otomatis berstatus Sudah dimuat.");
+    await pick(p, "select[name=ke]", "Sopir Kontainer");
+    r = await act(p, p.getByRole("button", { name: "Serahkan manifest" }));
+    ok(`[${cfg.key}] manifest diserahkan ke sopir`, r.ok && /Menunggu penerima/.test(r.ok), JSON.stringify(r));
   }
-  await handover(cfg.gudangO, "Sopir Kontainer", "sopir", "gudang ke sopir kontainer");
   {
     const p = A.sopir.page;
-    let r = await act(p, p.getByRole("button", { name: "Kapal sudah berangkat" }));
-    ok(`[${cfg.key}] kapal berangkat`, r.ok && /kapal sudah berangkat/i.test(r.ok), JSON.stringify(r));
-    await shot(p, "Sopir kontainer", `Berangkat ke ${cfg.destCity} (dalam pelayaran)`, "Status berubah ke Dalam pelayaran. Lama pelayaran nyata (sekitar 5 hari) berjalan di dunia nyata. Sistem tidak mensimulasikan waktu, hanya mencatat tahap saat petugas menekan tombolnya.");
+    await p.goto(`${BASE}/app/manifest/${manifestId}`, { waitUntil: "networkidle" });
+    let r = await act(p, p.getByRole("button", { name: "Ya, manifest sudah saya terima" }));
+    ok(`[${cfg.key}] sopir menerima manifest (semua barang sekaligus)`, r.ok && /sudah Anda terima/.test(r.ok), JSON.stringify(r));
+    await shot(p, "Sopir kontainer", "Sopir menerima manifest", "Satu tombol menerima semua barang di manifest sekaligus. Tanggung jawab pindah ke sopir.");
+    r = await act(p, p.getByRole("button", { name: "Kapal sudah berangkat" }));
+    ok(`[${cfg.key}] kapal berangkat`, r.ok && /sudah berangkat/i.test(r.ok), JSON.stringify(r));
+    await shot(p, "Sopir kontainer", `Berangkat ke ${cfg.destCity} (dalam pelayaran)`, "Semua resi di manifest berubah ke Dalam pelayaran. Lama pelayaran nyata (sekitar 5 hari) berjalan di dunia nyata. Sistem tidak mensimulasikan waktu, hanya mencatat saat petugas menekan tombolnya.");
     await pub("Pelanggan melacak: barang dalam pelayaran", "Pelanggan melihat barang sedang di laut dan perkiraan tiba.");
-    r = await act(p, p.getByRole("button", { name: "Kapal sudah sandar di pelabuhan tujuan" }));
-    ok(`[${cfg.key}] tiba di pelabuhan tujuan`, r.ok && /sudah sandar/.test(r.ok), JSON.stringify(r));
-    await shot(p, "Sopir kontainer", "Tiba di pelabuhan tujuan", `Kapal sandar di pelabuhan ${cfg.destCity} (tahap 7 dari 10).`);
+    r = await act(p, p.getByRole("button", { name: new RegExp(`Kapal sudah sandar di ${cfg.destCity}`) }));
+    ok(`[${cfg.key}] tiba di pelabuhan tujuan`, r.ok && /sudah tiba/.test(r.ok), JSON.stringify(r));
+    await shot(p, "Sopir kontainer", "Tiba di pelabuhan tujuan", `Kapal sandar di pelabuhan ${cfg.destCity}.`);
+    await pick(p, "select[name=ke]", cfg.gudangDName);
+    r = await act(p, p.getByRole("button", { name: "Serahkan manifest" }));
+    ok(`[${cfg.key}] sopir menyerahkan manifest ke gudang tujuan`, r.ok && /Menunggu penerima/.test(r.ok), JSON.stringify(r));
   }
-  await handover("sopir", cfg.gudangDName, cfg.gudangD, "sopir ke gudang tujuan");
   {
     const p = A[cfg.gudangD].page;
-    const r = await act(p, p.getByRole("button", { name: "Barang sudah dibongkar di gudang tujuan" }));
-    ok(`[${cfg.key}] tiba di gudang tujuan`, r.ok && /gudang tujuan/.test(r.ok), JSON.stringify(r));
-    await shot(p, cfg.labels[cfg.gudangD], `Tiba di gudang Kamil ${cfg.destCity}`, "Barang dibongkar dan dicek jumlahnya di gudang tujuan (tahap 8 dari 10).");
+    await p.goto(`${BASE}/app/manifest/${manifestId}`, { waitUntil: "networkidle" });
+    let r = await act(p, p.getByRole("button", { name: "Ya, manifest sudah saya terima" }));
+    ok(`[${cfg.key}] gudang tujuan menerima manifest`, r.ok && /sudah Anda terima/.test(r.ok), JSON.stringify(r));
+    for (const k of ["01", "02"]) {
+      await p.fill("input[aria-label=Kode]", `${resiNo}-${k}`); await p.getByRole("button", { name: "Cocokkan" }).click();
+      await p.waitForFunction((x) => new RegExp(`${x} dari 2 barang`).test(document.body.innerText), k === "01" ? "1" : "2", { timeout: 15000 }).catch(() => {});
+    }
+    ok(`[${cfg.key}] bongkar: 2 dari 2 barang cocok`, /2 dari 2 barang/.test(await text(p)));
+    await shot(p, cfg.labels[cfg.gudangD], `Tiba di gudang Kamil ${cfg.destCity}: bongkar dan cek barang`, "Tiap barang dipindai (kamera atau ketik kode) dan dicocokkan dengan manifest. Barang yang bukan isi manifest ditolak. Jumlah tidak sama = otomatis menjadi kasus selisih.");
+    r = await act(p, p.getByRole("button", { name: "Selesai membongkar" }));
+    ok(`[${cfg.key}] bongkar selesai`, r.ok && /Semua barang cocok/.test(r.ok), JSON.stringify(r));
+    await open(cfg.gudangD);
   }
   await handover(cfg.gudangD, cfg.kurirDName, cfg.kurirD, "gudang tujuan ke kurir pengantar");
   {
     const p = A[cfg.kurirD].page;
     const r = await act(p, p.getByRole("button", { name: "Saya berangkat mengantar barang" }));
-    ok(`[${cfg.key}] berangkat mengantar`, r.ok && /Tahap 9 dari 10/.test(await text(p)), JSON.stringify(r));
-    await shot(p, cfg.labels[cfg.kurirD], "Pengantaran ke customer", "Kurir berangkat mengantar ke alamat penerima (tahap 9 dari 10).");
+    ok(`[${cfg.key}] berangkat mengantar`, r.ok && /sedang diantar/.test(r.ok), JSON.stringify(r));
+    await shot(p, cfg.labels[cfg.kurirD], "Pengantaran ke customer", "Kurir berangkat mengantar ke alamat penerima (tahap akhir).");
     // 9. Bukti terima
     await p.context().grantPermissions(["geolocation"]); await p.context().setGeolocation(cfg.gps);
     await p.reload({ waitUntil: "networkidle" });
@@ -153,12 +195,12 @@ async function direction(browser, cfg, accounts) {
     steps.push({ n, who: cfg.labels[cfg.kurirD], title: "Menyiapkan bukti terima di tempat penerima", detail: "Kurir mengambil foto barang, penerima menandatangani di layar, lokasi GPS tercatat otomatis. Tombol simpan baru aktif setelah semuanya lengkap.", file: f });
     const r2 = await act(p, p.getByRole("button", { name: "Simpan bukti terima" }));
     ok(`[${cfg.key}] bukti terima tersimpan`, r2.ok && /Bukti terima tersimpan/.test(r2.ok), JSON.stringify(r2));
-    await shot(p, cfg.labels[cfg.kurirD], "Barang sukses diterima", "Status menjadi Sudah diterima (tahap 10 dari 10). Resi selesai dan tidak bisa diubah lagi.");
+    await shot(p, cfg.labels[cfg.kurirD], "Barang sukses diterima", "Status menjadi Sudah diterima (tahap terakhir). Resi selesai dan tidak bisa diubah lagi.");
     await p.evaluate(() => document.querySelector(".podview")?.scrollIntoView({ block: "start" })); await p.waitForTimeout(400);
     n += 1; const g = `${cfg.key}-${String(n).padStart(2, "0")}.png`; await p.screenshot({ path: `${OUT}/${g}` });
     steps.push({ n, who: cfg.labels[cfg.kurirD], title: "Bukti terima tersimpan (foto + tanda tangan + lokasi)", detail: "Bukti lengkap bisa dilihat pemilik, manajer, dan kasir/gudang yang berhak. Foto tidak ditampilkan ke publik.", file: g });
   }
-  await pub("Pelanggan melacak: barang sudah diterima", "Halaman publik menampilkan Sudah diterima, Tahap 10 dari 10, dan nama penerima yang disamarkan. Foto dan tanda tangan tidak tampil.");
+  await pub("Pelanggan melacak: barang sudah diterima", "Halaman publik menampilkan Sudah diterima, tahap terakhir, dan nama penerima yang disamarkan. Foto dan tanda tangan tidak tampil.");
   // Pembayaran
   {
     const p = A[cfg.kasirO].page;
@@ -184,12 +226,12 @@ async function direction(browser, cfg, accounts) {
   const runs = [];
   runs.push(await direction(browser, {
     key: "mks-jkt", title: "Makassar → Jakarta", routeText: "Makassar → Jakarta · Diantar sampai alamat (per kilo)",
-    sender: "CV Sulawesi Makmur", receiver: "Rina Wijaya", address: "Jl. Kebon Jeruk Raya No. 21, Jakarta Barat", destCity: "Jakarta", gps: { latitude: -6.1944, longitude: 106.7694 },
+    sender: "CV Sulawesi Makmur", receiver: "Rina Wijaya", address: "Jl. Kebon Jeruk Raya No. 21, Jakarta Barat", destCity: "Jakarta", gps: { latitude: -6.1944, longitude: 106.7694 }, destCode: "JKT", pickupAddr: "Jl. Racing Centre No. 8, Makassar", dropoff: false,
     kasirO: "kasirMks", kurirO: "kurirMks", gudangO: "gudangMks", gudangOName: "Gudang Makassar", gudangD: "gudang", gudangDName: "Gudang Jakarta", kurirD: "kurir", kurirDName: "Kurir Jakarta", labels,
   }, accounts));
   runs.push(await direction(browser, {
     key: "jkt-mks", title: "Jakarta → Makassar", routeText: "Jakarta → Makassar · Diantar sampai alamat (per kilo)",
-    sender: "PT Maju Jaya", receiver: "Budi Santoso", address: "Jl. Pettarani No. 5, Makassar", destCity: "Makassar", gps: { latitude: -5.1477, longitude: 119.4327 },
+    sender: "PT Maju Jaya", receiver: "Budi Santoso", address: "Jl. Pettarani No. 5, Makassar", destCity: "Makassar", gps: { latitude: -5.1477, longitude: 119.4327 }, destCode: "MKS", dropoff: true,
     kasirO: "kasir", kurirO: "kurir", gudangO: "gudang", gudangOName: "Gudang Jakarta", gudangD: "gudangMks", gudangDName: "Gudang Makassar", kurirD: "kurirMks", kurirDName: "Kurir Makassar", labels,
   }, accounts));
   fs.writeFileSync(`${OUT}/hasil.json`, JSON.stringify({ runs: runs.map((r, i) => ({ ...r, title: i === 0 ? "Makassar → Jakarta" : "Jakarta → Makassar" })), results }, null, 1));
@@ -201,7 +243,7 @@ async function direction(browser, cfg, accounts) {
     await p.goto(`${BASE}/masuk`); await p.fill("#email", "owner@uji.id"); await p.fill("#password", PASS); await p.click("button.shine"); await p.waitForURL(/\/app/);
     await p.waitForLoadState("networkidle"); await p.waitForTimeout(2200);
     await p.screenshot({ path: `${OUT}/owner-dashboard.png` });
-    for (const [k, u] of [["keuangan", "/app/keuangan"], ["semua", "/app/semua"], ["kelola", "/app/kelola"], ["mitra", "/app/mitra"], ["petugas", "/app/petugas"], ["tarif", "/app/tarif"], ["pengaturan", "/app/pengaturan"], ["tagihan", "/app/tagihan"]]) {
+    for (const [k, u] of [["keuangan", "/app/keuangan"], ["semua", "/app/semua"], ["kelola", "/app/kelola"], ["mitra", "/app/mitra"], ["petugas", "/app/petugas"], ["tarif", "/app/tarif"], ["pengaturan", "/app/pengaturan"], ["tagihan", "/app/tagihan"], ["manifest", "/app/manifest"], ["korporat", "/app/korporat"]]) {
       await p.goto(`${BASE}${u}`, { waitUntil: "networkidle" }); await p.waitForTimeout(1500); await p.screenshot({ path: `${OUT}/owner-${k}.png` });
     }
     const t = await (async () => { await p.goto(`${BASE}/app`, { waitUntil: "networkidle" }); await p.waitForTimeout(2000); return text(p); })();

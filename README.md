@@ -24,13 +24,22 @@ npm run dev        # http://localhost:3000 (data contoh; isi apps/web/.env.local
 ## Identitas visual (dari materi promosi)
 Hijau teal (primer), oranye (aksen), kuning (sorotan), tagline "Best Price Best Service", WA 0853-4223-8748, kamillogistik.id.
 
+## Fitur inti
+- **Kode resi terbaca** `KLX-MKS-JKT-LJ-261118-1432-0007-VP`: asal, tujuan, jalur (L laut / U udara / D darat) + cara masuk (J dijemput / A antar sendiri), tanggal, jam WITA, urutan harian, dua huruf pemeriksa. Kode manifest `MNF-...` memakai pola yang sama.
+- **Dua cara barang masuk:** dijemput kurir atau diantar sendiri (tanpa tahap jemput).
+- **Volumetrik:** pembagi 4000 (laut/darat), 6000 (udara). Rute udara tampil publik setelah Pemilik mengisi harga.
+- **Label + pindai:** cetak barcode Code128 dan QR per barang, pemindai kamera (zxing) di aplikasi petugas dan halaman lacak.
+- **Manifest:** muat, segel, serah terima massal, berangkat, tiba, bongkar dengan pencocokan barang, kasus selisih.
+- **Korporat (B2B):** tempo bayar 0/7/14/30 hari, batas kredit, tarif khusus per rute, rekap tagihan.
+- **Landing:** carousel, asisten tanya-jawab berbasis aturan (tarif dan lacak asli, tanpa AI eksternal, `/api/chat`).
+
 ## Berikutnya
-Bukti terima (foto + tanda tangan), aplikasi petugas offline (PWA), manifest + kontainer + selisih barang, B2B, notifikasi WhatsApp, verifikasi 2 langkah.
+Aplikasi petugas offline (PWA), notifikasi WhatsApp, verifikasi 2 langkah (ditunda sampai aplikasi aktif), peta pemantauan, portal/API korporat, asisten berbasis LLM (butuh kunci API).
 
 ## Uji menyeluruh (E2E)
 
 `npm run e2e` menyiapkan database uji baru (semua migrasi asli), tiruan Supabase lokal, build produksi, lalu menjalankan satu siklus pengiriman penuh
-Jakarta → Makassar dengan 7 peran di peramban sungguhan (111 pemeriksaan): pembuatan resi, serah terima, timbang + tagihan, pembayaran,
+Jakarta → Makassar dengan 7 peran di peramban sungguhan (156 pemeriksaan, termasuk label, pindai, manifest, korporat, carousel, asisten): pembuatan resi, serah terima, timbang + tagihan, pembayaran,
 bukti terima (foto, tanda tangan, GPS), invoice publik, lacak publik, pantauan Pemilik, dan keamanan akun. Butuh Postgres lokal.
 
 ## Uji kecepatan
@@ -44,3 +53,6 @@ Fungsi server Vercel dipasang di Singapura (sin1) agar dekat dengan database (ap
 `node e2e/pentest.cjs` (setelah `e2e/skenario.sh`) menyerang aplikasi lokal dari tiga sisi: HTTP tanpa login, panggilan langsung ke fungsi database dengan akun peran kecil,
 dan kondisi balapan; 72 pemeriksaan. Perlindungan: tabel terkunci (tanpa kebijakan), semua akses lewat fungsi peran, CSP + header keamanan, cookie sesi HttpOnly,
 penjaga percobaan masuk (5 gagal = kunci 15 menit per email+IP), batas berat/biaya, resi anti-ganda. Risiko yang diterima: nomor resi berurutan (status paket bisa ditebak).
+
+## Skenario dua arah + laporan PDF
+`bash e2e/skenario.sh` menjalankan Makassar → Jakarta (dijemput) dan Jakarta → Makassar (antar sendiri) lengkap dengan manifest, lalu membuat laporan PDF bertangkapan layar di `$OUT`.
