@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
-  acceptHandover, initiateHandover, nextStatus, validateTransition, formatResi, isValidResi,
+  canSetStatus, acceptHandover, initiateHandover, nextStatus, validateTransition, formatResi, isValidResi,
 } from "../src";
 
 const pod = { photoUrl: "p", signatureUrl: "s", receiverName: "Budi" };
@@ -75,5 +75,16 @@ describe("resi", () => {
     expect(formatResi(new Date(Date.UTC(2026, 10, 18)), 123)).toBe("KLX-2611-000123");
     expect(isValidResi("klx-2611-000123")).toBe(true);
     expect(isValidResi("abc")).toBe(false);
+  });
+});
+
+describe("hak ubah status", () => {
+  it("sama dengan aturan di database", () => {
+    expect(canSetStatus("DRIVER", "PICKED_UP")).toBe(true);
+    expect(canSetStatus("DRIVER", "AT_ORIGIN_HUB")).toBe(false);
+    expect(canSetStatus("WAREHOUSE", "AT_ORIGIN_HUB")).toBe(true);
+    expect(canSetStatus("CONTAINER_DRIVER", "IN_TRANSIT_SEA")).toBe(true);
+    expect(canSetStatus("MITRA_POS", "PICKED_UP")).toBe(false);
+    expect(canSetStatus("SUPER_ADMIN", "LOADED")).toBe(true);
   });
 });

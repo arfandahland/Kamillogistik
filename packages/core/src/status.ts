@@ -29,15 +29,20 @@ export type Actor =
 const ALLOWED_ACTORS: Record<ShipmentStatus, Actor[]> = {
   CREATED: ["RETAIL", "B2B", "PARTNER_API", "SUPER_ADMIN", "HUB_MANAGER", "MITRA_POS", "SYSTEM"],
   PICKED_UP: ["DRIVER", "HUB_MANAGER", "SUPER_ADMIN"],
-  AT_ORIGIN_HUB: ["WAREHOUSE", "DRIVER", "HUB_MANAGER", "SUPER_ADMIN"],
+  AT_ORIGIN_HUB: ["WAREHOUSE", "HUB_MANAGER", "SUPER_ADMIN"],
   SORTED_INVOICED: ["WAREHOUSE", "HUB_MANAGER", "SUPER_ADMIN"],
-  LOADED: ["WAREHOUSE", "CONTAINER_DRIVER", "HUB_MANAGER", "SUPER_ADMIN"],
+  LOADED: ["WAREHOUSE", "HUB_MANAGER", "SUPER_ADMIN"],
   IN_TRANSIT_SEA: ["CONTAINER_DRIVER", "HUB_MANAGER", "SUPER_ADMIN"],
   ARRIVED_DEST_PORT: ["CONTAINER_DRIVER", "HUB_MANAGER", "SUPER_ADMIN"],
   AT_DEST_HUB: ["WAREHOUSE", "HUB_MANAGER", "SUPER_ADMIN"],
   OUT_FOR_DELIVERY: ["DRIVER", "HUB_MANAGER", "SUPER_ADMIN"],
-  DELIVERED: ["DRIVER", "SUPER_ADMIN"],
+  DELIVERED: ["DRIVER", "HUB_MANAGER", "SUPER_ADMIN"],
 };
+
+/** Peran yang boleh menetapkan status tertentu. Harus sama dengan fungsi can_set_status() di database. */
+export function canSetStatus(role: Actor, to: ShipmentStatus): boolean {
+  return ALLOWED_ACTORS[to].includes(role);
+}
 
 export type TransitionResult = { ok: true; to: ShipmentStatus } | { ok: false; reason: string };
 

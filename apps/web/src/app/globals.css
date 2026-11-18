@@ -87,3 +87,24 @@ input:focus, select:focus { outline: none; border-color: var(--teal); box-shadow
 @keyframes grow-x { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 footer { padding: 28px 0; color: var(--muted); font-size: 14px; text-align: center; }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+/* ===== Aplikasi petugas ===== */
+.stafbar { background: var(--card); border-bottom: 1px solid var(--line); }
+.stafbar .wrap { display: flex; align-items: center; justify-content: space-between; min-height: 60px; }
+.stafbar .who { text-decoration: none; display: flex; flex-direction: column; line-height: 1.25; }
+.stafbar .who span { font-size: 13px; color: var(--muted); }
+.stafbar .out { min-height: 44px; padding: 0 14px; border: 2px solid var(--line); background: transparent; color: var(--ink); border-radius: 12px; font: inherit; font-weight: 700; cursor: pointer; }
+.chips { display: flex; gap: 8px; overflow-x: auto; padding: 4px 0 2px; }
+.chip { flex: none; min-height: 44px; display: inline-flex; align-items: center; padding: 0 16px; border-radius: 99px; border: 2px solid var(--line); text-decoration: none; font-weight: 700; background: var(--card); }
+.chip.on { background: var(--teal); border-color: var(--teal); color: #fff; }
+.resi { display: block; text-decoration: none; padding: 14px 16px; }
+.resi + .resi { margin-top: 10px; }
+.resi .top { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+.resi b.no { letter-spacing: .5px; }
+.ok { background: var(--teal-soft); color: var(--teal-dark); border-radius: 14px; padding: 12px 14px; font-weight: 600; }
+.banner { background: #fff4e0; color: #5a3a00; border: 2px solid var(--orange); border-radius: 14px; padding: 12px 14px; }
+@media (prefers-color-scheme: dark) { .banner { background: #3a2b10; color: #ffd9a0; } }
+.kv { display: grid; grid-template-columns: 120px 1fr; gap: 6px 12px; margin: 8px 0; }
+.kv dt { color: var(--muted); } .kv dd { margin: 0; font-weight: 600; word-break: break-word; }
+.item { border: 1px dashed var(--line); border-radius: 14px; padding: 12px; margin-top: 10px; }
+textarea { width: 100%; min-height: 80px; font: inherit; color: var(--ink); background: var(--card); border: 2px solid var(--line); border-radius: 14px; padding: 10px 14px; }
