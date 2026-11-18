@@ -56,3 +56,9 @@ penjaga percobaan masuk (5 gagal = kunci 15 menit per email+IP), batas berat/bia
 
 ## Skenario dua arah + laporan PDF
 `bash e2e/skenario.sh` menjalankan Makassar → Jakarta (dijemput) dan Jakarta → Makassar (antar sendiri) lengkap dengan manifest, lalu membuat laporan PDF bertangkapan layar di `$OUT`.
+
+## Pricelist dan data
+`db/data/pricelist_2026.sql`: pricelist resmi (asal Jakarta ke 74 kota Sulawesi, asal Makassar ke Papua/Maluku), minimal 50 kg. Ini DATA, bukan skema: dipasang ke produksi saja dan tidak dijalankan di database uji.
+
+## Fitur tambahan (migrasi 014-018)
+"Perlu dihubungi" dan pencarian cepat (014), pemeriksaan fisik + foto barang (015), riwayat harga + komisi mitra (016), peta/ringkasan harian/skor mitra untuk Pemilik (017), penilaian bintang + portal korporat (018). `node e2e/audit-hp.cjs` mengaudit semua halaman di layar HP 360px.

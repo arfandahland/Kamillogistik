@@ -839,3 +839,7 @@ details.admitem .admbody { padding: 4px 18px 18px; border-top: 1px dashed var(--
 .finlist li a, .fdlist li a { display: inline-flex; align-items: center; min-height: 44px; }
 .scanhint, .pindai small { font-size: 12.5px; }
 .camnote small { font-size: 13px; }
+.crumbs a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 4px; }
+.rc-price { font-size: 12.5px; }
+.loginhelp a, .masuk a[href^="https://wa.me"] { display: inline-flex; align-items: center; min-height: 44px; }
+.foot a { display: inline-flex; align-items: center; min-height: 44px; }
