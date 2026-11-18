@@ -4,6 +4,8 @@ import { handleTrack, parseResi, type PublicTrack } from "@kamil/core";
 import { repo } from "@/lib/repo";
 import { tanggal, tanggalWaktu, waLink } from "@/lib/brand";
 import ResiForm from "@/components/ResiForm";
+import NilaiForm from "@/components/NilaiForm";
+import { publicRpc } from "@/lib/publicRpc";
 import KodeResi from "@/components/KodeResi";
 import Icon from "@/components/Icon";
 
@@ -11,7 +13,12 @@ export const dynamic = "force-dynamic";
 type P = { params: Promise<{ resi: string }> };
 
 export async function generateMetadata({ params }: P): Promise<Metadata> {
-  return { title: `Resi ${decodeURIComponent((await params).resi)}`, robots: { index: false } };
+  const resi = decodeURIComponent((await params).resi);
+  const r = await handleTrack(repo, resi);
+  const t = r.status === 200 ? (r.body as PublicTrack) : null;
+  const judul = t ? `Resi ${t.resi}: ${t.statusLabel}` : `Resi ${resi}`;
+  const desk = t ? `${t.route.origin} → ${t.route.dest}. Pantau perjalanan barang Anda di Kamil Logistik, tanpa login.` : "Pantau perjalanan barang Anda di Kamil Logistik.";
+  return { title: judul, description: desk, robots: { index: false }, openGraph: { title: judul, description: desk, type: "website" } };
 }
 
 export default async function Track({ params }: P) {
@@ -28,6 +35,7 @@ export default async function Track({ params }: P) {
   }
 
   const t = r.body as PublicTrack;
+  const nilai = t.status === "DELIVERED" ? await publicRpc<{ canRate: boolean; rated: boolean; stars: number | null }>("public_rating_state", { p_resi: t.resi }) : null;
   const items = [
     ...t.history.map((h, i) => ({ ...h, kind: i === t.history.length - 1 ? "now" : "done" })),
     ...t.upcoming.map((u) => ({ ...u, detail: "", at: "", location: null as string | null, kind: "todo" })),
@@ -84,6 +92,8 @@ export default async function Track({ params }: P) {
         <a className="btn" href={waLink(`Halo, saya mau tanya soal resi ${t.resi}`)}><Icon name="chat" size={22} /> Tanya soal resi ini</a>
         <Link href="/lacak" className="btn ghost" style={{ marginTop: 10 }}>Cek resi lain</Link>
       </div>
+      {nilai?.canRate && <NilaiForm resi={t.resi} />}
+      {nilai?.rated && <div className="card nilai done"><b>Terima kasih sudah menilai{nilai.stars ? `: ${"★".repeat(nilai.stars)}` : ""}</b></div>}
     </main>
   );
 }

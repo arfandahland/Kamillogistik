@@ -39,3 +39,12 @@ export async function hapusTarifKhusus(fd: FormData) {
   revalidatePath(`/app/korporat/${id}`);
   redirect(`/app/korporat/${id}?${r.error ? "e" : "ok"}=${encodeURIComponent(r.error ?? "Tarif khusus dihapus. Pelanggan kembali memakai tarif umum.")}`);
 }
+
+export async function portalAksi(fd: FormData) {
+  await requireOwner();
+  const id = str(fd, "id"), aksi = str(fd, "aksi");
+  const r = await staffRpc("owner_company_portal", { p_company: id, p_action: aksi });
+  revalidatePath(`/app/korporat/${id}`);
+  const msg = aksi === "disable" ? "Portal dimatikan. Tautan lama tidak berlaku lagi." : aksi === "rotate" ? "Tautan baru dibuat. Tautan lama tidak berlaku lagi." : "Portal dinyalakan. Kirim tautannya ke pelanggan.";
+  redirect(`/app/korporat/${id}?${r.error ? "e" : "ok"}=${encodeURIComponent(r.error ?? msg)}`);
+}

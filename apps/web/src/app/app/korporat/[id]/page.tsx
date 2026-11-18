@@ -6,7 +6,9 @@ import SubmitButton from "@/components/SubmitButton";
 import { requireOwner } from "@/lib/auth";
 import { rupiah, tanggal } from "@/lib/brand";
 import { staffRpc } from "@/lib/supabase/server";
-import { hapusTarifKhusus, simpanTarifKhusus, ubahKorporat } from "../actions";
+import { hapusTarifKhusus, portalAksi, simpanTarifKhusus, ubahKorporat } from "../actions";
+import { SITE_URL } from "@/lib/site";
+import { chatLink, normalizePhone } from "@kamil/core";
 import { KorporatFields, type Cust } from "../page";
 
 export const metadata: Metadata = { title: "Pelanggan Korporat" };
@@ -18,7 +20,7 @@ const MODA: Record<string, string> = { LAUT: "Laut", DARAT: "Darat", UDARA: "Uda
 export default async function KorporatDetail({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ e?: string; ok?: string }> }) {
   await requireOwner();
   const { id } = await params; const sp = await searchParams;
-  const [r, rt] = await Promise.all([staffRpc<D>("owner_customer_detail", { p_company: id }), staffRpc<Rt[]>("owner_list_routes")]);
+  const [r, rt, pt] = await Promise.all([staffRpc<D>("owner_customer_detail", { p_company: id }), staffRpc<Rt[]>("owner_list_routes"), staffRpc<string | null>("owner_company_portal", { p_company: id, p_action: "get" })]);
   if (r.error || !r.data) return <main className="wrap section stack"><div className="err">{r.error ?? "Pelanggan tidak ditemukan."}</div><Link className="btn ghost" href="/app/korporat">← Kembali</Link></main>;
   const c = r.data;
   const sudahAda = new Set(c.rates.map((x) => x.routeId));
@@ -46,6 +48,18 @@ export default async function KorporatDetail({ params, searchParams }: { params:
           <table className="contoh"><thead><tr><th>Invoice</th><th>Jatuh tempo</th><th>Total</th><th>Status</th></tr></thead>
             <tbody>{c.invoices.map((i) => <tr key={i.id}><td><Link href={`/app/tagihan/${i.id}`}><b>{i.invoiceNo}</b></Link><br /><small className="muted" style={{ wordBreak: "break-all" }}>{i.resiNo}</small></td><td>{tanggal(i.dueDate)}</td><td>{rupiah(i.total)}{i.paid > 0 && i.paid < i.total ? <><br /><small className="muted">sisa {rupiah(i.total - i.paid)}</small></> : null}</td><td>{LBL[i.status] ?? i.status}</td></tr>)}</tbody></table>
         )}
+      </section>
+
+      <section className="card noprint"><h2>Portal pelanggan</h2>
+        <p className="muted" style={{ marginTop: 0 }}>Tautan rahasia agar perusahaan ini melihat sendiri resi dan tagihannya, tanpa login. Hanya yang punya tautan yang bisa membuka.</p>
+        {pt.data ? (<>
+          <div className="plink">{`${SITE_URL}/portal/${pt.data}`}</div>
+          <div className="row" style={{ marginTop: 10, gap: 8, flexWrap: "wrap" }}>
+            {(() => { const n = normalizePhone(c.phone); return n.ok ? <a className="btn wabtn sm" target="_blank" rel="noopener noreferrer" href={chatLink(n.wa, `Halo ${c.contact || c.name}, berikut portal ${c.name} untuk melihat resi dan tagihan Anda: ${SITE_URL}/portal/${pt.data}`)}><Icon name="chat" size={18} /> Kirim ke WhatsApp</a> : null; })()}
+            <form action={portalAksi}><input type="hidden" name="id" value={c.id} /><input type="hidden" name="aksi" value="rotate" /><button className="btn ghost sm">Ganti tautan</button></form>
+            <form action={portalAksi}><input type="hidden" name="id" value={c.id} /><input type="hidden" name="aksi" value="disable" /><button className="btn ghost sm">Matikan</button></form>
+          </div></>) : (
+          <form action={portalAksi}><input type="hidden" name="id" value={c.id} /><input type="hidden" name="aksi" value="enable" /><SubmitButton className="btn ghost" steps={["Membuat tautan…"]}>Nyalakan portal</SubmitButton></form>)}
       </section>
 
       <section className="card noprint"><h2>Tarif khusus</h2>

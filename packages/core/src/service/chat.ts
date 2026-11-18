@@ -1,3 +1,4 @@
+import { pairSlug } from "./seo";
 import { calculateTariff } from "../tariff";
 import { MODA_LABEL, PEMBAGI_VOLUME, normalizeResi, parseResi, splitItem } from "../resi";
 import type { RouteService } from "./repo";
@@ -21,19 +22,24 @@ const has = (t: string, ...w: (string | RegExp)[]) =>
 
 const SINONIM: Record<string, string> = { jkt: "JKT", mks: "MKS", sby: "SUB", sub: "SUB", mrw: "MRW", "ujung pandang": "MKS", ujungpandang: "MKS", batavia: "JKT" };
 
+const KODE_BOLEH = new Set(["JKT", "MKS", "MRW", "SUB"]); // hanya kode kota utama yang boleh dipakai sebagai singkatan (kode lain mirip kata biasa)
+
 function kotaDi(t: string, rs: RouteService[]): { code: string; city: string; at: number }[] {
   const daftar = new Map<string, string>();
   for (const r of rs) { daftar.set(r.origin.code, r.origin.city); daftar.set(r.dest.code, r.dest.city); }
-  const hit: { code: string; city: string; at: number }[] = [];
+  const hit: { code: string; city: string; at: number; end: number }[] = [];
   for (const [code, city] of daftar) {
-    const m = new RegExp(`(^|[^a-z])(${norm(city)}|${code.toLowerCase()})(?![a-z])`).exec(t);
-    if (m) hit.push({ code, city, at: m.index });
+    const nama = norm(city), pola = KODE_BOLEH.has(code) ? `${nama}|${code.toLowerCase()}` : nama;
+    const m = new RegExp(`(^|[^a-z])(${pola})(?![a-z])`).exec(t);
+    if (m) { const at = m.index + m[1]!.length; hit.push({ code, city, at, end: at + m[2]!.length }); }
   }
   for (const [kata, code] of Object.entries(SINONIM)) {
     const m = new RegExp(`(^|[^a-z])${kata}(?![a-z])`).exec(t);
-    if (m && daftar.has(code) && !hit.some((h) => h.code === code)) hit.push({ code, city: daftar.get(code)!, at: m.index });
+    if (m && daftar.has(code) && !hit.some((h) => h.code === code)) { const at = m.index + m[1]!.length; hit.push({ code, city: daftar.get(code)!, at, end: at + kata.length }); }
   }
-  return hit.sort((a, b) => a.at - b.at);
+  // "Bone Bolango" memuat kata "Bone": pakai yang terpanjang, buang yang tercakup di dalamnya.
+  const bersih = hit.filter((h) => !hit.some((o) => o !== h && o.at <= h.at && o.end >= h.end && o.end - o.at > h.end - h.at));
+  return bersih.sort((a, b) => a.at - b.at).map(({ code, city, at }) => ({ code, city, at }));
 }
 
 function angka(t: string): { berat?: number; dims?: [number, number, number] } {
@@ -95,7 +101,7 @@ export async function jawab(deps: ChatDeps, pesan: string, ctxIn: ChatCtx = {}):
   }
   if (has(t, "lama", "berapa hari", "estimasi", "sampai kapan", "jadwal", "berangkat", "kapan sampai") && !has(t, "ongkir", "ongkos", "tarif", "harga", "biaya")) {
     const k = kota.length >= 2 ? rs.find((r) => r.origin.code === kota[0]!.code && r.dest.code === kota[1]!.code) : undefined;
-    if (k) return { text: `${k.origin.city} → ${k.dest.city}: sekitar ${k.etaDays} hari${k.departureNote ? `. ${k.departureNote}` : ""}. Lama sebenarnya bergantung jadwal keberangkatan.`, actions: [{ label: "Lihat rute", href: `/ekspedisi-${k.origin.city.toLowerCase()}-${k.dest.city.toLowerCase()}` }] };
+    if (k) return { text: `${k.origin.city} → ${k.dest.city}: sekitar ${k.etaDays} hari${k.departureNote ? `. ${k.departureNote}` : ""}. Lama sebenarnya bergantung jadwal keberangkatan.`, actions: [{ label: "Lihat rute", href: `/${pairSlug(k.origin.city, k.dest.city)}` }] };
     const r = ringkasRute(rs).slice(0, 4).map((x) => `• ${x.origin.city} → ${x.dest.city}: sekitar ${x.etaDays} hari`).join("\n");
     return { text: `${r}\nSebutkan kota asal dan tujuan untuk perkiraan yang lebih tepat.`, chips: ["Jakarta ke Makassar", "Makassar ke Jakarta"], actions: [{ label: "Semua rute", href: "/ekspedisi" }] };
   }

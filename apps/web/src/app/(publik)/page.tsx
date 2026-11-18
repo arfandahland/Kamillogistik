@@ -16,7 +16,7 @@ export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: { absolute: "Ekspedisi Jakarta–Makassar Murah, Kirim Barang ke Sulawesi" },
-  description: "Kirim barang Jakarta, Surabaya, Makassar, dan Morowali dengan tarif transparan. Hitung ongkir sendiri, pantau barang lewat nomor resi tanpa login, terima invoice resmi.",
+  description: "Kirim barang dari Jakarta ke seluruh Sulawesi, dan dari Makassar ke Papua dan Maluku, dengan tarif transparan. Hitung ongkir sendiri, pantau barang lewat nomor resi tanpa login, terima invoice resmi.",
   alternates: { canonical: "/" },
   openGraph: { type: "website", locale: "id_ID", siteName: "Kamil Logistik", title: "Kirim Barang ke Seluruh Sulawesi, Murah dan Bisa Dipantau", description: "Hitung ongkir sendiri, pantau barang lewat nomor resi, terima invoice resmi.", images: ["/og.png"] },
   twitter: { card: "summary_large_image", images: ["/og.png"] },
@@ -47,9 +47,11 @@ const LANGKAH = [
 ];
 
 export default async function Home() {
-  const pairs = await getRoutePairs();
+  const semua = await getRoutePairs();
+  const UNGGULAN = ["ekspedisi-jakarta-makassar", "ekspedisi-makassar-jakarta", "ekspedisi-jakarta-palu", "ekspedisi-jakarta-kendari", "ekspedisi-jakarta-manado", "ekspedisi-makassar-morowali"];
+  const pairs = [...semua.filter((p) => UNGGULAN.includes(p.slug)).sort((a, b) => UNGGULAN.indexOf(a.slug) - UNGGULAN.indexOf(b.slug)), ...semua.filter((p) => !UNGGULAN.includes(p.slug))].slice(0, 6);
   const slides: Slide[] = [
-    { id: "laut", judul: "Darat dan laut ke seluruh Sulawesi", teks: "Jakarta, Surabaya, Makassar, sampai Morowali dengan jadwal keberangkatan yang jelas.", label: "Lihat rute dan tarif", href: "/ekspedisi", art: <IlKapal /> },
+    { id: "laut", judul: "Darat dan laut ke seluruh Sulawesi", teks: "Dari Jakarta ke puluhan kota di Sulawesi, dan dari Makassar ke Papua dan Maluku. Tarif jelas, estimasi hari tertera.", label: "Lihat rute dan tarif", href: "/ekspedisi", art: <IlKapal /> },
     { id: "udara", judul: "Butuh cepat? Lewat udara", teks: "Kargo udara Jakarta–Makassar dengan perhitungan berat volume khusus udara. Tanyakan tarif ke tim kami.", label: "Tanya kargo udara", href: waLink("Halo Kamil Logistik, saya mau tanya kargo udara."), art: <IlPesawat /> },
     { id: "jemput", judul: "Dijemput atau antar sendiri", teks: "Kurir kami menjemput ke alamat, atau bawa sendiri ke gudang tanpa biaya jemput.", label: "Cara kirim barang", href: "/panduan/cara-kirim-barang-dari-jakarta-ke-sulawesi", art: <IlTruk /> },
     { id: "lacak", judul: "Lacak dengan kode atau kamera", teks: "Kode resi bisa dibaca: asal, tujuan, tanggal, dan jam. Atau pindai QR di struk.", label: "Cek resi sekarang", href: "/lacak", art: <IlScan /> },
@@ -98,7 +100,7 @@ export default async function Home() {
 
         {pairs.length > 0 && (
           <section aria-labelledby="rute">
-            <h2 id="rute" className="sech">Rute dan tarif pengiriman</h2>
+            <h2 id="rute" className="sech">Rute populer</h2>
             <div className="rtgrid">
               {pairs.map((p) => (
                 <Link key={p.slug} href={`/${p.slug}`} className="rtcard rv" aria-label={`Ekspedisi ${p.originCity} ke ${p.destCity}, ${priceLabel(p.minPrice)}`}>
@@ -108,7 +110,7 @@ export default async function Home() {
                 </Link>
               ))}
             </div>
-            <Link href="/ekspedisi" className="btn ghost" style={{ marginTop: 12 }}>Lihat semua rute</Link>
+            <Link href="/ekspedisi" className="btn ghost" style={{ marginTop: 12 }}>Lihat semua {semua.length} rute</Link>
           </section>
         )}
 

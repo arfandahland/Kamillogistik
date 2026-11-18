@@ -73,3 +73,23 @@ describe("asisten tanya-jawab", () => {
     expect(r.text).not.toMatch(/<script/i);
   });
 });
+
+describe("kota dengan nama mirip", () => {
+  const mk = async (oc: string, oy: string, dc: string, dy: string, price: number) => {
+    const base = (await repo.listRoutes()).find((r) => r.basis === "PER_KG")!;
+    return { ...base, origin: { ...base.origin, code: oc, city: oy, name: oy }, dest: { ...base.dest, code: dc, city: dy, name: dy }, unitPrice: price, minChargeable: 50, minTotal: undefined, slug: `${oc}-${dc}`.toLowerCase() };
+  };
+  const mkDeps = async (): Promise<ChatDeps> => { const rs = [await mk("JKT", "Jakarta", "BNE", "Bone", 4500), await mk("JKT", "Jakarta", "BNB", "Bone Bolango", 7500), await mk("JKT", "Jakarta", "MDO", "Manado", 6000)]; return { ...deps, routes: async () => rs }; };
+  it("'Bone Bolango' tidak salah dikira 'Bone' dan menjawab harga yang benar", async () => {
+    const r = await jawab(await mkDeps(), "ongkir dari Jakarta ke Bone Bolango 60 kg");
+    expect(r.text).toContain("Bone Bolango"); expect(r.text).toContain("450.000"); // 60 kg x 7.500
+  });
+  it("'Bone' saja tetap Bone", async () => {
+    const r = await jawab(await mkDeps(), "ongkir jakarta ke bone 60 kg");
+    expect(r.text).toContain("Bone"); expect(r.text).not.toContain("Bolango"); expect(r.text).toContain("270.000"); // 60 x 4.500
+  });
+  it("kata biasa tidak dikira kode kota", async () => {
+    const r = await jawab(await mkDeps(), "bau barang saya apa boleh dikirim");
+    expect(r.text).not.toContain("Rp");
+  });
+});

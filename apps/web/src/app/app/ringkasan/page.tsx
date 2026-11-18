@@ -24,7 +24,7 @@ export default async function Ringkasan({ searchParams }: { searchParams: Promis
   await requireOwner();
   const sp = await searchParams; const hari = nowWita();
   const tgl = /^\d{4}-\d{2}-\d{2}$/.test(sp.tgl ?? "") && sp.tgl! <= hari ? sp.tgl! : hari;
-  const [s, p] = await Promise.all([staffRpc<S>("owner_daily_summary", { p_date: tgl }), staffRpc<P[]>("owner_partner_scores", { p_days: 30 })]);
+  const [s, p, nl] = await Promise.all([staffRpc<S>("owner_daily_summary", { p_date: tgl }), staffRpc<P[]>("owner_partner_scores", { p_days: 30 }), staffRpc<{ count: number; avg: number | null; dist: Record<string, number>; latest: { resiNo: string; stars: number; comment: string | null; origin: string }[] }>("owner_ratings", { p_days: 30 })]);
   const d = s.data;
   const judul = new Date(tgl + "T00:00:00Z").toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
   const teks = d ? `Ringkasan Kamil Logistik, ${judul}\n• Resi baru: ${d.day.created}\n• Sudah diterima pelanggan: ${d.day.delivered}\n• Ongkir ditagih: ${rupiah(d.day.billed)}\n• Uang masuk: ${rupiah(d.day.received)}\n• Barang bermasalah: ${d.day.problems}\n• Tertahan 24 jam+: ${d.pending.stuck}\n• Piutang belum lunas: ${rupiah(d.pending.unpaid)}` : "";
@@ -50,6 +50,14 @@ export default async function Ringkasan({ searchParams }: { searchParams: Promis
           <ul className="chg"><li><span>Resi aktif</span><b>{d.pending.active}</b></li><li><span>Tertahan lebih dari 24 jam</span><b className={d.pending.stuck ? "down" : ""}>{d.pending.stuck}</b></li><li><span>Piutang belum lunas</span><b>{rupiah(d.pending.unpaid)}</b></li><li><span>Tagihan lewat jatuh tempo</span><b className={d.pending.overdue ? "down" : ""}>{d.pending.overdue}</b></li><li><span>Kasus selisih terbuka</span><b className={d.pending.openCases ? "down" : ""}>{d.pending.openCases}</b></li></ul>
           <a className="btn wabtn" style={{ marginTop: 10 }} href={`https://wa.me/?text=${encodeURIComponent(teks)}`} target="_blank" rel="noopener noreferrer"><Icon name="chat" size={20} /> Bagikan ringkasan ke WhatsApp</a></div>
       </>}
+      {nl.data && (
+        <div className="card"><h2>Penilaian pelanggan (30 hari)</h2>
+          {nl.data.count === 0 ? <p className="muted" style={{ margin: 0 }}>Belum ada penilaian. Pelanggan menilai dari halaman lacak setelah barang diterima.</p> : <>
+            <p style={{ margin: "0 0 6px", fontSize: 28, fontWeight: 900 }}>{nl.data.avg} <span style={{ color: "#ffb347" }}>★</span> <small className="muted" style={{ fontSize: 14, fontWeight: 600 }}>dari {nl.data.count} penilaian</small></p>
+            <ul className="chg">{[5, 4, 3, 2, 1].map((k) => <li key={k}><span>{"★".repeat(k)}</span><b>{nl.data!.dist[String(k)] ?? 0}</b></li>)}</ul>
+            {nl.data.latest.filter((x) => x.comment).slice(0, 5).map((x) => <p key={x.resiNo} style={{ margin: "6px 0 0", fontSize: 14 }}><b>{"★".repeat(x.stars)}</b> “{x.comment}” <small className="muted">· {x.origin}</small></p>)}</>}
+        </div>
+      )}
       <h2 style={{ margin: "8px 2px 0" }}>Kinerja mitra dan gudang (30 hari)</h2>
       <div className="stagger fstack">
         {(p.data ?? []).map((x) => (

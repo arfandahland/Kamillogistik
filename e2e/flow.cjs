@@ -499,7 +499,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     r = await act(k, k.getByRole("button", { name: "Buat resi" }));
     ok("batas kredit terlampaui: resi baru ditolak dengan alasan jelas", r.err && /Batas kredit/.test(r.err), JSON.stringify(r));
     await p.goto(`${BASE}/app/korporat`, { waitUntil: "networkidle" });
-    await p.getByText("PT Sinar Jaya").first().click(); await p.waitForURL(/\/app\/korporat\/[0-9a-f-]+/); await p.waitForLoadState("networkidle");
+    { const href = await p.locator("a[href^='/app/korporat/']", { hasText: "PT Sinar Jaya" }).first().getAttribute("href"); await p.goto(`${BASE}${href}`, { waitUntil: "networkidle" }); }
     const t = await text(p);
     ok("rekap korporat: Rp20.000 belum dibayar dan batas kredit terpakai penuh", /Rp20\.000/.test(t) && /dari Rp20\.000/.test(t), t.slice(0, 300));
     ok("rekap korporat memuat daftar invoice", /INV-/.test(t));
@@ -564,6 +564,51 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("kurir tidak bisa membuka peta pemilik", !kur.url().includes("/app/peta") || !(await kur.locator(".mapsvg").count()));
     await kur.goto(`${BASE}/app/tindak-lanjut`, { waitUntil: "networkidle" });
     ok("kurir ditolak masuk antrean", !kur.url().includes("/app/tindak-lanjut") || /tidak punya|izin|Hanya/i.test(await text(kur)));
+  }
+
+  // ===== P. Penilaian pelanggan, kartu pratinjau, portal korporat =====
+  {
+    const pc = await browser.newContext({ viewport: { width: 412, height: 860 } }); const pp = await pc.newPage();
+    await pp.goto(`${BASE}/lacak/${resiNo}`, { waitUntil: "networkidle" });
+    ok("resi sudah diterima: form penilaian bintang tampil", (await pp.locator("form.nilai").count()) === 1 && (await pp.locator(".stars button").count()) === 5);
+    await pp.locator(".stars button").nth(4).click();
+    await pp.fill("#komentar", "Kurirnya ramah, barang aman");
+    await pp.fill("#hp", "0000"); await pp.getByRole("button", { name: "Kirim penilaian" }).click();
+    await pp.waitForSelector(".nilai .err", { timeout: 15000 }).catch(() => {});
+    ok("nilai dengan 4 angka HP salah ditolak dengan pesan jelas", /tidak cocok/.test(await text(pp)), (await text(pp)).slice(-300));
+    await pp.fill("#hp", "5566"); await pp.getByRole("button", { name: "Kirim penilaian" }).click();
+    await pp.waitForSelector(".nilai.done", { timeout: 15000 }).catch(() => {});
+    ok("nilai dengan 4 angka HP benar tersimpan (terima kasih)", /Terima kasih/.test(await text(pp)));
+    await pp.screenshot({ path: `${OUT}/e2e-nilai.png` });
+    await pp.reload({ waitUntil: "networkidle" });
+    ok("setelah dimuat ulang: sudah dinilai, form tidak muncul lagi", (await pp.locator("form.nilai").count()) === 0 && /sudah menilai/.test(await text(pp)));
+    const html = await (await fetch(`${BASE}/lacak/${resiNo}`)).text();
+    ok("halaman lacak memuat meta og:image dan og:title status", /property="og:image"/.test(html) && /og:title" content="Resi KLX/.test(html));
+    const ogUrl = (html.match(/property="og:image" content="([^"]+)"/) || [])[1] || "";
+    const og = await fetch(ogUrl.replace(/^https?:\/\/[^/]+/, BASE));
+    ok("kartu pratinjau WhatsApp (gambar OG) dibuat untuk resi", og.status === 200 && /image\/png/.test(og.headers.get("content-type") || ""), `${og.status} ${ogUrl}`);
+    await pc.close();
+    const o = owner.page;
+    await o.goto(`${BASE}/app/ringkasan`, { waitUntil: "networkidle" });
+    ok("pemilik melihat penilaian rata-rata 5 dan komentar", /Penilaian pelanggan/.test(await text(o)) && /Kurirnya ramah/.test(await text(o)), (await text(o)).slice(500, 1500));
+    // portal korporat
+    await o.goto(`${BASE}/app/korporat`, { waitUntil: "networkidle" });
+    { const href = await o.locator("a[href^='/app/korporat/']", { hasText: "PT Sinar Jaya" }).first().getAttribute("href"); await o.goto(`${BASE}${href}`, { waitUntil: "networkidle" }); }
+    let r = await act(o, o.getByRole("button", { name: "Nyalakan portal" }));
+    ok("pemilik menyalakan portal korporat", r.ok && /Portal dinyalakan/.test(r.ok), JSON.stringify(r));
+    const link1 = (await o.locator(".plink").innerText()).trim();
+    ok("tautan portal panjang dan acak (/portal/ + 64 karakter)", /\/portal\/[0-9a-f]{64}$/.test(link1), link1);
+    const ac = await browser.newContext({ viewport: { width: 412, height: 860 } }); const ap = await ac.newPage();
+    await ap.goto(link1.replace(/^https?:\/\/[^/]+/, BASE), { waitUntil: "networkidle" });
+    ok("portal terbuka tanpa login: nama perusahaan, tagihan, dan resi", /PT Sinar Jaya/.test(await text(ap)) && /Belum dibayar/.test(await text(ap)) && /INV-/.test(await text(ap)) && /KLX-/.test(await text(ap)));
+    ok("portal tidak memuat nomor HP", !/0811|0812|0813/.test(await text(ap)));
+    await ap.screenshot({ path: `${OUT}/e2e-portal.png`, fullPage: true });
+    r = await act(o, o.getByRole("button", { name: "Ganti tautan" }));
+    await ap.goto(link1.replace(/^https?:\/\/[^/]+/, BASE), { waitUntil: "networkidle" });
+    ok("setelah tautan diganti, tautan lama tidak berlaku", /Tautan tidak berlaku/.test(await text(ap)));
+    await ap.goto(`${BASE}/portal/${"a".repeat(64)}`, { waitUntil: "networkidle" });
+    ok("tautan portal tebakan tidak membuka apa pun", /Tautan tidak berlaku/.test(await text(ap)));
+    await ac.close();
   }
 
   // ===== M0. Nomor HP wajib benar =====
