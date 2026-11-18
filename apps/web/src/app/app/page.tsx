@@ -13,10 +13,12 @@ export default async function Beranda({ searchParams }: { searchParams: Promise<
   const tab = TABS.find((t) => t.k === sp.s)?.k ?? "aktif";
   const q = (sp.q ?? "").trim();
   const n = Math.min(100, Math.max(30, Number(sp.n) || 30)); // baris yang ditampilkan (HTML lebih ringan di HP)
-  const [me, list, pend] = await Promise.all([
+  const hasQueue = who?.role !== undefined && ["HUB_MANAGER", "MITRA_POS", "WAREHOUSE"].includes(who.role);
+  const [me, list, pend, fq] = await Promise.all([
     getMe(),
     staffRpc<Row[]>("staff_list_shipments", { p_q: q || null, p_limit: 100 }),
     staffRpc<Pending[]>("my_pending_handovers"),
+    hasQueue ? staffRpc<{ count: number }>("followup_queue", { p_only_count: true }) : Promise.resolve(null),
   ]);
   const all = list.data ?? [];
   const aktif = (STATUS_GROUPS.aktif as readonly string[]);
@@ -25,6 +27,6 @@ export default async function Beranda({ searchParams }: { searchParams: Promise<
     <StaffHome rows={rows.slice(0, n)} more={rows.length > n ? `/app?${new URLSearchParams({ ...(tab !== "aktif" ? { s: tab } : {}), ...(q ? { q } : {}), n: String(n + 30) })}` : null} pending={pend.data ?? []}
       stats={{ aktif: all.filter((r) => aktif.includes(r.status)).length, menunggu: (pend.data ?? []).length,
         selesai: all.filter((r) => r.status === "DELIVERED").length, dipegang: all.filter((r) => r.mine).length }}
-      tab={tab} q={q} canCreate={!!me.data && CAN_CREATE_ORDER.includes(me.data.role)} error={list.error} />
+      followup={fq?.data ? fq.data.count : null} tab={tab} q={q} canCreate={!!me.data && CAN_CREATE_ORDER.includes(me.data.role)} error={list.error} />
   );
 }

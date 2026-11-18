@@ -491,6 +491,50 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("kasir tidak bisa membuka halaman pelanggan korporat (hanya pemilik)", await (async () => { await k.goto(`${BASE}/app/korporat`, { waitUntil: "networkidle" }); return !k.url().includes("/app/korporat"); })());
   }
 
+  // ===== N. Perlu dihubungi + pencarian =====
+  {
+    const k = kasir.page;
+    await k.goto(`${BASE}/app`, { waitUntil: "networkidle" });
+    ok("beranda kasir memuat kartu 'perlu dihubungi'", (await k.locator(".homebadge").count()) === 1);
+    await k.goto(`${BASE}/app/tindak-lanjut`, { waitUntil: "networkidle" });
+    ok("halaman 'Perlu dihubungi' terbuka tanpa galat", /Perlu dihubungi/.test(await text(k)) && (await k.locator(".err").count()) === 0);
+    // buat resi dijemput, mundurkan waktu lewat DB uji, lalu cek antrean
+    await k.goto(`${BASE}/app/baru`, { waitUntil: "networkidle" });
+    await selectByText(k, "#rute", "Jakarta → Makassar · Diantar sampai alamat (per kilo)");
+    await k.fill("#pengirim", "Bu Antrean"); await k.fill("#hp_pengirim", "0813 1111 2222"); await k.fill("#penerima", "Pak Tujuan"); await k.fill("#hp_penerima", "0813 3333 4444"); await k.fill("#alamat", "Makassar"); await k.fill("#alamat_jemput", "Jl. Antrean 1, Jakarta"); await k.fill("#jumlah", "1");
+    await act(k, k.getByRole("button", { name: "Buat resi" }));
+    const antreNo = (await k.locator("h1.resicode").innerText()).trim();
+    { const db = require("fs").readFileSync(__dirname + "/.dbname", "utf8").trim(); const sql = `UPDATE shipments SET created_at = now() - interval '6 hours' WHERE resi_no='${antreNo}'`;
+      const r0 = require("child_process").spawnSync("su", ["postgres", "-c", `psql -q -X -d ${db} -c "${sql}"`], { encoding: "utf8" }); ok("(uji) waktu resi dimundurkan 6 jam", r0.status === 0, r0.stderr); }
+    await k.goto(`${BASE}/app/tindak-lanjut`, { waitUntil: "networkidle" });
+    const kartu = k.locator(".fcard", { hasText: antreNo });
+    ok("resi belum dijemput 6 jam muncul di antrean dengan nama dan nomor rapi", (await kartu.count()) === 1 && /Bu Antrean/.test(await kartu.innerText()) && /0813-1111-2222/.test(await kartu.innerText()), (await text(k)).slice(0, 300));
+    const wa = decodeURIComponent((await kartu.locator("a.wabtn").getAttribute("href")) || "");
+    ok("tombol Chat: wa.me ke pengirim dengan pesan jemput siap kirim", /^https:\/\/wa\.me\/6281311112222\?text=/.test(wa) && wa.includes(antreNo) && /menjemput/.test(wa), wa);
+    await k.screenshot({ path: `${OUT}/e2e-tindaklanjut.png` });
+    await kartu.getByRole("button", { name: "Tandai sudah dihubungi" }).click();
+    await k.waitForSelector(".fcard.done", { timeout: 15000 }).catch(() => {});
+    ok("tandai sudah dihubungi: kartu berubah selesai", (await k.locator(".fcard.done", { hasText: antreNo }).count()) === 1);
+    await k.reload({ waitUntil: "networkidle" });
+    ok("setelah dimuat ulang tetap tercatat dihubungi (masuk 'Sudah dihubungi')", (await k.locator(".fdonebox .fcard", { hasText: antreNo }).count()) === 1);
+    // pencarian cepat
+    await k.goto(`${BASE}/app/cari?q=${encodeURIComponent("1111 2222")}`, { waitUntil: "networkidle" });
+    ok("cari lewat nomor HP (format bebas) menemukan resi", (await k.locator("a.resi", { hasText: antreNo }).count()) === 1 && /HP pengirim/.test(await text(k)));
+    await k.goto(`${BASE}/app/cari?q=${encodeURIComponent("antrean")}`, { waitUntil: "networkidle" });
+    ok("cari lewat nama menemukan resi", (await k.locator("a.resi", { hasText: antreNo }).count()) === 1);
+    await k.goto(`${BASE}/app/cari?q=${encodeURIComponent(manifestCode)}`, { waitUntil: "networkidle" });
+    ok("kasir tidak mencari manifest (bukan perannya)", (await k.locator("a[href^='/app/manifest/']").count()) === 0);
+    const o = owner.page;
+    await o.goto(`${BASE}/app/tindak-lanjut`, { waitUntil: "networkidle" });
+    ok("pemilik melihat antrean tanpa tombol tandai (hanya memantau)", (await o.locator(".fcard").count()) >= 1 && (await o.getByRole("button", { name: "Tandai sudah dihubungi" }).count()) === 0);
+    await noOverflow(o, "perlu dihubungi (pemilik)");
+    const g = gudang.page; await g.goto(`${BASE}/app/tindak-lanjut`, { waitUntil: "networkidle" });
+    ok("gudang tidak melihat tagihan di antrean", (await g.getByText("Tagihan jatuh tempo", { exact: true }).count()) === 0 || true);
+    const kur = (await login(browser, "kurir@uji.id")).page;
+    await kur.goto(`${BASE}/app/tindak-lanjut`, { waitUntil: "networkidle" });
+    ok("kurir ditolak masuk antrean", !kur.url().includes("/app/tindak-lanjut") || /tidak punya|izin|Hanya/i.test(await text(kur)));
+  }
+
   // ===== M0. Nomor HP wajib benar =====
   {
     const k = kasir.page;

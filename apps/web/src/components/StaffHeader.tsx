@@ -16,7 +16,8 @@ export default function StaffHeader({ name, role, branch, greet, initials, force
             <Icon name="shield" size={14} /> {role}{branch ? ` · ${branch}` : " · Semua cabang"}
           </span>
         </div>
-        <Link href="/app/akun" className="avatar" aria-label="Akun saya">{initials}</Link>
+        <div className="hdract"><Link href="/app/cari" className="hdrsearch" aria-label="Cari resi, nama, atau nomor HP"><Icon name="search" size={22} /></Link>
+        <Link href="/app/akun" className="avatar" aria-label="Akun saya">{initials}</Link></div>
       </div>
     </header>
   );

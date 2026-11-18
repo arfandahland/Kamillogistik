@@ -17,7 +17,7 @@ export default function StaffShell({ me, pending, children, forceFull }: { me: M
         { href: "/app", label: "Pantauan", icon: "chart" },
         { href: "/app/semua", label: "Resi", icon: "list" },
         { href: "/app/keuangan", label: "Keuangan", icon: "cash", also: ["/app/tagihan"] },
-        { href: "/app/kelola", label: "Kelola", icon: "grid", also: ["/app/mitra", "/app/korporat", "/app/petugas", "/app/tarif", "/app/pengaturan"] },
+        { href: "/app/kelola", label: "Kelola", icon: "grid", also: ["/app/tindak-lanjut", "/app/cari", "/app/mitra", "/app/korporat", "/app/petugas", "/app/tarif", "/app/pengaturan"] },
         { href: "/app/akun", label: "Akun", icon: "user" },
       ]
     : [
@@ -32,6 +32,8 @@ export default function StaffShell({ me, pending, children, forceFull }: { me: M
     ? [
         { href: "/app", label: "Pantauan", icon: "chart" },
         { href: "/app/semua", label: "Semua resi", icon: "list" },
+        { href: "/app/tindak-lanjut", label: "Perlu dihubungi", icon: "chat" },
+        { href: "/app/cari", label: "Cari", icon: "search" },
         { href: "/app/manifest", label: "Manifest", icon: "layers" },
         { href: "/app/keuangan", label: "Keuangan", icon: "cash" },
         { href: "/app/tagihan", label: "Tagihan", icon: "file" },
@@ -42,7 +44,7 @@ export default function StaffShell({ me, pending, children, forceFull }: { me: M
         { href: "/app/pengaturan", label: "Pengaturan", icon: "sliders" },
         { href: "/app/akun", label: "Akun", icon: "user" },
       ]
-    : [...tabs.slice(0, -1), { href: "/app/serah", label: "Serah terima", icon: "swap", badge: pending }, tabs[tabs.length - 1]!].filter((t, i, a) => a.findIndex((x) => x.href === t.href) === i);
+    : [...tabs.slice(0, -1), ...(["HUB_MANAGER", "MITRA_POS", "WAREHOUSE"].includes(me.role) ? [{ href: "/app/tindak-lanjut", label: "Perlu dihubungi", icon: "chat" }] : []), { href: "/app/cari", label: "Cari", icon: "search" }, { href: "/app/serah", label: "Serah terima", icon: "swap", badge: pending }, tabs[tabs.length - 1]!].filter((t, i, a) => a.findIndex((x) => x.href === t.href) === i);
   const role = ROLE_LABEL[me.role] ?? me.role;
   const tanggal = new Intl.DateTimeFormat("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Makassar" }).format(new Date());
   return (

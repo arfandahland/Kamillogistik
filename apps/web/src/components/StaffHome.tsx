@@ -22,12 +22,19 @@ function Stat({ icon, n, label, warm, dx }: { icon: string; n: number; label: st
   );
 }
 
-export default function StaffHome({ rows, stats, pending, tab, q, canCreate, error, hideStats, basePath = "/app", title = "Tugas hari ini", more }: {
-  rows: Row[]; stats: Stats; pending: Pending[]; tab: string; q: string; canCreate: boolean; error?: string | null; hideStats?: boolean; basePath?: string; title?: string; more?: string | null;
+export default function StaffHome({ rows, stats, pending, tab, q, canCreate, error, hideStats, basePath = "/app", title = "Tugas hari ini", more, followup }: {
+  rows: Row[]; stats: Stats; pending: Pending[]; tab: string; q: string; canCreate: boolean; error?: string | null; hideStats?: boolean; basePath?: string; title?: string; more?: string | null; followup?: number | null;
 }) {
   const hasSide = canCreate || pending.length > 0;
   return (
     <main className="wrap stack home">
+      {followup != null && (
+        <Link href="/app/tindak-lanjut" className={`homebadge ${followup === 0 ? "zero" : ""}`}>
+          <span className="n">{followup === 0 ? <Icon name="check" size={24} /> : followup}</span>
+          <span className="t"><b>{followup === 0 ? "Semua pelanggan sudah dikabari" : "Pelanggan perlu dihubungi"}</b><small>{followup === 0 ? "Tidak ada antrean tindak lanjut" : "Belum dijemput, belum diantar, tagihan jatuh tempo"}</small></span>
+          <Icon name="arrow" size={22} />
+        </Link>
+      )}
       {!hideStats && <div className="stats stagger">
         <Stat icon="box" n={stats.aktif} label="Barang sedang berjalan" />
         <Stat icon="clock" n={stats.menunggu} label="Menunggu Anda terima" warm />
