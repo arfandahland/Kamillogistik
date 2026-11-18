@@ -47,7 +47,7 @@ export default async function Home() {
         <Waves />
       </section>
 
-      <div className="wrap stack">
+      <div className="wrap stack homew">
         <div className="card float">
           <h2>Barang saya sudah sampai mana?</h2>
           <ResiForm />
@@ -84,12 +84,13 @@ export default async function Home() {
           </section>
         )}
 
-        <section className="card" aria-labelledby="cara">
-          <h2 id="cara">Caranya gampang</h2>
-          <ol className="steps">
-            <li><span className="n"><Icon name="chat" size={22} /></span><div><b>Hubungi kami</b><br /><span className="muted">Lewat WhatsApp atau datang ke gerai mitra.</span></div></li>
-            <li><span className="n"><Icon name="scale" size={22} /></span><div><b>Barang dijemput dan ditimbang</b><br /><span className="muted">Anda mendapat nomor resi dan invoice resmi.</span></div></li>
-            <li><span className="n"><Icon name="pin" size={22} /></span><div><b>Pantau terus</b><br /><span className="muted">Cek tahap pengiriman kapan saja lewat nomor resi.</span></div></li>
+        <section aria-labelledby="cara">
+          <h2 id="cara" className="sech">Caranya gampang</h2>
+          <ol className="how stagger">
+            <li className="card"><span className="hn">1</span><span className="n"><Icon name="chat" size={22} /></span><b>Hubungi kami</b><p className="muted">Lewat WhatsApp atau datang ke gerai mitra. Sebutkan barang dan tujuannya.</p></li>
+            <li className="card"><span className="hn">2</span><span className="n"><Icon name="scale" size={22} /></span><b>Barang ditimbang</b><p className="muted">Ongkir dihitung dari berat sebenarnya. Anda menerima nomor resi dan invoice resmi.</p></li>
+            <li className="card"><span className="hn">3</span><span className="n"><Icon name="truck" size={22} /></span><b>Dikirim darat dan laut</b><p className="muted">Setiap perpindahan barang antar petugas dicatat, jadi selalu jelas siapa yang memegang.</p></li>
+            <li className="card"><span className="hn">4</span><span className="n"><Icon name="pin" size={22} /></span><b>Pantau sampai tiba</b><p className="muted">Cek tahapnya kapan saja lewat nomor resi, tanpa perlu daftar atau masuk.</p></li>
           </ol>
         </section>
 
@@ -106,6 +107,12 @@ export default async function Home() {
           <h2>Siap kirim barang?</h2>
           <p>Tanyakan tarif dan jadwal langsung ke tim kami.</p>
           <a className="btn" href={waLink("Halo Kamil Logistik, saya mau tanya tarif dan jadwal pengiriman.")}><Icon name="chat" size={22} /> Chat WhatsApp</a>
+        </section>
+
+        <section className="card partnerband" aria-labelledby="mitra">
+          <div><h2 id="mitra">Punya gerai atau gudang? Jadilah mitra Kamil</h2>
+            <p className="muted">Terima kiriman di kota Anda, buat resi dan invoice sendiri lewat HP, dan pantau semuanya dalam satu aplikasi.</p></div>
+          <a className="btn ghost" href={waLink("Halo Kamil Logistik, saya tertarik menjadi mitra gerai.")}>Tanya jadi mitra</a>
         </section>
       </div>
     </main>

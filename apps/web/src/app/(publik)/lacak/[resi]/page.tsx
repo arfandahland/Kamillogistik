@@ -32,7 +32,9 @@ export default async function Track({ params }: P) {
     ...t.upcoming.map((u) => ({ ...u, detail: "", at: "", location: null as string | null, kind: "todo" })),
   ];
   const doneCount = t.history.length;
-  const pct = Math.max(4, Math.round((doneCount / t.progress.total) * 100));
+  // Penomoran sama dengan aplikasi petugas: "Order diterima" dihitung sebagai tahap pertama.
+  const stage = doneCount + 1, stageTotal = t.progress.total + 1;
+  const pct = Math.max(4, Math.round((stage / stageTotal) * 100));
   // tinggi garis hijau = sampai titik terakhir yang sudah tercapai
   const fillPct = items.length > 1 ? Math.max(0, ((doneCount - 1) / (items.length - 1)) * 100) : 0;
 
@@ -44,7 +46,7 @@ export default async function Track({ params }: P) {
         <p><span className={`pill ${t.status === "DELIVERED" ? "done" : ""}`}>{t.statusLabel}</span>{" "}
           <span className="muted">{t.route.origin} → {t.route.dest}</span></p>
         <div className="bar"><i style={{ width: `${pct}%` }} /></div>
-        <small className="muted">Tahap {doneCount} dari {t.progress.total}</small>
+        <small className="muted">Tahap {stage} dari {stageTotal}</small>
         {t.eta && <p style={{ marginTop: 12 }}><Icon name="clock" size={18} /> Perkiraan tiba: <b>{tanggal(t.eta)}</b></p>}
         {t.pod && (
           <p style={{ marginTop: 12 }}><Icon name="check" size={18} /> Diterima oleh <b>{t.pod.receiverName}</b> pada {tanggalWaktu(t.pod.signedAt)}.

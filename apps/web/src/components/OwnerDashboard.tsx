@@ -71,13 +71,13 @@ export default function OwnerDashboard({ initial, initialError, preview }: { ini
           <div className="klabel"><span className="si"><Icon name="chart" size={20} /></span>Pendapatan {data.days} hari</div>
           <b className="kval"><CountUp value={k.revenue} format={rupiahRingkas} /></b>
           <Delta now={k.revenue} prev={k.revenuePrev} />
-          <Spark values={data.daily.map((x) => x.revenue)} color="var(--teal-500)" />
+          {data.daily.filter((x) => x.revenue > 0).length >= 3 && <Spark values={data.daily.map((x) => x.revenue)} color="var(--teal-500)" />}
         </div>
         <div className="kcard">
           <div className="klabel"><span className="si"><Icon name="box" size={20} /></span>Resi baru</div>
           <b className="kval"><CountUp value={k.newInPeriod} /></b>
           <Delta now={k.newInPeriod} prev={k.newPrev} />
-          <Spark values={data.daily.map((x) => x.created)} color="var(--amber)" />
+          {data.daily.filter((x) => x.created > 0).length >= 3 && <Spark values={data.daily.map((x) => x.created)} color="var(--amber)" />}
         </div>
         <div className="kcard">
           <div className="klabel"><span className="si warm"><Icon name="truck" size={20} /></span>Sedang berjalan</div>
@@ -99,11 +99,10 @@ export default function OwnerDashboard({ initial, initialError, preview }: { ini
       )}
 
       <div className="dgrid">
+        {data.alerts.length > 0 && (
         <section className="card panel p-alert">
           <h2><Icon name="bolt" size={20} /> Perlu perhatian</h2>
-          {data.alerts.length === 0 ? (
-            <p className="allgood"><Icon name="check" size={18} /> {empty ? "Belum ada yang perlu dipantau." : "Semua bergerak sesuai waktu. Tidak ada yang macet."}</p>
-          ) : (
+          {(
             <ul className="alerts">
               {data.alerts.map((a) => (
                 <li key={a.code} className={a.level}>
@@ -114,8 +113,9 @@ export default function OwnerDashboard({ initial, initialError, preview }: { ini
             </ul>
           )}
         </section>
+        )}
 
-        <section className="card panel p-ins">
+        <section className={`card panel p-ins ${data.alerts.length === 0 ? "wide" : ""}`}>
           <h2><Icon name="search" size={20} /> Kesimpulan otomatis</h2>
           <ul className="insights">{insights.map((i, n) => <li key={n} className={i.tone}>{i.text}</li>)}</ul>
         </section>

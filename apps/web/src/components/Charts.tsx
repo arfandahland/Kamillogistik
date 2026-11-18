@@ -132,7 +132,7 @@ export function Donut({ parts, center, sub }: { parts: { label: string; value: n
         <text x="70" y="86" textAnchor="middle" className="dsub">{sub}</text>
       </svg>
       <ul className="dleg">
-        {parts.map((p) => <li key={p.label} className={p.value === 0 ? "zero" : ""}><i style={{ background: p.color }} /><span>{p.label}</span><b>{p.value}</b></li>)}
+        {(total > 0 ? parts.filter((p) => p.value > 0) : parts).map((p) => <li key={p.label} className={p.value === 0 ? "zero" : ""}><i style={{ background: p.color }} /><span>{p.label}</span><b>{p.value}</b></li>)}
       </ul>
     </div>
   );
