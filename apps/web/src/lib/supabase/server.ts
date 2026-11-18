@@ -2,6 +2,9 @@ import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { cache } from "react";
 
+/** Semua urusan login terjadi di server, jadi cookie sesi tidak perlu bisa dibaca skrip di peramban (HttpOnly). */
+export const COOKIE_SAFE = { httpOnly: true, sameSite: "lax" as const, secure: process.env.VERCEL === "1" };
+
 export const supabaseConfigured = Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_PUBLISHABLE_KEY);
 
 /** Klien Supabase atas nama petugas yang sedang login (sesi dari cookie). Tidak ada kunci rahasia. */
@@ -11,7 +14,7 @@ export async function supabaseServer() {
     cookies: {
       getAll: () => store.getAll(),
       setAll: (list: { name: string; value: string; options: CookieOptions }[]) => {
-        try { list.forEach(({ name, value, options }) => store.set(name, value, options)); } catch { /* dipanggil dari halaman: abaikan */ }
+        try { list.forEach(({ name, value, options }) => store.set(name, value, { ...options, ...COOKIE_SAFE })); } catch { /* dipanggil dari halaman: abaikan */ }
       },
     },
   });

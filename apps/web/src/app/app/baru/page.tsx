@@ -4,6 +4,7 @@ import { CAN_CREATE_ORDER, handleRoutes } from "@kamil/core";
 import { repo } from "@/lib/repo";
 import { staffRpc, getMe, type Staff } from "@/lib/supabase/server";
 import SubmitButton from "@/components/SubmitButton";
+import { randomUUID } from "node:crypto";
 import { buatResi } from "../actions";
 
 export const metadata: Metadata = { title: "Buat Resi Baru" };
@@ -19,6 +20,7 @@ export default async function Baru({ searchParams }: { searchParams: Promise<{ e
   return (
     <main className="wrap narrow section">
       <form className="card" action={buatResi}>
+        <input type="hidden" name="ref" value={randomUUID()} />
         <h1>Buat resi baru</h1>
         {e && <div className="err" role="alert">{e}</div>}
         {routes.length === 0 ? <p className="muted">Belum ada rute dari cabang Anda. Hubungi pemilik.</p> : (

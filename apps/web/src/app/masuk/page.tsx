@@ -5,6 +5,7 @@ import LoginForm from "@/components/LoginForm";
 import Scene3D from "@/components/Scene3D";
 import Waves from "@/components/Waves";
 import { BRAND, waLink } from "@/lib/brand";
+import { loginKeys } from "@/lib/loginGuard";
 import { supabaseConfigured, supabaseServer } from "@/lib/supabase/server";
 
 export const metadata: Metadata = { title: "Masuk Petugas", robots: { index: false } };
@@ -16,14 +17,23 @@ async function masuk(formData: FormData) {
   const password = String(formData.get("password") ?? "");
   if (!email || !password) redirect("/masuk?e=kosong");
   const sb = await supabaseServer();
+  const k = await loginKeys(email);
+  // Penjaga gagal-aman: bila fungsinya tidak tersedia, login tetap berjalan seperti biasa.
+  const [a, b] = await Promise.all([sb.rpc("login_guard_check", { p_key: k.byEmail }), sb.rpc("login_guard_check", { p_key: k.byIp })]);
+  if (Number(a.data) > 0 || Number(b.data) > 0) redirect("/masuk?e=terkunci");
   const { error } = await sb.auth.signInWithPassword({ email, password });
-  if (error) redirect("/masuk?e=salah");
+  if (error) {
+    const [x, y] = await Promise.all([sb.rpc("login_guard_fail", { p_key: k.byEmail, p_max: 5 }), sb.rpc("login_guard_fail", { p_key: k.byIp, p_max: 30 })]);
+    redirect(Number(x.data) > 0 || Number(y.data) > 0 ? "/masuk?e=terkunci" : "/masuk?e=salah");
+  }
+  await sb.rpc("login_guard_ok", { p_key: k.byEmail });
   redirect("/app");
 }
 
 const PESAN: Record<string, string> = {
   salah: "Email atau kata sandi tidak cocok. Periksa lagi.",
   kosong: "Isi email dan kata sandi dulu ya.",
+  terkunci: "Terlalu banyak percobaan yang salah. Demi keamanan, tunggu sekitar 15 menit lalu coba lagi. Lupa sandi? Hubungi pemilik.",
 };
 
 export default async function Masuk({ searchParams }: { searchParams: Promise<{ e?: string }> }) {
