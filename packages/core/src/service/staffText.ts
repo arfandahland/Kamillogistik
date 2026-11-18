@@ -51,7 +51,8 @@ const ACTION_LABEL: Partial<Record<ShipmentStatus, { label: string; done: string
 export type NextAction =
   | { kind: "advance"; to: ShipmentStatus; label: string; done: string }
   | { kind: "measure" }
-  | { kind: "pod" };
+  | { kind: "pod" }
+  | { kind: "manifest"; label: string; hint: string };
 
 /** Tombol langkah berikutnya untuk peran ini, atau null bila bukan giliran peran ini. */
 export function nextAction(role: Actor, status: AnyStatus, masuk: "PICKUP" | "DROPOFF" = "PICKUP"): NextAction | null {
@@ -60,6 +61,11 @@ export function nextAction(role: Actor, status: AnyStatus, masuk: "PICKUP" | "DR
   if (!to || !canSetStatus(role, to)) return null;
   if (to === "AT_ORIGIN_HUB" && status === "CREATED") return { kind: "advance", to, label: "Barang diantar pelanggan sudah saya terima", done: "Tercatat: barang diantar sendiri oleh pelanggan dan sudah diterima di gudang." };
   if (to === "SORTED_INVOICED") return { kind: "measure" };
+  // Muat sampai bongkar dilakukan lewat manifest, bukan per resi.
+  if (to === "LOADED") return { kind: "manifest", label: "Masukkan ke manifest", hint: "Barang sudah ditimbang. Masukkan resi ini ke manifest muatan tujuan yang sama, lalu segel manifestnya." };
+  if (to === "IN_TRANSIT_SEA") return { kind: "manifest", label: "Buka manifest", hint: "Keberangkatan dicatat untuk seluruh manifest sekaligus." };
+  if (to === "ARRIVED_DEST_PORT") return { kind: "manifest", label: "Buka manifest", hint: "Kedatangan dicatat untuk seluruh manifest sekaligus." };
+  if (to === "AT_DEST_HUB") return { kind: "manifest", label: "Bongkar lewat manifest", hint: "Pindai tiap barang di manifest untuk memastikan jumlahnya cocok." };
   if (to === "DELIVERED") return { kind: "pod" };
   const a = ACTION_LABEL[to];
   return a ? { kind: "advance", to, ...a } : null;

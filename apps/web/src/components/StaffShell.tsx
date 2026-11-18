@@ -24,6 +24,7 @@ export default function StaffShell({ me, pending, children, forceFull }: { me: M
         { href: "/app", label: "Beranda", icon: "home" },
         ...(me.role === "MITRA_POS" ? [{ href: "/app/baru", label: "Resi baru", icon: "plus" }] : []),
         { href: "/app/pindai", label: "Pindai", icon: "scan", featured: true },
+        ...(["HUB_MANAGER", "WAREHOUSE", "CONTAINER_DRIVER"].includes(me.role) ? [{ href: "/app/manifest", label: "Manifest", icon: "layers" }] : []),
         ...(finance ? [{ href: "/app/tagihan", label: "Tagihan", icon: "file" }] : [{ href: "/app/serah", label: "Serah terima", icon: "swap", badge: pending }]),
         { href: "/app/akun", label: "Akun", icon: "user" },
       ];
@@ -31,6 +32,7 @@ export default function StaffShell({ me, pending, children, forceFull }: { me: M
     ? [
         { href: "/app", label: "Pantauan", icon: "chart" },
         { href: "/app/semua", label: "Semua resi", icon: "list" },
+        { href: "/app/manifest", label: "Manifest", icon: "layers" },
         { href: "/app/keuangan", label: "Keuangan", icon: "cash" },
         { href: "/app/tagihan", label: "Tagihan", icon: "file" },
         { href: "/app/mitra", label: "Mitra dan cabang", icon: "store" },

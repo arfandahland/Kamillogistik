@@ -150,7 +150,7 @@ export const ARTIKEL: Artikel[] = [
       <ol>
         <li><b>Cek perkiraan ongkir</b> di <Link href="/ongkir">kalkulator</Link>. Pilih kota asal dan tujuan, isi berat dan ukuran. Misalnya Jakarta ke Makassar mulai {harga(pairs, "ekspedisi-jakarta-makassar")}.</li>
         <li><b>Hubungi tim</b> lewat WhatsApp atau datang ke gerai mitra. Sebutkan isi barang, jumlah, dan alamat penerima.</li>
-        <li><b>Barang dijemput atau diantar ke gerai</b>. Kasir membuat resi dan Anda menerima nomor resi (contoh KLX-JKT-MKS-LJ-261112-0830-0001-D).</li>
+        <li><b>Barang dijemput atau diantar ke gerai</b>. Kasir membuat resi dan Anda menerima nomor resi (contoh KLX-JKT-MKS-LJ-261112-0830-0001-RH).</li>
         <li><b>Barang ditimbang di gudang</b>. Ongkir pasti dihitung dari berat atau ukuran sebenarnya, lalu Anda menerima <b>invoice resmi</b> yang bisa dibuka lewat tautan.</li>
         <li><b>Bayar lewat transfer atau tunai</b>. Cantumkan nomor invoice di berita transfer dan kirim bukti ke WhatsApp. Kasir mencatat setelah dana masuk.</li>
         <li><b>Pantau perjalanan</b> di <Link href="/lacak">Cek Resi</Link> kapan saja, tanpa login.</li>
@@ -176,7 +176,7 @@ export const ARTIKEL: Artikel[] = [
       <h2>Cara melacak</h2>
       <ol>
         <li>Buka halaman <Link href="/lacak">Cek Resi</Link>.</li>
-        <li>Masukkan nomor resi, bentuknya seperti <b>KLX-JKT-MKS-LJ-261112-0830-0001-D</b>.</li>
+        <li>Masukkan nomor resi, bentuknya seperti <b>KLX-JKT-MKS-LJ-261112-0830-0001-RH</b>.</li>
         <li>Tekan <b>Cek posisi barang</b>. Perjalanan barang tampil berurutan lengkap dengan waktu dan lokasinya.</li>
       </ol>
       <h2>Arti tiap status</h2>

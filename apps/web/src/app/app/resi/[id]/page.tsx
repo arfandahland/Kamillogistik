@@ -11,7 +11,7 @@ import { catatTerima, lanjut, serahkan, terima, timbang } from "../../actions";
 
 type Detail = {
   id: string; resiNo: string; status: AnyStatus; next: string | null;
-  pickupType: "PICKUP" | "DROPOFF"; pickupAddress: string | null; mode: "LAUT" | "DARAT" | "UDARA"; segment: string; company: string | null;
+  pickupType: "PICKUP" | "DROPOFF"; pickupAddress: string | null; mode: "LAUT" | "DARAT" | "UDARA"; segment: string; company: string | null; manifest: { id: string; code: string; status: string } | null;
   origin: { code: string; city: string; name: string }; dest: { code: string; city: string; name: string };
   senderName: string; senderPhone: string | null; receiverName: string; receiverPhone: string | null; receiverAddress: string | null;
   holder: { id: string; name: string } | null; iAmHolder: boolean;
@@ -117,6 +117,18 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
         </form>
       )}
 
+      {s.manifest && (
+        <Link href={`/app/manifest/${s.manifest.id}`} className="card lift manifestlink">
+          <span className="ic"><Icon name="layers" size={22} /></span>
+          <span><b>Ada di manifest</b><br /><code style={{ fontSize: 12.5, wordBreak: "break-all" }}>{s.manifest.code}</code></span>
+          <Icon name="arrow" size={20} />
+        </Link>
+      )}
+      {action?.kind === "manifest" && (
+        <div className="card banner"><b>Langkah berikutnya lewat manifest</b>
+          <p className="muted" style={{ margin: "6px 0 10px" }}>{action.hint}</p>
+          <Link className="btn" href={s.manifest ? `/app/manifest/${s.manifest.id}` : "/app/manifest"}><Icon name="layers" size={20} /> {action.label}</Link></div>
+      )}
       {action?.kind === "pod" && <PodForm id={s.id} action={catatTerima} defaultName={s.receiverName} />}
 
       {pod && (

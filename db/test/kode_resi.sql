@@ -8,14 +8,14 @@ SELECT t.fails($$select public.create_shipment('jakarta-makassar-port-to-door-kg
 SELECT t.fails($$select public.create_shipment('jakarta-makassar-port-to-door-kg','A','0811','B','0822','Alamat',1,NULL,NULL,'KIRIM_SENDIRI','x')$$, 'cara barang masuk');
 DO $$ DECLARE r jsonb; BEGIN
   r := public.create_shipment('jakarta-makassar-port-to-door-kg','Pelanggan Datang','0811','Budi','0822','Makassar',2,NULL,NULL,'DROPOFF',NULL);
-  ASSERT r->>'resiNo' ~ '^KLX-JKT-MKS-LA-[0-9]{6}-[0-9]{4}-[0-9]{4}-[A-Z]$', 'kode antar sendiri memuat LA: ' || (r->>'resiNo');
+  ASSERT r->>'resiNo' ~ '^KLX-JKT-MKS-LA-[0-9]{6}-[0-9]{4}-[0-9]{4}-[A-Z]{2}$', 'kode antar sendiri memuat LA: ' || (r->>'resiNo');
   PERFORM set_config('t.drop', r->>'id', false);
   r := public.create_shipment('jakarta-makassar-port-to-door-kg','Dijemput','0811','Budi','0822','Makassar',1,NULL,NULL,'PICKUP','Jl. Jemput 5');
   ASSERT r->>'resiNo' ~ '-LJ-', 'kode dijemput memuat LJ';
   PERFORM set_config('t.rn', r->>'resiNo', false);
 END $$;
 RESET ROLE;
-DO $$ BEGIN ASSERT (SELECT bool_and(split_part(resi_no, '-', 8) = public.resi_check(substr(resi_no, 1, length(resi_no) - 2))) FROM shipments), 'huruf pemeriksa semua resi benar'; END $$;
+DO $$ BEGIN ASSERT (SELECT bool_and(split_part(resi_no, '-', 8) = public.resi_check(substr(resi_no, 1, length(resi_no) - 3))) FROM shipments), 'huruf pemeriksa semua resi benar'; END $$;
 SELECT t.as_user('00000000-0000-0000-0000-000000000002');
 -- urutan naik per hari per kota asal
 DO $$ DECLARE a int; b int; BEGIN

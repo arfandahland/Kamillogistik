@@ -26,7 +26,7 @@ export const handleQuote = (repo: Repo, input: unknown) => safe(() => quote(repo
 async function track(repo: Repo, rawResi: string): Promise<Reply> {
   const resi = splitItem(rawResi).resi; // kode barang (…-01) dikenali sebagai resinya
   if (!isValidResi(resi))
-    return { status: 400, body: { error: "Nomor resi tidak dikenali. Contoh yang benar: KLX-JKT-MKS-LJ-261112-0830-0001-D" } };
+    return { status: 400, body: { error: "Nomor resi tidak dikenali. Contoh yang benar: KLX-JKT-MKS-LJ-261112-0830-0001-RH" } };
   const s = await repo.findShipmentByResi(resi);
   if (!s) return { status: 404, body: { error: "Nomor resi tidak ditemukan. Coba periksa lagi kodenya." } };
   return { status: 200, body: toPublicTrack(s) };

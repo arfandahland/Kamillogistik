@@ -1,18 +1,18 @@
 /**
- * Kode resi yang bisa DIBACA manusia. Contoh: KLX-MKS-JKT-LJ-261118-1432-0007-K
+ * Kode resi yang bisa DIBACA manusia. Contoh: KLX-MKS-JKT-LJ-261118-1432-0007-PK
  *
  *   KLX     merek Kamil Logistik Express
  *   MKS     kota/gudang asal            JKT   kota/gudang tujuan
  *   LJ      L = laut (U udara, D darat) · J = dijemput kurir (A = diantar sendiri)
  *   261118  tanggal 18-11-2026          1432  jam 14.32 WITA saat resi dibuat
  *   0007    urutan resi hari itu dari kota asal
- *   K       huruf pemeriksa (menangkap salah ketik; dihitung dari kode di depannya)
+ *   PK      dua huruf pemeriksa (menangkap salah ketik; dihitung dari kode di depannya)
  *
  * Tiap barang dalam satu resi memakai kode yang sama + "-01", "-02", dst. (untuk label dan pemindaian).
  * Rumus huruf pemeriksa HARUS sama dengan fungsi SQL public.resi_check (diuji dengan db/test/resi-cases.json).
  */
 export const RESI_PREFIX = "KLX";
-const CHECK_ALPHABET = "ACDEFGHJKLMNPRSTUVWXYZ"; // tanpa B, I, O, Q agar tidak tertukar dengan 8, 1, 0
+const CHECK_ALPHABET = "ABCDEFGHJKLMNPRSTUVWXYZ"; // 23 huruf (bilangan prima), tanpa I, O, Q agar tidak tertukar dengan 1, 0
 export type Moda = "LAUT" | "DARAT" | "UDARA";
 export type CaraMasuk = "PICKUP" | "DROPOFF";
 export const MODA_KODE: Record<Moda, string> = { LAUT: "L", DARAT: "D", UDARA: "U" };
@@ -22,12 +22,18 @@ export const MASUK_LABEL: Record<CaraMasuk, string> = { PICKUP: "Dijemput kurir"
 /** Pembagi berat volume (P x L x T cm / pembagi): laut dan darat 4000, udara 6000. */
 export const PEMBAGI_VOLUME: Record<Moda, number> = { LAUT: 4000, DARAT: 4000, UDARA: 6000 };
 
-/** Huruf pemeriksa dari badan kode (tanda hubung diabaikan). */
+/**
+ * Dua huruf pemeriksa dari badan kode (tanda hubung diabaikan).
+ * Nilai karakter: 0-9 dan A=10..Z=35; bobot posisi 1..22 berulang; jumlahnya dimodulus 521 (bilangan prima) lalu ditulis
+ * sebagai dua huruf (basis 23, tanpa I, O, Q). Bobot tak pernah 0 dan selisih nilai < 521, jadi salah ketik SATU karakter
+ * (huruf maupun angka, di posisi mana pun) pasti ketahuan. Harus sama dengan public.resi_check() di database.
+ */
 export function resiCheck(body: string): string {
   const s = body.toUpperCase().replace(/[^A-Z0-9]/g, "");
   let sum = 0;
-  for (let i = 0; i < s.length; i++) sum += s.charCodeAt(i) * (i + 1);
-  return CHECK_ALPHABET[sum % CHECK_ALPHABET.length]!;
+  for (let i = 0; i < s.length; i++) { const c = s.charCodeAt(i); sum += (c <= 57 ? c - 48 : c - 55) * ((i % 22) + 1); }
+  const v = sum % 521, n = CHECK_ALPHABET.length;
+  return CHECK_ALPHABET[Math.floor(v / n)]! + CHECK_ALPHABET[v % n]!;
 }
 
 /** Bagian tanggal dan jam dalam WITA (zona waktu sistem). */
@@ -46,7 +52,7 @@ export function formatResi(i: ResiInput): string {
   return `${body}-${resiCheck(body)}`;
 }
 
-const RE = /^KLX-([A-Z]{2,5})-([A-Z]{2,5})-([LDU])([JA])-(\d{2})(\d{2})(\d{2})-(\d{2})(\d{2})-(\d{4,5})-([A-Z])(?:-(\d{2,3}))?$/;
+const RE = /^KLX-([A-Z]{2,5})-([A-Z]{2,5})-([LDU])([JA])-(\d{2})(\d{2})(\d{2})-(\d{2})(\d{2})-(\d{4,5})-([A-Z]{2})(?:-(\d{2,3}))?$/;
 
 export type ResiParsed = {
   resi: string; origin: string; dest: string; moda: Moda; masuk: CaraMasuk;
@@ -78,7 +84,7 @@ export function normalizeResi(input: string): string {
   let s = input.trim().toUpperCase().replace(/[\s_./\\–—]+/g, "-").replace(/-{2,}/g, "-").replace(/^-+|-+$/g, "");
   if (!s.includes("-")) {
     // salinan dari chat sering kehilangan tanda hubung; hanya terima asal/tujuan 3 huruf
-    const c = /^KLX([A-Z]{3})([A-Z]{3})([LDU][JA])(\d{6})(\d{4})(\d{4,5})([A-Z])(\d{2,3})?$/.exec(s);
+    const c = /^KLX([A-Z]{3})([A-Z]{3})([LDU][JA])(\d{6})(\d{4})(\d{4,5})([A-Z]{2})(\d{2,3})?$/.exec(s);
     if (c) s = ["KLX", c[1], c[2], c[3], c[4], c[5], c[6], c[7], c[8]].filter(Boolean).join("-");
   }
   return s;
@@ -107,3 +113,20 @@ export function explainResi(p: ResiParsed, kota: (code: string) => string = (c) 
     { kode: parts[7]!, arti: "Huruf pemeriksa" },
   ];
 }
+
+/**
+ * Kode manifest: MNF-MKS-JKT-L-261118-1432-01-X
+ * (asal, tujuan, moda, tanggal, jam WITA saat dibuat, urutan manifest hari itu dari kota asal, huruf pemeriksa).
+ */
+const RE_MNF = /^MNF-([A-Z]{2,5})-([A-Z]{2,5})-([LDU])-(\d{2})(\d{2})(\d{2})-(\d{2})(\d{2})-(\d{2,3})-([A-Z]{2})$/;
+export function parseManifest(raw: string) {
+  const m = RE_MNF.exec(normalizeResi(raw));
+  if (!m) return null;
+  const body = `MNF-${m[1]}-${m[2]}-${m[3]}-${m[4]}${m[5]}${m[6]}-${m[7]}${m[8]}-${m[9]}`;
+  if (resiCheck(body) !== m[10]) return null;
+  return { kode: `${body}-${m[10]}`, origin: m[1]!, dest: m[2]!, moda: ({ L: "LAUT", D: "DARAT", U: "UDARA" } as const)[m[3] as "L" | "D" | "U"], seq: Number(m[9]) };
+}
+export const isManifestCode = (raw: string) => /^MNF-/i.test(normalizeResi(raw));
+export const MANIFEST_STATUS_LABEL: Record<string, string> = {
+  OPEN: "Sedang diisi", SEALED: "Disegel, siap berangkat", IN_TRANSIT: "Dalam perjalanan", ARRIVED: "Sudah tiba", UNLOADED: "Selesai dibongkar",
+};

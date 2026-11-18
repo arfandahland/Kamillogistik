@@ -8,7 +8,7 @@ const quote = (o: unknown) => handleQuote(repo, o);
 
 describe("handleTrack", () => {
   it("resi sudah sampai: 9 tahap lengkap + bukti terima ringkas", async () => {
-    const r = await handleTrack(repo, "KLX-JKT-MKS-LJ-261112-0830-0001-D");
+    const r = await handleTrack(repo, "KLX-JKT-MKS-LJ-261112-0830-0001-RH");
     const j = r.body as any;
     expect(r.status).toBe(200);
     expect(j.status).toBe("DELIVERED");
@@ -17,19 +17,19 @@ describe("handleTrack", () => {
     expect(j.pod.receiverName).toBe("Budi S.");
   });
   it("resi dalam pelayaran: sisa tahap + perkiraan tiba (huruf kecil dinormalkan)", async () => {
-    const j = (await handleTrack(repo, "klx-jkt-mks-lj-261114-1015-0002-s")).body as any;
+    const j = (await handleTrack(repo, "klx-jkt-mks-lj-261114-1015-0002-ny")).body as any;
     expect(j.history).toHaveLength(5);
     expect(j.upcoming.map((u: any) => u.status)).toEqual(["ARRIVED_DEST_PORT", "AT_DEST_HUB", "OUT_FOR_DELIVERY", "DELIVERED"]);
     expect(j.eta).toBe("2026-11-21T00:00:00Z");
   });
   it("TIDAK membocorkan data pribadi petugas, GPS, atau keuangan (PRD §3)", async () => {
-    const body = JSON.stringify((await handleTrack(repo, "KLX-JKT-MKS-LJ-261112-0830-0001-D")).body);
+    const body = JSON.stringify((await handleTrack(repo, "KLX-JKT-MKS-LJ-261112-0830-0001-RH")).body);
     for (const bad of ["Rahasia Driver", "driverName", "userId", "lat", "lng", "invoiceTotal", "1250000", "photoUrl", "signatureUrl", "demo://"])
       expect(body).not.toContain(bad);
   });
   it("pesan galat berbahasa awam", async () => {
     const a = await handleTrack(repo, "abc");
-    const b = await handleTrack(repo, "KLX-JKT-MKS-LJ-261118-1400-0998-P");
+    const b = await handleTrack(repo, "KLX-JKT-MKS-LJ-261118-1400-0998-ST");
     expect(a.status).toBe(400);
     expect(b.status).toBe(404);
     expect(JSON.stringify([a.body, b.body])).toMatch(/Nomor resi/);

@@ -54,11 +54,11 @@ SELECT t.fails($$select public.advance_shipment((select v::uuid from t.state whe
 RESET ROLE;
 DO $$ DECLARE s record; BEGIN
   SELECT * INTO s FROM shipments;
-  ASSERT s.resi_no ~ '^KLX-JKT-MKS-LJ-[0-9]{6}-[0-9]{4}-0001-[A-Z]$', 'format resi: ' || s.resi_no;
-  ASSERT split_part(s.resi_no, '-', 8) = public.resi_check(substr(s.resi_no, 1, length(s.resi_no) - 2)), 'huruf pemeriksa sesuai';
+  ASSERT s.resi_no ~ '^KLX-JKT-MKS-LJ-[0-9]{6}-[0-9]{4}-0001-[A-Z]{2}$', 'format resi: ' || s.resi_no;
+  ASSERT split_part(s.resi_no, '-', 8) = public.resi_check(substr(s.resi_no, 1, length(s.resi_no) - 3)), 'huruf pemeriksa sesuai';
   ASSERT s.status = 'CREATED' AND s.current_holder_user_id IS NULL, 'awal CREATED tanpa pemegang';
   ASSERT (SELECT count(*) FROM shipment_items) = 2, 'dua barang';
-  ASSERT (SELECT string_agg(barcode, ',' ORDER BY barcode) FROM shipment_items) ~ '-[A-Z]-01,KLX-.*-[A-Z]-02$', 'barcode per barang';
+  ASSERT (SELECT string_agg(barcode, ',' ORDER BY barcode) FROM shipment_items) ~ '-[A-Z]{2}-01,KLX-.*-[A-Z]{2}-02$', 'barcode per barang';
 END $$;
 
 -- ---------- Driver menjemput ----------

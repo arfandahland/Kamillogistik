@@ -50,3 +50,21 @@ describe("kode resi yang bisa dibaca", () => {
     expect(isValidResi(r)).toBe(true);
   });
 });
+
+describe("huruf pemeriksa menangkap SEMUA salah ketik satu karakter", () => {
+  it("ganti satu karakter di mana pun dengan karakter lain (0-9, A-Z): selalu ketahuan", () => {
+    const bodies = ["KLX-MKS-JKT-LJ-261118-1432-0007", "KLX-JKT-MKS-UA-270101-0905-10000", "MNF-SUB-MRW-D-261231-2359-12"];
+    const set = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    for (const body of bodies) {
+      const asli = resiCheck(body);
+      for (let i = 0; i < body.length; i++) {
+        if (body[i] === "-") continue;
+        for (const ch of set) {
+          if (ch === body[i]) continue;
+          const salah = body.slice(0, i) + ch + body.slice(i + 1);
+          expect(resiCheck(salah), `${body} posisi ${i} -> ${ch}`).not.toBe(asli);
+        }
+      }
+    }
+  });
+});

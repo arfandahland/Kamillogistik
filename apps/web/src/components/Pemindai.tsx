@@ -11,6 +11,8 @@ type Props = {
   onKode: (kode: string) => Promise<HasilCari>;
   /** Pelanggan publik: langsung berpindah halaman tanpa kartu hasil. */
   langsung?: boolean;
+  /** Pindai beruntun: kamera tetap menyala setelah kode terbaca (mis. memuat banyak resi ke manifest). */
+  terus?: boolean;
   petunjuk?: string;
 };
 
@@ -30,7 +32,7 @@ function bunyi() {
 }
 
 /** Pemindai barcode dan QR memakai kamera HP. Ada senter, ganti kamera, foto dari galeri, dan ketik manual. */
-export default function Pemindai({ onKode, langsung, petunjuk }: Props) {
+export default function Pemindai({ onKode, langsung, terus, petunjuk }: Props) {
   const video = useRef<HTMLVideoElement>(null);
   const reader = useRef<BrowserMultiFormatReader | null>(null);
   const kontrol = useRef<{ stop: () => void } | null>(null);
@@ -58,9 +60,9 @@ export default function Pemindai({ onKode, langsung, petunjuk }: Props) {
       setHasil(h);
       setRiwayat((r) => [{ kode, ok: h.ok, judul: h.ok ? h.judul : h.error }, ...r.filter((x) => x.kode !== kode)].slice(0, 5));
       if (h.ok && langsung) window.location.assign(h.href);
-      else if (h.ok) setStatus("jeda");
+      else if (h.ok && !terus) setStatus("jeda");
     } finally { setMencari(false); sibuk.current = false; }
-  }, [onKode, langsung]);
+  }, [onKode, langsung, terus]);
 
   const mulai = useCallback(async (deviceId?: string) => {
     kontrol.current?.stop(); kontrol.current = null;
@@ -136,13 +138,13 @@ export default function Pemindai({ onKode, langsung, petunjuk }: Props) {
             <>
               <span className="hi"><Icon name="check" size={24} /></span>
               <div><b>{hasil.judul}</b>{hasil.sub && <small>{hasil.sub}</small>}</div>
-              <div className="hbtn"><a className="btn shine" href={hasil.href}><Icon name="arrow" size={20} /> Buka resi</a><button type="button" className="btn ghost" onClick={lagi}>Pindai lagi</button></div>
+              {!terus && <div className="hbtn"><a className="btn shine" href={hasil.href}><Icon name="arrow" size={20} /> Buka resi</a><button type="button" className="btn ghost" onClick={lagi}>Pindai lagi</button></div>}
             </>
           ) : (
             <>
               <span className="hi bad"><Icon name="alert" size={24} /></span>
               <div><b>{hasil.error}</b></div>
-              <div className="hbtn"><button type="button" className="btn ghost" onClick={lagi}>Coba lagi</button></div>
+              {!terus && <div className="hbtn"><button type="button" className="btn ghost" onClick={lagi}>Coba lagi</button></div>}
             </>
           )}
         </div>

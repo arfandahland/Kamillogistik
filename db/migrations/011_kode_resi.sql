@@ -12,11 +12,13 @@ CREATE TABLE IF NOT EXISTS public.resi_counters (
 ALTER TABLE public.resi_counters ENABLE ROW LEVEL SECURITY;
 REVOKE ALL ON public.resi_counters FROM PUBLIC, anon, authenticated;
 
--- Huruf pemeriksa: jumlah (kode karakter x posisi) mod 22. Harus sama dengan resiCheck() di packages/core/src/resi.ts.
+-- Dua huruf pemeriksa: nilai karakter (0-9, A=10..Z=35) x bobot posisi (1..22 berulang), dijumlah, mod 521 (prima), ditulis dua huruf basis 23.
+-- Harus sama dengan resiCheck() di packages/core/src/resi.ts. Salah ketik satu karakter selalu ketahuan.
 CREATE OR REPLACE FUNCTION public.resi_check(p_body text) RETURNS text
 LANGUAGE sql IMMUTABLE SET search_path = '' AS $$
-  SELECT substr('ACDEFGHJKLMNPRSTUVWXYZ', 1 + (coalesce(sum(ascii(t.ch) * t.i), 0) % 22)::int, 1)
-  FROM unnest(string_to_array(regexp_replace(upper(p_body), '[^A-Z0-9]', '', 'g'), NULL)) WITH ORDINALITY AS t(ch, i);
+  SELECT substr('ABCDEFGHJKLMNPRSTUVWXYZ', 1 + (v / 23), 1) || substr('ABCDEFGHJKLMNPRSTUVWXYZ', 1 + (v % 23), 1)
+  FROM (SELECT (coalesce(sum((CASE WHEN t.ch BETWEEN '0' AND '9' THEN ascii(t.ch) - 48 ELSE ascii(t.ch) - 55 END) * (((t.i - 1) % 22) + 1)), 0) % 521)::int AS v
+        FROM unnest(string_to_array(regexp_replace(upper(p_body), '[^A-Z0-9]', '', 'g'), NULL)) WITH ORDINALITY AS t(ch, i)) q;
 $$;
 
 -- Tagihan korporat yang belum lunas (untuk batas kredit).

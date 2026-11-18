@@ -42,7 +42,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
 
 (async () => {
   const browser = await chromium.launch();
-  let resiNo = "", resiId = "", invoiceLink = "";
+  let resiNo = "", resiId = "", invoiceLink = "", manifestId = "", manifestCode = "";
 
   console.log("\n[A] Pengunjung (tanpa login)");
   {
@@ -65,11 +65,11 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await page.fill("#w0", "10"); await page.click("form > button.btn:not(.ghost)");
     await page.waitForSelector(".price", { timeout: 15000 }).catch(() => {});
     ok("kalkulator ongkir: 10 kg x Rp2.500 = Rp25.000", /Rp25\.000/.test(await text(page)));
-    await page.goto(`${BASE}/lacak/KLX-JKT-MKS-LJ-261118-1400-0998-P`, { waitUntil: "networkidle" });
+    await page.goto(`${BASE}/lacak/KLX-JKT-MKS-LJ-261118-1400-0998-ST`, { waitUntil: "networkidle" });
     ok("resi tak dikenal: pesan awam", /tidak ditemukan/.test(await text(page)));
     await page.goto(`${BASE}/lacak/abc`, { waitUntil: "networkidle" });
     ok("format resi salah: pesan awam", /tidak dikenali/.test(await text(page)));
-    await page.goto(`${BASE}/lacak/KLX-JKT-MKS-LJ-261118-1400-0999-P`, { waitUntil: "networkidle" });
+    await page.goto(`${BASE}/lacak/KLX-JKT-MKS-LJ-261118-1400-0999-AA`, { waitUntil: "networkidle" });
     ok("salah ketik satu angka ketahuan (huruf pemeriksa)", /tidak dikenali/.test(await text(page)));
     const ro = await page.request.get(`${BASE}/api/owner`);
     ok("/api/owner tanpa login ditolak", ro.status() === 403);
@@ -138,7 +138,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     const r = await act(p, p.getByRole("button", { name: "Buat resi" }));
     ok("resi dibuat dengan pesan sukses", r.ok && /Resi sudah dibuat/.test(r.ok), JSON.stringify(r));
     resiNo = (await p.locator("h1").first().innerText()).trim(); resiId = p.url().match(/resi\/([0-9a-f-]+)/)?.[1] || "";
-    ok("nomor resi terbaca: KLX-asal-tujuan-moda-tanggal-jam-urutan-huruf", /^KLX-JKT-MKS-LJ-\d{6}-\d{4}-0001-[A-Z]$/.test(resiNo), resiNo);
+    ok("nomor resi terbaca: KLX-asal-tujuan-moda-tanggal-jam-urutan-huruf", /^KLX-JKT-MKS-LJ-\d{6}-\d{4}-0001-[A-Z]{2}$/.test(resiNo), resiNo);
     ok("penjelasan arti kode tampil", (await p.locator(".kodebox").count()) === 1 && (await p.locator(".tag.moda").innerText()).includes("Laut"));
     ok("penanda tahap: Tahap 1 dari 10", /Tahap 1 dari 10/.test(await text(p)));
     await noOverflow(p, "detail resi (HP)");
@@ -162,7 +162,9 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await p.getByRole("button", { name: "Per barang" }).click();
     await p.screenshot({ path: `${OUT}/e2e-label.png`, fullPage: true });
     // pindai dari foto label (barcode+QR) -> resi terbuka
-    const lblPng = await p.locator(".preview .lbl").first().screenshot();
+    const hi = await browser.newContext({ viewport: { width: 900, height: 1200 }, deviceScaleFactor: 3, storageState: await kasir.ctx.storageState() });
+    const hp = await hi.newPage(); await hp.goto(`${BASE}/app/resi/${resiId}/cetak`, { waitUntil: "networkidle" });
+    const lblPng = await hp.locator(".preview .lbl").first().screenshot(); await hi.close();
     await p.goto(`${BASE}/app/pindai`, { waitUntil: "networkidle" });
     ok("halaman pindai: ada tombol foto dan kolom ketik kode", (await p.locator(".filebtn input").count()) === 1 && (await p.locator("#kodemanual").count()) === 1);
     await p.setInputFiles(".filebtn input", { name: "label.png", mimeType: "image/png", buffer: lblPng });
@@ -174,7 +176,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await p.fill("#kodemanual", resiNo.toLowerCase().replace(/-/g, " ")); await p.getByRole("button", { name: "Cari" }).click();
     await p.waitForSelector(".hasil", { timeout: 15000 }).catch(() => {});
     ok("pindai manual: kode huruf kecil tanpa tanda hubung tetap dikenali", /Buka resi/.test(await p.locator(".hasil").first().innerText().catch(() => "")));
-    await p.fill("#kodemanual", "KLX-JKT-MKS-LJ-261118-1400-0998-P"); await p.getByRole("button", { name: "Cari" }).click();
+    await p.fill("#kodemanual", "KLX-JKT-MKS-LJ-261118-1400-0998-ST"); await p.getByRole("button", { name: "Cari" }).click();
     await p.waitForFunction(() => /bukan tugas|tidak dikenali/i.test(document.body.innerText), null, { timeout: 15000 }).catch(() => {});
     ok("pindai manual: kode yang tidak ada ditolak dengan pesan awam", /tidak dikenali|bukan tugas/i.test(await text(p)));
     await p.screenshot({ path: `${OUT}/e2e-pindai.png` });
@@ -216,38 +218,70 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("tagihan terbit otomatis: 22 kg x Rp2.800 = Rp61.600 (tarif baru dipakai)", r.ok && /Rp61\.600/.test(r.ok) && /INV-\d{4}-000001/.test(r.ok), JSON.stringify(r));
     ok("gudang TIDAK melihat nominal tagihan (data keuangan)", !/Rp61\.600/.test((await text(p)).replace(/Tagihan .* sebesar Rp61\.600 sudah dibuat\./, "")));
     ok("Tahap 4 dari 10 setelah ditimbang", /Tahap 4 dari 10/.test(await text(p)));
-    r = await act(p, p.getByRole("button", { name: "Barang sudah dimuat ke kontainer" }));
-    ok("gudang: barang dimuat ke kontainer", r.ok && /sudah dimuat/.test(r.ok), JSON.stringify(r));
+    ok("sesudah ditimbang: tidak ada tombol muat per resi, diarahkan ke manifest", (await p.getByRole("button", { name: "Barang sudah dimuat ke kontainer" }).count()) === 0 && /Masukkan ke manifest/.test(await text(p)));
+
+    console.log("\n[E2] Manifest: buat, isi, segel, serah terima");
+    await p.goto(`${BASE}/app/manifest/baru`, { waitUntil: "networkidle" });
+    await p.selectOption("#tujuan", "MKS"); await p.fill("#kontainer", "MSKU1234567"); await p.fill("#pengangkut", "KM Sinar Laut");
+    r = await act(p, p.getByRole("button", { name: "Buat manifest" }));
+    ok("manifest dibuat dengan kode MNF terbaca", r.ok && /Manifest MNF-JKT-MKS-L-\d{6}-\d{4}-01-[A-Z]{2} dibuat/.test(r.ok), JSON.stringify(r));
+    manifestId = p.url().match(/manifest\/([0-9a-f-]+)/)?.[1] || ""; manifestCode = (await p.locator("h1.resicode").innerText()).trim();
+    ok("resi yang sudah ditimbang muncul di daftar siap dimuat", (await p.locator(".cand").innerText()).includes(resiNo));
+    r = await act(p, p.locator(".cand form").first().getByRole("button", { name: "Tambah" }));
+    ok("resi ditambahkan dari daftar siap muat", r.ok && /Resi ditambahkan/.test(r.ok), JSON.stringify(r));
+    ok("ringkasan manifest: 1 resi, 2 barang, 22 kg", /1 resi · 2 barang · 22 kg/.test(await text(p)));
+    await p.fill("input[aria-label=Kode]", "KLX-JKT-MKS-LJ-261118-1400-0998-ST"); await p.getByRole("button", { name: "Tambah" }).first().click();
+    await p.waitForSelector(".mlog li.bad", { timeout: 15000 }).catch(() => {});
+    ok("kode yang tidak ada ditolak dengan pesan awam", /tidak dikenali|sudah ada|belum siap/i.test(await p.locator(".mlog li").first().innerText().catch(() => "")));
+    await p.fill("#segel", "SEG-001");
+    r = await act(p, p.getByRole("button", { name: /Segel manifest/ }));
+    ok("manifest disegel: semua resi tercatat sudah dimuat", r.ok && /disegel/.test(r.ok), JSON.stringify(r));
     await selectByText(p, "select[name=ke]", "Sopir Kontainer");
-    r = await act(p, p.getByRole("button", { name: "Serahkan barang" }));
-    ok("gudang menyerahkan ke sopir kontainer", r.ok && /Menunggu penerima/.test(r.ok), JSON.stringify(r));
+    r = await act(p, p.getByRole("button", { name: "Serahkan manifest" }));
+    ok("manifest diserahkan ke sopir (menunggu diterima)", r.ok && /Menunggu penerima/.test(r.ok), JSON.stringify(r));
+    await p.goto(`${BASE}/app/resi/${resiId}`, { waitUntil: "networkidle" });
+    ok("detail resi menampilkan kode manifest dan status Sudah dimuat", (await p.locator(".manifestlink code").innerText()).includes("MNF-") && /Sudah dimuat/.test(await text(p)));
+    await p.screenshot({ path: `${OUT}/e2e-manifest-resi.png` });
   }
 
-  console.log("\n[F] Sopir kontainer membawa lewat laut");
+  console.log("\n[F] Sopir kontainer membawa manifest lewat laut");
   const sopir = await login(browser, "sopir@uji.id");
   {
     const p = sopir.page;
-    await p.goto(`${BASE}/app/resi/${resiId}`, { waitUntil: "networkidle" });
-    let r = await act(p, p.getByRole("button", { name: "Ya, barang sudah saya terima" }));
-    ok("sopir menerima barang", r.ok && /sudah Anda terima/.test(r.ok), JSON.stringify(r));
+    await p.goto(`${BASE}/app/manifest/${manifestId}`, { waitUntil: "networkidle" });
+    ok("sopir melihat banner manifest menunggu diterima", /menyerahkan manifest ini kepada Anda/.test(await text(p)));
+    let r = await act(p, p.getByRole("button", { name: "Ya, manifest sudah saya terima" }));
+    ok("sopir menerima manifest (semua barang sekaligus)", r.ok && /sudah Anda terima/.test(r.ok), JSON.stringify(r));
     r = await act(p, p.getByRole("button", { name: "Kapal sudah berangkat" }));
-    ok("kapal berangkat (Dalam pelayaran)", r.ok && /kapal sudah berangkat/i.test(r.ok), JSON.stringify(r));
-    r = await act(p, p.getByRole("button", { name: "Kapal sudah sandar di pelabuhan tujuan" }));
-    ok("kapal sandar di pelabuhan tujuan", r.ok && /sudah sandar/.test(r.ok), JSON.stringify(r));
+    ok("kapal berangkat: resi tercatat Dalam pelayaran", r.ok && /sudah berangkat/i.test(r.ok), JSON.stringify(r));
+    r = await act(p, p.getByRole("button", { name: /Kapal sudah sandar di Makassar/ }));
+    ok("kapal sandar di pelabuhan tujuan", r.ok && /sudah tiba/.test(r.ok), JSON.stringify(r));
     await selectByText(p, "select[name=ke]", "Gudang Makassar");
-    r = await act(p, p.getByRole("button", { name: "Serahkan barang" }));
-    ok("sopir menyerahkan ke gudang Makassar", r.ok && /Menunggu penerima/.test(r.ok), JSON.stringify(r));
+    r = await act(p, p.getByRole("button", { name: "Serahkan manifest" }));
+    ok("sopir menyerahkan manifest ke gudang Makassar", r.ok && /Menunggu penerima/.test(r.ok), JSON.stringify(r));
   }
 
   console.log("\n[G] Gudang Makassar dan kurir Makassar (tahap akhir)");
   const gmks = await login(browser, "gudang.mks@uji.id");
   {
     const p = gmks.page;
+    await p.goto(`${BASE}/app/manifest/${manifestId}`, { waitUntil: "networkidle" });
+    let r = await act(p, p.getByRole("button", { name: "Ya, manifest sudah saya terima" }));
+    ok("gudang Makassar menerima manifest (cabang tujuan)", r.ok && /sudah Anda terima/.test(r.ok), JSON.stringify(r));
+    ok("bongkar: 0 dari 2 barang dipindai", /0 dari 2 barang/.test(await text(p)));
+    await p.fill("input[aria-label=Kode]", "KLX-JKT-MKS-LJ-261118-1400-0998-ST-01"); await p.getByRole("button", { name: "Cocokkan" }).click();
+    await p.waitForSelector(".mlog li.bad", { timeout: 15000 }).catch(() => {});
+    ok("barang yang bukan isi manifest ditolak", /TIDAK ada di manifest|tidak dikenali/i.test(await p.locator(".mlog li").first().innerText().catch(() => "")));
+    for (const n of ["01", "02"]) {
+      await p.fill("input[aria-label=Kode]", `${resiNo}-${n}`); await p.getByRole("button", { name: "Cocokkan" }).click();
+      await p.waitForFunction((x) => new RegExp(`${x} dari 2 barang`).test(document.body.innerText), n === "01" ? "1" : "2", { timeout: 15000 }).catch(() => {});
+    }
+    ok("bongkar: 2 dari 2 barang cocok", /2 dari 2 barang/.test(await text(p)));
+    await p.screenshot({ path: `${OUT}/e2e-manifest-bongkar.png` });
+    r = await act(p, p.getByRole("button", { name: "Selesai membongkar" }));
+    ok("bongkar selesai: semua barang cocok, resi di gudang tujuan", r.ok && /Semua barang cocok/.test(r.ok), JSON.stringify(r));
     await p.goto(`${BASE}/app/resi/${resiId}`, { waitUntil: "networkidle" });
-    let r = await act(p, p.getByRole("button", { name: "Ya, barang sudah saya terima" }));
-    ok("gudang Makassar menerima barang (cabang tujuan)", r.ok && /sudah Anda terima/.test(r.ok), JSON.stringify(r));
-    r = await act(p, p.getByRole("button", { name: "Barang sudah dibongkar di gudang tujuan" }));
-    ok("barang dibongkar di gudang tujuan", r.ok && /gudang tujuan/.test(r.ok), JSON.stringify(r));
+    ok("resi tercatat Di gudang tujuan", /Di gudang tujuan/.test(await text(p)));
     await selectByText(p, "select[name=ke]", "Kurir Makassar");
     r = await act(p, p.getByRole("button", { name: "Serahkan barang" }));
     ok("diserahkan ke kurir Makassar", r.ok && /Menunggu penerima/.test(r.ok), JSON.stringify(r));
