@@ -11,6 +11,8 @@ const ITEMS = [
   { href: "/app/korporat", icon: "building", t: "Pelanggan korporat", d: "Perusahaan langganan: tempo bayar, batas kredit, tarif khusus, dan rekap tagihan." },
   { href: "/app/petugas", icon: "users", t: "Petugas", d: "Buat akun, ganti sandi, atau nonaktifkan kurir, gudang, kasir, dan lainnya." },
   { href: "/app/tarif", icon: "tag", t: "Tarif dan rute", d: "Ubah harga, minimal berat, dan jadwal. Website langsung memakai harga baru." },
+  { href: "/app/tarif/riwayat", icon: "clock", t: "Riwayat harga", d: "Siapa mengubah harga, kapan, dari berapa ke berapa." },
+  { href: "/app/keuangan/komisi", icon: "users", t: "Komisi mitra", d: "Ongkir dan komisi tiap mitra pada periode yang dipilih." },
   { href: "/app/keuangan", icon: "cash", t: "Keuangan", d: "Uang masuk, piutang, umur piutang, dan riwayat pembayaran." },
   { href: "/app/tagihan", icon: "file", t: "Semua tagihan", d: "Cari invoice, catat pembayaran, cetak, dan kirim ke pelanggan." },
   { href: "/app/pengaturan", icon: "sliders", t: "Pengaturan dan rekening", d: "Data perusahaan dan rekening bank yang tampil di invoice." },

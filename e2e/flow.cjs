@@ -546,6 +546,12 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await noOverflow(o, "perlu dihubungi (pemilik)");
     const g = gudang.page; await g.goto(`${BASE}/app/tindak-lanjut`, { waitUntil: "networkidle" });
     ok("gudang tidak melihat tagihan di antrean", (await g.getByText("Tagihan jatuh tempo", { exact: true }).count()) === 0 || true);
+    await o.goto(`${BASE}/app/tarif/riwayat`, { waitUntil: "networkidle" });
+    ok("riwayat harga: perubahan tarif tercatat dengan pelaku dan harga lama → baru", (await o.locator(".hist").count()) >= 1 && /Rp2\.800/.test(await text(o)) && /Owner|Pak Kamil/.test(await text(o)), (await text(o)).slice(0, 300));
+    await o.screenshot({ path: `${OUT}/e2e-riwayat-harga.png`, fullPage: true });
+    await o.goto(`${BASE}/app/keuangan/komisi`, { waitUntil: "networkidle" });
+    ok("komisi mitra: halaman terbuka dengan ringkasan dan daftar", /Komisi mitra/.test(await text(o)) && (await o.locator(".hist").count()) >= 1 && (await o.locator(".err").count()) === 0);
+    await noOverflow(o, "komisi mitra");
     const kur = (await login(browser, "kurir@uji.id")).page;
     await kur.goto(`${BASE}/app/tindak-lanjut`, { waitUntil: "networkidle" });
     ok("kurir ditolak masuk antrean", !kur.url().includes("/app/tindak-lanjut") || /tidak punya|izin|Hanya/i.test(await text(kur)));
