@@ -5,11 +5,11 @@ RESET ROLE;
 -- ---------- Resi anti-ganda ----------
 SELECT t.as_user('00000000-0000-0000-0000-000000000002');   -- kasir Jakarta
 DO $$ DECLARE a jsonb; b jsonb; ref uuid := gen_random_uuid(); n0 int; BEGIN
-  a := public.create_shipment('jakarta-makassar-port-to-door-kg','Klik Ganda','0811','Budi','0822','Alamat',2, NULL, ref);
-  b := public.create_shipment('jakarta-makassar-port-to-door-kg','Klik Ganda','0811','Budi','0822','Alamat',2, NULL, ref);
+  a := public.create_shipment('jakarta-makassar-port-to-door-kg','Klik Ganda','0811','Budi','0822','Alamat',2, NULL, ref, 'PICKUP', 'Jl. Jemput 1');
+  b := public.create_shipment('jakarta-makassar-port-to-door-kg','Klik Ganda','0811','Budi','0822','Alamat',2, NULL, ref, 'PICKUP', 'Jl. Jemput 1');
   ASSERT a->>'id' = b->>'id' AND a->>'resiNo' = b->>'resiNo', 'dua kiriman dengan kunci sama harus menghasilkan satu resi';
   ASSERT (b->>'duplicate')::boolean, 'kiriman kedua ditandai duplikat';
-  b := public.create_shipment('jakarta-makassar-port-to-door-kg','Klik Ganda','0811','Budi','0822','Alamat',2, NULL, gen_random_uuid());
+  b := public.create_shipment('jakarta-makassar-port-to-door-kg','Klik Ganda','0811','Budi','0822','Alamat',2, NULL, gen_random_uuid(), 'DROPOFF');
   ASSERT b->>'id' <> a->>'id', 'kunci berbeda = resi baru';
   PERFORM set_config('t.sid', a->>'id', false);
 END $$;

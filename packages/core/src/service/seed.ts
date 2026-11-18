@@ -40,17 +40,17 @@ function buildEvents(upTo: number): TrackEvent[] {
 
 export const DEMO_SHIPMENTS: ShipmentRecord[] = [
   {
-    resiNo: "KLX-2611-000123", origin: JKT, dest: MKS, status: "DELIVERED",
+    resiNo: "KLX-JKT-MKS-LJ-261112-0830-0001-D", origin: JKT, dest: MKS, status: "DELIVERED",
     vesselName: "KM Contoh Nusantara", invoiceTotal: 1_250_000,
     pod: { receiverName: "Budi S.", photoUrl: "demo://foto", signatureUrl: "demo://ttd", signedAt: TIMES[8]! },
     events: buildEvents(9),
   },
   {
-    resiNo: "KLX-2611-000124", origin: JKT, dest: MKS, status: "IN_TRANSIT_SEA",
+    resiNo: "KLX-JKT-MKS-LJ-261114-1015-0002-S", origin: JKT, dest: MKS, status: "IN_TRANSIT_SEA",
     etaAt: "2026-11-21T00:00:00Z", vesselName: "KM Contoh Nusantara", invoiceTotal: 480_000,
     events: buildEvents(5),
   },
-  { resiNo: "KLX-2611-000125", origin: SUB, dest: MKS, status: "CREATED", invoiceTotal: 0, events: [] },
+  { resiNo: "KLX-SUB-MKS-LA-261118-0700-0001-S", origin: SUB, dest: MKS, status: "CREATED", invoiceTotal: 0, events: [] },
 ];
 
 export function createSeedRepo(): Repo {
@@ -63,7 +63,8 @@ export function createSeedRepo(): Repo {
     },
     async findRoute(o, d, opts) {
       return DEMO_ROUTES.find((r) => r.origin.code === o && r.dest.code === d
-        && (!opts?.service || r.service === opts.service) && (!opts?.basis || r.basis === opts.basis)) ?? null;
+        && (!opts?.service || r.service === opts.service) && (!opts?.basis || r.basis === opts.basis)
+        && (!opts?.mode || r.mode === opts.mode)) ?? null;
     },
   };
 }

@@ -57,10 +57,10 @@ export default async function Tarif({ searchParams }: { searchParams: Promise<{ 
           <details key={r.id} className="card admitem">
             <summary>
               <span className="ic"><Icon name="tag" size={22} /></span>
-              <span className="meta"><b>{r.originCity} → {r.destCity}</b><small>{LAYANAN[r.service]} · {r.basis === "PER_M3" ? "per m³" : "per kg"}{r.minChargeable ? ` · minimal ${r.minChargeable}` : ""}</small></span>
-              <span className="pill">{rupiah(r.unitPrice)}</span>
+              <span className="meta"><b>{r.originCity} → {r.destCity} · {JALUR[r.mode] ?? r.mode}</b><small>{LAYANAN[r.service]} · {r.basis === "PER_M3" ? "per m³" : "per kg"}{r.minChargeable ? ` · minimal ${r.minChargeable}` : ""}</small></span>
+              <span className={`pill ${r.unitPrice === 0 ? "warn" : ""}`}>{r.unitPrice === 0 ? "Harga belum diisi" : rupiah(r.unitPrice)}</span>
             </summary>
-            <div className="admbody"><Form r={r} places={places} />{!r.isPublic && <p className="hint">Rute ini disembunyikan dari website.</p>}</div>
+            <div className="admbody"><Form r={r} places={places} />{!r.isPublic && <p className="hint">{r.unitPrice === 0 ? "Isi harga lalu nyalakan tampil di website supaya pelanggan dan kasir bisa memakai rute ini." : "Rute ini disembunyikan dari website."}</p>}</div>
           </details>
         ))}
       </div>

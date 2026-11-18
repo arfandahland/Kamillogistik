@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { handleTrack, type PublicTrack } from "@kamil/core";
+import { handleTrack, parseResi, type PublicTrack } from "@kamil/core";
 import { repo } from "@/lib/repo";
 import { tanggal, tanggalWaktu, waLink } from "@/lib/brand";
 import ResiForm from "@/components/ResiForm";
+import KodeResi from "@/components/KodeResi";
 import Icon from "@/components/Icon";
 
 export const dynamic = "force-dynamic";
@@ -42,9 +43,14 @@ export default async function Track({ params }: P) {
     <main className="wrap section stack">
       <div className="card fade">
         <span className="muted">Nomor resi</span>
-        <h1 style={{ letterSpacing: 1 }}>{t.resi}</h1>
+        <h1 className="resicode">{t.resi}</h1>
         <p><span className={`pill ${t.status === "DELIVERED" ? "done" : ""}`}>{t.statusLabel}</span>{" "}
           <span className="muted">{t.route.origin} → {t.route.dest}</span></p>
+        <p className="chipsrow">
+          <span className="tag moda"><Icon name={t.mode === "UDARA" ? "plane" : t.mode === "DARAT" ? "truck" : "ship"} size={14} /> {t.mode === "UDARA" ? "Udara" : t.mode === "DARAT" ? "Darat" : "Laut"}</span>
+          <span className="tag"><Icon name={t.pickupType === "PICKUP" ? "truck" : "home"} size={14} /> {t.pickupType === "PICKUP" ? "Dijemput kurir" : "Diantar sendiri"}</span>
+        </p>
+        <KodeResi kode={t.resi} kota={((pr) => (pr ? { [pr.origin]: t.route.origin, [pr.dest]: t.route.dest } : undefined))(parseResi(t.resi))} />
         <div className="bar"><i style={{ width: `${pct}%` }} /></div>
         <small className="muted">Tahap {stage} dari {stageTotal}</small>
         {t.eta && <p style={{ marginTop: 12 }}><Icon name="clock" size={18} /> Perkiraan tiba: <b>{tanggal(t.eta)}</b></p>}
@@ -57,7 +63,7 @@ export default async function Track({ params }: P) {
       <div className="card">
         <h2>Perjalanan barang</h2>
         {items.length === 0 ? (
-          <p className="muted">Order sudah kami terima. Petugas kami akan segera menjemput barang Anda.</p>
+          <p className="muted">{t.pickupType === "DROPOFF" ? "Order sudah kami terima. Silakan antar barang ke gudang kami." : "Order sudah kami terima. Petugas kami akan segera menjemput barang Anda."}</p>
         ) : (
           <ol className="tl" style={{ ["--total" as string]: items.length }}>
             <div className="fill" style={{ height: `calc((100% - 16px) * ${fillPct / 100})` }} />

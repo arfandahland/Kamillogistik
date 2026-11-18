@@ -68,7 +68,8 @@ export async function simpanRute(fd: FormData) {
   const { error } = await staffRpc("owner_save_route", {
     p_id: id, p_origin: str(fd, "asal"), p_dest: str(fd, "tujuan"), p_mode: str(fd, "jalur"), p_service: str(fd, "layanan"), p_basis: str(fd, "hitung"),
     p_unit_price: num(fd, "harga"), p_min_chargeable: num(fd, "minimal") ?? 0, p_min_total: num(fd, "min_total"), p_eta_days: num(fd, "eta") ?? 0,
-    p_divisor: num(fd, "pembagi") ?? 4000, p_departure_note: str(fd, "jadwal"), p_public: flag(fd, "tampil"),
+    p_divisor: str(fd, "jalur") === "UDARA" ? 6000 : 4000, // pembagi berat volume: udara 6000, laut/darat 4000
+    p_departure_note: str(fd, "jadwal"), p_public: flag(fd, "tampil"),
   });
   if (error) go("/app/tarif", "e", error);
   revalidateTag("routes"); revalidatePath("/"); revalidatePath("/ekspedisi"); revalidatePath("/ongkir");

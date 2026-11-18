@@ -3,7 +3,7 @@
  * (harga, estimasi hari, catatan keberangkatan) — tidak mengarang klaim.
  */
 export type PublicRoute = {
-  slug: string; service: string; serviceTitle?: string; serviceHint?: string; basis: "PER_KG" | "PER_M3";
+  slug: string; mode?: "LAUT" | "DARAT" | "UDARA"; service: string; serviceTitle?: string; serviceHint?: string; basis: "PER_KG" | "PER_M3";
   unitPrice: number; minChargeable: number; etaDays: number; departureNote?: string | null;
   origin: { code: string; city: string; name?: string }; dest: { code: string; city: string; name?: string };
 };
@@ -25,7 +25,9 @@ export const priceLabel = (o: Pick<PublicRoute, "basis" | "unitPrice">) => `${rp
 const SERVICE_NAME: Record<string, string> = {
   PORT_TO_PORT: "Sampai pelabuhan tujuan", PORT_TO_DOOR: "Diantar sampai alamat", DOOR_TO_DOOR: "Dijemput dan diantar",
 };
-export const optionName = (o: PublicRoute) => `${o.serviceTitle ?? SERVICE_NAME[o.service] ?? o.service} (${o.basis === "PER_M3" ? "per ukuran m³" : "per kilo"})`;
+const MODA_NAMA = { LAUT: "Laut", DARAT: "Darat", UDARA: "Udara" } as const;
+export const optionName = (o: PublicRoute) =>
+  `${o.serviceTitle ?? SERVICE_NAME[o.service] ?? o.service} (${o.basis === "PER_M3" ? "per ukuran m³" : "per kilo"})${o.mode === "UDARA" || o.mode === "DARAT" ? ` · ${MODA_NAMA[o.mode]}` : ""}`;
 
 /** Kelompokkan rute per pasangan kota asal–tujuan: satu halaman per pasangan. */
 export function groupPairs(routes: PublicRoute[]): RoutePair[] {

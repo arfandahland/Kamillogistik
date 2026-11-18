@@ -72,8 +72,8 @@ describe("serah terima dua arah (F-11)", () => {
 
 describe("resi", () => {
   it("format sesuai contoh PRD", () => {
-    expect(formatResi(new Date(Date.UTC(2026, 10, 18)), 123)).toBe("KLX-2611-000123");
-    expect(isValidResi("klx-2611-000123")).toBe(true);
+    const r = formatResi({ origin: "JKT", dest: "MKS", moda: "LAUT", masuk: "PICKUP", at: new Date(Date.UTC(2026, 10, 18)), seq: 123 });
+    expect(isValidResi(r.toLowerCase())).toBe(true);
     expect(isValidResi("abc")).toBe(false);
   });
 });

@@ -42,6 +42,18 @@ const P: Record<string, string> = {
   grid: "M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z",
   up: "M7 17 17 7M9 7h8v8",
   down: "M7 7l10 10M17 9v8H9",
+  plane: "M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.500V22l3.500-1 3.500 1v-1.500L13 19v-5.500l8 2.500Z",
+  building: "M4 21V5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v16M14 9h5a1 1 0 0 1 1 1v11M3 21h18M8 8h2M8 12h2M8 16h2M17 13h.01M17 17h.01",
+  camera: "M4 8h3l1.500-2.500h7L17 8h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1ZM12 17a3.500 3.500 0 1 0 0-7 3.500 3.500 0 0 0 0 7Z",
+  scan: "M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M7 12h10",
+  qr: "M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h2v2h-2zM18 14h2v2h-2zM14 18h2v2h-2zM18 18h2v2h-2zM7 7h.01M17 7h.01M7 17h.01",
+  flash: "M13 2 4 14h7l-1 8 9-12h-7l1-8Z",
+  image: "M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1ZM8.500 10a1.500 1.500 0 1 0 0-3 1.500 1.500 0 0 0 0 3ZM21 16l-5-5-8 8",
+  flip: "M3 7h14l-3-3M21 17H7l3 3",
+  layers: "M12 3 2 8l10 5 10-5-10-5ZM2 13l10 5 10-5M2 17.500l10 5 10-5",
+  close: "M6 6l12 12M18 6 6 18",
+  send: "M22 2 11 13M22 2l-7 20-4-9-9-4 20-7Z",
+  sparkle: "M12 3l1.800 5.200L19 10l-5.200 1.800L12 17l-1.800-5.200L5 10l5.200-1.800L12 3ZM19 16l.8 2.200L22 19l-2.200.8L19 22l-.8-2.200L16 19l2.200-.8L19 16Z",
 };
 
 export default function Icon({ name, size, ...rest }: { name: keyof typeof P | string; size?: number } & SVGProps<SVGSVGElement>) {

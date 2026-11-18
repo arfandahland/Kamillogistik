@@ -36,6 +36,8 @@ export type ShipmentRecord = {
   origin: Place;
   dest: Place;
   status: AnyStatus;
+  mode?: "LAUT" | "DARAT" | "UDARA";
+  pickupType?: "PICKUP" | "DROPOFF";
   etaAt?: string;
   vesselName?: string;
   pod?: { receiverName: string; photoUrl: string; signatureUrl: string; signedAt: string };
@@ -46,5 +48,5 @@ export type ShipmentRecord = {
 export interface Repo {
   findShipmentByResi(resi: string): Promise<ShipmentRecord | null>;
   listRoutes(): Promise<RouteService[]>;
-  findRoute(originCode: string, destCode: string, opts?: { service?: string; basis?: string }): Promise<RouteService | null>;
+  findRoute(originCode: string, destCode: string, opts?: { service?: string; basis?: string; mode?: string }): Promise<RouteService | null>;
 }

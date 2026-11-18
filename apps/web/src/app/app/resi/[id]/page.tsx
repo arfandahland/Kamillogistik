@@ -1,15 +1,18 @@
 import Link from "next/link";
-import { nextAction, OWNER_ROLE, ROLE_LABEL, SEES_MONEY, STATUS_LABEL, type Actor, type AnyStatus } from "@kamil/core";
+import { MASUK_LABEL, MODA_LABEL, nextAction, OWNER_ROLE, ROLE_LABEL, SEES_MONEY, statusLabel, type Actor, type AnyStatus } from "@kamil/core";
 import { staffRpc, getMe, type Staff } from "@/lib/supabase/server";
 import { rupiah, tanggalWaktu } from "@/lib/brand";
 import SubmitButton from "@/components/SubmitButton";
+import Icon from "@/components/Icon";
 import ResiStepper from "@/components/ResiStepper";
+import KodeResi from "@/components/KodeResi";
 import PodForm from "@/components/PodForm";
 import { catatTerima, lanjut, serahkan, terima, timbang } from "../../actions";
 
 type Detail = {
   id: string; resiNo: string; status: AnyStatus; next: string | null;
-  origin: { city: string; name: string }; dest: { city: string; name: string };
+  pickupType: "PICKUP" | "DROPOFF"; pickupAddress: string | null; mode: "LAUT" | "DARAT" | "UDARA"; segment: string; company: string | null;
+  origin: { code: string; city: string; name: string }; dest: { code: string; city: string; name: string };
   senderName: string; senderPhone: string | null; receiverName: string; receiverPhone: string | null; receiverAddress: string | null;
   holder: { id: string; name: string } | null; iAmHolder: boolean;
   items: { barcode: string; weightKg: number | null; lCm: number | null; wCm: number | null; hCm: number | null; note: string | null }[];
@@ -32,7 +35,7 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
   const invId = s.invoice && SEES_MONEY.includes(role) ? (await staffRpc<{ id: string }[]>("staff_list_invoices", { p_q: s.resiNo, p_limit: 1 })).data?.[0]?.id : undefined;
   const pod = s.status === "DELIVERED" ? (await staffRpc<Pod>("get_pod", { p_id: id })).data : null;
   const viewOnly = role === OWNER_ROLE; // Pemilik hanya memantau
-  const action = viewOnly ? null : nextAction(role, s.status);
+  const action = viewOnly ? null : nextAction(role, s.status, s.pickupType);
   const pendingToMe = viewOnly ? undefined : s.handovers.find((h) => h.state === "PENDING_ACK" && h.toMe);
   const pending = s.handovers.find((h) => h.state === "PENDING_ACK");
   const directory = !viewOnly && s.iAmHolder && !pending ? (await staffRpc<{ id: string; name: string; role: string; branchName: string | null }[]>("staff_directory")).data ?? [] : [];
@@ -44,15 +47,22 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
 
       <div className="card">
         <span className="muted">Nomor resi</span>
-        <h1 style={{ letterSpacing: 1 }}>{s.resiNo}</h1>
-        <p><span className={`pill ${s.status === "DELIVERED" ? "done" : ""}`}>{STATUS_LABEL[s.status]}</span>{" "}
+        <h1 className="resicode">{s.resiNo}</h1>
+        <p><span className={`pill ${s.status === "DELIVERED" ? "done" : ""}`}>{statusLabel(s.status, s.mode)}</span>{" "}
           <span className="muted">{s.origin.city} → {s.dest.city}</span></p>
-        <ResiStepper status={s.status} />
+        <p className="chipsrow">
+          <span className="tag moda"><Icon name={s.mode === "UDARA" ? "plane" : s.mode === "DARAT" ? "truck" : "ship"} size={14} /> {MODA_LABEL[s.mode]}</span>
+          <span className="tag"><Icon name={s.pickupType === "PICKUP" ? "truck" : "home"} size={14} /> {MASUK_LABEL[s.pickupType]}</span>
+          {s.segment === "B2B" && <span className="tag corp"><Icon name="building" size={14} /> {s.company ?? "Korporat"}</span>}
+        </p>
+        <KodeResi kode={s.resiNo} kota={{ [s.origin.code]: s.origin.city, [s.dest.code]: s.dest.city }} />
+        <ResiStepper status={s.status} masuk={s.pickupType} mode={s.mode} />
         <dl className="kv">
           <dt>Pengirim</dt><dd>{s.senderName}{s.senderPhone ? ` · ${s.senderPhone}` : ""}</dd>
           <dt>Penerima</dt><dd>{s.receiverName}{s.receiverPhone ? ` · ${s.receiverPhone}` : ""}</dd>
           {s.receiverAddress && (<><dt>Alamat</dt><dd>{s.receiverAddress}</dd></>)}
-          <dt>Barang dipegang</dt><dd>{s.iAmHolder ? "Anda" : s.holder?.name ?? "Belum ada (menunggu dijemput)"}</dd>
+          {s.pickupType === "PICKUP" && s.pickupAddress && (<><dt>Alamat jemput</dt><dd>{s.pickupAddress}</dd></>)}
+          <dt>Barang dipegang</dt><dd>{s.iAmHolder ? "Anda" : s.holder?.name ?? (s.pickupType === "PICKUP" ? "Belum ada (menunggu dijemput)" : "Belum ada (menunggu diantar pelanggan)")}</dd>
         </dl>
       </div>
 
@@ -163,7 +173,7 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
         <h2>Riwayat</h2>
         <ol className="tl">
           {[...s.events].map((e, i) => (
-            <li key={i} className="done"><span className="dot" /><b>{STATUS_LABEL[e.status] ?? e.status}</b>
+            <li key={i} className="done"><span className="dot" /><b>{statusLabel(e.status, s.mode) ?? e.status}</b>
               <small>{tanggalWaktu(e.at)}{e.location ? ` · ${e.location}` : ""}{e.by ? ` · oleh ${e.by}` : ""}</small></li>
           ))}
         </ol>

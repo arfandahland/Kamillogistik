@@ -49,15 +49,16 @@ SELECT t.as_user('00000000-0000-0000-0000-000000000002');
 SELECT t.fails($$select public.create_shipment('makassar-jakarta-port-to-door','a','','b','','',1)$$, 'cabang Anda sendiri');
 SELECT t.fails($$select public.create_shipment('jakarta-makassar-port-to-door-kg','','','b','','',1)$$, 'Nama pengirim');
 SELECT t.fails($$select public.create_shipment('jakarta-makassar-port-to-door-kg','a','','b','','',0)$$, 'Jumlah barang');
-INSERT INTO t.state SELECT 'sid', (public.create_shipment('jakarta-makassar-port-to-door-kg','Andi','0811','Budi Santoso','0822','Jl. Pettarani, Makassar',2,NULL)->>'id');
+INSERT INTO t.state SELECT 'sid', (public.create_shipment('jakarta-makassar-port-to-door-kg','Andi','0811','Budi Santoso','0822','Jl. Pettarani, Makassar',2,NULL,NULL,'PICKUP','Jl. Sudirman 1, Jakarta')->>'id');
 SELECT t.fails($$select public.advance_shipment((select v::uuid from t.state where k='sid'),'PICKED_UP')$$, 'izin');
 RESET ROLE;
 DO $$ DECLARE s record; BEGIN
   SELECT * INTO s FROM shipments;
-  ASSERT s.resi_no ~ '^KLX-[0-9]{4}-000001$', 'format resi: ' || s.resi_no;
+  ASSERT s.resi_no ~ '^KLX-JKT-MKS-LJ-[0-9]{6}-[0-9]{4}-0001-[A-Z]$', 'format resi: ' || s.resi_no;
+  ASSERT split_part(s.resi_no, '-', 8) = public.resi_check(substr(s.resi_no, 1, length(s.resi_no) - 2)), 'huruf pemeriksa sesuai';
   ASSERT s.status = 'CREATED' AND s.current_holder_user_id IS NULL, 'awal CREATED tanpa pemegang';
   ASSERT (SELECT count(*) FROM shipment_items) = 2, 'dua barang';
-  ASSERT (SELECT string_agg(barcode, ',' ORDER BY barcode) FROM shipment_items) LIKE '%-000001-01,%-000001-02', 'barcode per barang';
+  ASSERT (SELECT string_agg(barcode, ',' ORDER BY barcode) FROM shipment_items) ~ '-[A-Z]-01,KLX-.*-[A-Z]-02$', 'barcode per barang';
 END $$;
 
 -- ---------- Driver menjemput ----------
@@ -139,9 +140,11 @@ SELECT t.as_user('00000000-0000-0000-0000-000000000002');
 SELECT t.fails($$select public.invite_staff('a@b.id','A','DRIVER','JKT')$$, 'izin');
 
 -- ---------- Tampilan publik aman ----------
+RESET ROLE;
+SELECT set_config('t.rn', (SELECT resi_no FROM shipments), false);
 SELECT t.as_anon();
 DO $$ DECLARE p jsonb; BEGIN
-  p := public.public_track('klx-' || to_char(now() AT TIME ZONE 'Asia/Makassar','YYMM') || '-000001');
+  p := public.public_track(lower(current_setting('t.rn')));
   ASSERT jsonb_array_length(p->'events') = 3, 'tiga kejadian publik, dapat ' || jsonb_array_length(p->'events');
   ASSERT p::text !~* '(Driver Jakarta|Gudang Jakarta"?,"by|"by"|Andi|0811|Jl\. Pettarani|125000|INV-)', 'tak ada data pribadi/keuangan di publik';
 END $$;

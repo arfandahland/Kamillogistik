@@ -5,7 +5,7 @@ import Icon from "./Icon";
 
 type Route = {
   slug: string; origin: { code: string; city: string }; dest: { code: string; city: string };
-  service: string; serviceTitle: string; serviceHint: string; basis: "PER_KG" | "PER_M3";
+  mode?: "LAUT" | "DARAT" | "UDARA"; service: string; serviceTitle: string; serviceHint: string; basis: "PER_KG" | "PER_M3";
   unitPrice: number; minChargeable: number; etaDays: number;
 };
 type Item = { w: string; l: string; wd: string; h: string };
@@ -54,7 +54,7 @@ export default function Calculator({ routes, initialOrigin, initialDest }: { rou
     try {
       const r = await fetch("/api/ongkir", {
         method: "POST", headers: { "content-type": "application/json" },
-        body: JSON.stringify({ origin, dest: destOk, service: chosen.service, basis: chosen.basis, pieces }),
+        body: JSON.stringify({ origin, dest: destOk, service: chosen.service, basis: chosen.basis, mode: chosen.mode, pieces }),
       });
       const j = await r.json();
       if (!r.ok) setErr(j.error ?? "Maaf, ada gangguan. Coba lagi sebentar.");
@@ -97,8 +97,8 @@ export default function Calculator({ routes, initialOrigin, initialDest }: { rou
           {options.map((o) => (
             <label key={o.slug} className={`choice ${o.slug === chosen?.slug ? "on" : ""}`}>
               <input type="radio" name="cara" checked={o.slug === chosen?.slug} onChange={() => { setSlug(o.slug); setRes(null); }} />
-              <b>{o.serviceTitle} · {rupiah(o.unitPrice)}/{o.basis === "PER_M3" ? "m³" : "kg"}</b>
-              <span>{o.serviceHint}. {basisLabel(o)}.</span>
+              <b>{o.mode === "UDARA" ? "✈ Udara" : o.mode === "DARAT" ? "🚚 Darat" : "🚢 Laut"} · {o.serviceTitle} · {rupiah(o.unitPrice)}/{o.basis === "PER_M3" ? "m³" : "kg"}</b>
+              <span>{o.serviceHint}. {basisLabel(o)}.{o.mode === "UDARA" ? " Lebih cepat, ukuran dihitung dengan pembagi 6000." : ""}</span>
             </label>
           ))}
         </>

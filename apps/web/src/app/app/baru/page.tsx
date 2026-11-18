@@ -4,6 +4,7 @@ import { CAN_CREATE_ORDER, handleRoutes } from "@kamil/core";
 import { repo } from "@/lib/repo";
 import { staffRpc, getMe, type Staff } from "@/lib/supabase/server";
 import SubmitButton from "@/components/SubmitButton";
+import CaraMasukField from "@/components/CaraMasukField";
 import { randomUUID } from "node:crypto";
 import { buatResi } from "../actions";
 
@@ -29,10 +30,12 @@ export default async function Baru({ searchParams }: { searchParams: Promise<{ e
             <select id="rute" name="rute" required>
               {routes.map((r) => (
                 <option key={r.slug} value={r.slug}>
-                  {r.origin.city} → {r.dest.city} · {r.serviceTitle} ({r.basis === "PER_M3" ? "per ukuran m³" : "per kilo"})
+                  {r.origin.city} → {r.dest.city} · {r.serviceTitle} ({r.basis === "PER_M3" ? "per ukuran m³" : "per kilo"}){r.mode && r.mode !== "LAUT" ? ` · ${r.mode === "UDARA" ? "Udara" : "Darat"}` : ""}
                 </option>
               ))}
             </select>
+
+            <CaraMasukField kotaAsal={me.role === "SUPER_ADMIN" ? undefined : routes[0]?.origin.city} />
 
             <h3 style={{ marginTop: 20 }}>Pengirim</h3>
             <label className="f" htmlFor="pengirim">Nama pengirim</label>

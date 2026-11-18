@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { calculateTariff } from "../tariff";
-import { isValidResi, normalizeResi } from "../resi";
+import { isValidResi, splitItem } from "../resi";
 import type { Repo, RouteService } from "./repo";
 import { toPublicTrack } from "./publicView";
 
@@ -24,11 +24,11 @@ export const handleRoutes = (repo: Repo) => safe(() => routes(repo));
 export const handleQuote = (repo: Repo, input: unknown) => safe(() => quote(repo, input));
 
 async function track(repo: Repo, rawResi: string): Promise<Reply> {
-  const resi = normalizeResi(rawResi);
+  const resi = splitItem(rawResi).resi; // kode barang (…-01) dikenali sebagai resinya
   if (!isValidResi(resi))
-    return { status: 400, body: { error: "Nomor resi tidak dikenali. Contoh yang benar: KLX-2611-000123" } };
+    return { status: 400, body: { error: "Nomor resi tidak dikenali. Contoh yang benar: KLX-JKT-MKS-LJ-261112-0830-0001-D" } };
   const s = await repo.findShipmentByResi(resi);
-  if (!s) return { status: 404, body: { error: "Nomor resi tidak ditemukan. Coba periksa lagi angkanya." } };
+  if (!s) return { status: 404, body: { error: "Nomor resi tidak ditemukan. Coba periksa lagi kodenya." } };
   return { status: 200, body: toPublicTrack(s) };
 }
 
@@ -38,6 +38,7 @@ async function routes(repo: Repo): Promise<Reply> {
     status: 200,
     body: routes.map((r) => ({
       slug: r.slug,
+      mode: r.mode,
       origin: r.origin,
       dest: r.dest,
       service: r.service,
@@ -57,6 +58,7 @@ const QuoteBody = z.object({
   dest: z.string().min(2).max(10),
   service: z.enum(["PORT_TO_PORT", "PORT_TO_DOOR", "DOOR_TO_DOOR"]).optional(),
   basis: z.enum(["PER_KG", "PER_M3"]).optional(),
+  mode: z.enum(["LAUT", "DARAT", "UDARA"]).optional(),
   pieces: z
     .array(
       z.object({
@@ -77,7 +79,7 @@ async function quote(repo: Repo, input: unknown): Promise<Reply> {
   if (!parsed.success)
     return { status: 400, body: { error: "Data belum lengkap. Isi kota asal, kota tujuan, dan berat barang." } };
   const b = parsed.data;
-  const route = await repo.findRoute(b.origin.toUpperCase(), b.dest.toUpperCase(), { service: b.service, basis: b.basis });
+  const route = await repo.findRoute(b.origin.toUpperCase(), b.dest.toUpperCase(), { service: b.service, basis: b.basis, mode: b.mode });
   if (!route) return { status: 404, body: { error: "Maaf, rute ini belum tersedia. Hubungi kami lewat WhatsApp untuk bantuan." } };
 
   const r = calculateTariff({
@@ -117,6 +119,7 @@ async function quote(repo: Repo, input: unknown): Promise<Reply> {
       explain,
       etaDays: route.etaDays,
       service: { code: route.service, ...SERVICE_LABEL[route.service] },
+      mode: route.mode,
       route: { origin: route.origin.city, dest: route.dest.city },
       note: "Ini perkiraan. Biaya pasti dihitung setelah barang ditimbang di gudang kami.",
     },

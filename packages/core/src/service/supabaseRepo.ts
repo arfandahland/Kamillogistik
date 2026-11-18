@@ -36,13 +36,14 @@ export function createSupabaseRepo(cfg: { url: string; publishableKey: string; f
     async findRoute(o, d, opts) {
       const all = await listRoutes();
       return all.find((r) => r.origin.code === o && r.dest.code === d
-        && (!opts?.service || r.service === opts.service) && (!opts?.basis || r.basis === opts.basis)) ?? null;
+        && (!opts?.service || r.service === opts.service) && (!opts?.basis || r.basis === opts.basis)
+        && (!opts?.mode || r.mode === opts.mode)) ?? null;
     },
     async findShipmentByResi(resi) {
       const r = await rpc<any | null>("public_track", { p_resi: resi });
       if (!r) return null;
       const rec: ShipmentRecord = {
-        resiNo: r.resiNo, origin: r.origin, dest: r.dest, status: r.status,
+        resiNo: r.resiNo, origin: r.origin, dest: r.dest, status: r.status, mode: r.mode ?? undefined, pickupType: r.pickupType ?? undefined,
         etaAt: r.etaAt ?? undefined, vesselName: r.vesselName ?? undefined,
         pod: r.pod ?? undefined,
         events: (r.events ?? []).map((e: any) => ({ status: e.status, at: e.at, location: e.location ?? undefined })),

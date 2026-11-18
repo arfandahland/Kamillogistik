@@ -25,6 +25,19 @@ export const STATUS_LABEL: Record<AnyStatus, string> = {
   EXCEPTION: "Perlu ditangani",
 };
 
+/** Label tahap menurut moda: kapal untuk laut, pesawat untuk udara, truk untuk darat. */
+export function statusLabel(status: AnyStatus, mode: "LAUT" | "DARAT" | "UDARA" = "LAUT"): string {
+  if (mode === "UDARA") {
+    if (status === "IN_TRANSIT_SEA") return "Dalam penerbangan";
+    if (status === "ARRIVED_DEST_PORT") return "Tiba di bandara tujuan";
+  }
+  if (mode === "DARAT") {
+    if (status === "IN_TRANSIT_SEA") return "Dalam perjalanan darat";
+    if (status === "ARRIVED_DEST_PORT") return "Tiba di kota tujuan";
+  }
+  return STATUS_LABEL[status];
+}
+
 const ACTION_LABEL: Partial<Record<ShipmentStatus, { label: string; done: string }>> = {
   PICKED_UP: { label: "Barang sudah saya jemput", done: "Tercatat: barang sudah dijemput." },
   AT_ORIGIN_HUB: { label: "Barang sudah saya terima di gudang", done: "Tercatat: barang sudah diterima di gudang." },
@@ -41,10 +54,11 @@ export type NextAction =
   | { kind: "pod" };
 
 /** Tombol langkah berikutnya untuk peran ini, atau null bila bukan giliran peran ini. */
-export function nextAction(role: Actor, status: AnyStatus): NextAction | null {
+export function nextAction(role: Actor, status: AnyStatus, masuk: "PICKUP" | "DROPOFF" = "PICKUP"): NextAction | null {
   if (status === "CANCELLED" || status === "EXCEPTION" || status === "DELIVERED") return null;
-  const to = nextStatus(status);
+  const to = nextStatus(status, masuk);
   if (!to || !canSetStatus(role, to)) return null;
+  if (to === "AT_ORIGIN_HUB" && status === "CREATED") return { kind: "advance", to, label: "Barang diantar pelanggan sudah saya terima", done: "Tercatat: barang diantar sendiri oleh pelanggan dan sudah diterima di gudang." };
   if (to === "SORTED_INVOICED") return { kind: "measure" };
   if (to === "DELIVERED") return { kind: "pod" };
   const a = ACTION_LABEL[to];

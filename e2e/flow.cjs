@@ -65,10 +65,12 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await page.fill("#w0", "10"); await page.click("form > button.btn:not(.ghost)");
     await page.waitForSelector(".price", { timeout: 15000 }).catch(() => {});
     ok("kalkulator ongkir: 10 kg x Rp2.500 = Rp25.000", /Rp25\.000/.test(await text(page)));
-    await page.goto(`${BASE}/lacak/KLX-0000-000000`, { waitUntil: "networkidle" });
+    await page.goto(`${BASE}/lacak/KLX-JKT-MKS-LJ-261118-1400-0998-P`, { waitUntil: "networkidle" });
     ok("resi tak dikenal: pesan awam", /tidak ditemukan/.test(await text(page)));
     await page.goto(`${BASE}/lacak/abc`, { waitUntil: "networkidle" });
     ok("format resi salah: pesan awam", /tidak dikenali/.test(await text(page)));
+    await page.goto(`${BASE}/lacak/KLX-JKT-MKS-LJ-261118-1400-0999-P`, { waitUntil: "networkidle" });
+    ok("salah ketik satu angka ketahuan (huruf pemeriksa)", /tidak dikenali/.test(await text(page)));
     const ro = await page.request.get(`${BASE}/api/owner`);
     ok("/api/owner tanpa login ditolak", ro.status() === 403);
     ok("halaman pratinjau pengembangan tertutup", (await page.request.get(`${BASE}/dev/staf`)).status() === 404);
@@ -88,7 +90,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("pemilik tidak bisa membuat resi (hanya memantau)", !/\/app\/baru/.test(p.url()));
 
     await p.goto(`${BASE}/app/tarif`, { waitUntil: "networkidle" });
-    const det = p.locator("details.admitem", { hasText: "Jakarta → Makassar" }).filter({ hasText: "per kg" }).first();
+    const det = p.locator("details.admitem", { hasText: "Jakarta → Makassar · Laut" }).filter({ hasText: "per kg" }).first();
     await det.locator("summary").click();
     await det.locator("input[name=harga]").fill("2800");
     let r = await act(p, det.getByRole("button", { name: "Simpan tarif" }));
@@ -131,12 +133,13 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await p.goto(`${BASE}/app/baru`, { waitUntil: "networkidle" });
     await selectByText(p, "#rute", "Jakarta → Makassar · Diantar sampai alamat (per kilo)");
     await p.fill("#pengirim", "PT Maju Jaya"); await p.fill("#hp_pengirim", "081234567890");
-    await p.fill("#penerima", "Budi Santoso"); await p.fill("#hp_penerima", "082233445566"); await p.fill("#alamat", "Jl. Pettarani No. 5, Makassar");
+    await p.fill("#penerima", "Budi Santoso"); await p.fill("#hp_penerima", "082233445566"); await p.fill("#alamat", "Jl. Pettarani No. 5, Makassar"); await p.fill("#alamat_jemput", "Jl. Sudirman No. 1, Jakarta");
     await p.fill("#jumlah", "2");
     const r = await act(p, p.getByRole("button", { name: "Buat resi" }));
     ok("resi dibuat dengan pesan sukses", r.ok && /Resi sudah dibuat/.test(r.ok), JSON.stringify(r));
     resiNo = (await p.locator("h1").first().innerText()).trim(); resiId = p.url().match(/resi\/([0-9a-f-]+)/)?.[1] || "";
-    ok("nomor resi berformat KLX-YYMM-000001", /^KLX-\d{4}-000001$/.test(resiNo), resiNo);
+    ok("nomor resi terbaca: KLX-asal-tujuan-moda-tanggal-jam-urutan-huruf", /^KLX-JKT-MKS-LJ-\d{6}-\d{4}-0001-[A-Z]$/.test(resiNo), resiNo);
+    ok("penjelasan arti kode tampil", (await p.locator(".kodebox").count()) === 1 && (await p.locator(".tag.moda").innerText()).includes("Laut"));
     ok("penanda tahap: Tahap 1 dari 10", /Tahap 1 dari 10/.test(await text(p)));
     await noOverflow(p, "detail resi (HP)");
     await p.screenshot({ path: `${OUT}/e2e-resi-baru.png` });
