@@ -552,7 +552,16 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await o.goto(`${BASE}/app/keuangan/komisi`, { waitUntil: "networkidle" });
     ok("komisi mitra: halaman terbuka dengan ringkasan dan daftar", /Komisi mitra/.test(await text(o)) && (await o.locator(".hist").count()) >= 1 && (await o.locator(".err").count()) === 0);
     await noOverflow(o, "komisi mitra");
+    await o.goto(`${BASE}/app/peta`, { waitUntil: "networkidle" });
+    ok("peta pantauan: simpul kota dan daftar muatan tampil", (await o.locator(".mapsvg .node").count()) >= 2 && /Muatan/.test(await text(o)) && (await o.locator(".err").count()) === 0);
+    await o.screenshot({ path: `${OUT}/e2e-peta.png`, fullPage: true });
+    await o.goto(`${BASE}/app/ringkasan`, { waitUntil: "networkidle" });
+    ok("ringkasan harian: angka hari ini dan tombol bagikan WhatsApp", /Resi baru/.test(await text(o)) && (await o.locator("a.wabtn[href^='https://wa.me/?text=']").count()) === 1 && (await o.locator(".err").count()) === 0);
+    await o.screenshot({ path: `${OUT}/e2e-ringkasan.png`, fullPage: true });
+    await noOverflow(o, "ringkasan harian");
     const kur = (await login(browser, "kurir@uji.id")).page;
+    await kur.goto(`${BASE}/app/peta`, { waitUntil: "networkidle" });
+    ok("kurir tidak bisa membuka peta pemilik", !kur.url().includes("/app/peta") || !(await kur.locator(".mapsvg").count()));
     await kur.goto(`${BASE}/app/tindak-lanjut`, { waitUntil: "networkidle" });
     ok("kurir ditolak masuk antrean", !kur.url().includes("/app/tindak-lanjut") || /tidak punya|izin|Hanya/i.test(await text(kur)));
   }

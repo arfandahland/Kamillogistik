@@ -815,3 +815,14 @@ details.admitem .admbody { padding: 4px 18px 18px; border-top: 1px dashed var(--
 .inspfotos { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; } .inspfotos img { width: 84px; height: 84px; object-fit: cover; border-radius: 12px; border: 1px solid var(--line); }
 .hist { display: grid; gap: 6px; } .chg { list-style: none; margin: 4px 0; padding: 0; display: grid; gap: 4px; } .chg li { display: flex; justify-content: space-between; gap: 10px; align-items: center; padding: 6px 0; border-top: 1px dashed var(--line); font-size: 15px; } .chg li:first-child { border-top: 0; } .chg s { color: var(--muted); font-weight: 600; } .chg b { display: inline-flex; gap: 6px; align-items: center; }
 .kfilter { display: grid; grid-template-columns: auto 1fr; gap: 8px 10px; align-items: center; } .kfilter .btn { grid-column: 1 / -1; }
+
+/* ----- peta + ringkasan pemilik ----- */
+.mapcard { padding: 8px; background: linear-gradient(160deg, #07332c, #0f6b5a); border: 0; } .mapsvg { width: 100%; height: auto; max-height: 480px; display: block; border-radius: 14px; }
+.mapsvg .lane { fill: none; stroke: rgba(255, 255, 255, .45); stroke-width: 2; stroke-dasharray: 5 6; } .mapsvg .lane.go { stroke: #ffcf6b; animation: ildash 1.6s linear infinite; } .mapsvg .lane.late { stroke: #ff7a7a; }
+.mapsvg .node { fill: #14806a; stroke: #bff3e4; stroke-width: 2; } .mapsvg .node.on { fill: #2fd1a8; } .mapsvg .nn { fill: #05302a; font: 800 11px/1 inherit; } .mapsvg .nc { fill: #e6fff8; font: 700 11px/1 inherit; }
+.mapsvg .ring { fill: none; stroke: #ff7a7a; stroke-width: 2.5; animation: chatpulse 2s ease-in-out infinite; }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; padding: 8px 6px 2px; color: #cdeee6; font-size: 12.5px; } .legend .d { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; background: #2fd1a8; } .legend .d.ring { background: transparent; border: 2px solid #ff7a7a; } .legend .d.lane { background: #ffcf6b; border-radius: 3px; height: 4px; width: 16px; }
+.latecard { border-left: 6px solid #e5484d; }
+.daynav { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; text-align: center; } .daynav .btn { min-width: 48px; min-height: 48px; justify-content: center; font-size: 22px; }
+.sumgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } .sumtile { padding: 14px; border-radius: 20px; background: #fff; border: 1px solid var(--line); box-shadow: 0 10px 24px rgba(15, 107, 90, .08); display: grid; gap: 2px; } .sumtile b { font-size: 22px; line-height: 1.15; } .sumtile span { color: var(--muted); font-size: 14px; }
+.up { color: #0f7a5d; font-size: 13px; font-weight: 700; } .down { color: #b3262b; font-size: 13px; font-weight: 700; } .chg b.down { font-size: 15px; }

@@ -17,7 +17,7 @@ export default function StaffShell({ me, pending, children, forceFull }: { me: M
         { href: "/app", label: "Pantauan", icon: "chart" },
         { href: "/app/semua", label: "Resi", icon: "list" },
         { href: "/app/keuangan", label: "Keuangan", icon: "cash", also: ["/app/tagihan"] },
-        { href: "/app/kelola", label: "Kelola", icon: "grid", also: ["/app/tarif", "/app/keuangan/komisi", "/app/tindak-lanjut", "/app/cari", "/app/mitra", "/app/korporat", "/app/petugas", "/app/tarif", "/app/pengaturan"] },
+        { href: "/app/kelola", label: "Kelola", icon: "grid", also: ["/app/peta", "/app/ringkasan", "/app/tarif", "/app/keuangan/komisi", "/app/tindak-lanjut", "/app/cari", "/app/mitra", "/app/korporat", "/app/petugas", "/app/tarif", "/app/pengaturan"] },
         { href: "/app/akun", label: "Akun", icon: "user" },
       ]
     : [
@@ -32,6 +32,8 @@ export default function StaffShell({ me, pending, children, forceFull }: { me: M
     ? [
         { href: "/app", label: "Pantauan", icon: "chart" },
         { href: "/app/semua", label: "Semua resi", icon: "list" },
+        { href: "/app/ringkasan", label: "Ringkasan harian", icon: "list" },
+        { href: "/app/peta", label: "Peta pantauan", icon: "pin" },
         { href: "/app/tindak-lanjut", label: "Perlu dihubungi", icon: "chat" },
         { href: "/app/cari", label: "Cari", icon: "search" },
         { href: "/app/manifest", label: "Manifest", icon: "layers" },

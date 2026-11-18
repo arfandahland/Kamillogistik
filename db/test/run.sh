@@ -6,7 +6,7 @@ cd "$(dirname "$0")/.."
 DB=${TEST_DB:-kamil_test}
 psql_run() { if [ "$(id -u)" = 0 ]; then su postgres -c "psql -v ON_ERROR_STOP=1 -q -X $*"; else psql -v ON_ERROR_STOP=1 -q -X "$@"; fi; }
 psql_run "-c 'DROP DATABASE IF EXISTS $DB' -c 'CREATE DATABASE $DB'"
-for f in test/00_stub_auth.sql migrations/001_init.sql migrations/002_security.sql migrations/003_public_api.sql migrations/004_seed_network.sql migrations/005_staff_app.sql migrations/006_owner_dashboard.sql migrations/007_admin_finance.sql migrations/008_pod.sql migrations/009_speed.sql migrations/010_security.sql migrations/011_kode_resi.sql migrations/012_manifest.sql migrations/013_korporat.sql migrations/014_tindak_lanjut.sql migrations/015_pemeriksaan_fisik.sql migrations/016_riwayat_harga_komisi.sql; do
+for f in test/00_stub_auth.sql migrations/001_init.sql migrations/002_security.sql migrations/003_public_api.sql migrations/004_seed_network.sql migrations/005_staff_app.sql migrations/006_owner_dashboard.sql migrations/007_admin_finance.sql migrations/008_pod.sql migrations/009_speed.sql migrations/010_security.sql migrations/011_kode_resi.sql migrations/012_manifest.sql migrations/013_korporat.sql migrations/014_tindak_lanjut.sql migrations/015_pemeriksaan_fisik.sql migrations/016_riwayat_harga_komisi.sql migrations/017_pantauan_pemilik.sql; do
   psql_run "-d $DB" < "$f"
 done
 psql_run "-d $DB" < test/staff_flow.sql
@@ -20,6 +20,7 @@ psql_run "-d $DB" < test/korporat.sql
 psql_run "-d $DB" < test/tindak_lanjut.sql
 psql_run "-d $DB" < test/pemeriksaan.sql
 psql_run "-d $DB" < test/riwayat_komisi.sql
+psql_run "-d $DB" < test/pantauan.sql
 node -e '
 const c=require("./test/tariff-cases.json");
 let o="DO $$ DECLARE j jsonb; BEGIN\n";

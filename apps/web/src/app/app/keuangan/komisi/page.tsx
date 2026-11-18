@@ -26,7 +26,7 @@ export default async function Komisi({ searchParams }: { searchParams: Promise<{
         <button className="btn sm">Tampilkan</button>
       </form>
       {r.error && <div className="err">{r.error}</div>}
-      <div className="stats">
+      <div className="stats" style={{ marginTop: 12 }}>
         <div className="stat"><b>{rupiah(tot.revenue)}</b><span>Ongkir dari resi mitra</span></div>
         <div className="stat warm"><b>{rupiah(tot.commission)}</b><span>Komisi terhitung</span></div>
         <div className="stat dx"><b>{rupiah(tot.paid)}</b><span>Komisi dari tagihan lunas</span></div>
