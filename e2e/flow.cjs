@@ -439,6 +439,54 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await o2.ctx.close();
   }
 
+  console.log("\n[L] Pelanggan korporat: tempo, tarif khusus, batas kredit");
+  {
+    const p = owner.page;
+    await p.goto(`${BASE}/app/korporat`, { waitUntil: "networkidle" });
+    const nf = p.locator("details.admnew").first(); await nf.locator("summary").click();
+    await nf.locator("#nama").fill("PT Sinar Jaya"); await nf.locator("#kontak").fill("Bu Rina"); await nf.locator("#hp").fill("08111222333");
+    await nf.locator("#tempo").selectOption("14"); await nf.locator("#kredit").fill("20000");
+    let r = await act(p, nf.getByRole("button", { name: "Daftarkan" }));
+    ok("pemilik mendaftarkan pelanggan korporat (tempo 14 hari, batas kredit Rp20.000)", r.ok && /didaftarkan/.test(r.ok), JSON.stringify(r));
+    await p.locator("#rute").selectOption({ label: (await p.locator("#rute option").allInnerTexts()).find((t) => /Jakarta → Makassar · Laut \(per kg\)/.test(t)) });
+    await p.fill("#harga", "2000");
+    r = await act(p, p.getByRole("button", { name: "Tambah tarif khusus" }));
+    ok("tarif khusus Rp2.000/kg tersimpan", r.ok && /Tarif khusus disimpan/.test(r.ok) && /khusus Rp2\.000/.test(await text(p)), JSON.stringify(r));
+    const k = kasir.page;
+    await k.goto(`${BASE}/app/baru`, { waitUntil: "networkidle" });
+    ok("form kasir memuat pilihan pelanggan korporat", (await k.getByText("Perusahaan langganan").count()) === 1);
+    await selectByText(k, "#rute", "Jakarta → Makassar · Diantar sampai alamat (per kilo)");
+    await k.getByText("Perusahaan langganan").click(); await k.selectOption("#company", { label: "PT Sinar Jaya (tempo 14 hari)" });
+    await k.getByText("Diantar sendiri").click();
+    await k.fill("#pengirim", "PT Sinar Jaya"); await k.fill("#penerima", "Gudang Penerima"); await k.fill("#alamat", "Jl. Tol Reformasi, Makassar"); await k.fill("#jumlah", "1");
+    r = await act(k, k.getByRole("button", { name: "Buat resi" }));
+    ok("resi korporat dibuat; kode memuat LA (antar sendiri)", r.ok && /-LA-/.test(await k.locator("h1.resicode").innerText()), JSON.stringify(r));
+    ok("detail resi menampilkan nama perusahaan", /PT Sinar Jaya/.test(await k.locator(".tag.corp").innerText().catch(() => "")));
+    const korId = k.url().match(/resi\/([0-9a-f-]+)/)?.[1];
+    const g = gudang.page;
+    await g.goto(`${BASE}/app/resi/${korId}`, { waitUntil: "networkidle" });
+    ok("antar sendiri: tahapnya 9 (tanpa 'dijemput')", /Tahap 1 dari 9/.test(await text(g)));
+    r = await act(g, g.getByRole("button", { name: "Barang diantar pelanggan sudah saya terima" }));
+    ok("gudang menerima barang yang diantar pelanggan", r.ok && /diantar sendiri/.test(r.ok), JSON.stringify(r));
+    await g.fill("input[name=w0]", "10");
+    r = await act(g, g.getByRole("button", { name: "Hitung dan buat tagihan" }));
+    ok("harga khusus dipakai: 10 kg x Rp2.000 = Rp20.000", r.ok && /Rp20\.000/.test(r.ok), JSON.stringify(r));
+    await k.goto(`${BASE}/app/baru`, { waitUntil: "networkidle" });
+    await selectByText(k, "#rute", "Jakarta → Makassar · Diantar sampai alamat (per kilo)");
+    await k.getByText("Perusahaan langganan").click(); await k.selectOption("#company", { label: "PT Sinar Jaya (tempo 14 hari)" });
+    await k.getByText("Diantar sendiri").click();
+    await k.fill("#pengirim", "PT Sinar Jaya"); await k.fill("#penerima", "X"); await k.fill("#alamat", "Y"); await k.fill("#jumlah", "1");
+    r = await act(k, k.getByRole("button", { name: "Buat resi" }));
+    ok("batas kredit terlampaui: resi baru ditolak dengan alasan jelas", r.err && /Batas kredit/.test(r.err), JSON.stringify(r));
+    await p.goto(`${BASE}/app/korporat`, { waitUntil: "networkidle" });
+    await p.getByText("PT Sinar Jaya").first().click(); await p.waitForURL(/\/app\/korporat\/[0-9a-f-]+/); await p.waitForLoadState("networkidle");
+    const t = await text(p);
+    ok("rekap korporat: Rp20.000 belum dibayar dan batas kredit terpakai penuh", /Rp20\.000/.test(t) && /dari Rp20\.000/.test(t), t.slice(0, 300));
+    ok("rekap korporat memuat daftar invoice", /INV-/.test(t));
+    await p.screenshot({ path: `${OUT}/e2e-korporat.png`, fullPage: true });
+    ok("kasir tidak bisa membuka halaman pelanggan korporat (hanya pemilik)", await (async () => { await k.goto(`${BASE}/app/korporat`, { waitUntil: "networkidle" }); return !k.url().includes("/app/korporat"); })());
+  }
+
   await browser.close();
   const fail = results.filter((r) => !r.ok);
   console.log(`\n==== HASIL: ${results.length - fail.length}/${results.length} lolos ====`);

@@ -7,6 +7,7 @@ export const metadata: Metadata = { title: "Kelola" };
 
 const ITEMS = [
   { href: "/app/mitra", icon: "store", t: "Mitra dan cabang", d: "Daftarkan gerai mitra, gudang, rekanan, dan pelabuhan beserta komisinya." },
+  { href: "/app/korporat", icon: "building", t: "Pelanggan korporat", d: "Perusahaan langganan: tempo bayar, batas kredit, tarif khusus, dan rekap tagihan." },
   { href: "/app/petugas", icon: "users", t: "Petugas", d: "Buat akun, ganti sandi, atau nonaktifkan kurir, gudang, kasir, dan lainnya." },
   { href: "/app/tarif", icon: "tag", t: "Tarif dan rute", d: "Ubah harga, minimal berat, dan jadwal. Website langsung memakai harga baru." },
   { href: "/app/keuangan", icon: "cash", t: "Keuangan", d: "Uang masuk, piutang, umur piutang, dan riwayat pembayaran." },

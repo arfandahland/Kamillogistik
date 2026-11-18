@@ -17,7 +17,7 @@ export default function StaffShell({ me, pending, children, forceFull }: { me: M
         { href: "/app", label: "Pantauan", icon: "chart" },
         { href: "/app/semua", label: "Resi", icon: "list" },
         { href: "/app/keuangan", label: "Keuangan", icon: "cash", also: ["/app/tagihan"] },
-        { href: "/app/kelola", label: "Kelola", icon: "grid", also: ["/app/mitra", "/app/petugas", "/app/tarif", "/app/pengaturan"] },
+        { href: "/app/kelola", label: "Kelola", icon: "grid", also: ["/app/mitra", "/app/korporat", "/app/petugas", "/app/tarif", "/app/pengaturan"] },
         { href: "/app/akun", label: "Akun", icon: "user" },
       ]
     : [
@@ -36,6 +36,7 @@ export default function StaffShell({ me, pending, children, forceFull }: { me: M
         { href: "/app/keuangan", label: "Keuangan", icon: "cash" },
         { href: "/app/tagihan", label: "Tagihan", icon: "file" },
         { href: "/app/mitra", label: "Mitra dan cabang", icon: "store" },
+        { href: "/app/korporat", label: "Pelanggan korporat", icon: "building" },
         { href: "/app/petugas", label: "Petugas", icon: "users" },
         { href: "/app/tarif", label: "Tarif dan rute", icon: "tag" },
         { href: "/app/pengaturan", label: "Pengaturan", icon: "sliders" },

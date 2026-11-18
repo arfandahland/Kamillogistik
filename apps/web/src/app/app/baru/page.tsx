@@ -5,6 +5,7 @@ import { repo } from "@/lib/repo";
 import { staffRpc, getMe, type Staff } from "@/lib/supabase/server";
 import SubmitButton from "@/components/SubmitButton";
 import CaraMasukField from "@/components/CaraMasukField";
+import PelangganField from "@/components/PelangganField";
 import { randomUUID } from "node:crypto";
 import { buatResi } from "../actions";
 
@@ -17,6 +18,7 @@ export default async function Baru({ searchParams }: { searchParams: Promise<{ e
   const rr = await handleRoutes(repo);
   const all = (rr.status === 200 ? rr.body : []) as any[];
   const routes = me.role === "SUPER_ADMIN" ? all : all.filter((r) => r.origin.name === me.branchName);
+  const perusahaan = (await staffRpc<{ id: string; name: string; top: number }[]>("staff_list_customers")).data ?? [];
 
   return (
     <main className="wrap narrow section">
@@ -35,6 +37,7 @@ export default async function Baru({ searchParams }: { searchParams: Promise<{ e
               ))}
             </select>
 
+            <PelangganField perusahaan={perusahaan} />
             <CaraMasukField kotaAsal={me.role === "SUPER_ADMIN" ? undefined : routes[0]?.origin.city} />
 
             <h3 style={{ marginTop: 20 }}>Pengirim</h3>
