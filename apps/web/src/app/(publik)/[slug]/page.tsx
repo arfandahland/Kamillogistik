@@ -43,6 +43,8 @@ export default async function RoutePage({ params }: { params: Promise<{ slug: st
   const { pair: p, all } = f;
   const faq = buildFaq(p);
   const related = relatedPairs(all, p);
+  const kgOpt = p.minPrice.basis === "PER_KG" ? p.minPrice : p.options.find((o) => o.basis === "PER_KG");
+  const contoh = kgOpt ? [10, 25, 50, 100].map((kg) => ({ kg, total: Math.max(kg, kgOpt.minChargeable || 0) * kgOpt.unitPrice })) : [];
   return (
     <main className="wrap section stack">
       <JsonLd data={[organizationLd(), serviceLd(p), faqLd(faq), breadcrumbLd([{ name: "Beranda", path: "/" }, { name: "Ekspedisi", path: "/ekspedisi" }, { name: `${p.originCity} ke ${p.destCity}`, path: `/${p.slug}` }])]} />
@@ -68,6 +70,15 @@ export default async function RoutePage({ params }: { params: Promise<{ slug: st
         {p.departureNote && <p className="hint">{p.departureNote}.</p>}
         <p className="hint">Harga perkiraan per {unitLabel(p.options[0]!)}; biaya pasti dihitung setelah barang ditimbang di gudang.</p>
       </section>
+
+      {kgOpt && (
+        <section className="card" aria-labelledby="contoh">
+          <h2 id="contoh">Contoh perkiraan biaya {p.originCity} ke {p.destCity}</h2>
+          <table className="contoh"><thead><tr><th>Berat</th><th>Perkiraan ongkir</th></tr></thead>
+            <tbody>{contoh.map((c) => <tr key={c.kg}><td>{c.kg} kg</td><td><b>Rp{c.total.toLocaleString("id-ID")}</b></td></tr>)}</tbody></table>
+          <p className="hint">Dihitung dari berat aktual dengan tarif {optionName(kgOpt)}. Bila ukuran barang besar, yang dipakai berat volume. Pelajari <Link href="/panduan/cara-hitung-ongkir-cargo">cara menghitung ongkir cargo</Link>.</p>
+        </section>
+      )}
 
       <section className="card" aria-labelledby="tentang">
         <h2 id="tentang">Tentang rute ini</h2>

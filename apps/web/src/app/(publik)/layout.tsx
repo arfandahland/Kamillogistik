@@ -17,7 +17,7 @@ export default function PublikLayout({ children }: { children: React.ReactNode }
         <div className="wrap">
           <Link href="/" className="brand" aria-label="Kamil Logistik — beranda"><img src="/logo-sm.webp" width="220" height="175" alt="Kamil Logistik" /></Link>
           <nav className="navlinks" aria-label="Menu">
-            <Link href="/">Beranda</Link><Link href="/lacak">Cek resi</Link><Link href="/ongkir">Hitung ongkir</Link>
+            <Link href="/">Beranda</Link><Link href="/lacak">Cek resi</Link><Link href="/ongkir">Hitung ongkir</Link><Link href="/panduan">Panduan</Link>
           </nav>
           <Link href="/masuk" className="nav masukbtn"><Icon name="lock" size={18} /> Masuk</Link>
         </div>
@@ -27,7 +27,7 @@ export default function PublikLayout({ children }: { children: React.ReactNode }
         <div className="wrap">
           <img src="/logo-sm.webp" width="220" height="175" alt="Kamil Logistik" />
           <p>{BRAND.tagline}</p>
-          <nav aria-label="Tautan cepat"><Link href="/ongkir">Hitung ongkir</Link><Link href="/lacak">Cek resi</Link><Link href="/ekspedisi">Rute dan tarif</Link><Link href="/masuk">Masuk petugas</Link></nav>
+          <nav aria-label="Tautan cepat"><Link href="/ongkir">Hitung ongkir</Link><Link href="/lacak">Cek resi</Link><Link href="/ekspedisi">Rute dan tarif</Link><Link href="/panduan">Panduan</Link><Link href="/masuk">Masuk petugas</Link></nav>
           <p>WhatsApp {BRAND.whatsappDisplay} · Instagram @{BRAND.instagram}</p>
           <small>© {new Date().getFullYear()} Kamil Logistik Express</small>
         </div>

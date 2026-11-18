@@ -5,6 +5,7 @@ import Scene3D from "@/components/Scene3D";
 import Waves from "@/components/Waves";
 import Icon from "@/components/Icon";
 import JsonLd from "@/components/JsonLd";
+import { ARTIKEL } from "@/lib/panduan";
 import { getRoutePairs } from "@/lib/routes";
 import { HOME_FAQ, faqLd, organizationLd, websiteLd } from "@/lib/seo";
 import { priceLabel } from "@kamil/core";
@@ -92,6 +93,14 @@ export default async function Home() {
             <li className="card"><span className="hn">3</span><span className="n"><Icon name="truck" size={22} /></span><b>Dikirim darat dan laut</b><p className="muted">Setiap perpindahan barang antar petugas dicatat, jadi selalu jelas siapa yang memegang.</p></li>
             <li className="card"><span className="hn">4</span><span className="n"><Icon name="pin" size={22} /></span><b>Pantau sampai tiba</b><p className="muted">Cek tahapnya kapan saja lewat nomor resi, tanpa perlu daftar atau masuk.</p></li>
           </ol>
+        </section>
+
+        <section aria-labelledby="panduan">
+          <h2 id="panduan" className="sech">Panduan sebelum mengirim</h2>
+          <div className="stack">
+            {ARTIKEL.slice(0, 3).map((a) => <Link key={a.slug} href={`/panduan/${a.slug}`} className="card lift"><b>{a.heading}</b><p className="muted" style={{ margin: "6px 0 0" }}>{a.description}</p></Link>)}
+            <Link href="/panduan" className="btn ghost">Lihat semua panduan</Link>
+          </div>
         </section>
 
         <section aria-labelledby="faq">

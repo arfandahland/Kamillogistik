@@ -115,7 +115,7 @@ export function BarChart({ data, k, color, fmt = (n: number) => String(n), axis 
 }
 
 /** Donat: porsi tiap bagian dari keseluruhan. */
-export function Donut({ parts, center, sub }: { parts: { label: string; value: number; color: string }[]; center: string; sub: string }) {
+export function Donut({ parts, center, sub }: { parts: { label: string; value: number; color: string; shown?: string }[]; center: string; sub: string }) {
   const total = parts.reduce((s, p) => s + p.value, 0);
   let acc = 0;
   return (
@@ -128,11 +128,11 @@ export function Donut({ parts, center, sub }: { parts: { label: string; value: n
             strokeDasharray={`${Math.max(0, pct - 0.8)} ${100 - Math.max(0, pct - 0.8)}`} strokeDashoffset={off}
             transform="rotate(-90 70 70)" className="dseg" style={{ ["--p" as string]: Math.max(0, pct - 0.8) }} />;
         })}
-        <text x="70" y="68" textAnchor="middle" className="dnum">{center}</text>
+        <text x="70" y="68" textAnchor="middle" className="dnum" style={center.length > 5 ? { fontSize: center.length > 8 ? 17 : 21 } : undefined}>{center}</text>
         <text x="70" y="86" textAnchor="middle" className="dsub">{sub}</text>
       </svg>
       <ul className="dleg">
-        {(total > 0 ? parts.filter((p) => p.value > 0) : parts).map((p) => <li key={p.label} className={p.value === 0 ? "zero" : ""}><i style={{ background: p.color }} /><span>{p.label}</span><b>{p.value}</b></li>)}
+        {(total > 0 ? parts.filter((p) => p.value > 0) : parts).map((p) => <li key={p.label} className={p.value === 0 ? "zero" : ""}><i style={{ background: p.color }} /><span>{p.label}</span><b>{p.shown ?? p.value}</b></li>)}
       </ul>
     </div>
   );

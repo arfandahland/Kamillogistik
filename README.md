@@ -38,3 +38,9 @@ bukti terima (foto, tanda tangan, GPS), invoice publik, lacak publik, pantauan P
 `db/perf/seed.sql` mengisi database uji dengan 30.000 resi (180 ribu catatan jejak, 22 ribu tagihan) dan `bash db/perf/timing.sh` mengukur waktu tiap fungsi
 database. Hasil terakhir (ms): dashboard pemilik 98–188, keuangan 162, daftar resi 6–12, daftar tagihan 10, detail resi 6, lacak publik 4.
 Fungsi server Vercel dipasang di Singapura (sin1) agar dekat dengan database (ap-southeast-1).
+
+## Keamanan dan uji penetrasi
+
+`node e2e/pentest.cjs` (setelah `e2e/skenario.sh`) menyerang aplikasi lokal dari tiga sisi: HTTP tanpa login, panggilan langsung ke fungsi database dengan akun peran kecil,
+dan kondisi balapan; 72 pemeriksaan. Perlindungan: tabel terkunci (tanpa kebijakan), semua akses lewat fungsi peran, CSP + header keamanan, cookie sesi HttpOnly,
+penjaga percobaan masuk (5 gagal = kunci 15 menit per email+IP), batas berat/biaya, resi anti-ganda. Risiko yang diterima: nomor resi berurutan (status paket bisa ditebak).

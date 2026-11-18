@@ -40,7 +40,7 @@ export default async function Keuangan({ searchParams }: { searchParams: Promise
           <MoneyArea data={f.daily} series={[{ key: "invoiced", label: "Ditagihkan", color: "#2f9e8a" }, { key: "collected", label: "Uang masuk", color: "#f28c28" }]} /></section>
         <section className="card panel p-pos"><h2>Cara pembayaran</h2><p className="muted sub">Uang masuk menurut caranya.</p>
           {f.methods.length === 0 ? <p className="muted" style={{ margin: 0 }}>Belum ada pembayaran pada periode ini.</p>
-            : <Donut center={rupiahRingkas(f.methods.reduce((s, m) => s + m.amount, 0))} sub="uang masuk" parts={f.methods.map((m) => ({ label: m.method === "TRANSFER" ? "Transfer" : "Tunai", value: m.amount, color: m.method === "TRANSFER" ? "#1d8a76" : "#f28c28" }))} />}</section>
+            : <Donut center={rupiahRingkas(f.methods.reduce((s, m) => s + m.amount, 0))} sub="uang masuk" parts={f.methods.map((m) => ({ label: m.method === "TRANSFER" ? "Transfer" : "Tunai", value: m.amount, shown: rupiahRingkas(m.amount), color: m.method === "TRANSFER" ? "#1d8a76" : "#f28c28" }))} />}</section>
         <section className="card panel p-route"><h2>Umur piutang</h2><p className="muted sub">Berapa lama tagihan menunggu dibayar.</p>
           <MoneyHBars color="var(--amber)" items={f.aging.map((a) => ({ label: a.label, value: a.amount, note: `${a.n} tagihan` }))} empty="Tidak ada piutang." /></section>
         <section className="card panel p-recent"><h2>Pembayaran terbaru</h2>
