@@ -9,3 +9,4 @@ export { createSupabaseRepo } from "./service/supabaseRepo";
 export * from "./service/staffText";
 export * from "./service/owner";
 export * from "./service/seo";
+export * from "./service/chat";

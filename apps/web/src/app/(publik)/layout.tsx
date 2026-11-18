@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Icon from "@/components/Icon";
 import TabBar from "@/components/TabBar";
+import ChatBot from "@/components/ChatBot";
 import { BRAND, waLink } from "@/lib/brand";
 
 const TABS = [
@@ -33,6 +34,7 @@ export default function PublikLayout({ children }: { children: React.ReactNode }
         </div>
       </footer>
       <a className="wa-fab" href={waLink("Halo Kamil Logistik, saya mau tanya soal pengiriman barang.")} aria-label="Tanya lewat WhatsApp"><Icon name="chat" size={26} /></a>
+      <ChatBot />
       <TabBar tabs={TABS} variant="pub" />
     </>
   );

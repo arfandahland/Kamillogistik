@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import ResiForm from "@/components/ResiForm";
-import Scene3D from "@/components/Scene3D";
+import HeroCarousel, { type Slide } from "@/components/HeroCarousel";
+import { IlKapal, IlKorporat, IlPesawat, IlScan, IlTruk } from "@/components/Ilustrasi";
 import Waves from "@/components/Waves";
 import Icon from "@/components/Icon";
 import JsonLd from "@/components/JsonLd";
@@ -21,47 +22,76 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", images: ["/og.png"] },
 };
 
+const LAYANAN = [
+  { icon: "ship", t: "Laut", d: "Hemat untuk barang banyak" },
+  { icon: "plane", t: "Udara", d: "Lebih cepat sampai" },
+  { icon: "truck", t: "Dijemput", d: "Kurir datang ke alamat" },
+  { icon: "home", t: "Antar sendiri", d: "Bawa ke gudang kami" },
+  { icon: "building", t: "Korporat", d: "Tempo dan tarif khusus" },
+];
+
 const USP = [
-  { icon: "calc", t: "Harga transparan", d: "Hitung ongkir sendiri sebelum mengirim. Rumusnya sama dengan yang dipakai gudang saat menimbang." },
-  { icon: "pin", t: "Pantau tanpa login", d: "Masukkan nomor resi, lihat barang sudah sampai tahap mana dan perkiraan tiba." },
-  { icon: "scale", t: "Invoice resmi", d: "Barang ditimbang di gudang, tagihan terbit otomatis dan bisa dibuka serta dicetak dari tautan." },
-  { icon: "ship", t: "Darat dan laut", d: "Jakarta, Surabaya, Makassar, hingga Morowali dengan jadwal keberangkatan yang jelas." },
+  { icon: "calc", t: "Harga transparan", d: "Hitung ongkir sendiri, rumusnya sama dengan gudang." },
+  { icon: "scan", t: "Pantau dan pindai", d: "Lacak lewat kode resi atau pindai QR di struk." },
+  { icon: "file", t: "Invoice resmi", d: "Terbit otomatis setelah barang ditimbang." },
+  { icon: "layers", t: "Tercatat tiap tahap", d: "Setiap serah terima barang dikonfirmasi petugas." },
+  { icon: "pin", t: "Bukti terima", d: "Foto, tanda tangan, dan lokasi penerima." },
+  { icon: "building", t: "Untuk perusahaan", d: "Tempo bayar, batas kredit, tarif khusus." },
+];
+
+const LANGKAH = [
+  { icon: "chat", t: "Hubungi kami", d: "WhatsApp atau datang ke gerai mitra." },
+  { icon: "truck", t: "Dijemput atau diantar", d: "Kurir menjemput, atau Anda antar ke gudang." },
+  { icon: "scale", t: "Ditimbang, invoice terbit", d: "Ongkir dari berat nyata, bayar transfer atau tunai." },
+  { icon: "pin", t: "Pantau sampai tiba", d: "Cek kapan saja, diterima dengan bukti foto." },
 ];
 
 export default async function Home() {
   const pairs = await getRoutePairs();
+  const slides: Slide[] = [
+    { id: "laut", judul: "Darat dan laut ke seluruh Sulawesi", teks: "Jakarta, Surabaya, Makassar, sampai Morowali dengan jadwal keberangkatan yang jelas.", label: "Lihat rute dan tarif", href: "/ekspedisi", art: <IlKapal /> },
+    { id: "udara", judul: "Butuh cepat? Lewat udara", teks: "Kargo udara Jakarta–Makassar dengan perhitungan berat volume khusus udara. Tanyakan tarif ke tim kami.", label: "Tanya kargo udara", href: waLink("Halo Kamil Logistik, saya mau tanya kargo udara."), art: <IlPesawat /> },
+    { id: "jemput", judul: "Dijemput atau antar sendiri", teks: "Kurir kami menjemput ke alamat, atau bawa sendiri ke gudang tanpa biaya jemput.", label: "Cara kirim barang", href: "/panduan/cara-kirim-barang-dari-jakarta-ke-sulawesi", art: <IlTruk /> },
+    { id: "lacak", judul: "Lacak dengan kode atau kamera", teks: "Kode resi bisa dibaca: asal, tujuan, tanggal, dan jam. Atau pindai QR di struk.", label: "Cek resi sekarang", href: "/lacak", art: <IlScan /> },
+    { id: "korporat", judul: "Pelanggan korporat", teks: "Tempo bayar 7–30 hari, tarif khusus per rute, dan rekap tagihan untuk perusahaan Anda.", label: "Hubungi tim", href: waLink("Halo, perusahaan kami tertarik menjadi pelanggan korporat Kamil Logistik."), art: <IlKorporat /> },
+  ];
   return (
     <main>
       <JsonLd data={[organizationLd(), websiteLd(), faqLd(HOME_FAQ)]} />
-      <section className="hero">
-        <div className="wrap">
-          <img className="logo-big" src="/logo.webp" width="560" height="445" alt="Kamil Logistik, jasa pengiriman cargo ke seluruh Indonesia" fetchPriority="high" />
-          <span className="badge"><Icon name="shield" size={16} /> #BestPriceBestService</span>
-          <h1>Kirim barang ke seluruh Sulawesi, murah dan bisa dipantau</h1>
-          <p>Dari Jakarta ke Makassar sampai Morowali. Tahu persis barang Anda sudah sampai mana.</p>
-          <div className="herocta">
-            <Link href="/ongkir" className="btn shine"><Icon name="calc" size={22} /> Hitung ongkir</Link>
-            <Link href="/lacak" className="btn ghostlight"><Icon name="search" size={20} /> Cek resi</Link>
+      <section className="hero hero2">
+        <div className="wrap herogrid">
+          <div className="herotext">
+            <span className="badge"><Icon name="shield" size={16} /> #BestPriceBestService</span>
+            <h1>Kirim barang ke seluruh Sulawesi, murah dan bisa dipantau</h1>
+            <p>Darat, laut, dan udara. Dijemput atau antar sendiri. Tahu persis barang Anda sudah sampai mana.</p>
+            <div className="herocta">
+              <Link href="/ongkir" className="btn shine"><Icon name="calc" size={22} /> Hitung ongkir</Link>
+              <Link href="/lacak" className="btn ghostlight"><Icon name="search" size={20} /> Cek resi</Link>
+            </div>
           </div>
-          <Scene3D compact />
+          <HeroCarousel slides={slides} />
         </div>
         <Waves />
       </section>
 
       <div className="wrap stack homew">
-        <div className="card float">
+        <div className="card float glowcard">
           <h2>Barang saya sudah sampai mana?</h2>
           <ResiForm />
         </div>
 
+        <section aria-labelledby="layanan">
+          <h2 id="layanan" className="sech">Pilih cara kirim yang pas</h2>
+          <ul className="svcchips">
+            {LAYANAN.map((l) => <li key={l.t} className="rv"><span className="si"><Icon name={l.icon} size={22} /></span><b>{l.t}</b><small>{l.d}</small></li>)}
+          </ul>
+        </section>
+
         <section aria-labelledby="usp">
           <h2 id="usp" className="sech">Kenapa memilih Kamil Logistik</h2>
-          <div className="uspgrid stagger">
+          <div className="bento">
             {USP.map((u) => (
-              <div className="card usp" key={u.t}>
-                <span className="n"><Icon name={u.icon} size={22} /></span>
-                <h3>{u.t}</h3><p className="muted">{u.d}</p>
-              </div>
+              <div className="tile rv" key={u.t}><span className="si"><Icon name={u.icon} size={22} /></span><h3>{u.t}</h3><p>{u.d}</p></div>
             ))}
           </div>
         </section>
@@ -69,38 +99,32 @@ export default async function Home() {
         {pairs.length > 0 && (
           <section aria-labelledby="rute">
             <h2 id="rute" className="sech">Rute dan tarif pengiriman</h2>
-            <div className="stack">
+            <div className="rtgrid">
               {pairs.map((p) => (
-                <Link key={p.slug} href={`/${p.slug}`} className="card lift routecard">
-                  <div>
-                    <b>{p.originCity} → {p.destCity}</b>
-                    <small>{p.departureNote ?? "Hubungi kami untuk jadwal"}{p.etaDays ? ` · sekitar ${p.etaDays} hari` : ""}</small>
-                  </div>
-                  <span className="rc-price">mulai<b>{priceLabel(p.minPrice)}</b></span>
-                  <Icon name="arrow" size={20} />
+                <Link key={p.slug} href={`/${p.slug}`} className="rtcard rv" aria-label={`Ekspedisi ${p.originCity} ke ${p.destCity}, ${priceLabel(p.minPrice)}`}>
+                  <span className="rt-codes"><b>{p.originCode}</b><i className="rline" aria-hidden="true"><u /></i><b>{p.destCode}</b></span>
+                  <span className="rt-city">{p.originCity} → {p.destCity}</span>
+                  <span className="rt-meta"><em>mulai {priceLabel(p.minPrice)}</em><small>{p.etaDays ? `sekitar ${p.etaDays} hari` : "hubungi kami"}{p.departureNote ? ` · ${p.departureNote}` : ""}</small></span>
                 </Link>
               ))}
-              <Link href="/ekspedisi" className="btn ghost">Lihat semua rute</Link>
             </div>
+            <Link href="/ekspedisi" className="btn ghost" style={{ marginTop: 12 }}>Lihat semua rute</Link>
           </section>
         )}
 
         <section aria-labelledby="cara">
           <h2 id="cara" className="sech">Caranya gampang</h2>
-          <ol className="how stagger">
-            <li className="card"><span className="hn">1</span><span className="n"><Icon name="chat" size={22} /></span><b>Hubungi kami</b><p className="muted">Lewat WhatsApp atau datang ke gerai mitra. Sebutkan barang dan tujuannya.</p></li>
-            <li className="card"><span className="hn">2</span><span className="n"><Icon name="scale" size={22} /></span><b>Barang ditimbang</b><p className="muted">Ongkir dihitung dari berat sebenarnya. Anda menerima nomor resi dan invoice resmi.</p></li>
-            <li className="card"><span className="hn">3</span><span className="n"><Icon name="truck" size={22} /></span><b>Dikirim darat dan laut</b><p className="muted">Setiap perpindahan barang antar petugas dicatat, jadi selalu jelas siapa yang memegang.</p></li>
-            <li className="card"><span className="hn">4</span><span className="n"><Icon name="pin" size={22} /></span><b>Pantau sampai tiba</b><p className="muted">Cek tahapnya kapan saja lewat nomor resi, tanpa perlu daftar atau masuk.</p></li>
+          <ol className="tl2">
+            {LANGKAH.map((l, n) => <li key={l.t} className="rv"><span className="tn">{n + 1}</span><span className="si"><Icon name={l.icon} size={20} /></span><b>{l.t}</b><small>{l.d}</small></li>)}
           </ol>
         </section>
 
         <section aria-labelledby="panduan">
           <h2 id="panduan" className="sech">Panduan sebelum mengirim</h2>
-          <div className="stack">
-            {ARTIKEL.slice(0, 3).map((a) => <Link key={a.slug} href={`/panduan/${a.slug}`} className="card lift"><b>{a.heading}</b><p className="muted" style={{ margin: "6px 0 0" }}>{a.description}</p></Link>)}
-            <Link href="/panduan" className="btn ghost">Lihat semua panduan</Link>
+          <div className="guides">
+            {ARTIKEL.slice(0, 3).map((a) => <Link key={a.slug} href={`/panduan/${a.slug}`} className="guide rv"><b>{a.heading}</b><small>{a.description}</small><span>Baca <Icon name="arrow" size={14} /></span></Link>)}
           </div>
+          <Link href="/panduan" className="btn ghost" style={{ marginTop: 12 }}>Lihat semua panduan</Link>
         </section>
 
         <section aria-labelledby="faq">
@@ -114,7 +138,7 @@ export default async function Home() {
 
         <section className="card ctaband">
           <h2>Siap kirim barang?</h2>
-          <p>Tanyakan tarif dan jadwal langsung ke tim kami.</p>
+          <p>Tanyakan tarif dan jadwal langsung ke tim kami, atau pakai asisten di pojok kanan bawah.</p>
           <a className="btn" href={waLink("Halo Kamil Logistik, saya mau tanya tarif dan jadwal pengiriman.")}><Icon name="chat" size={22} /> Chat WhatsApp</a>
         </section>
 

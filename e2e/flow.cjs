@@ -487,6 +487,25 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("kasir tidak bisa membuka halaman pelanggan korporat (hanya pemilik)", await (async () => { await k.goto(`${BASE}/app/korporat`, { waitUntil: "networkidle" }); return !k.url().includes("/app/korporat"); })());
   }
 
+  // ===== M. Landing futuristik: carousel + asisten tanya-jawab =====
+  {
+    const pc = await browser.newContext({ viewport: { width: 412, height: 860 } }); const p = await pc.newPage();
+    await p.goto(`${BASE}/`, { waitUntil: "networkidle" });
+    ok("M1 carousel punya 5 slide", (await p.locator(".cslide").count()) === 5);
+    await p.locator(".cdots button").nth(2).click(); await p.waitForTimeout(700);
+    ok("M2 titik carousel menggeser ke slide 3", /Dijemput atau antar sendiri/.test(await p.locator(".cslide.on").innerText()));
+    await p.getByRole("button", { name: "Buka asisten tanya-jawab" }).click();
+    const kirim = async (q) => { await p.getByRole("textbox", { name: "Pertanyaan" }).fill(q); await p.getByRole("button", { name: "Kirim" }).click(); await p.waitForTimeout(1200); return (await p.locator(".bub.bot").last().innerText()); };
+    const a1 = await kirim("ongkir Jakarta ke Makassar 10 kg");
+    ok("M3 asisten menjawab ongkir dengan angka Rp", /Rp\s?[\d.]+/.test(a1), a1.slice(0, 200));
+    const a2 = await kirim("apa itu volumetrik?");
+    ok("M4 asisten menjelaskan volumetrik (4000/6000)", /4\.?000/.test(a2) && /6\.?000/.test(a2), a2.slice(0, 200));
+    const a3 = await kirim("bisa dijemput?");
+    ok("M5 asisten menjawab jemput/antar sendiri", /jemput/i.test(a3), a3.slice(0, 200));
+    await p.screenshot({ path: `${OUT}/e2e-chatbot.png` });
+    await pc.close();
+  }
+
   await browser.close();
   const fail = results.filter((r) => !r.ok);
   console.log(`\n==== HASIL: ${results.length - fail.length}/${results.length} lolos ====`);
