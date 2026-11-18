@@ -1,6 +1,14 @@
 import Link from "next/link";
 import Icon from "@/components/Icon";
+import TabBar from "@/components/TabBar";
 import { BRAND, waLink } from "@/lib/brand";
+
+const TABS = [
+  { href: "/", label: "Beranda", icon: "home" },
+  { href: "/lacak", label: "Cek resi", icon: "search" },
+  { href: "/ongkir", label: "Ongkir", icon: "calc" },
+  { href: "/masuk", label: "Masuk", icon: "lock" },
+];
 
 export default function PublikLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -8,7 +16,10 @@ export default function PublikLayout({ children }: { children: React.ReactNode }
       <header className="topbar">
         <div className="wrap">
           <Link href="/" className="brand" aria-label="Kamil Logistik — beranda"><img src="/logo-sm.png" alt="Kamil Logistik" /></Link>
-          <Link href="/lacak" className="nav"><Icon name="search" size={18} /> Cek Resi</Link>
+          <nav className="navlinks" aria-label="Menu">
+            <Link href="/">Beranda</Link><Link href="/lacak">Cek resi</Link><Link href="/ongkir">Hitung ongkir</Link>
+          </nav>
+          <Link href="/masuk" className="nav masukbtn"><Icon name="lock" size={18} /> Masuk</Link>
         </div>
       </header>
       {children}
@@ -17,12 +28,10 @@ export default function PublikLayout({ children }: { children: React.ReactNode }
           <img src="/logo-sm.png" alt="Kamil Logistik" />
           <p>{BRAND.tagline}</p>
           <p>WhatsApp {BRAND.whatsappDisplay} · Instagram @{BRAND.instagram}</p>
-          <p style={{ opacity: .7 }}><Link href="/masuk" style={{ textDecoration: "none" }}>Masuk petugas</Link></p>
         </div>
       </footer>
-      <div className="wa-bar">
-        <a className="btn" href={waLink("Halo Kamil Logistik, saya mau tanya soal pengiriman barang.")}><Icon name="chat" size={22} /> Tanya lewat WhatsApp</a>
-      </div>
+      <a className="wa-fab" href={waLink("Halo Kamil Logistik, saya mau tanya soal pengiriman barang.")} aria-label="Tanya lewat WhatsApp"><Icon name="chat" size={26} /></a>
+      <TabBar tabs={TABS} variant="pub" />
     </>
   );
 }

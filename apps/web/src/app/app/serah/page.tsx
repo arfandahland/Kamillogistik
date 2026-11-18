@@ -10,7 +10,7 @@ export default async function Serah() {
   const p = await staffRpc<{ id: string; shipmentId: string; resiNo: string; fromName: string; createdAt: string }[]>("my_pending_handovers");
   const list = p.data ?? [];
   return (
-    <main className="wrap stack" style={{ paddingTop: 8 }}>
+    <main className="wrap narrow stack" style={{ paddingTop: 8 }}>
       <h1>Serah terima</h1>
       <p className="muted" style={{ marginTop: -6 }}>Barang yang diserahkan kepada Anda. Periksa barangnya, lalu terima.</p>
       {p.error && <div className="err">{p.error}</div>}

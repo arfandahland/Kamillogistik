@@ -20,7 +20,7 @@ async function ganti(fd: FormData) {
 export default async function Sandi({ searchParams }: { searchParams: Promise<{ e?: string; ok?: string }> }) {
   const sp = await searchParams;
   return (
-    <main className="wrap section">
+    <main className="wrap narrow section">
       <form className="card" action={ganti}>
         <h1>Ganti kata sandi</h1>
         {sp.ok && <div className="ok" role="status">Kata sandi sudah diganti. Gunakan yang baru saat masuk berikutnya.</div>}

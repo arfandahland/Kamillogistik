@@ -30,7 +30,7 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
   const directory = s.iAmHolder && !pending ? (await staffRpc<{ id: string; name: string; role: string; branchName: string | null }[]>("staff_directory")).data ?? [] : [];
 
   return (
-    <main className="wrap section stack">
+    <main className="wrap section stack detail">
       {sp.ok && <div className="ok" role="status">{sp.ok}</div>}
       {sp.e && <div className="err" role="alert">{sp.e}</div>}
 

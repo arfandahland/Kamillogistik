@@ -15,7 +15,9 @@ export default async function Beranda({ searchParams }: { searchParams: Promise<
   const aktif = (STATUS_GROUPS.aktif as readonly string[]);
   const rows = all.filter((r) => (tab === "semua" ? true : (STATUS_GROUPS[tab] as readonly string[]).includes(r.status)));
   return (
-    <StaffHome rows={rows} activeCount={all.filter((r) => aktif.includes(r.status)).length} pending={pend.data ?? []}
+    <StaffHome rows={rows} pending={pend.data ?? []}
+      stats={{ aktif: all.filter((r) => aktif.includes(r.status)).length, menunggu: (pend.data ?? []).length,
+        selesai: all.filter((r) => r.status === "DELIVERED").length, dipegang: all.filter((r) => r.mine).length }}
       tab={tab} q={q} canCreate={!!me.data && CAN_CREATE_ORDER.includes(me.data.role)} error={list.error} />
   );
 }

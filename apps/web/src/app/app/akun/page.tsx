@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: "Akun Saya" };
 export default async function Akun() {
   const me = (await staffRpc<Staff>("staff_me")).data;
   return (
-    <main className="wrap stack" style={{ paddingTop: 8 }}>
+    <main className="wrap narrow stack" style={{ paddingTop: 8 }}>
       <h1>Akun saya</h1>
       <div className="card">
         <dl className="kv" style={{ margin: 0 }}>

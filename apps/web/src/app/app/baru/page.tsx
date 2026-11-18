@@ -16,7 +16,7 @@ export default async function Baru({ searchParams }: { searchParams: Promise<{ e
   const routes = me.role === "SUPER_ADMIN" ? all : all.filter((r) => r.origin.name === me.branchName);
 
   return (
-    <main className="wrap section">
+    <main className="wrap narrow section">
       <form className="card" action={buatResi}>
         <h1>Buat resi baru</h1>
         {e && <div className="err" role="alert">{e}</div>}

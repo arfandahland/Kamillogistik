@@ -2,14 +2,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Icon from "./Icon";
+import { isActive } from "@/lib/ui";
 
 type Tab = { href: string; label: string; icon: string; badge?: number; match?: (p: string) => boolean };
 
-export default function TabBar({ tabs }: { tabs: Tab[] }) {
+export default function TabBar({ tabs, variant = "app" }: { tabs: Tab[]; variant?: "app" | "pub" }) {
   const path = usePathname();
-  const active = (t: Tab) => (t.href === "/app" ? path === "/app" || path.startsWith("/app/resi") : path.startsWith(t.href));
+  const active = (t: Tab) => isActive(path, t.href);
   return (
-    <nav className="tabbar" aria-label="Menu utama">
+    <nav className={`tabbar ${variant}`} aria-label="Menu utama">
       {tabs.map((t) => (
         <Link key={t.href} href={t.href} className={`tab ${active(t) ? "on" : ""}`} aria-current={active(t) ? "page" : undefined}>
           <span className="ti"><Icon name={t.icon} size={22} /></span>

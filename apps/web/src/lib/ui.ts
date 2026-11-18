@@ -18,3 +18,10 @@ export function sapaan(d = new Date()) {
   const h = Number(new Intl.DateTimeFormat("id-ID", { hour: "numeric", hour12: false, timeZone: "Asia/Makassar" }).format(d));
   return h < 11 ? "Selamat pagi" : h < 15 ? "Selamat siang" : h < 18 ? "Selamat sore" : "Selamat malam";
 }
+
+/** Menu mana yang menyala untuk alamat saat ini (dipakai menu bawah dan sidebar). */
+export function isActive(path: string, href: string): boolean {
+  if (href === "/") return path === "/";
+  if (href === "/app") return path === "/app" || path.startsWith("/app/resi");
+  return path === href || path.startsWith(href + "/");
+}

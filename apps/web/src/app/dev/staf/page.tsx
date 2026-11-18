@@ -13,7 +13,7 @@ export default function Pratinjau() {
   ];
   return (
     <StaffShell me={{ name: "Pak Kamil", role: "SUPER_ADMIN", branchName: null }} pending={2} forceFull>
-      <StaffHome rows={rows} activeCount={12} tab="aktif" q="" canCreate
+      <StaffHome rows={rows} stats={{ aktif: 12, menunggu: 2, selesai: 1, dipegang: 1 }} tab="aktif" q="" canCreate
         pending={[{ id: "h1", shipmentId: "1", resiNo: "KLX-2611-000124", fromName: "Budi (Kurir)" }, { id: "h2", shipmentId: "2", resiNo: "KLX-2611-000125", fromName: "Sari (Gudang)" }]} />
     </StaffShell>
   );
