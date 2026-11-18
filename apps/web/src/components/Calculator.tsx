@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { rupiah, waLink } from "@/lib/brand";
+import Icon from "./Icon";
 
 type Route = {
   slug: string; origin: { code: string; city: string }; dest: { code: string; city: string };
@@ -129,7 +130,7 @@ export default function Calculator({ routes }: { routes: Route[] }) {
         </label>
       )}
       <button type="button" className="btn ghost" style={{ marginTop: 12 }}
-        onClick={() => { setItems((a) => [...a, emptyItem()]); setRes(null); }}>＋ Tambah barang lain</button>
+        onClick={() => { setItems((a) => [...a, emptyItem()]); setRes(null); }}><Icon name="plus" size={20} /> Tambah barang lain</button>
 
       {err && <div className="err fade" style={{ marginTop: 14 }} role="alert">{err}</div>}
       <button className="btn" style={{ marginTop: 16 }} disabled={busy || !chosen}>
@@ -145,7 +146,7 @@ export default function Calculator({ routes }: { routes: Route[] }) {
           <p className="hint">{res.note}</p>
           <a className="btn" style={{ marginTop: 12 }}
             href={waLink(`Halo Kamil Logistik, saya mau kirim barang ${res.route.origin} ke ${res.route.dest}. Perkiraan ongkir Rp${res.total.toLocaleString("id-ID")}. Mohon dibantu.`)}>
-            💬 Pesan lewat WhatsApp
+            <Icon name="chat" size={22} /> Pesan lewat WhatsApp
           </a>
         </div>
       )}

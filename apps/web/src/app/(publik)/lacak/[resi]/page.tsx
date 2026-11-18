@@ -4,6 +4,7 @@ import { handleTrack, type PublicTrack } from "@kamil/core";
 import { repo } from "@/lib/repo";
 import { tanggal, tanggalWaktu, waLink } from "@/lib/brand";
 import ResiForm from "@/components/ResiForm";
+import Icon from "@/components/Icon";
 
 export const dynamic = "force-dynamic";
 type P = { params: Promise<{ resi: string }> };
@@ -44,9 +45,9 @@ export default async function Track({ params }: P) {
           <span className="muted">{t.route.origin} → {t.route.dest}</span></p>
         <div className="bar"><i style={{ width: `${pct}%` }} /></div>
         <small className="muted">Tahap {doneCount} dari {t.progress.total}</small>
-        {t.eta && <p style={{ marginTop: 12 }}>📅 Perkiraan tiba: <b>{tanggal(t.eta)}</b></p>}
+        {t.eta && <p style={{ marginTop: 12 }}><Icon name="clock" size={18} /> Perkiraan tiba: <b>{tanggal(t.eta)}</b></p>}
         {t.pod && (
-          <p style={{ marginTop: 12 }}>✅ Diterima oleh <b>{t.pod.receiverName}</b> pada {tanggalWaktu(t.pod.signedAt)}.
+          <p style={{ marginTop: 12 }}><Icon name="check" size={18} /> Diterima oleh <b>{t.pod.receiverName}</b> pada {tanggalWaktu(t.pod.signedAt)}.
             {" "}Foto dan tanda tangan penerima tersimpan sebagai bukti.</p>
         )}
       </div>
@@ -72,7 +73,7 @@ export default async function Track({ params }: P) {
 
       <div className="card">
         <p className="muted">Ada yang kurang jelas soal barang ini?</p>
-        <a className="btn" href={waLink(`Halo, saya mau tanya soal resi ${t.resi}`)}>💬 Tanya soal resi ini</a>
+        <a className="btn" href={waLink(`Halo, saya mau tanya soal resi ${t.resi}`)}><Icon name="chat" size={22} /> Tanya soal resi ini</a>
         <Link href="/lacak" className="btn ghost" style={{ marginTop: 10 }}>Cek resi lain</Link>
       </div>
     </main>
