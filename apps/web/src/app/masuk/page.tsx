@@ -32,7 +32,7 @@ export default async function Masuk({ searchParams }: { searchParams: Promise<{ 
   return (
     <main className="login">
       <div className="inner">
-        <img className="logo-login" src="/logo-sm.png" alt="Kamil Logistik" />
+        <img className="logo-login" src="/logo-sm.webp" width="220" height="175" alt="Kamil Logistik" />
         <Scene3D compact />
         <div className="glass">
           <h1>Selamat datang kembali</h1>

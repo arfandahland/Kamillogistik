@@ -15,7 +15,7 @@ export default function PublikLayout({ children }: { children: React.ReactNode }
     <>
       <header className="topbar">
         <div className="wrap">
-          <Link href="/" className="brand" aria-label="Kamil Logistik — beranda"><img src="/logo-sm.png" alt="Kamil Logistik" /></Link>
+          <Link href="/" className="brand" aria-label="Kamil Logistik — beranda"><img src="/logo-sm.webp" width="220" height="175" alt="Kamil Logistik" /></Link>
           <nav className="navlinks" aria-label="Menu">
             <Link href="/">Beranda</Link><Link href="/lacak">Cek resi</Link><Link href="/ongkir">Hitung ongkir</Link>
           </nav>
@@ -25,7 +25,7 @@ export default function PublikLayout({ children }: { children: React.ReactNode }
       {children}
       <footer className="pub">
         <div className="wrap">
-          <img src="/logo-sm.png" alt="Kamil Logistik" />
+          <img src="/logo-sm.webp" width="220" height="175" alt="Kamil Logistik" />
           <p>{BRAND.tagline}</p>
           <p>WhatsApp {BRAND.whatsappDisplay} · Instagram @{BRAND.instagram}</p>
         </div>

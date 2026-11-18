@@ -64,6 +64,20 @@ Akun Pemilik **hanya melihat**, tidak menjalankan operasional. Tampilannya:
 ## Animasi proses
 Garis kemajuan di atas layar menyala saat pindah halaman. Tombol yang menyimpan data menampilkan tahap kerjanya ("Menghitung tarif…", "Membuat tagihan…") dengan titik kemajuan. Setiap resi punya penanda 10 tahap yang menunjukkan sudah sampai mana dan sisa berapa lagi. Catatan jujur: tulisan tahap pada tombol menjelaskan urutan kerja sistem, bukan pengukuran waktu nyata dari server.
 
+## Pusat kendali Pemilik (menu Kelola)
+Semua pengaturan bisnis ada di sini, dan setiap perubahan tercatat permanen:
+- **Mitra dan cabang:** daftarkan gerai mitra, gudang, rekanan, dan pelabuhan (nama, kota, kontak, komisi %). Sekalian bisa membuat akun untuk mitra itu (Kasir untuk gerai, Kepala gudang untuk gudang) dengan sandi sementara.
+- **Petugas:** buat akun, ganti sandi (kalau lupa), nonaktifkan atau aktifkan kembali. Petugas yang dinonaktifkan langsung tidak bisa masuk.
+- **Tarif dan rute:** ubah harga, minimal berat, estimasi, dan catatan jadwal. Harga baru langsung dipakai kalkulator, daftar harga, halaman rute di website, dan penimbangan gudang. Rute baru otomatis punya halaman sendiri di website.
+- **Pengaturan dan rekening:** data perusahaan dan rekening bank yang tampil di invoice. Pembayaran lewat transfer rekening atau tunai, tanpa payment gateway.
+- **Keuangan:** uang masuk, piutang, umur piutang, cara pembayaran, dan pembayaran terbaru.
+
+## Invoice dan pembayaran
+Invoice terbit otomatis saat barang ditimbang. Dari halaman tagihan: **cetak / simpan PDF**, **salin tautan**, atau **kirim ke pelanggan lewat WhatsApp**. Tautannya rahasia dan bisa dibuka pelanggan tanpa login. Kasir atau kepala gudang mencatat pembayaran (transfer atau tunai, boleh dicicil) setelah uang benar-benar masuk. Setiap pembayaran otomatis masuk buku kas berpasangan (debit dan kredit selalu seimbang).
+
+## SEO (agar mudah ditemukan di Google)
+Beranda, daftar rute `/ekspedisi`, dan satu halaman per rute (misalnya `/ekspedisi-jakarta-makassar`) dibuat otomatis dari data tarif, lengkap dengan data terstruktur, FAQ, peta situs, dan robots. **Agar Google bisa membacanya:** (1) pasang domain sendiri di Vercel, (2) matikan perlindungan login Vercel, (3) isi `SITE_URL` di Vercel dengan alamat domain, lalu (4) daftarkan peta situs `alamat/sitemap.xml` di Google Search Console. Saya pandu langkahnya kalau domain sudah ada.
+
 ## Hal yang perlu diketahui
 - **Paket gratis Supabase** menidurkan database jika tidak ada pengunjung selama 7 hari. Begitu website resmi dipakai pelanggan, ini tidak terjadi. Sebelum peluncuran sungguhan, sebaiknya naik ke paket berbayar agar ada backup harian dan tidak pernah tidur. Saya ingatkan lagi saat waktunya.
 - Resi contoh (`KLX-2611-000123`) hanya ada di tampilan percobaan. Di database sungguhan belum ada resi sampai fitur order dan aplikasi petugas selesai, jadi mengecek resi akan menjawab "tidak ditemukan". Itu normal.

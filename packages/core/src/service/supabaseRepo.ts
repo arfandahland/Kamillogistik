@@ -7,7 +7,7 @@ type FetchLike = (url: string, init: { method: string; headers: Record<string, s
  * Keamanan dijaga di database: tabel terkunci, hanya fungsi public_routes/public_track yang boleh dipanggil,
  * dan keduanya hanya mengeluarkan data yang layak dilihat pelanggan.
  */
-export function createSupabaseRepo(cfg: { url: string; publishableKey: string; fetchImpl?: FetchLike }): Repo {
+export function createSupabaseRepo(cfg: { url: string; publishableKey: string; fetchImpl?: FetchLike; /** "default" untuk data publik yang boleh disimpan sementara; bawaan: tanpa simpan. */ fetchCache?: "no-store" | "default" }): Repo {
   const f: FetchLike = cfg.fetchImpl ?? ((u, i) => fetch(u, i as RequestInit) as any);
 
   async function rpc<T>(fn: string, args: Record<string, unknown> = {}): Promise<T> {
@@ -15,7 +15,7 @@ export function createSupabaseRepo(cfg: { url: string; publishableKey: string; f
       method: "POST",
       headers: { apikey: cfg.publishableKey, authorization: `Bearer ${cfg.publishableKey}`, "content-type": "application/json" },
       body: JSON.stringify(args),
-      cache: "no-store",
+      ...(cfg.fetchCache === "default" ? {} : { cache: "no-store" as const }),
     });
     if (!res.ok) throw new Error(`Supabase ${fn} gagal (${res.status})`);
     return (await res.json()) as T;
@@ -27,7 +27,7 @@ export function createSupabaseRepo(cfg: { url: string; publishableKey: string; f
       id: r.id, slug: r.slug, origin: r.origin, dest: r.dest, mode: r.mode, service: r.service, basis: r.basis,
       unitPrice: Number(r.unitPrice), volumetricDivisor: Number(r.volumetricDivisor),
       minChargeable: Number(r.minChargeable ?? 0), minTotal: r.minTotal == null ? undefined : Number(r.minTotal),
-      rounding: r.rounding, roundingStep: Number(r.roundingStep), etaDays: Number(r.etaDays ?? 0),
+      rounding: r.rounding, roundingStep: Number(r.roundingStep), etaDays: Number(r.etaDays ?? 0), departureNote: r.departureNote ?? undefined,
     }));
   };
 

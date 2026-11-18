@@ -445,3 +445,62 @@ footer.pub img { width: 150px; margin: 0 auto 8px; display: block; }
   .p-alert, .p-ins { grid-column: span 6; } .p-area { grid-column: span 8; } .p-pos { grid-column: span 4; }
   .p-bar { grid-column: span 8; } .p-route { grid-column: span 4; } .p-staff { grid-column: span 4; } .p-recent { grid-column: span 8; }
 }
+
+/* ===== Landing & halaman rute (awalan lp- / kelas unik agar tidak bentrok) ===== */
+.herocta { display: grid; gap: 10px; margin: 16px 0 6px; } .herocta .btn { min-height: 54px; }
+.btn.ghostlight { background: rgba(200, 248, 240, .12); color: #fff; border: 1.5px solid rgba(200, 248, 240, .4); box-shadow: none; }
+.sech { margin: 8px 2px 14px; font-size: 22px; }
+.uspgrid { display: grid; gap: 14px; } .usp h3 { margin: 12px 0 4px; } .usp p { margin: 0; font-size: 15px; }
+.routecard { display: flex; align-items: center; gap: 14px; text-decoration: none; padding: 16px 18px; } .routecard > div { flex: 1; min-width: 0; }
+.routecard b { display: block; } .routecard small { color: var(--muted); display: block; margin-top: 2px; line-height: 1.35; }
+.rc-price { text-align: right; font-size: 12px; color: var(--muted); line-height: 1.2; } .rc-price b { display: block; font-size: 17px; color: var(--teal); }
+.faq { display: grid; gap: 10px; } .faq details { padding: 0; } .faq summary { cursor: pointer; padding: 16px 18px; font-weight: 800; list-style: none; display: flex; justify-content: space-between; gap: 12px; }
+.faq summary::after { content: "+"; font-size: 22px; line-height: 1; color: var(--teal); transition: transform .25s var(--ease); } .faq details[open] summary::after { transform: rotate(45deg); }
+.faq summary::-webkit-details-marker { display: none; } .faq details p { padding: 0 18px 16px; margin: 0; }
+.ctaband { text-align: center; background: var(--grad-hero); color: #fff; border: 0; } .ctaband p { color: #cdeee6; }
+.crumbs { font-size: 14px; color: var(--muted); } .crumbs a { text-decoration: none; color: var(--teal); font-weight: 700; }
+.routehead h1 { font-size: 28px; } .routehead p { color: var(--muted); }
+@media (min-width: 720px) { .uspgrid { grid-template-columns: 1fr 1fr; } .herocta { grid-template-columns: auto auto; justify-content: start; } .herocta .btn { width: auto; padding-inline: 28px; } }
+
+/* ===== Invoice (awalan inv-) ===== */
+.inv-page { max-width: 780px; margin: 0 auto; padding: 16px 14px 60px; }
+.inv-actions { display: grid; gap: 10px; margin-bottom: 16px; } .inv-actions .btn { min-height: 52px; font-size: 16px; }
+.btn.wa { background: linear-gradient(180deg, #3be07f, #1fb85a); color: #04361a; }
+.inv-sheet { background: #fff; color: #12302b; border: 1px solid var(--line); border-radius: 22px; padding: 22px 20px; box-shadow: var(--shadow-md); }
+.inv-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; flex-wrap: wrap; padding-bottom: 14px; border-bottom: 2px solid #0f6a5b; }
+.inv-brand { display: flex; align-items: center; gap: 12px; } .inv-brand img { width: 84px; height: auto; background: #0b4d42; border-radius: 16px; padding: 6px; }
+.inv-brand b { display: block; font-size: 18px; } .inv-brand small { display: block; color: #51706a; font-size: 12.5px; line-height: 1.35; }
+.inv-title { text-align: right; } .inv-title h1 { margin: 0; font-size: 28px; letter-spacing: .12em; color: #0f6a5b; }
+.inv-stamp { display: inline-block; margin-top: 6px; padding: 4px 12px; border: 2.5px solid; border-radius: 8px; font-weight: 900; font-size: 13px; letter-spacing: .08em; transform: rotate(-3deg); }
+.inv-stamp.paid { color: #148a5b; } .inv-stamp.part { color: #b8650f; } .inv-stamp.unpaid { color: #b3261e; }
+.inv-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; margin: 16px 0; } .inv-meta .wide { grid-column: 1 / -1; }
+.inv-meta dt { font-size: 12px; color: #51706a; text-transform: uppercase; letter-spacing: .05em; } .inv-meta dd { margin: 2px 0 0; font-weight: 700; word-break: break-word; }
+.inv-lines { width: 100%; border-collapse: collapse; margin: 8px 0; } .inv-lines th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: #51706a; padding: 8px 0; border-bottom: 1px solid #d5e8e3; }
+.inv-lines td { padding: 10px 0; border-bottom: 1px solid #eef5f3; } .inv-lines .r { text-align: right; white-space: nowrap; }
+.inv-lines tfoot td { border-bottom: 0; font-weight: 700; } .inv-lines tfoot tr.inv-due td { font-size: 19px; font-weight: 900; color: #0f6a5b; border-top: 2px solid #0f6a5b; padding-top: 12px; }
+.inv-block { margin-top: 18px; padding: 14px 16px; background: #f2f9f7; border-radius: 16px; } .inv-block h2 { font-size: 15px; margin: 0 0 8px; display: flex; align-items: center; gap: 8px; }
+.inv-block ul { list-style: none; margin: 0; padding: 0; } .inv-block li { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; font-size: 14px; }
+.inv-banks li { flex-direction: column; gap: 0; border-bottom: 1px dashed #c9dcd6; padding: 10px 0; } .inv-banks .no { font-size: 20px; font-weight: 900; letter-spacing: .06em; } .inv-banks small { color: #51706a; }
+.inv-block p.muted { color: #51706a; font-size: 13.5px; margin: 8px 0 0; }
+.inv-foot { margin-top: 18px; text-align: center; font-size: 12px; color: #51706a; }
+@media (min-width: 720px) { .inv-actions { grid-template-columns: repeat(3, auto); justify-content: start; } .inv-actions .btn { width: auto; padding-inline: 22px; } .inv-sheet { padding: 34px 36px; } }
+@media print {
+  @page { margin: 14mm; }
+  body { background: #fff !important; } .topbar, .tabbar, .sidebar, .shead, .dtop, .wa-fab, .no-print, .navbar, footer.pub { display: none !important; }
+  .appshell { display: block !important; } .has-tabbar { padding: 0 !important; } .inv-page { padding: 0; max-width: none; }
+  .inv-sheet { border: 0; box-shadow: none; border-radius: 0; padding: 0; } .inv-block { break-inside: avoid; }
+}
+.pill.late { background: var(--danger-bg); color: var(--danger); } .pill.part { background: #e0efff; color: #1d5fa8; }
+
+/* ===== Pusat kendali Pemilik (awalan adm) ===== */
+.admgrid { display: grid; gap: 12px; } .admcard { display: flex; align-items: center; gap: 14px; text-decoration: none; padding: 16px; }
+.admcard .ic { flex: none; width: 52px; height: 52px; border-radius: 17px; display: grid; place-items: center; background: var(--teal-soft); color: var(--teal); }
+.admcard span:nth-child(2) { flex: 1; min-width: 0; } .admcard b { display: block; } .admcard small { display: block; color: var(--muted); line-height: 1.35; font-size: 13.5px; }
+details.admnew, details.admitem { padding: 0; } details.admnew > form, details.admnew > .admbody { padding: 0 18px 18px; }
+details.admnew > summary { display: flex; align-items: center; gap: 10px; padding: 16px 18px; font-weight: 800; cursor: pointer; list-style: none; color: var(--teal); } details.admnew > summary::-webkit-details-marker, details.admitem > summary::-webkit-details-marker { display: none; }
+details.admitem > summary { display: flex; align-items: center; gap: 12px; padding: 14px 16px; cursor: pointer; list-style: none; }
+details.admitem > summary .ic { flex: none; width: 46px; height: 46px; border-radius: 15px; display: grid; place-items: center; background: var(--teal-soft); color: var(--teal); }
+details.admitem > summary .meta { flex: 1; min-width: 0; } details.admitem > summary .meta b { display: block; } details.admitem > summary .meta small { display: block; color: var(--muted); font-size: 13px; line-height: 1.35; }
+details.admitem .admbody { padding: 4px 18px 18px; border-top: 1px dashed var(--line); } details.admitem[open] > summary { background: var(--teal-soft); border-radius: 22px 22px 0 0; }
+.admbox { border: 1.5px dashed var(--line); border-radius: 16px; padding: 12px 14px; margin-top: 16px; } .admbox legend { font-weight: 800; padding: 0 8px; font-size: 14px; }
+@media (min-width: 720px) { .admgrid { grid-template-columns: 1fr 1fr; } }

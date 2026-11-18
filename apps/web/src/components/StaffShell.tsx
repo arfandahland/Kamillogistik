@@ -9,23 +9,42 @@ import { initials, sapaan } from "@/lib/ui";
 export type Me = { name: string; role: string; branchName: string | null };
 
 export default function StaffShell({ me, pending, children, forceFull }: { me: Me; pending: number; children: React.ReactNode; forceFull?: boolean }) {
-  const tabs = me.role === OWNER_ROLE
+  const owner = me.role === OWNER_ROLE;
+  const finance = owner || me.role === "HUB_MANAGER" || me.role === "MITRA_POS";
+  // Menu bawah di HP (maks 5) dan menu samping di komputer (lengkap).
+  const tabs = owner
     ? [
         { href: "/app", label: "Pantauan", icon: "chart" },
-        { href: "/app/semua", label: "Semua resi", icon: "list" },
+        { href: "/app/semua", label: "Resi", icon: "list" },
+        { href: "/app/keuangan", label: "Keuangan", icon: "cash", also: ["/app/tagihan"] },
+        { href: "/app/kelola", label: "Kelola", icon: "grid", also: ["/app/mitra", "/app/petugas", "/app/tarif", "/app/pengaturan"] },
         { href: "/app/akun", label: "Akun", icon: "user" },
       ]
     : [
         { href: "/app", label: "Beranda", icon: "home" },
         ...(CAN_CREATE_ORDER.includes(me.role) ? [{ href: "/app/baru", label: "Resi baru", icon: "plus" }] : []),
+        ...(finance ? [{ href: "/app/tagihan", label: "Tagihan", icon: "file" }] : []),
         { href: "/app/serah", label: "Serah terima", icon: "swap", badge: pending },
         { href: "/app/akun", label: "Akun", icon: "user" },
       ];
+  const navAll = owner
+    ? [
+        { href: "/app", label: "Pantauan", icon: "chart" },
+        { href: "/app/semua", label: "Semua resi", icon: "list" },
+        { href: "/app/keuangan", label: "Keuangan", icon: "cash" },
+        { href: "/app/tagihan", label: "Tagihan", icon: "file" },
+        { href: "/app/mitra", label: "Mitra dan cabang", icon: "store" },
+        { href: "/app/petugas", label: "Petugas", icon: "users" },
+        { href: "/app/tarif", label: "Tarif dan rute", icon: "tag" },
+        { href: "/app/pengaturan", label: "Pengaturan", icon: "sliders" },
+        { href: "/app/akun", label: "Akun", icon: "user" },
+      ]
+    : tabs;
   const role = ROLE_LABEL[me.role] ?? me.role;
   const tanggal = new Intl.DateTimeFormat("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Makassar" }).format(new Date());
   return (
     <div className="appshell has-tabbar">
-      <Sidebar tabs={tabs} footer={
+      <Sidebar tabs={navAll} footer={
         <div className="who">
           <div className="whorow"><span className="avatar">{initials(me.name)}</span><div><b>{me.name}</b><small>{role}{me.branchName ? ` · ${me.branchName}` : ""}</small></div></div>
           <form action={keluar}><button className="sout"><Icon name="out" size={18} /> Keluar</button></form>

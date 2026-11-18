@@ -47,6 +47,7 @@ async function routes(repo: Repo): Promise<Reply> {
       unitPrice: r.unitPrice,
       minChargeable: r.minChargeable,
       etaDays: r.etaDays,
+      departureNote: r.departureNote ?? null,
     })),
   };
 }

@@ -20,7 +20,8 @@ export function sapaan(d = new Date()) {
 }
 
 /** Menu mana yang menyala untuk alamat saat ini (dipakai menu bawah dan sidebar). */
-export function isActive(path: string, href: string): boolean {
+export function isActive(path: string, href: string, also: string[] = []): boolean {
+  if (also.some((a) => path === a || path.startsWith(a + "/"))) return true;
   if (href === "/") return path === "/";
   if (href === "/app") return path === "/app" || path.startsWith("/app/resi");
   return path === href || path.startsWith(href + "/");

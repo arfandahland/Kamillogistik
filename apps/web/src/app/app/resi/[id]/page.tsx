@@ -26,6 +26,7 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
   }
   const s = d.data;
   const role = me.data.role as Actor;
+  const invId = s.invoice && SEES_MONEY.includes(role) ? (await staffRpc<{ id: string }[]>("staff_list_invoices", { p_q: s.resiNo, p_limit: 1 })).data?.[0]?.id : undefined;
   const viewOnly = role === OWNER_ROLE; // Pemilik hanya memantau
   const action = viewOnly ? null : nextAction(role, s.status);
   const pendingToMe = viewOnly ? undefined : s.handovers.find((h) => h.state === "PENDING_ACK" && h.toMe);
@@ -135,6 +136,7 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
           <h2>Tagihan</h2>
           <div className="price">{rupiah(s.invoice.total)}</div>
           <p className="muted">{s.invoice.invoiceNo} · {s.invoice.status === "PAID" ? "Lunas" : "Belum dibayar"} · jatuh tempo {s.invoice.dueDate}</p>
+          {invId && <Link href={`/app/tagihan/${invId}`} className="btn ghost" style={{ marginBottom: 10 }}>Buka invoice, cetak, dan catat pembayaran</Link>}
           <p className="hint">Dihitung dari {Number(s.invoice.calc.chargeable).toLocaleString("id-ID")} {s.invoice.calc.unit === "kg" ? "kg" : "m³"} × {rupiah(s.invoice.calc.unitPrice)}
             {s.invoice.calc.surchargeTotal > 0 ? ` + biaya tambahan ${rupiah(s.invoice.calc.surchargeTotal)}` : ""}.</p>
         </div>

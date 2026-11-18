@@ -14,14 +14,14 @@ type Result = { total: number; explain: string[]; etaDays: number; note: string;
 const num = (s: string) => Number(s.replace(",", ".")) || 0;
 const emptyItem = (): Item => ({ w: "", l: "", wd: "", h: "" });
 
-export default function Calculator({ routes }: { routes: Route[] }) {
+export default function Calculator({ routes, initialOrigin, initialDest }: { routes: Route[]; initialOrigin?: string; initialDest?: string }) {
   const origins = useMemo(() => [...new Map(routes.map((r) => [r.origin.code, r.origin.city])).entries()], [routes]);
-  const [origin, setOrigin] = useState(origins[0]?.[0] ?? "");
+  const [origin, setOrigin] = useState(origins.some(([c]) => c === initialOrigin) ? initialOrigin! : origins[0]?.[0] ?? "");
   const dests = useMemo(
     () => [...new Map(routes.filter((r) => r.origin.code === origin).map((r) => [r.dest.code, r.dest.city])).entries()],
     [routes, origin],
   );
-  const [dest, setDest] = useState(dests[0]?.[0] ?? "");
+  const [dest, setDest] = useState(initialDest ?? dests[0]?.[0] ?? "");
   const destOk = dests.some(([c]) => c === dest) ? dest : dests[0]?.[0] ?? "";
   const options = useMemo(() => routes.filter((r) => r.origin.code === origin && r.dest.code === destOk), [routes, origin, destOk]);
   const [slug, setSlug] = useState("");

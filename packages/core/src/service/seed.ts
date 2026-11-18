@@ -13,15 +13,15 @@ const MRW: Place = { code: "MRW", name: "Morowali", city: "Morowali" };
 //  - Min. berat Jakarta->Makassar (per kg) belum tertulis.
 export const DEMO_ROUTES: RouteService[] = [
   { id: "r1", slug: "jakarta-makassar-port-to-door-kg", origin: JKT, dest: MKS, mode: "LAUT", service: "PORT_TO_DOOR",
-    basis: "PER_KG", unitPrice: 2500, volumetricDivisor: 4000, minChargeable: 0, etaDays: 7 },
+    basis: "PER_KG", unitPrice: 2500, volumetricDivisor: 4000, minChargeable: 0, etaDays: 7, departureNote: "Keberangkatan 2x seminggu" },
   { id: "r2", slug: "jakarta-makassar-port-to-door-m3", origin: JKT, dest: MKS, mode: "LAUT", service: "PORT_TO_DOOR",
-    basis: "PER_M3", unitPrice: 500_000, volumetricDivisor: 4000, minChargeable: 0, rounding: "ceil", roundingStep: 0.01, etaDays: 7 },
+    basis: "PER_M3", unitPrice: 500_000, volumetricDivisor: 4000, minChargeable: 0, rounding: "ceil", roundingStep: 0.01, etaDays: 7, departureNote: "Keberangkatan 2x seminggu" },
   { id: "r3", slug: "jakarta-makassar-port-to-port-m3", origin: JKT, dest: MKS, mode: "LAUT", service: "PORT_TO_PORT",
-    basis: "PER_M3", unitPrice: 400_000, volumetricDivisor: 4000, minChargeable: 0, rounding: "ceil", roundingStep: 0.01, etaDays: 7 },
+    basis: "PER_M3", unitPrice: 400_000, volumetricDivisor: 4000, minChargeable: 0, rounding: "ceil", roundingStep: 0.01, etaDays: 7, departureNote: "Keberangkatan 2x seminggu" },
   { id: "r4", slug: "makassar-jakarta-port-to-door", origin: MKS, dest: JKT, mode: "LAUT", service: "PORT_TO_DOOR",
     basis: "PER_KG", unitPrice: 2500, volumetricDivisor: 4000, minChargeable: 20, etaDays: 7 },
   { id: "r5", slug: "makassar-morowali-door-to-door", origin: MKS, dest: MRW, mode: "DARAT", service: "DOOR_TO_DOOR",
-    basis: "PER_KG", unitPrice: 2000, volumetricDivisor: 4000, minChargeable: 30, etaDays: 2 },
+    basis: "PER_KG", unitPrice: 2000, volumetricDivisor: 4000, minChargeable: 30, etaDays: 2, departureNote: "Berangkat setiap hari" },
 ];
 
 function ev(status: ShipmentStatus, at: string, location: string, note?: string): TrackEvent {

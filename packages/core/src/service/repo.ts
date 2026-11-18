@@ -18,6 +18,8 @@ export type RouteService = {
   minChargeable: number;
   minTotal?: number;
   etaDays: number;
+  /** Catatan jadwal keberangkatan (mis. "Keberangkatan 2x seminggu"). */
+  departureNote?: string;
 };
 
 export type TrackEvent = {

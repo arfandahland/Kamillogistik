@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import ResiForm from "@/components/ResiForm";
-export const metadata: Metadata = { title: "Cek Resi" };
+export const metadata: Metadata = { title: "Cek Resi Pengiriman", description: "Lacak posisi barang Anda lewat nomor resi Kamil Logistik. Tanpa login, lihat tahap pengiriman dan perkiraan tiba.", alternates: { canonical: "/lacak" } };
 export default function Lacak() {
   return (
     <main className="wrap section">

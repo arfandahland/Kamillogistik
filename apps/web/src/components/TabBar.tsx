@@ -4,11 +4,11 @@ import { usePathname } from "next/navigation";
 import Icon from "./Icon";
 import { isActive } from "@/lib/ui";
 
-type Tab = { href: string; label: string; icon: string; badge?: number; match?: (p: string) => boolean };
+type Tab = { href: string; label: string; icon: string; badge?: number; also?: string[]; match?: (p: string) => boolean };
 
 export default function TabBar({ tabs, variant = "app" }: { tabs: Tab[]; variant?: "app" | "pub" }) {
   const path = usePathname();
-  const active = (t: Tab) => isActive(path, t.href);
+  const active = (t: Tab) => isActive(path, t.href, t.also);
   return (
     <nav className={`tabbar ${variant}`} aria-label="Menu utama">
       {tabs.map((t) => (
