@@ -10,7 +10,8 @@
     "test": "npm test -w @kamil/core",
     "dev": "npm run dev -w @kamil/web",
     "build": "npm run build -w @kamil/web",
-    "typecheck": "npm run typecheck -w @kamil/core && npm run typecheck -w @kamil/web"
+    "typecheck": "npm run typecheck -w @kamil/core && npm run typecheck -w @kamil/web",
+    "e2e": "bash e2e/run.sh"
   },
   "devDependencies": {
     "pg": "^8.23.1"

@@ -5,3 +5,4 @@ dist
 *.log
 *.tsbuildinfo
 next-env.d.ts
+e2e/.dbname
