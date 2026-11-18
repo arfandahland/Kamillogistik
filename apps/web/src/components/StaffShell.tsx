@@ -1,4 +1,4 @@
-import { CAN_CREATE_ORDER, ROLE_LABEL } from "@kamil/core";
+import { CAN_CREATE_ORDER, OWNER_ROLE, ROLE_LABEL } from "@kamil/core";
 import Sidebar from "./Sidebar";
 import StaffHeader from "./StaffHeader";
 import TabBar from "./TabBar";
@@ -9,12 +9,18 @@ import { initials, sapaan } from "@/lib/ui";
 export type Me = { name: string; role: string; branchName: string | null };
 
 export default function StaffShell({ me, pending, children, forceFull }: { me: Me; pending: number; children: React.ReactNode; forceFull?: boolean }) {
-  const tabs = [
-    { href: "/app", label: "Beranda", icon: "home" },
-    ...(CAN_CREATE_ORDER.includes(me.role) ? [{ href: "/app/baru", label: "Resi baru", icon: "plus" }] : []),
-    { href: "/app/serah", label: "Serah terima", icon: "swap", badge: pending },
-    { href: "/app/akun", label: "Akun", icon: "user" },
-  ];
+  const tabs = me.role === OWNER_ROLE
+    ? [
+        { href: "/app", label: "Pantauan", icon: "chart" },
+        { href: "/app/semua", label: "Semua resi", icon: "list" },
+        { href: "/app/akun", label: "Akun", icon: "user" },
+      ]
+    : [
+        { href: "/app", label: "Beranda", icon: "home" },
+        ...(CAN_CREATE_ORDER.includes(me.role) ? [{ href: "/app/baru", label: "Resi baru", icon: "plus" }] : []),
+        { href: "/app/serah", label: "Serah terima", icon: "swap", badge: pending },
+        { href: "/app/akun", label: "Akun", icon: "user" },
+      ];
   const role = ROLE_LABEL[me.role] ?? me.role;
   const tanggal = new Intl.DateTimeFormat("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Makassar" }).format(new Date());
   return (

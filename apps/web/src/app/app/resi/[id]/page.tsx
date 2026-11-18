@@ -1,7 +1,9 @@
 import Link from "next/link";
-import { nextAction, ROLE_LABEL, SEES_MONEY, STATUS_LABEL, type Actor, type AnyStatus } from "@kamil/core";
+import { nextAction, OWNER_ROLE, ROLE_LABEL, SEES_MONEY, STATUS_LABEL, type Actor, type AnyStatus } from "@kamil/core";
 import { staffRpc, type Staff } from "@/lib/supabase/server";
 import { rupiah, tanggalWaktu } from "@/lib/brand";
+import SubmitButton from "@/components/SubmitButton";
+import ResiStepper from "@/components/ResiStepper";
 import { lanjut, serahkan, terima, timbang } from "../../actions";
 
 type Detail = {
@@ -24,10 +26,11 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
   }
   const s = d.data;
   const role = me.data.role as Actor;
-  const action = nextAction(role, s.status);
-  const pendingToMe = s.handovers.find((h) => h.state === "PENDING_ACK" && h.toMe);
+  const viewOnly = role === OWNER_ROLE; // Pemilik hanya memantau
+  const action = viewOnly ? null : nextAction(role, s.status);
+  const pendingToMe = viewOnly ? undefined : s.handovers.find((h) => h.state === "PENDING_ACK" && h.toMe);
   const pending = s.handovers.find((h) => h.state === "PENDING_ACK");
-  const directory = s.iAmHolder && !pending ? (await staffRpc<{ id: string; name: string; role: string; branchName: string | null }[]>("staff_directory")).data ?? [] : [];
+  const directory = !viewOnly && s.iAmHolder && !pending ? (await staffRpc<{ id: string; name: string; role: string; branchName: string | null }[]>("staff_directory")).data ?? [] : [];
 
   return (
     <main className="wrap section stack detail">
@@ -39,6 +42,7 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
         <h1 style={{ letterSpacing: 1 }}>{s.resiNo}</h1>
         <p><span className={`pill ${s.status === "DELIVERED" ? "done" : ""}`}>{STATUS_LABEL[s.status]}</span>{" "}
           <span className="muted">{s.origin.city} → {s.dest.city}</span></p>
+        <ResiStepper status={s.status} />
         <dl className="kv">
           <dt>Pengirim</dt><dd>{s.senderName}{s.senderPhone ? ` · ${s.senderPhone}` : ""}</dd>
           <dt>Penerima</dt><dd>{s.receiverName}{s.receiverPhone ? ` · ${s.receiverPhone}` : ""}</dd>
@@ -52,7 +56,7 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
           <b>{pendingToMe.fromName} menyerahkan barang ini kepada Anda.</b>
           <p className="muted" style={{ margin: "6px 0 10px" }}>Periksa barangnya dulu, baru tekan tombol di bawah.</p>
           <input type="hidden" name="id" value={s.id} /><input type="hidden" name="hid" value={pendingToMe.id} />
-          <button className="btn green">Ya, barang sudah saya terima</button>
+          <SubmitButton className="btn green" steps={["Memeriksa serah terima…", "Memindahkan tanggung jawab…", "Mencatat riwayat…"]}>Ya, barang sudah saya terima</SubmitButton>
         </form>
       )}
 
@@ -61,7 +65,7 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
           <form action={lanjut} className="card">
             <h2>Langkah berikutnya</h2>
             <input type="hidden" name="id" value={s.id} /><input type="hidden" name="to" value={action.to} /><input type="hidden" name="done" value={action.done} />
-            <button className="btn">{action.label}</button>
+            <SubmitButton steps={["Menyimpan langkah…", "Memperbarui status…", "Mencatat riwayat…"]}>{action.label}</SubmitButton>
           </form>
         ) : (
           <div className="card"><h2>Langkah berikutnya</h2>
@@ -90,7 +94,7 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
           <label className="f" htmlFor="biaya">Biaya tambahan, kalau ada (Rp)</label>
           <input id="biaya" name="biaya" inputMode="numeric" placeholder="Contoh: 25000 untuk packing kayu" />
           <input name="ket" placeholder="Keterangan biaya tambahan" style={{ marginTop: 8 }} />
-          <button className="btn" style={{ marginTop: 16 }}>Hitung dan buat tagihan</button>
+          <SubmitButton style={{ marginTop: 16 }} steps={["Memeriksa berat dan ukuran…", "Menghitung tarif…", "Membuat tagihan…", "Mencatat riwayat…"]}>Hitung dan buat tagihan</SubmitButton>
         </form>
       )}
 
@@ -109,7 +113,7 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
             {directory.map((u) => <option key={u.id} value={u.id}>{u.name} — {ROLE_LABEL[u.role] ?? u.role}{u.branchName ? ` (${u.branchName})` : ""}</option>)}
           </select>
           <p className="hint">Penerima harus menekan tombol terima di HP-nya. Sebelum itu, barang masih tanggung jawab Anda.</p>
-          <button className="btn ghost">Serahkan barang</button>
+          <SubmitButton className="btn ghost" steps={["Memeriksa penerima…", "Mengirim permintaan serah terima…"]}>Serahkan barang</SubmitButton>
         </form>
       )}
       {pending && !pendingToMe && (

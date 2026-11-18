@@ -26,6 +26,11 @@ const P: Record<string, string> = {
   chat: "M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H9l-5 4V6a1 1 0 0 1 1-1Z",
   scale: "M12 3v18M5 7h14M5 7l-3 7a3 3 0 0 0 6 0L5 7ZM19 7l-3 7a3 3 0 0 0 6 0l-3-7Z",
   back: "M19 12H5m6-6-6 6 6 6",
+  chart: "M3 3v18h18M7 15l4-4 3 3 5-6",
+  list: "M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01",
+  bolt: "M13 2 4 14h7l-1 8 9-12h-7l1-8Z",
+  up: "M7 17 17 7M9 7h8v8",
+  down: "M7 7l10 10M17 9v8H9",
 };
 
 export default function Icon({ name, size, ...rest }: { name: keyof typeof P | string; size?: number } & SVGProps<SVGSVGElement>) {

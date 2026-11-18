@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import NavProgress from "@/components/NavProgress";
 
 export const metadata: Metadata = {
   title: { default: "Kamil Logistik — Kirim Barang Murah ke Seluruh Sulawesi", template: "%s | Kamil Logistik" },
@@ -13,7 +14,7 @@ export const viewport: Viewport = { width: "device-width", initialScale: 1, them
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="id">
-      <body>{children}</body>
+      <body><NavProgress />{children}</body>
     </html>
   );
 }

@@ -1,14 +1,13 @@
 "use client";
 import { useState } from "react";
-import { useFormStatus } from "react-dom";
 import Icon from "./Icon";
+import SubmitButton from "./SubmitButton";
 
 function Submit() {
-  const { pending } = useFormStatus();
   return (
-    <button className="btn shine" disabled={pending} style={{ marginTop: 6 }}>
-      {pending ? <><span className="spin" /> Memeriksa…</> : <>Masuk <Icon name="arrow" size={20} strokeWidth={2.6} /></>}
-    </button>
+    <SubmitButton className="btn shine" style={{ marginTop: 6 }} steps={["Memeriksa email dan sandi…", "Menyiapkan sesi aman…", "Membuka aplikasi…"]}>
+      Masuk <Icon name="arrow" size={20} strokeWidth={2.6} />
+    </SubmitButton>
   );
 }
 

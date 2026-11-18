@@ -22,20 +22,21 @@ function Stat({ icon, n, label, warm, dx }: { icon: string; n: number; label: st
   );
 }
 
-export default function StaffHome({ rows, stats, pending, tab, q, canCreate, error }: {
-  rows: Row[]; stats: Stats; pending: Pending[]; tab: string; q: string; canCreate: boolean; error?: string | null;
+export default function StaffHome({ rows, stats, pending, tab, q, canCreate, error, hideStats, basePath = "/app", title = "Tugas hari ini" }: {
+  rows: Row[]; stats: Stats; pending: Pending[]; tab: string; q: string; canCreate: boolean; error?: string | null; hideStats?: boolean; basePath?: string; title?: string;
 }) {
+  const hasSide = canCreate || pending.length > 0;
   return (
     <main className="wrap stack home">
-      <div className="stats stagger">
+      {!hideStats && <div className="stats stagger">
         <Stat icon="box" n={stats.aktif} label="Barang sedang berjalan" />
         <Stat icon="clock" n={stats.menunggu} label="Menunggu Anda terima" warm />
         <Stat icon="check" n={stats.selesai} label="Sudah diterima" dx />
         <Stat icon="user" n={stats.dipegang} label="Di tangan Anda" dx warm />
-      </div>
+      </div>}
 
-      <div className="homegrid">
-        <aside className="sidecol stack">
+      <div className={`homegrid ${hasSide ? "" : "solo"}`}>
+        {hasSide && <aside className="sidecol stack">
           {canCreate && <Link href="/app/baru" className="btn shine"><Icon name="plus" size={22} strokeWidth={2.8} /> Buat resi baru</Link>}
           {pending.length > 0 && (
             <div className="banner">
@@ -49,10 +50,10 @@ export default function StaffHome({ rows, stats, pending, tab, q, canCreate, err
               </div>
             </div>
           )}
-        </aside>
+        </aside>}
 
         <section className="listcol stack">
-          <h2 style={{ margin: "6px 2px -4px" }}>Tugas hari ini</h2>
+          <h2 style={{ margin: "6px 2px -4px" }}>{title}</h2>
           <form className="card searchcard">
             <Icon name="search" size={20} className="ico sicon" />
             <input name="q" defaultValue={q} placeholder="Cari nomor resi atau nama" enterKeyHint="search" aria-label="Cari" />
@@ -60,7 +61,7 @@ export default function StaffHome({ rows, stats, pending, tab, q, canCreate, err
           </form>
           <nav className="chips" aria-label="Saring">
             {TABS.map((t) => (
-              <Link key={t.k} className={`chip ${tab === t.k ? "on" : ""}`} href={`/app?s=${t.k}${q ? `&q=${encodeURIComponent(q)}` : ""}`}>{t.t}</Link>
+              <Link key={t.k} className={`chip ${tab === t.k ? "on" : ""}`} href={`${basePath}?s=${t.k}${q ? `&q=${encodeURIComponent(q)}` : ""}`}>{t.t}</Link>
             ))}
           </nav>
 

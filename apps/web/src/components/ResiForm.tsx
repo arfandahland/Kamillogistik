@@ -22,7 +22,7 @@ export default function ResiForm({ initial = "", autoFocus = false }: { initial?
         autoCapitalize="characters" autoComplete="off" autoFocus={autoFocus} enterKeyHint="search" />
       <p className="hint">Nomor resi ada di struk atau pesan WhatsApp dari kami.</p>
       <button className="btn" disabled={busy || !v.trim()} style={{ marginTop: 12 }}>
-        {busy ? <span className="spin" /> : <><Icon name="search" size={22} /> Cek posisi barang</>}
+        {busy ? <span className="stepping"><span className="spin" /><span className="stext">Mencari resi…</span></span> : <><Icon name="search" size={22} /> Cek posisi barang</>}
       </button>
     </form>
   );

@@ -56,5 +56,7 @@ export const STATUS_GROUPS = {
   selesai: ["DELIVERED", "CANCELLED"],
 } as const;
 
-export const CAN_CREATE_ORDER = ["SUPER_ADMIN", "HUB_MANAGER", "MITRA_POS"];
+/** Pemilik hanya memantau (lihat dashboard); pembuatan resi dilakukan petugas operasional. */
+export const CAN_CREATE_ORDER = ["HUB_MANAGER", "MITRA_POS"];
+export const OWNER_ROLE = "SUPER_ADMIN";
 export const SEES_MONEY = ["SUPER_ADMIN", "HUB_MANAGER", "MITRA_POS"];

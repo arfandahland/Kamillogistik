@@ -134,7 +134,7 @@ export default function Calculator({ routes }: { routes: Route[] }) {
 
       {err && <div className="err fade" style={{ marginTop: 14 }} role="alert">{err}</div>}
       <button className="btn" style={{ marginTop: 16 }} disabled={busy || !chosen}>
-        {busy ? <span className="spin" /> : "Hitung ongkir"}
+        {busy ? <span className="stepping"><span className="spin" /><span className="stext">Menghitung ongkir…</span></span> : "Hitung ongkir"}
       </button>
 
       {res && (

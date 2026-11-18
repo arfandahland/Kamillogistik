@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { CAN_CREATE_ORDER, handleRoutes } from "@kamil/core";
 import { repo } from "@/lib/repo";
 import { staffRpc, type Staff } from "@/lib/supabase/server";
+import SubmitButton from "@/components/SubmitButton";
 import { buatResi } from "../actions";
 
 export const metadata: Metadata = { title: "Buat Resi Baru" };
@@ -52,7 +53,7 @@ export default async function Baru({ searchParams }: { searchParams: Promise<{ e
             <input id="catatan" name="catatan" placeholder="Contoh: dus sedikit penyok" />
             <p className="hint">Berat dan ukuran dicatat nanti saat barang ditimbang di gudang.</p>
 
-            <button className="btn" style={{ marginTop: 18 }}>Buat resi</button>
+            <SubmitButton style={{ marginTop: 18 }} steps={["Memeriksa data…", "Membuat nomor resi…", "Menyiapkan barang…", "Menyimpan resi…"]}>Buat resi</SubmitButton>
           </>
         )}
       </form>

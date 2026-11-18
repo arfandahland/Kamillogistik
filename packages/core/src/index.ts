@@ -7,3 +7,4 @@ export * from "./service/handlers";
 export { createSeedRepo } from "./service/seed";
 export { createSupabaseRepo } from "./service/supabaseRepo";
 export * from "./service/staffText";
+export * from "./service/owner";

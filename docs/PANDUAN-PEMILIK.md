@@ -52,6 +52,18 @@ Dipakai di HP oleh pemilik, kepala gudang, kasir mitra, kurir, petugas gudang, d
 
 **Ganti kata sandi:** tombol "Sandi" di bagian atas aplikasi.
 
+## Dashboard Pemilik (hanya memantau)
+Akun Pemilik **hanya melihat**, tidak menjalankan operasional. Tampilannya:
+- **Kartu angka:** pendapatan, resi baru, barang sedang berjalan, dan tagihan belum dibayar. Masing-masing dibandingkan dengan periode sebelumnya.
+- **Perlu perhatian:** resi yang diam terlalu lama (misalnya belum dijemput lebih dari 24 jam, di laut lebih dari 10 hari) dan tagihan lewat jatuh tempo. Nomor resinya bisa langsung ditekan.
+- **Kesimpulan otomatis:** kalimat ringkas dari angka asli, misalnya "Resi baru naik 24%" atau "Barang paling banyak menumpuk di tahap Di gudang asal". Kalau belum ada pembanding, sistem tidak mengarang persentase.
+- **Grafik:** resi per hari, pendapatan per hari, posisi barang sekarang (donat), rute terlaris, dan aktivitas petugas 7 hari.
+- **Langsung:** halaman menyegarkan diri tiap 20 detik; titik hijau berdenyut menandakan terhubung. Pilih periode 7, 30, atau 90 hari.
+- Kalau belum ada resi, grafik kosong dan ada penjelasan, tidak ada angka contoh.
+
+## Animasi proses
+Garis kemajuan di atas layar menyala saat pindah halaman. Tombol yang menyimpan data menampilkan tahap kerjanya ("Menghitung tarif…", "Membuat tagihan…") dengan titik kemajuan. Setiap resi punya penanda 10 tahap yang menunjukkan sudah sampai mana dan sisa berapa lagi. Catatan jujur: tulisan tahap pada tombol menjelaskan urutan kerja sistem, bukan pengukuran waktu nyata dari server.
+
 ## Hal yang perlu diketahui
 - **Paket gratis Supabase** menidurkan database jika tidak ada pengunjung selama 7 hari. Begitu website resmi dipakai pelanggan, ini tidak terjadi. Sebelum peluncuran sungguhan, sebaiknya naik ke paket berbayar agar ada backup harian dan tidak pernah tidur. Saya ingatkan lagi saat waktunya.
 - Resi contoh (`KLX-2611-000123`) hanya ada di tampilan percobaan. Di database sungguhan belum ada resi sampai fitur order dan aplikasi petugas selesai, jadi mengecek resi akan menjawab "tidak ditemukan". Itu normal.

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import SubmitButton from "@/components/SubmitButton";
 import { supabaseServer } from "@/lib/supabase/server";
 
 export const metadata: Metadata = { title: "Ganti Kata Sandi" };
@@ -30,7 +31,7 @@ export default async function Sandi({ searchParams }: { searchParams: Promise<{ 
         <label className="f" htmlFor="ulang">Ketik sekali lagi</label>
         <input id="ulang" name="ulang" type="password" autoComplete="new-password" minLength={8} required />
         <p className="hint">Minimal 8 huruf atau angka. Jangan beri tahu siapa pun, termasuk atasan.</p>
-        <button className="btn green" style={{ marginTop: 16 }}>Simpan kata sandi baru</button>
+        <SubmitButton className="btn green" style={{ marginTop: 16 }} steps={["Memeriksa kata sandi…", "Menyimpan kata sandi baru…"]}>Simpan kata sandi baru</SubmitButton>
         <Link href="/app" className="btn ghost" style={{ marginTop: 10 }}>← Kembali</Link>
       </form>
     </main>
