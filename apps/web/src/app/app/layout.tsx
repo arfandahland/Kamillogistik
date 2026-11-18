@@ -17,7 +17,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             <b>{me?.name ?? "Petugas"}</b>
             <span>{me ? `${ROLE_LABEL[me.role] ?? me.role}${me.branchName ? ` · ${me.branchName}` : ""}` : ""}</span>
           </Link>
-          <form action={keluar}><button className="out">Keluar</button></form>
+          <div style={{ display: "flex", gap: 8 }}><Link href="/app/sandi" className="out" style={{ display: "inline-flex", alignItems: "center", textDecoration: "none" }}>Sandi</Link><form action={keluar}><button className="out">Keluar</button></form></div>
         </div>
       </div>
       {me ? children : (

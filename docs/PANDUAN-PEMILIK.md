@@ -38,6 +38,20 @@ Database Supabase sudah jadi dan terisi tarif Anda. Tinggal memasang websitenya 
 
 Setelah itu, setiap perubahan yang saya kerjakan **tayang otomatis**, Anda tidak perlu mengulang langkah ini.
 
+## Aplikasi petugas (alamat: `/masuk`)
+Dipakai di HP oleh pemilik, kepala gudang, kasir mitra, kurir, petugas gudang, dan sopir kontainer. Tiap orang hanya melihat tugasnya.
+
+**Alur satu resi, dari awal sampai tagihan:**
+1. **Kasir mitra** menekan "Buat resi baru", mengisi pengirim, penerima, dan jumlah barang. Nomor resi terbit otomatis.
+2. **Kurir** membuka resi lalu menekan "Barang sudah saya jemput".
+3. Kurir menekan "Serahkan barang", memilih petugas gudang. **Petugas gudang** menekan "Barang sudah saya terima". Barang baru dianggap pindah tangan setelah penerima menekan tombol itu, jadi selalu jelas siapa yang bertanggung jawab.
+4. Petugas gudang menekan "Barang sudah saya terima di gudang", lalu mengisi berat dan ukuran. **Tagihan dibuat otomatis** oleh sistem, angkanya tidak bisa diubah petugas.
+5. Tahap berikutnya (dimuat, kapal berangkat, sandar, dibongkar, diantar) tinggal ditekan oleh petugas yang bertanggung jawab.
+
+**Menambah petugas baru:** cukup minta saya lewat chat ("daftarkan Budi sebagai kurir Jakarta, emailnya ..."). Orangnya lalu masuk dengan email itu. Semua perubahan tercatat permanen dan tidak bisa dihapus.
+
+**Ganti kata sandi:** tombol "Sandi" di bagian atas aplikasi.
+
 ## Hal yang perlu diketahui
 - **Paket gratis Supabase** menidurkan database jika tidak ada pengunjung selama 7 hari. Begitu website resmi dipakai pelanggan, ini tidak terjadi. Sebelum peluncuran sungguhan, sebaiknya naik ke paket berbayar agar ada backup harian dan tidak pernah tidur. Saya ingatkan lagi saat waktunya.
 - Resi contoh (`KLX-2611-000123`) hanya ada di tampilan percobaan. Di database sungguhan belum ada resi sampai fitur order dan aplikasi petugas selesai, jadi mengecek resi akan menjawab "tidak ditemukan". Itu normal.

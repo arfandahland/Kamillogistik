@@ -6,12 +6,14 @@ Platform logistik digital terpadu (lihat PRD v1.0, 18 Nov 2026). Monorepo TypeSc
 |---|---|
 | `apps/web` | Website Next.js (mobile-first): beranda, cek resi dengan garis waktu hijau, hitung ongkir, API. |
 | `packages/core` | Mesin tarif, mesin status resi + serah terima, tampilan publik resi, penanganan API. Murni dan teruji. |
-| `db/migrations` | `001` skema (28 tabel, log append-only) · `002` keamanan (tabel terkunci) · `003` fungsi publik aman · `004` data jaringan + tarif. Sudah terpasang di Supabase. |
+| `db/test` | Tes database: skenario lima petugas dari order sampai tagihan + kesamaan tarif TS/SQL. Jalankan `bash db/test/run.sh`. |
+| `db/migrations` | `005` aplikasi petugas (hak akses, order, status, serah terima, timbang+tagihan) · `001` skema (28 tabel, log append-only) · `002` keamanan (tabel terkunci) · `003` fungsi publik aman · `004` data jaringan + tarif. Sudah terpasang di Supabase. |
 | `docs` | `PANDUAN-PEMILIK.md` (untuk Pak Kamil), `ARSITEKTUR.md` (keputusan teknologi). |
 
 ```bash
 npm install
-npm test           # 36 tes
+npm test           # 57 tes
+bash db/test/run.sh # tes database (butuh Postgres lokal)
 npm run dev        # http://localhost:3000 (data contoh; isi apps/web/.env.local dari .env.example untuk data Supabase)
 ```
 
@@ -23,4 +25,4 @@ npm run dev        # http://localhost:3000 (data contoh; isi apps/web/.env.local
 Hijau teal (primer), oranye (aksen), kuning (sorotan), tagline "Best Price Best Service", WA 0853-4223-8748, kamillogistik.id.
 
 ## Berikutnya
-Login + 2FA + RBAC, order publik, lalu PWA lapangan (Fase 2).
+Bukti terima (foto + tanda tangan), aplikasi petugas offline (PWA), manifest + kontainer + selisih barang, B2B, notifikasi WhatsApp, verifikasi 2 langkah.
