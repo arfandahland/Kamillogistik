@@ -154,7 +154,7 @@ export async function jawab(deps: ChatDeps, pesan: string, ctxIn: ChatCtx = {}):
     return { text: `Saat ini rute tersedia di: ${k}. Rute baru terus ditambah.`, actions: [{ label: "Lihat semua rute", href: "/ekspedisi" }] };
   }
   if (has(t, "alamat", "lokasi gudang", "jam buka", "jam operasional", "buka jam", "telepon", "kontak", "nomor wa", "whatsapp", "hubungi", "cs", "admin")) {
-    return { text: "Hubungi tim kami lewat WhatsApp untuk alamat gudang terdekat dan jam layanan.", actions: [wa("Halo Kamil Logistik, saya mau tanya.")] };
+    return { text: "Gudang Jakarta: Gudang Sarinah 2, Jl. Pancoran Timur II No. 4, Cikoko, Pancoran, Jakarta Selatan 12770. Buka 24 jam. Untuk gudang di kota lain, hubungi tim kami lewat WhatsApp.", actions: [wa("Halo Kamil Logistik, saya mau tanya.")] };
   }
   if (has(t, "halo", "hai", "hallo", "selamat", "pagi", "siang", "sore", "malam", "assalam", "permisi") && t.length < 30) return { text: "Halo! Saya asisten Kamil Logistik. Bisa bantu hitung ongkir, cek resi, atau jelaskan cara kirim. Mau mulai dari mana?", chips: CHIPS_AWAL };
   if (has(t, "terima kasih", "makasih", "thanks", "oke", "ok", "siap")) return { text: "Sama-sama! Kalau ada yang mau ditanyakan lagi, tulis saja.", chips: CHIPS_AWAL };

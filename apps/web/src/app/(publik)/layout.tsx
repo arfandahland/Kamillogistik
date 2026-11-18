@@ -29,6 +29,7 @@ export default function PublikLayout({ children }: { children: React.ReactNode }
           <img src="/logo-sm.webp" width="220" height="175" alt="Kamil Logistik" />
           <p>{BRAND.tagline}</p>
           <nav aria-label="Tautan cepat"><Link href="/ongkir">Hitung ongkir</Link><Link href="/lacak">Cek resi</Link><Link href="/ekspedisi">Rute dan tarif</Link><Link href="/panduan">Panduan</Link><Link href="/masuk">Masuk petugas</Link></nav>
+          <p>Gudang Sarinah 2, Jl. Pancoran Timur II No. 4, Cikoko, Pancoran, Jakarta Selatan 12770 · Buka 24 jam</p>
           <p>WhatsApp {BRAND.whatsappDisplay} · Instagram @{BRAND.instagram}</p>
           <small>© {new Date().getFullYear()} Kamil Logistik Express</small>
         </div>
