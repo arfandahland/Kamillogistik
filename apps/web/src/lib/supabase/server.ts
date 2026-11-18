@@ -23,6 +23,7 @@ export async function staffRpc<T = any>(fn: string, args: Record<string, unknown
   const sb = await supabaseServer();
   const { data, error } = await sb.rpc(fn, args);
   if (error) {
+    if (/^permission denied|^jwt|not authenticated/i.test(error.message)) return { data: null, error: "Anda belum masuk atau tidak punya izin untuk melihat ini. Silakan masuk lagi." };
     const friendly = error.code === "42501" || /izin|petugas|bukan tugas|belum|sudah|harus|tidak/i.test(error.message)
       ? error.message : "Maaf, ada gangguan. Coba lagi sebentar.";
     if (friendly !== error.message) console.error("[rpc]", fn, error.code, error.message);
