@@ -1,5 +1,5 @@
 import TestimoniSlider from "@/components/TestimoniSlider";
-import { TESTIMONI } from "@/lib/testimoni";
+import { getTestimoni } from "@/lib/testimoni";
 import type { Metadata } from "next";
 import Link from "next/link";
 import ResiForm from "@/components/ResiForm";
@@ -49,7 +49,7 @@ const LANGKAH = [
 ];
 
 export default async function Home() {
-  const semua = await getRoutePairs();
+  const [semua, testimoni] = await Promise.all([getRoutePairs(), getTestimoni()]);
   const UNGGULAN = ["ekspedisi-jakarta-makassar", "ekspedisi-makassar-jakarta", "ekspedisi-jakarta-palu", "ekspedisi-jakarta-kendari", "ekspedisi-jakarta-manado", "ekspedisi-makassar-morowali"];
   const pairs = [...semua.filter((p) => UNGGULAN.includes(p.slug)).sort((a, b) => UNGGULAN.indexOf(a.slug) - UNGGULAN.indexOf(b.slug)), ...semua.filter((p) => !UNGGULAN.includes(p.slug))].slice(0, 6);
   const slides: Slide[] = [
@@ -126,10 +126,10 @@ export default async function Home() {
           </ol>
         </section>
 
-        {TESTIMONI.length > 0 && (
+        {testimoni.length > 0 && (
           <section aria-labelledby="testimoni">
-            <h2 id="testimoni" className="sech">Kata pelanggan kami</h2>
-            <TestimoniSlider items={TESTIMONI} />
+            <h2 id="testimoni" className="sech">Bukti pengiriman dari tim kami</h2>
+            <TestimoniSlider items={testimoni} />
           </section>
         )}
         <section aria-labelledby="panduan">

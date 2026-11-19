@@ -6,7 +6,7 @@ cd "$(dirname "$0")/.."
 DB="kamil_e2e_$(date +%s)"
 run() { if [ "$(id -u)" = 0 ]; then su postgres -c "psql -v ON_ERROR_STOP=1 -q -X $*"; else psql -v ON_ERROR_STOP=1 -q -X "$@"; fi; }
 run "-c \"ALTER USER postgres PASSWORD 'pg'\" -c 'CREATE DATABASE $DB'"
-for f in db/test/00_stub_auth.sql db/migrations/001_init.sql db/migrations/002_security.sql db/migrations/003_public_api.sql db/migrations/004_seed_network.sql db/migrations/005_staff_app.sql db/migrations/006_owner_dashboard.sql db/migrations/007_admin_finance.sql db/migrations/008_pod.sql db/migrations/009_speed.sql db/migrations/010_security.sql db/migrations/011_kode_resi.sql db/migrations/012_manifest.sql db/migrations/013_korporat.sql db/migrations/014_tindak_lanjut.sql db/migrations/015_pemeriksaan_fisik.sql db/migrations/016_riwayat_harga_komisi.sql db/migrations/017_pantauan_pemilik.sql db/migrations/018_pelanggan.sql db/migrations/019_lamaran.sql; do
+for f in db/test/00_stub_auth.sql db/migrations/001_init.sql db/migrations/002_security.sql db/migrations/003_public_api.sql db/migrations/004_seed_network.sql db/migrations/005_staff_app.sql db/migrations/006_owner_dashboard.sql db/migrations/007_admin_finance.sql db/migrations/008_pod.sql db/migrations/009_speed.sql db/migrations/010_security.sql db/migrations/011_kode_resi.sql db/migrations/012_manifest.sql db/migrations/013_korporat.sql db/migrations/014_tindak_lanjut.sql db/migrations/015_pemeriksaan_fisik.sql db/migrations/016_riwayat_harga_komisi.sql db/migrations/017_pantauan_pemilik.sql db/migrations/018_pelanggan.sql db/migrations/019_lamaran.sql db/migrations/020_konten_peran_keamanan.sql; do
   run "-d $DB" < "$f" > /dev/null
 done
 run "-d $DB" <<'SQL'

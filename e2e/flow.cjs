@@ -731,6 +731,72 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await hr.ctx.close();
   }
 
+  console.log("\n[S] Superadmin: peran HRD/Konten, pengelola foto website, catatan aktivitas, slider beranda");
+  {
+    const pc0 = await browser.newContext({ viewport: { width: 412, height: 860 } }); const h0 = await pc0.newPage();
+    await h0.goto(`${BASE}/`, { waitUntil: "networkidle" });
+    ok("S1 beranda menampilkan slider dengan 5 foto bawaan", (await h0.locator(".tslide").count()) === 5);
+    ok("S2 semua foto bawaan termuat (bukan rusak)", await h0.evaluate(async () => { const im = [...document.querySelectorAll(".tslide img")]; await Promise.all(im.map((i) => i.complete ? 0 : new Promise((r) => { i.onload = i.onerror = r; }))); return im.every((i) => i.naturalWidth > 100); }));
+    ok("S3 foto bawaan tidak memuat nama domain lama", !/kamillogistikexpress/i.test(await h0.content()));
+    await pc0.close();
+    const ow = await login(browser, "owner@uji.id", "Pemilik2026x", { width: 390, height: 844 });
+    const buat = async (nama, email, peran) => {
+      await ow.page.goto(`${BASE}/app/petugas`, { waitUntil: "networkidle" });
+      await ow.page.locator("details.admnew summary").click();
+      await ow.page.fill("input[name=nama]", nama); await ow.page.fill("input[name=email]", email); await ow.page.selectOption("select[name=peran]", peran); await ow.page.fill("input[name=sandi]", "Sandi2026a");
+      await ow.page.locator("details.admnew button[type=submit], details.admnew .btn.green").first().click();
+      await ow.page.waitForSelector(".ok, .err", { timeout: 20000 }).catch(() => {});
+      return (await ow.page.locator(".ok, .err").first().innerText().catch(() => ""));
+    };
+    ok("S4 pemilik membuat akun HRD tanpa cabang", /dibuat/.test(await buat("Bu HRD Uji", "hrd.uji@uji.id", "HRD")));
+    ok("S5 pemilik membuat akun Admin konten tanpa cabang", /dibuat/.test(await buat("Pak Konten Uji", "konten.uji@uji.id", "KONTEN")));
+    ok("S6 pemilik membuat Admin pusat (akses penuh)", /dibuat/.test(await buat("Admin Dua Uji", "admin2.uji@uji.id", "SUPER_ADMIN")));
+    const hr = await login(browser, "hrd.uji@uji.id", "Sandi2026a");
+    await hr.page.waitForURL(/\/app\/lamaran/, { timeout: 10000 }).catch(() => {});
+    ok("S7 HRD masuk dan langsung ke daftar lamaran", hr.loggedIn && /\/app\/lamaran/.test(hr.page.url()), hr.page.url());
+    await hr.page.goto(`${BASE}/app/konten`, { waitUntil: "networkidle" });
+    ok("S8 HRD tidak bisa membuka menu Konten", !/\/app\/konten/.test(hr.page.url()));
+    await hr.page.goto(`${BASE}/app/petugas`, { waitUntil: "networkidle" });
+    ok("S9 HRD tidak bisa membuka menu Petugas", !/\/app\/petugas/.test(hr.page.url()));
+    await noOverflow(hr.page, "HRD (HP)"); await hr.ctx.close();
+    const kn = await login(browser, "konten.uji@uji.id", "Sandi2026a");
+    await kn.page.waitForURL(/\/app\/konten/, { timeout: 10000 }).catch(() => {});
+    ok("S10 Admin konten masuk dan langsung ke menu Konten", kn.loggedIn && /\/app\/konten/.test(kn.page.url()), kn.page.url());
+    await kn.page.goto(`${BASE}/app/lamaran`, { waitUntil: "networkidle" });
+    ok("S11 Admin konten tidak bisa membuka Lamaran", !/\/app\/lamaran/.test(kn.page.url()));
+    await kn.page.goto(`${BASE}/app/konten`, { waitUntil: "networkidle" });
+    ok("S12 tersedia tombol salin foto bawaan", (await kn.page.getByRole("button", { name: /Salin 5 foto bawaan/ }).count()) === 1);
+    await kn.page.getByRole("button", { name: /Salin 5 foto bawaan/ }).click();
+    await kn.page.waitForSelector("details.admitem", { timeout: 60000 }).catch(() => {});
+    ok("S13 5 foto bawaan tersalin ke daftar", (await kn.page.locator("details.admitem").count()) === 5, String(await kn.page.locator("details.admitem").count()));
+    // unggah satu foto baru (PNG kecil), lalu geser, sembunyikan, hapus
+    const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mNk+M9Qz0AEYBxVSF+FABJADveWkH6oAAAAAElFTkSuQmCC", "base64");
+    await kn.page.locator("details.admnew summary").click();
+    await kn.page.setInputFiles("details.admnew input[type=file]", { name: "uji.png", mimeType: "image/png", buffer: png });
+    await kn.page.waitForTimeout(800);
+    await kn.page.fill("details.admnew input[name=judul]", "Foto uji unggahan");
+    await kn.page.getByRole("button", { name: "Tambahkan foto" }).click(); await kn.page.waitForSelector(".ok", { timeout: 20000 }).catch(() => {});
+    await kn.page.goto(`${BASE}/app/konten`, { waitUntil: "networkidle" });
+    ok("S14 foto baru muncul di daftar (6 item)", (await kn.page.locator("details.admitem").count()) === 6);
+    await noOverflow(kn.page, "menu Konten (HP)"); await kn.page.screenshot({ path: `${OUT}/e2e-konten.png`, fullPage: true });
+    const pubr = await kn.ctx.request.get(`${BASE}/testimoni/00000000-0000-0000-0000-000000000000`);
+    ok("S15 foto yang tidak ada memberi 404", pubr.status() === 404);
+    await kn.ctx.close();
+    const pc1 = await browser.newContext({ viewport: { width: 412, height: 860 } }); const h1 = await pc1.newPage();
+    await h1.goto(`${BASE}/`, { waitUntil: "networkidle" });
+    const n1 = await h1.locator(".tslide").count();
+    ok("S16 beranda sekarang memakai foto dari database (6 slide)", n1 === 6, String(n1));
+    ok("S17 foto dari database termuat dan bertipe gambar", await h1.evaluate(async () => { const im = document.querySelector(".tslide img"); if (!im) return false; if (!im.complete) await new Promise((r) => { im.onload = im.onerror = r; }); return im.naturalWidth > 0; }));
+    await h1.locator(".tdots button").nth(2).click(); await h1.waitForTimeout(900);
+    ok("S18 titik slider menggeser ke foto ke-3", await h1.evaluate(() => document.querySelectorAll(".tslide")[2].classList.contains("on")));
+    await h1.screenshot({ path: `${OUT}/e2e-slider.png` }); await pc1.close();
+    await ow.page.goto(`${BASE}/app/catatan`, { waitUntil: "networkidle" });
+    const cat = await ow.page.locator("main").innerText();
+    ok("S19 catatan aktivitas memuat pembuatan akun dan perubahan foto", /Membuat akun petugas/.test(cat) && /Menyimpan foto website/.test(cat), cat.slice(0, 200));
+    await noOverflow(ow.page, "catatan aktivitas (HP)");
+    await ow.ctx.close();
+  }
+
   await browser.close();
   const fail = results.filter((r) => !r.ok);
   console.log(`\n==== HASIL: ${results.length - fail.length}/${results.length} lolos ====`);

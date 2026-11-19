@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ROLE_LABEL } from "@kamil/core";
+import { PERAN_BARU, PERAN_KETERANGAN, PERAN_TANPA_CABANG, ROLE_LABEL } from "@kamil/core";
 import Icon from "@/components/Icon";
 import SubmitButton from "@/components/SubmitButton";
 import { requireOwner } from "@/lib/auth";
@@ -25,9 +25,10 @@ export default async function Petugas({ searchParams }: { searchParams: Promise<
           <label className="f">Nama lengkap</label><input name="nama" required />
           <label className="f">Email untuk masuk</label><input name="email" type="email" inputMode="email" autoCapitalize="none" required />
           <label className="f">Peran</label>
-          <select name="peran" defaultValue="DRIVER">{["DRIVER", "WAREHOUSE", "CONTAINER_DRIVER", "MITRA_POS", "HUB_MANAGER"].map((k) => <option key={k} value={k}>{ROLE_LABEL[k]}</option>)}</select>
-          <label className="f">Bekerja di</label>
-          <select name="cabang" defaultValue="" required><option value="" disabled>Pilih cabang atau mitra…</option>{branches.map((b) => <option key={b.id} value={b.id}>{b.name} ({b.city})</option>)}</select>
+          <select name="peran" defaultValue="DRIVER">{PERAN_BARU.map((k) => <option key={k} value={k}>{k === "SUPER_ADMIN" ? "Admin pusat (akses penuh)" : ROLE_LABEL[k]}</option>)}</select>
+          <p className="hint">{PERAN_TANPA_CABANG.map((k) => `${k === "SUPER_ADMIN" ? "Admin pusat" : ROLE_LABEL[k]}: ${PERAN_KETERANGAN[k]}`).join(" ")}</p>
+          <label className="f">Bekerja di (kosongkan untuk Admin pusat, HRD, dan Konten)</label>
+          <select name="cabang" defaultValue=""><option value="">Tidak terikat cabang</option>{branches.map((b) => <option key={b.id} value={b.id}>{b.name} ({b.city})</option>)}</select>
           <label className="f">Sandi sementara</label><input name="sandi" autoComplete="off" placeholder="Minimal 8, ada huruf dan angka" required />
           <p className="hint">Beri tahu sandi ini kepada petugas, lalu minta mereka menggantinya lewat menu Akun.</p>
           <SubmitButton className="btn green" style={{ marginTop: 12 }} steps={["Memeriksa data…", "Membuat akun aman…", "Menyiapkan hak akses…", "Mencatat perubahan…"]}>Buat akun petugas</SubmitButton>

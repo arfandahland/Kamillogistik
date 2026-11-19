@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { CAN_CREATE_ORDER, OWNER_ROLE, STATUS_GROUPS, type OwnerDashboard as OwnerData } from "@kamil/core";
 import OwnerDashboard from "@/components/OwnerDashboard";
 import StaffHome, { TABS, type Pending, type Row } from "@/components/StaffHome";
@@ -6,6 +7,8 @@ import { staffRpc, getMe, type Staff } from "@/lib/supabase/server";
 export default async function Beranda({ searchParams }: { searchParams: Promise<{ s?: string; q?: string; n?: string }> }) {
   const sp = await searchParams;
   const who = (await getMe()).data;
+  if (who?.role === "HRD") redirect("/app/lamaran");
+  if (who?.role === "KONTEN") redirect("/app/konten");
   if (who?.role === OWNER_ROLE) {
     const o = await staffRpc<OwnerData>("owner_dashboard", { p_days: 30 });
     return <OwnerDashboard initial={o.data} initialError={o.error} />;

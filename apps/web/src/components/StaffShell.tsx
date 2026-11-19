@@ -12,7 +12,11 @@ export default function StaffShell({ me, pending, children, forceFull }: { me: M
   const owner = me.role === OWNER_ROLE;
   const finance = owner || me.role === "HUB_MANAGER" || me.role === "MITRA_POS";
   // Menu bawah di HP (maks 5) dan menu samping di komputer (lengkap).
-  const tabs = owner
+  const tabs = me.role === "HRD"
+    ? [{ href: "/app/lamaran", label: "Lamaran", icon: "users" }, { href: "/app/akun", label: "Akun", icon: "user" }]
+    : me.role === "KONTEN"
+    ? [{ href: "/app/konten", label: "Konten", icon: "grid" }, { href: "/app/akun", label: "Akun", icon: "user" }]
+    : owner
     ? [
         { href: "/app", label: "Pantauan", icon: "chart" },
         { href: "/app/semua", label: "Resi", icon: "list" },
@@ -28,7 +32,7 @@ export default function StaffShell({ me, pending, children, forceFull }: { me: M
         ...(finance ? [{ href: "/app/tagihan", label: "Tagihan", icon: "file" }] : [{ href: "/app/serah", label: "Serah terima", icon: "swap", badge: pending }]),
         { href: "/app/akun", label: "Akun", icon: "user" },
       ];
-  const navAll = owner
+  const navAll = me.role === "HRD" || me.role === "KONTEN" ? tabs : owner
     ? [
         { href: "/app", label: "Pantauan", icon: "chart" },
         { href: "/app/semua", label: "Semua resi", icon: "list" },

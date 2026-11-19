@@ -13,7 +13,7 @@ DO $$ DECLARE r jsonb; BEGIN
   r := public.public_apply('driver-sim-b','Budi Santoso','0812-3456-7890','budi@mail.id','Makassar','5 tahun sopir box','B2 Umum',NULL,'cv budi.pdf','application/pdf','data:application/pdf;base64,JVBERi0=');
   ASSERT (r->>'ok')::boolean AND r->>'code' LIKE 'KRR-%', 'lamaran diterima dengan kode: ' || r::text;
 END $$;
-SELECT t.fails($$select public.public_apply('driver-sim-b','Budi Santoso','081234567890',NULL,'Makassar',NULL,NULL,NULL,'cv.pdf','application/pdf','data:application/pdf;base64,AAAA')$$, 'sudah kami terima');
+SELECT t.fails($$select public.public_apply('driver-sim-b','Budi Santoso','081234567890',NULL,'Makassar',NULL,NULL,NULL,'cv.pdf','application/pdf','data:application/pdf;base64,JVBERi0=')$$, 'sudah kami terima');
 -- pelamar tidak bisa membaca apa pun
 SELECT t.fails($$select * from public.job_applications$$, 'permission denied');
 SELECT t.fails($$select public.staff_applications()$$, 'permission denied');

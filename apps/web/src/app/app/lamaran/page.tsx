@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { LABEL_STATUS_LAMARAN, POSISI, STATUS_LAMARAN, posisiDari, pesanKePelamar, type StatusLamaran } from "@kamil/core";
 import LamaranKartu, { type Lamaran } from "@/components/LamaranKartu";
-import { requireOwner } from "@/lib/auth";
+import { requireRole } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
 
 export const metadata: Metadata = { title: "Lamaran Kerja" };
 
 export default async function Lamaran({ searchParams }: { searchParams: Promise<{ s?: string; p?: string }> }) {
-  await requireOwner();
+  await requireRole(["SUPER_ADMIN", "HRD"]);
   const sp = await searchParams;
   const status = STATUS_LAMARAN.find((x) => x === sp.s), posisi = POSISI.find((x) => x.slug === sp.p)?.slug;
   const q = await staffRpc<{ counts: Record<string, number>; items: Lamaran[] }>("staff_applications", { p_status: status ?? null, p_position: posisi ?? null });

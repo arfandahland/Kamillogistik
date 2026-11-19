@@ -2,7 +2,9 @@ import { canSetStatus, nextStatus, type Actor, type AnyStatus, type ShipmentStat
 
 /** Teks untuk petugas — tanpa istilah teknis. */
 export const ROLE_LABEL: Record<string, string> = {
-  SUPER_ADMIN: "Pemilik",
+  SUPER_ADMIN: "Pemilik / Admin pusat",
+  HRD: "HRD (rekrutmen)",
+  KONTEN: "Admin konten website",
   HUB_MANAGER: "Kepala gudang",
   MITRA_POS: "Kasir mitra",
   DRIVER: "Kurir",
@@ -80,3 +82,12 @@ export const STATUS_GROUPS = {
 export const CAN_CREATE_ORDER = ["HUB_MANAGER", "MITRA_POS"];
 export const OWNER_ROLE = "SUPER_ADMIN";
 export const SEES_MONEY = ["SUPER_ADMIN", "HUB_MANAGER", "MITRA_POS"];
+
+/** Peran yang bisa dipilih saat Pemilik membuat akun baru. Tiga yang terakhir tidak terikat cabang. */
+export const PERAN_BARU = ["DRIVER", "WAREHOUSE", "CONTAINER_DRIVER", "MITRA_POS", "HUB_MANAGER", "HRD", "KONTEN", "SUPER_ADMIN"] as const;
+export const PERAN_TANPA_CABANG = ["HRD", "KONTEN", "SUPER_ADMIN"] as const;
+export const PERAN_KETERANGAN: Record<string, string> = {
+  HRD: "Hanya membuka menu Lamaran kerja (baca CV, hubungi pelamar, atur status).",
+  KONTEN: "Hanya mengelola foto dan testimoni di website.",
+  SUPER_ADMIN: "Akses penuh seperti Pemilik: semua menu, tarif, mitra, keuangan, dan petugas. Berikan dengan hati-hati.",
+};

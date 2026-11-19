@@ -8,3 +8,10 @@ export async function requireOwner(): Promise<Staff> {
   if (me?.role !== OWNER_ROLE) redirect("/app");
   return me;
 }
+
+/** Halaman untuk peran tertentu (mis. HRD atau Konten selain Pemilik). Hak akses sebenarnya tetap dijaga di database. */
+export async function requireRole(roles: string[]): Promise<Staff> {
+  const me = (await getMe()).data;
+  if (!me || !roles.includes(me.role)) redirect("/app");
+  return me;
+}

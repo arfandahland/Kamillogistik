@@ -29,3 +29,16 @@ export async function publicRpcResult<T = any>(fn: string, args: Record<string, 
     return { data: null, error: tampilkan.test(m) ? m : "Maaf, data belum bisa disimpan. Coba lagi sebentar." };
   } catch { return { data: null, error: "Koneksi terputus. Coba lagi." }; }
 }
+
+/** Panggilan publik yang boleh disimpan sementara (cache) supaya beranda tetap cepat. Gagal = null. */
+export async function publicRpcCached<T = any>(fn: string, args: Record<string, unknown>, detik: number, tag: string): Promise<T | null> {
+  const url = process.env.SUPABASE_URL, key = process.env.SUPABASE_PUBLISHABLE_KEY;
+  if (!url || !key) return null;
+  try {
+    const r = await fetch(`${url.replace(/\/$/, "")}/rest/v1/rpc/${fn}`, {
+      method: "POST", next: { revalidate: detik, tags: [tag] },
+      headers: { apikey: key, authorization: `Bearer ${key}`, "content-type": "application/json" }, body: JSON.stringify(args),
+    });
+    return r.ok ? ((await r.json()) as T) : null;
+  } catch { return null; }
+}
