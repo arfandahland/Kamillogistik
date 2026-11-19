@@ -4,6 +4,7 @@ import TabBar from "@/components/TabBar";
 import ChatBot from "@/components/ChatBot";
 import SiteNav from "@/components/SiteNav";
 import { ToastProvider } from "@/components/Toast";
+import { PERUSAHAAN } from "@/lib/perusahaan";
 import { BRAND, waLink } from "@/lib/brand";
 import { getRoutePairs } from "@/lib/routes";
 import { kelompokWilayah } from "@kamil/core";
@@ -25,10 +26,14 @@ export default async function PublikLayout({ children }: { children: React.React
         <div className="wrap">
           <img src="/logo-sm.webp" width="220" height="175" alt="Kamil Logistik" />
           <p>{BRAND.tagline}</p>
-          <nav aria-label="Tautan cepat"><Link href="/ongkir">Hitung ongkir</Link><Link href="/lacak">Cek resi</Link><Link href="/ekspedisi">Rute dan tarif</Link><Link href="/panduan">Panduan</Link><Link href="/tentang">Tentang</Link><Link href="/kontak">Kontak</Link><Link href="/mitra">Jadi mitra</Link><Link href="/karir">Karir</Link><Link href="/syarat">Syarat</Link><Link href="/kebijakan-privasi">Privasi</Link><Link href="/masuk">Masuk petugas</Link></nav>
+          <nav aria-label="Tautan cepat"><Link href="/ongkir">Hitung ongkir</Link><Link href="/lacak">Cek resi</Link><Link href="/ekspedisi">Rute dan tarif</Link><Link href="/panduan">Panduan</Link><Link href="/layanan">Layanan</Link><Link href="/tentang">Tentang</Link><Link href="/kontak">Kontak</Link><Link href="/mitra">Jadi mitra</Link><Link href="/karir">Karir</Link><Link href="/jadwal">Jadwal</Link><Link href="/peta-situs">Peta situs</Link><Link href="/syarat">Syarat</Link><Link href="/kebijakan-privasi">Privasi</Link><Link href="/masuk">Masuk petugas</Link></nav>
           {wil.length > 0 && <nav aria-label="Tujuan pengiriman" className="footwil"><b>Ekspedisi ke:</b> {wil.map((k) => <Link key={k.wilayah.slug} href={`/ekspedisi-ke-${k.wilayah.slug}`}>{k.wilayah.nama}</Link>)}</nav>}
-          <p>Gudang Sarinah 2, Jl. Pancoran Timur II No. 4, Cikoko, Pancoran, Jakarta Selatan 12770 · Buka 24 jam</p>
-          <p>WhatsApp {BRAND.whatsappDisplay} · Instagram @{BRAND.instagram}</p>
+          <div className="footco">
+            <b>{PERUSAHAAN.namaHukum}</b>
+            <p>Berdiri sejak {PERUSAHAAN.tahunBerdiri} · gudang dan kantor di {PERUSAHAAN.kantor.map((k) => k.kota).join(", ")}</p>
+            <p><Link href="/kontak">Alamat lengkap</Link> · {PERUSAHAAN.wa.map((w) => w.tampil).join(" / ")}</p>
+            <p>{PERUSAHAAN.email} · Instagram @{BRAND.instagram}</p>
+          </div>
           <small>© {new Date().getFullYear()} Kamil Logistik Express</small>
         </div>
       </footer>

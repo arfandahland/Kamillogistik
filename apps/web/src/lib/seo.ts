@@ -2,16 +2,38 @@ import type { Faq, RoutePair } from "@kamil/core";
 import { optionName } from "@kamil/core";
 import { abs, SITE_URL } from "./site";
 import { BRAND } from "./brand";
+import { PERUSAHAAN, alamatLengkap, petaUrl } from "./perusahaan";
+import { LAYANAN } from "./layanan";
 
 export const orgId = `${SITE_URL}/#organisasi`;
 
 export const organizationLd = () => ({
   "@context": "https://schema.org", "@type": "Organization", "@id": orgId,
-  name: BRAND.name, url: SITE_URL, logo: abs("/logo.png"), image: abs("/og.png"),
-  description: "Jasa ekspedisi dan pengiriman barang dari Jakarta ke seluruh Sulawesi serta dari Makassar ke Papua dan Maluku dengan tarif transparan dan pelacakan resi.",
-  sameAs: [`https://instagram.com/${BRAND.instagram}`],
-  contactPoint: [{ "@type": "ContactPoint", telephone: `+${BRAND.whatsappNumber}`, contactType: "customer service", areaServed: "ID", availableLanguage: ["Indonesian"] }],
+  name: BRAND.name, legalName: PERUSAHAAN.namaHukum, alternateName: ["Kamil Logistik Express", "Kamil Logistik Express Sulawesi"], url: SITE_URL, logo: abs("/logo.png"), image: abs("/og.png"),
+  slogan: PERUSAHAAN.slogan, foundingDate: PERUSAHAAN.tanggalAkta, email: PERUSAHAAN.email,
+  description: "Jasa ekspedisi dan cargo darat, laut, dan udara dengan gudang di Jakarta, Makassar, dan Surabaya. Melayani seluruh Sulawesi, Maluku, Papua, Kalimantan, Jawa, dan Sumatera dengan tarif transparan dan pelacakan resi.",
+  founder: PERUSAHAAN.direksi.filter((d) => d.jabatan === "Founder").map((d) => ({ "@type": "Person", name: d.nama, jobTitle: d.jabatan })),
+  member: undefined,
+  location: PERUSAHAAN.kantor.map((k) => ({ "@type": "Place", name: k.nama, address: { "@type": "PostalAddress", streetAddress: k.jalan, addressLocality: k.wilayah, addressRegion: k.provinsi, postalCode: k.pos, addressCountry: "ID" }, hasMap: petaUrl(k) })),
+  areaServed: PERUSAHAAN.jangkauan.map((n) => ({ "@type": "AdministrativeArea", name: n })),
+  knowsAbout: ["ekspedisi", "cargo laut", "cargo udara", "cargo darat", "kirim kendaraan", "kirim alat berat", "sewa kontainer", "pindahan", "pergudangan", "konsultasi logistik"],
+  sameAs: [`https://instagram.com/${BRAND.instagram}`, PERUSAHAAN.facebook],
+  contactPoint: PERUSAHAAN.wa.map((w) => ({ "@type": "ContactPoint", telephone: `+${w.nomor}`, contactType: "customer service", areaServed: "ID", availableLanguage: ["Indonesian"] })),
+  hasOfferCatalog: { "@type": "OfferCatalog", name: "Layanan Kamil Logistik", itemListElement: LAYANAN.map((l) => ({ "@type": "Offer", itemOffered: { "@type": "Service", name: l.judul, url: abs(`/layanan/${l.slug}`) } })) },
 });
+
+export const layananLd = (l: (typeof LAYANAN)[number]) => ({
+  "@context": "https://schema.org", "@type": "Service", name: l.judul, serviceType: l.judul, description: l.deskSeo, url: abs(`/layanan/${l.slug}`),
+  provider: { "@id": orgId }, areaServed: PERUSAHAAN.jangkauan.map((n) => ({ "@type": "AdministrativeArea", name: n })), category: `Logistik: ${l.kategori}`,
+});
+
+/** Data terstruktur untuk kantor cabang Makassar dan Surabaya (Jakarta ada di localBusinessLd). */
+export const kantorCabangLd = () => PERUSAHAAN.kantor.slice(1).map((k) => ({
+  "@context": "https://schema.org", "@type": "LocalBusiness", "@id": `${SITE_URL}/#kantor-${k.kota.toLowerCase()}`, name: `${PERUSAHAAN.merek}, ${k.nama}`, url: abs("/kontak"), image: abs("/og.png"),
+  telephone: `+${PERUSAHAAN.wa[0]!.nomor}`, parentOrganization: { "@id": orgId }, address: { "@type": "PostalAddress", streetAddress: k.jalan, addressLocality: k.wilayah, addressRegion: k.provinsi, postalCode: k.pos, addressCountry: "ID" },
+  geo: { "@type": "GeoCoordinates", latitude: k.lat, longitude: k.lng }, hasMap: petaUrl(k),
+}));
+export { alamatLengkap };
 
 export const localBusinessLd = () => ({
   "@context": "https://schema.org", "@type": "LocalBusiness", "@id": `${SITE_URL}/#gudang-jakarta`, name: `${BRAND.name} Express, Gudang Jakarta`,

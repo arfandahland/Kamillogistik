@@ -1,5 +1,6 @@
 import BuktiShowcase from "@/components/BuktiShowcase";
 import { getTestimoni } from "@/lib/testimoni";
+import { PERUSAHAAN } from "@/lib/perusahaan";
 import type { Metadata } from "next";
 import Link from "next/link";
 import ResiForm from "@/components/ResiForm";
@@ -25,11 +26,11 @@ export const metadata: Metadata = {
 };
 
 const LAYANAN = [
-  { icon: "ship", t: "Laut", d: "Hemat untuk barang banyak" },
-  { icon: "plane", t: "Udara", d: "Lebih cepat sampai" },
-  { icon: "truck", t: "Dijemput", d: "Kurir datang ke alamat" },
-  { icon: "home", t: "Antar sendiri", d: "Bawa ke gudang kami" },
-  { icon: "building", t: "Korporat", d: "Tempo dan tarif khusus" },
+  { icon: "ship", t: "Laut", d: "Hemat untuk barang banyak", href: "/layanan/cargo-laut" },
+  { icon: "plane", t: "Udara", d: "Lebih cepat sampai", href: "/layanan/cargo-udara" },
+  { icon: "truck", t: "Darat", d: "FTL, LTL, dan mover", href: "/layanan/cargo-darat" },
+  { icon: "box", t: "Khusus", d: "Kendaraan, alat berat", href: "/layanan" },
+  { icon: "building", t: "Korporat", d: "Tempo dan tarif khusus", href: "/layanan/cargo-logistik-bisnis" },
 ];
 
 const USP = [
@@ -93,10 +94,16 @@ export default async function Home() {
           </div>
         )}
 
+        <section className="card trustbar" aria-label="Perusahaan resmi">
+          <div className="tbhead"><span className="si"><Icon name="shield" size={22} /></span><div><b>{PERUSAHAAN.namaHukum}</b><small>Perusahaan resmi berbadan hukum sejak {PERUSAHAAN.tahunBerdiri}</small></div></div>
+          <ul className="tbpills"><li>NIB dan NPWP terdaftar</li><li>Gudang di Jakarta, Makassar, Surabaya</li><li>Sumatera sampai Papua</li><li>Darat, laut, udara</li></ul>
+          <Link href="/tentang" className="tblink">Kenali perusahaan kami <Icon name="arrow" size={16} /></Link>
+        </section>
+
         <section aria-labelledby="layanan">
-          <h2 id="layanan" className="sech">Pilih cara kirim yang pas</h2>
+          <h2 id="layanan" className="sech">Pilih layanan yang pas</h2>
           <ul className="svcchips">
-            {LAYANAN.map((l) => <li key={l.t} className="rv"><span className="si"><Icon name={l.icon} size={22} /></span><b>{l.t}</b><small>{l.d}</small></li>)}
+            {LAYANAN.map((l) => <li key={l.t} className="rv"><span className="si"><Icon name={l.icon} size={22} /></span><b>{l.t}</b><small>{l.d}</small><Link href={l.href} className="stretch" aria-label={`Layanan ${l.t}: ${l.d}`} /></li>)}
           </ul>
         </section>
 

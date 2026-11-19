@@ -629,7 +629,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("SEO: beranda memuat LocalBusiness: alamat Pancoran, buka 24 jam, telepon", !!lb && /Pancoran/.test(JSON.stringify(lb.address)) && lb.openingHoursSpecification?.[0]?.opens === "00:00" && /^\+62/.test(lb.telephone), JSON.stringify(lb || {}).slice(0, 200));
     ok("SEO: semua JSON-LD di beranda valid", !types(home.body).includes("RUSAK"));
     ok("SEO: footer memuat tautan Tentang, Kontak, Syarat, dan Ekspedisi ke wilayah", /href="\/tentang"/.test(home.body) && /href="\/kontak"/.test(home.body) && /href="\/syarat"/.test(home.body) && /ekspedisi-ke-sulawesi-selatan/.test(home.body));
-    for (const [u, kw] of [["/tentang", "Tentang Kamil Logistik Express"], ["/kontak", "Gudang Jakarta"], ["/syarat", "Syarat dan ketentuan"], ["/kebijakan-privasi", "Kebijakan privasi"]]) {
+    for (const [u, kw] of [["/tentang", "Legalitas perusahaan"], ["/kontak", "Gudang Jakarta"], ["/syarat", "Syarat dan ketentuan"], ["/kebijakan-privasi", "Kebijakan privasi"]]) {
       const g = await get(u); ok(`SEO: ${u} terbuka, ada H1 dan canonical`, g.status === 200 && g.body.includes(kw) && new RegExp(`rel="canonical" href="[^"]*${u}"`).test(g.body), String(g.status));
     }
     const kon = await get("/kontak");
@@ -637,7 +637,10 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     for (const sl of ["ekspedisi-jakarta-makassar-lewat-laut", "kirim-barang-ke-papua-dan-maluku-dari-makassar", "door-to-door-port-to-door-atau-port-to-port", "kirim-barang-online-shop-umkm-ke-sulawesi", "cara-membaca-kode-resi-kamil-logistik", "jadi-mitra-ekspedisi-kamil-logistik"]) {
       const g = await get(`/panduan/${sl}`); ok(`SEO: panduan ${sl} terbuka dengan Article`, g.status === 200 && types(g.body).includes("Article") && !/undefined|NaN/.test(g.body.replace(/<script[\s\S]*?<\/script>/g, "")), String(g.status));
     }
-    const sm = await get("/sitemap.xml");
+    const idx = await get("/sitemap.xml");
+    const segs = [...idx.body.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1].replace(/^https?:\/\/[^/]+/, ""));
+    ok("SEO: sitemap.xml adalah indeks dengan 4 peta situs (utama, layanan, rute, panduan)", /<sitemapindex/.test(idx.body) && segs.length === 4 && segs.every((x) => /^\/sitemap\/\d\.xml$/.test(x)), segs.join(","));
+    const sm = { body: (await Promise.all(segs.map((x) => get(x)))).map((r) => r.body).join("\n") };
     ok("SEO: peta situs memuat wilayah, tentang, kontak, syarat, dan panduan baru", /ekspedisi-ke-sulawesi-selatan/.test(sm.body) && /\/tentang</.test(sm.body) && /\/kontak</.test(sm.body) && /cara-membaca-kode-resi/.test(sm.body));
     ok("SEO: peta situs tidak memuat halaman privat (/app, /invoice, /portal, /lacak/KLX)", !/\/app|\/invoice|\/portal|\/lacak\/KLX/.test(sm.body));
     const rb = await get("/robots.txt");
@@ -737,7 +740,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await h0.goto(`${BASE}/`, { waitUntil: "networkidle" });
     ok("S1 beranda menampilkan slider dengan 5 foto bawaan", (await h0.locator(".bs-photo").count()) === 5);
     ok("S2 semua foto bawaan termuat (bukan rusak)", await h0.evaluate(async () => { const im = [...document.querySelectorAll(".bs-photo")]; await Promise.all(im.map((i) => i.complete ? 0 : new Promise((r) => { i.onload = i.onerror = r; }))); return im.every((i) => i.naturalWidth > 100); }));
-    ok("S3 foto bawaan tidak memuat nama domain lama", !/kamillogistikexpress/i.test(await h0.content()));
+    ok("S3 foto bawaan tidak memuat nama domain lama", !/kamillogistikexpress\.id/i.test(await h0.content()));
     await pc0.close();
     const ow = await login(browser, "owner@uji.id", "Pemilik2026x", { width: 390, height: 844 });
     const buat = async (nama, email, peran) => {
@@ -823,11 +826,13 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     const dc = await browser.newContext({ viewport: { width: 1366, height: 820 } }); const d = await dc.newPage();
     await d.goto(`${BASE}/`, { waitUntil: "networkidle" });
     const nav = await d.locator("header.topbar").innerText();
-    ok("T1 navbar desktop memuat Cek resi, Hitung ongkir, Tujuan, Panduan, Perusahaan, Jadi mitra, Masuk", ["Cek resi", "Hitung ongkir", "Tujuan", "Panduan", "Perusahaan", "Jadi mitra", "Masuk"].every((k) => nav.includes(k)), nav.replace(/\s+/g, " "));
+    ok("T1 navbar desktop memuat Cek resi, Hitung ongkir, Layanan, Tujuan, Panduan, Tentang, Lainnya, Jadi mitra, Masuk", ["Cek resi", "Hitung ongkir", "Layanan", "Tujuan", "Panduan", "Tentang", "Lainnya", "Jadi mitra", "Masuk"].every((k) => nav.includes(k)), nav.replace(/\s+/g, " "));
     await d.getByRole("button", { name: /Tujuan/ }).click(); await d.waitForTimeout(300);
     ok("T2 dropdown Tujuan menampilkan wilayah dan tautan semua rute", (await d.locator(".ddpanel.mega a[href^='/ekspedisi-ke-']").count()) >= 1 && (await d.locator(".ddpanel .ddall").count()) === 1);
-    await d.getByRole("button", { name: /Perusahaan/ }).click(); await d.waitForTimeout(300);
-    ok("T3 dropdown Perusahaan memuat Karir, Tentang, dan Kontak", (await d.locator(".ddpanel a[href='/karir']").count()) === 1 && (await d.locator(".ddpanel a[href='/tentang']").count()) === 1 && (await d.locator(".ddpanel a[href='/kontak']").count()) === 1);
+    await d.getByRole("button", { name: /Lainnya/ }).click(); await d.waitForTimeout(300);
+    ok("T3 dropdown Lainnya memuat Karir, Kontak, Jadwal, dan Peta situs", (await d.locator(".ddpanel a[href='/karir']").count()) === 1 && (await d.locator(".ddpanel a[href='/kontak']").count()) === 1 && (await d.locator(".ddpanel a[href='/jadwal']").count()) === 1 && (await d.locator(".ddpanel a[href='/peta-situs']").count()) === 1);
+    await d.getByRole("button", { name: /Layanan/ }).click(); await d.waitForTimeout(300);
+    ok("T3b dropdown Layanan memuat 10 layanan", (await d.locator(".ddpanel a[href^='/layanan/']").count()) === 10);
     await d.screenshot({ path: `${OUT}/e2e-navbar-desktop.png` });
     ok("T4 beranda diringkas: tanpa bagian panduan panjang dan tanpa bagian Gabung di atas footer", !/Panduan sebelum mengirim/.test(await d.content()) && !/Gabung bersama Kamil Logistik/.test(await d.content()));
     await dc.close();
@@ -915,6 +920,38 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("U12 beranda: tidak ada kartu Gabung di atas footer", !/Gabung bersama Kamil Logistik/.test(gbt) && !/Baca panduan/.test(gbt));
     const anon = await fetch(`${BASE}/app/ekspor/lamaran`, { redirect: "manual" });
     ok("U10 ekspor tanpa login dialihkan ke halaman masuk", anon.status >= 300 && anon.status < 400, String(anon.status));
+  }
+
+  console.log("\n[W] Perusahaan resmi, layanan, alat bantu, SEO terstruktur");
+  {
+    const get = async (u) => { const r = await fetch(`${BASE}${u}`); return { status: r.status, ct: r.headers.get("content-type") || "", body: (await r.text()).replace(/<!-- -->/g, "") }; };
+    const ld = (html) => [...html.matchAll(/<script type="application\/ld\+json"[^>]*>(.*?)<\/script>/gs)].flatMap((m) => { try { const j = JSON.parse(m[1]); return Array.isArray(j) ? j : [j]; } catch { return [null]; } });
+    const types = (html) => ld(html).map((x) => (x == null ? "RUSAK" : x["@type"]));
+    const pc = await browser.newContext({ viewport: { width: 390, height: 844 } }); const pg = await pc.newPage();
+    const LAY = ["cargo-laut", "cargo-udara", "cargo-darat", "cargo-logistik-bisnis", "kirim-kendaraan", "kirim-alat-berat", "sewa-kontainer", "pindahan-relokasi", "pergudangan", "konsultasi-logistik"];
+    let okLay = 0; for (const sl of LAY) { const g = await get(`/layanan/${sl}`); if (g.status === 200 && types(g.body).includes("Service") && types(g.body).includes("FAQPage") && types(g.body).includes("BreadcrumbList") && /<h1/.test(g.body) && !/undefined|NaN/.test(g.body.replace(/<script[\s\S]*?<\/script>/g, ""))) okLay++; }
+    ok("W1 10 halaman layanan terbuka dengan Service, FAQPage, Breadcrumb, dan H1", okLay === 10, String(okLay));
+    const li = await get("/layanan"); ok("W2 indeks layanan memuat 10 tautan layanan dan ItemList", (li.body.match(/href="\/layanan\/[a-z-]+"/g) || []).length >= 10 && types(li.body).includes("ItemList"));
+    const tt = await get("/tentang");
+    ok("W3 Tentang memuat nama badan hukum, tahun berdiri, pimpinan, dan 3 kantor", /CV Kamil Logistik Express Sulawesi/.test(tt.body) && /2020/.test(tt.body) && /Andi Khusnul Khatimah/.test(tt.body) && /Prasetya Adimakayasa/.test(tt.body) && ["Jakarta", "Makassar", "Surabaya"].every((k) => tt.body.includes(k)));
+    const orgLd = (tt.body.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/) || [])[1] || "";
+    ok("W4 data terstruktur Organization memuat legalName, foundingDate, founder, dan 3 lokasi", /"legalName":"CV Kamil Logistik Express Sulawesi"/.test(orgLd) && /"foundingDate":"2020-08-03"/.test(orgLd) && /"founder"/.test(orgLd) && (orgLd.match(/"@type":"Place"/g) || []).length === 3);
+    ok("W5 Tentang menyediakan tombol minta salinan dokumen legalitas (tanpa menampilkan nomor)", /Minta salinan dokumen legalitas/.test(tt.body) && !/95\.717\.714/.test(tt.body));
+    const kk = await get("/kontak"); ok("W6 Kontak memuat 2 nomor WhatsApp, email resmi, dan 3 alamat kantor", /0853-4223-8748/.test(kk.body) && /0821-2305-7322/.test(kk.body) && /cvkamillogistikexpresssulawesi@gmail\.com/.test(kk.body) && /Tamalanrea/.test(kk.body) && /Perak Utara/.test(kk.body) && /Pancoran/.test(kk.body));
+    const jd = await get("/jadwal"); ok("W7 halaman jadwal terbuka dengan tabel rute", jd.status === 200 && /<table/.test(jd.body) && /Jadwal keberangkatan/.test(jd.body));
+    const ps = await get("/peta-situs"); ok("W8 peta situs HTML memuat layanan, wilayah, panduan, dan perusahaan", ps.status === 200 && /\/layanan\/cargo-laut/.test(ps.body) && /ekspedisi-ke-sulawesi/.test(ps.body) && /\/panduan\//.test(ps.body) && /\/tentang/.test(ps.body));
+    const lf = await get("/llms-full.txt"); ok("W9 llms-full.txt memuat profil, legalitas, layanan, kantor, dan jangkauan", lf.status === 200 && /CV Kamil Logistik Express Sulawesi/.test(lf.body) && /Visi/.test(lf.body) && /Cargo|cargo/.test(lf.body) && /Surabaya/.test(lf.body));
+    const hm = await get("/"); ok("W10 beranda memuat kartu perusahaan resmi dan footer dengan nama badan hukum", /Perusahaan resmi berbadan hukum sejak 2020/.test(hm.body) && (hm.body.match(/CV Kamil Logistik Express Sulawesi/g) || []).length >= 2);
+    ok("W11 setiap halaman baru punya judul unik dan canonical", await (async () => { const set = new Set(); for (const u of ["/tentang", "/kontak", "/layanan", "/jadwal", "/alat/berat-volumetrik", "/layanan/cargo-laut", "/layanan/cargo-udara"]) { const g = await get(u); const t = (g.body.match(/<title>([^<]*)<\/title>/) || [])[1]; if (!t || !new RegExp(`rel="canonical" href="[^"]*${u}"`).test(g.body)) return false; set.add(t); } return set.size === 7; })());
+    await pg.goto(`${BASE}/alat/berat-volumetrik`, { waitUntil: "networkidle" });
+    await pg.fill("#v-p", "60"); await pg.fill("#v-l", "50"); await pg.fill("#v-t", "40"); await pg.fill("#v-b", "5");
+    const hasil = await pg.locator("#kalkulator").innerText();
+    ok("W12 kalkulator berat volume: 60×50×40 cm, 5 kg → laut 30 kg dan udara 20 kg", /30 kg/.test(hasil) && /20 kg/.test(hasil) && /memakai berat volume/.test(hasil), hasil.slice(0, 200));
+    await noOverflow(pg, "kalkulator volume (HP)");
+    await pg.goto(`${BASE}/tentang`, { waitUntil: "networkidle" }); await noOverflow(pg, "halaman Tentang (HP)");
+    await pg.screenshot({ path: `${OUT}/e2e-tentang.png`, fullPage: true });
+    await pg.goto(`${BASE}/layanan/kirim-kendaraan`, { waitUntil: "networkidle" }); await noOverflow(pg, "halaman layanan (HP)");
+    await pc.close();
   }
 
   await browser.close();

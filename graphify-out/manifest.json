@@ -60,9 +60,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/kontak/page.tsx": {
-    "mtime": 1795087685.2313507,
-    "seen": 1795104170.4403443,
-    "ast_hash": "6faa7a6181f66410a504cdd881b316bc",
+    "mtime": 1795130203.200966,
+    "seen": 1795131649.7105641,
+    "ast_hash": "da4c81206ace52dac7b9a7aea7fef409",
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/lacak/[resi]/loading.tsx": {
@@ -96,9 +96,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/layout.tsx": {
-    "mtime": 1795117405.9008079,
-    "seen": 1795118851.6301165,
-    "ast_hash": "cf7158240c00366504c635f7171f02e8",
+    "mtime": 1795130297.027279,
+    "seen": 1795131649.7105794,
+    "ast_hash": "3c80130e5b4a026d77ea35bb0c31f8f6",
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/ongkir/loading.tsx": {
@@ -114,9 +114,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/page.tsx": {
-    "mtime": 1795117373.9020197,
-    "seen": 1795118851.630192,
-    "ast_hash": "07aebf62b3e5d22c31b60c02c6c15cad",
+    "mtime": 1795130312.5655973,
+    "seen": 1795131649.710592,
+    "ast_hash": "0926a13bf7d6bad939200b29a4813aab",
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/panduan/[slug]/page.tsx": {
@@ -138,9 +138,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/tentang/page.tsx": {
-    "mtime": 1795087685.231315,
-    "seen": 1795104170.4403574,
-    "ast_hash": "fecae50d95ab81efd998c61a3d5e68f8",
+    "mtime": 1795130203.199083,
+    "seen": 1795131649.7106,
+    "ast_hash": "98248f27b068475d1a075a2e27848860",
     "semantic_hash": ""
   },
   "apps/web/src/app/api/chat/route.ts": {
@@ -480,9 +480,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/llms.txt/route.ts": {
-    "mtime": 1795108029.9543061,
-    "seen": 1795108723.899237,
-    "ast_hash": "44e1c5d81a88d1d229cecb3aba7d2aca",
+    "mtime": 1795130279.9980435,
+    "seen": 1795131649.7107024,
+    "ast_hash": "89799013a351be3bb191ff2d9298b81f",
     "semantic_hash": ""
   },
   "apps/web/src/app/manifest.ts": {
@@ -504,15 +504,15 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/robots.ts": {
-    "mtime": 1795108060.0582633,
-    "seen": 1795108723.899285,
+    "mtime": 1795130279.9975204,
+    "seen": 1795131649.7107098,
     "ast_hash": "49ecdd7558e5382a7cc58cd3c529334f",
     "semantic_hash": ""
   },
   "apps/web/src/app/sitemap.ts": {
-    "mtime": 1795108029.9525278,
-    "seen": 1795108723.8992865,
-    "ast_hash": "55e4adc155bd75f3b51ee6aeeeb3cb14",
+    "mtime": 1795130254.1540728,
+    "seen": 1795131649.7107108,
+    "ast_hash": "7c675019edaa465f5be6203f20b750bf",
     "semantic_hash": ""
   },
   "apps/web/src/app/template.tsx": {
@@ -846,9 +846,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/lib/seo.ts": {
-    "mtime": 1795087955.2340193,
-    "seen": 1795104170.4404697,
-    "ast_hash": "744f7d358c35250ca02b697a78fef39c",
+    "mtime": 1795130166.1283176,
+    "seen": 1795131649.7108343,
+    "ast_hash": "c2529c128aea02f65dd5655aa1ea9a19",
     "semantic_hash": ""
   },
   "apps/web/src/lib/site.ts": {
@@ -924,9 +924,9 @@
     "semantic_hash": ""
   },
   "e2e/flow.cjs": {
-    "mtime": 1795118181.674845,
-    "seen": 1795118851.6344619,
-    "ast_hash": "184eab45773a1123495d71d7b13c7959",
+    "mtime": 1795130942.5575664,
+    "seen": 1795131649.7109072,
+    "ast_hash": "a4d14e46fa03a76fbf5b931394831bde",
     "semantic_hash": ""
   },
   "e2e/kamera.cjs": {
@@ -1620,9 +1620,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/SiteNav.tsx": {
-    "mtime": 1795108138.1901455,
-    "seen": 1795108723.9000926,
-    "ast_hash": "0af508a57b19680ab55804400ab91e04",
+    "mtime": 1795130285.8499396,
+    "seen": 1795131649.7107785,
+    "ast_hash": "32fb690212ca09798e00439cb62e99f8",
     "semantic_hash": ""
   },
   "docs/LOGIN-GOOGLE.md": {
@@ -1719,6 +1719,66 @@
     "mtime": 1795110353.8959215,
     "seen": 1795118871.249614,
     "ast_hash": "033e82b5f17106afff6122d69be68314",
+    "semantic_hash": ""
+  },
+  "apps/web/src/app/(publik)/alat/berat-volumetrik/page.tsx": {
+    "mtime": 1795130241.5434508,
+    "seen": 1795131649.710551,
+    "ast_hash": "10f3e591906d7e285f6c6cdea0a10bf2",
+    "semantic_hash": ""
+  },
+  "apps/web/src/app/(publik)/jadwal/page.tsx": {
+    "mtime": 1795130241.5451992,
+    "seen": 1795131649.7105556,
+    "ast_hash": "9c01dab944ca3ca9a6bdaa6d33c087f9",
+    "semantic_hash": ""
+  },
+  "apps/web/src/app/(publik)/layanan/[slug]/page.tsx": {
+    "mtime": 1795130166.1384785,
+    "seen": 1795131649.7105756,
+    "ast_hash": "fae98510e9898c917cb78171de48f83e",
+    "semantic_hash": ""
+  },
+  "apps/web/src/app/(publik)/layanan/page.tsx": {
+    "mtime": 1795130166.1335204,
+    "seen": 1795131649.7105775,
+    "ast_hash": "2d9e108546d542371ef7513dee20bae4",
+    "semantic_hash": ""
+  },
+  "apps/web/src/app/(publik)/peta-situs/page.tsx": {
+    "mtime": 1795130241.5465932,
+    "seen": 1795131649.7105968,
+    "ast_hash": "443c1568205dbcc3c52956e64fcaac7a",
+    "semantic_hash": ""
+  },
+  "apps/web/src/app/llms-full.txt/route.ts": {
+    "mtime": 1795130280.0033913,
+    "seen": 1795131649.7107003,
+    "ast_hash": "f0492831a5cb032f5ffc8e0a2ac6f804",
+    "semantic_hash": ""
+  },
+  "apps/web/src/app/sitemap.xml/route.ts": {
+    "mtime": 1795130254.1554325,
+    "seen": 1795131649.7107117,
+    "ast_hash": "e4317f7f27917f3416c0946d96cba66d",
+    "semantic_hash": ""
+  },
+  "apps/web/src/components/HitungVolume.tsx": {
+    "mtime": 1795130241.5419033,
+    "seen": 1795131649.7107313,
+    "ast_hash": "163e05b963c1c8d599d7f0ea37d06922",
+    "semantic_hash": ""
+  },
+  "apps/web/src/lib/layanan.ts": {
+    "mtime": 1795130110.1766756,
+    "seen": 1795131649.7108238,
+    "ast_hash": "ef3565332e721641c1d7e4b78b771850",
+    "semantic_hash": ""
+  },
+  "apps/web/src/lib/perusahaan.ts": {
+    "mtime": 1795130110.175009,
+    "seen": 1795131649.710828,
+    "ast_hash": "500e713daac76b0913efea9cfde428db",
     "semantic_hash": ""
   },
   "package-lock.json": {

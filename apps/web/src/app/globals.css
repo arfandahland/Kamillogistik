@@ -1099,3 +1099,24 @@ footer.pub .footwil { gap: 2px 4px; } footer.pub .footwil b { opacity: .8; font-
 /* Tombol kirim di jendela form selalu terlihat */
 .mdlbody form > button.btn { position: sticky; bottom: -2px; z-index: 2; box-shadow: 0 -14px 20px -6px var(--bg), 0 10px 24px rgba(242, 140, 40, .35); }
 .mdlbody .nilai.done { margin-top: 4px; }
+
+/* ---------- Layanan, Tentang, alat ---------- */
+.svcgrid { display: grid; gap: 12px; } @media (min-width: 760px) { .svcgrid { grid-template-columns: repeat(2, 1fr); } } @media (min-width: 1000px) { .svcgrid { grid-template-columns: repeat(3, 1fr); } }
+.svccard { display: grid; gap: 6px; align-content: start; text-decoration: none; } .svccard h3 { margin: 4px 0 0; font-size: 17px; } .svccard p { margin: 0; color: var(--muted); font-size: 14.5px; line-height: 1.45; } .svccard b { color: var(--teal-dark); display: inline-flex; align-items: center; gap: 6px; margin-top: 2px; }
+.trustbox { border-left: 4px solid var(--teal); }
+.abouthero { background: linear-gradient(150deg, #eafaf6, #f8fffd 60%, #e6f6f1); border: 1px solid rgba(255, 255, 255, .9); display: grid; gap: 10px; } .abouthero h1 { margin: 0; font-size: clamp(26px, 6.5vw, 38px); line-height: 1.15; } .abouthero p { margin: 0; font-size: 16.5px; color: var(--ink); }
+.chip-badge { justify-self: start; display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 99px; font-weight: 800; font-size: 13px; color: var(--teal-dark); background: #fff; border: 1px solid rgba(47, 158, 138, .4); }
+.factgrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; } @media (min-width: 820px) { .factgrid { grid-template-columns: repeat(4, 1fr); } }
+.fact { padding: 14px; border-radius: 20px; background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow-sm); text-align: center; } .fact b { display: block; font-size: 20px; color: var(--teal-dark); line-height: 1.2; } .fact small { color: var(--muted); font-size: 13px; }
+.checklist { list-style: none; margin: 8px 0; padding: 0; display: grid; gap: 10px; } .checklist li { display: flex; gap: 10px; align-items: flex-start; line-height: 1.45; } .checklist .ico { flex: none; margin-top: 2px; color: var(--teal-600); }
+@media (prefers-color-scheme: dark) { .abouthero { background: linear-gradient(150deg, #0b2e28, #082520); border-color: rgba(200, 248, 240, .14); } .chip-badge { background: rgba(255, 255, 255, .08); } }
+.calcrow { display: grid; grid-template-columns: 1.2fr 1fr 1.1fr; gap: 10px; align-items: center; padding: 12px; border-radius: 16px; background: var(--teal-soft); } .calcrow small { display: block; color: var(--muted); font-size: 12px; } .calcrow b { font-size: 15.5px; } .calcres b { font-size: 20px; color: var(--teal-dark); } .calcres em { display: block; font-style: normal; font-size: 12px; color: var(--muted); }
+.sitemaplist { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px 18px; } @media (min-width: 700px) { .sitemaplist { grid-template-columns: repeat(2, 1fr); } } .sitemaplist a { display: inline-flex; min-height: 40px; align-items: center; color: var(--teal-dark); font-weight: 600; text-decoration: none; } .sitemaplist a:hover { text-decoration: underline; }
+.ddpanel.mega.wide { min-width: 560px; }
+.svcchips li { position: relative; } .stretch { position: absolute; inset: 0; border-radius: inherit; }
+.trustbar { display: grid; gap: 10px; background: linear-gradient(150deg, #eafaf6, #fff 60%); border: 1px solid rgba(47, 158, 138, .35); }
+.tbhead { display: flex; align-items: center; gap: 12px; } .tbhead b { display: block; font-size: 16.5px; line-height: 1.25; } .tbhead small { color: var(--muted); font-size: 13.5px; }
+.tbpills { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; } .tbpills li { padding: 5px 11px; border-radius: 99px; font-size: 13px; font-weight: 700; color: var(--teal-dark); background: #fff; border: 1px solid var(--line); }
+.tblink { display: inline-flex; align-items: center; gap: 6px; font-weight: 800; color: var(--teal-dark); text-decoration: none; min-height: 40px; }
+.footco { margin: 8px 0; font-size: 13.5px; line-height: 1.5; } .footco b { display: block; font-size: 15px; } .footco p { margin: 2px 0; } .footco a { color: #fff; font-weight: 700; text-decoration: none; }
+@media (prefers-color-scheme: dark) { .trustbar { background: linear-gradient(150deg, #0b2e28, #0a2822); } .tbpills li { background: rgba(255, 255, 255, .06); } }
