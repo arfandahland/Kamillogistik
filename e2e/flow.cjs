@@ -613,9 +613,9 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
 
   // ===== Q. SEO: halaman wilayah, data terstruktur, halaman kepercayaan, peta situs =====
   {
-    const get = async (u) => { const r = await fetch(`${BASE}${u}`); return { status: r.status, ct: r.headers.get("content-type") || "", body: await r.text() }; };
-    const ld = (html) => [...html.matchAll(/<script type="application\/ld\+json"[^>]*>(.*?)<\/script>/gs)].map((m) => { try { return JSON.parse(m[1]); } catch { return null; } });
-    const types = (html) => ld(html).flatMap((x) => (x == null ? ["RUSAK"] : Array.isArray(x) ? x.map((y) => y["@type"]) : [x["@type"]]));
+    const get = async (u) => { const r = await fetch(`${BASE}${u}`); return { status: r.status, ct: r.headers.get("content-type") || "", body: (await r.text()).replace(/<!-- -->/g, "") }; };
+    const ld = (html) => [...html.matchAll(/<script type="application\/ld\+json"[^>]*>(.*?)<\/script>/gs)].flatMap((m) => { try { const j = JSON.parse(m[1]); return Array.isArray(j) ? j : [j]; } catch { return [null]; } });
+    const types = (html) => ld(html).map((x) => (x == null ? "RUSAK" : x["@type"]));
     const wil = await get("/ekspedisi-ke-sulawesi-selatan");
     ok("SEO: halaman wilayah Sulawesi Selatan ada dengan H1, tabel tarif, dan Rp", wil.status === 200 && /<h1[^>]*>Ekspedisi ke Sulawesi Selatan<\/h1>/.test(wil.body) && /<table/.test(wil.body) && /Rp[\d.]+\/kg/.test(wil.body), String(wil.status));
     ok("SEO: halaman wilayah memuat FAQPage, ItemList, BreadcrumbList (JSON valid)", ["FAQPage", "ItemList", "BreadcrumbList"].every((t) => types(wil.body).includes(t)) && !types(wil.body).includes("RUSAK"), types(wil.body).join(","));
