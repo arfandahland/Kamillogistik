@@ -41,9 +41,21 @@ export default async function Masuk({ searchParams }: { searchParams: Promise<{ 
   const error = !supabaseConfigured ? "Layanan masuk belum diatur di server ini." : e ? PESAN[e] : undefined;
   return (
     <main className="login">
-      <div className="inner">
-        <img className="logo-login" src="/logo-sm.webp" width="220" height="175" alt="Kamil Logistik" />
-        <Scene3D compact />
+      <div className="inner loginsplit">
+        <a className="loginback" href="/"><Icon name="back" size={16} /> Kembali ke beranda</a>
+        <div className="loginbrand">
+          <img className="logo-login" src="/logo-sm.webp" width="220" height="175" alt="Kamil Logistik" />
+          <Scene3D compact />
+          <div className="brandcopy">
+            <h2>Satu aplikasi untuk seluruh perjalanan barang</h2>
+            <p>Catat jemput, timbang, muat, sampai barang diterima. Semua tersimpan rapi dan bisa dipantau pemilik.</p>
+            <ul>
+              <li><Icon name="scan" /> Pindai resi dengan kamera HP</li>
+              <li><Icon name="shield" /> Hak akses sesuai tugas masing-masing</li>
+              <li><Icon name="clock" /> Setiap tindakan tercatat dan bisa ditelusuri</li>
+            </ul>
+          </div>
+        </div>
         <div className="glass">
           <h1>Selamat datang kembali</h1>
           <p className="sub">Masuk untuk mengelola pengiriman hari ini.</p>

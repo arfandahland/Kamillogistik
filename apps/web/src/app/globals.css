@@ -882,3 +882,58 @@ a.card.lift { display: block; }
 .trute { display: inline-block; justify-self: start; padding: 3px 10px; border-radius: 99px; background: var(--teal-soft); color: var(--teal-dark); font-weight: 800; font-size: .8rem; }
 .tslide figcaption b { font-size: 1.1rem; }
 @media (max-width: 389px) { .dialitem small, .tab { font-size: 12.5px; } }
+
+/* ============ Redesain 2026-11: header kaca terang yang melayang ============ */
+.topbar {
+  position: sticky; top: 10px; z-index: 40;
+  width: min(1120px, calc(100% - 20px)); margin: 10px auto 12px; border-radius: 22px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, .82), rgba(255, 255, 255, .58));
+  backdrop-filter: blur(22px) saturate(200%); -webkit-backdrop-filter: blur(22px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, .85);
+  box-shadow: 0 14px 38px rgba(7, 47, 41, .16), 0 2px 6px rgba(7, 47, 41, .06), inset 0 1px 0 rgba(255, 255, 255, .95);
+}
+.topbar .wrap { max-width: none; height: 58px; padding: 0 10px 0 14px; }
+.brand img { height: 38px; filter: drop-shadow(0 2px 6px rgba(15, 107, 90, .25)); }
+.topbar .navlinks a { color: var(--teal-900); }
+.topbar .navlinks a:hover { background: rgba(15, 106, 91, .1); }
+.topbar .navlinks a[aria-current="page"] { background: rgba(15, 106, 91, .12); }
+.topbar .nav.masukbtn { padding: 9px 16px; }
+body:has(.hero) .topbar { margin-bottom: -68px; }
+body:has(.hero) .hero2 { padding-top: 88px; }
+@media (min-width: 900px) { body:has(.hero) .hero2 { padding-top: 112px; } }
+@media (prefers-color-scheme: dark) {
+  .topbar { background: linear-gradient(135deg, rgba(10, 48, 41, .78), rgba(10, 48, 41, .55)); border-color: rgba(200, 248, 240, .2); box-shadow: 0 14px 38px rgba(0, 0, 0, .4), inset 0 1px 0 rgba(200, 248, 240, .18); }
+  .topbar .navlinks a { color: #d6f4ec; } .topbar .navlinks a:hover { background: rgba(200, 248, 240, .12); }
+}
+
+/* Pita kota tujuan yang bergerak pelan */
+.ticker { position: relative; overflow: hidden; border-radius: 18px; padding: 11px 0; background: rgba(255, 255, 255, .66); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid var(--line); box-shadow: var(--shadow-sm);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); }
+.ticker .track { display: flex; gap: 30px; width: max-content; animation: tick 46s linear infinite; }
+.ticker:hover .track, .ticker:focus-within .track { animation-play-state: paused; }
+.ticker span { display: inline-flex; align-items: center; gap: 8px; font-weight: 800; font-size: 14px; color: var(--teal-dark); white-space: nowrap; }
+.ticker span::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--grad-cta); box-shadow: 0 0 0 3px rgba(242, 140, 40, .18); }
+@keyframes tick { to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .ticker { overflow-x: auto; } .ticker .track { animation: none; } }
+@media (prefers-color-scheme: dark) { .ticker { background: rgba(11, 46, 40, .6); } }
+
+/* ============ Halaman masuk: dua kolom di layar lebar ============ */
+.loginback { display: inline-flex; align-items: center; gap: 6px; margin: 4px 0 6px; padding: 8px 14px; border-radius: 99px; font-weight: 800; font-size: 14px; text-decoration: none; color: #e6fbf6; background: rgba(255, 255, 255, .12); border: 1px solid rgba(200, 248, 240, .22); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); min-height: 40px; }
+.loginback:hover { background: rgba(255, 255, 255, .2); }
+.brandcopy { display: none; }
+@media (min-width: 900px) {
+  .login .inner.loginsplit { max-width: 1120px; display: grid; grid-template-columns: minmax(0, 1.15fr) 440px; column-gap: 64px; align-items: center; padding: 28px 28px 110px; margin-block: auto; }
+  .loginsplit .loginback { grid-column: 1 / -1; justify-self: start; }
+  .loginsplit .loginbrand { position: relative; }
+  .loginsplit .logo-login { margin: 0 0 4px; width: 190px; }
+  .loginsplit .glass { margin-top: 0; padding: 30px 28px 22px; }
+  .loginsplit .brandcopy { display: block; margin-top: 8px; max-width: 520px; }
+  .brandcopy h2 { font-size: 34px; line-height: 1.15; margin: 0 0 12px; color: #fff; }
+  .brandcopy p { color: #cdeee6; font-size: 17px; margin: 0 0 16px; }
+  .brandcopy ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .brandcopy li { display: flex; align-items: center; gap: 10px; color: #e6fbf6; font-weight: 700; }
+  .brandcopy li .ico { flex: none; width: 34px; height: 34px; padding: 7px; border-radius: 11px; color: #7ff0cf; background: rgba(255, 255, 255, .1); border: 1px solid rgba(200, 248, 240, .2); }
+}
+/* Logo di header: lencana teal supaya terbaca jelas di atas kaca terang */
+.topbar .brand { background: var(--grad-brand); border-radius: 16px; padding: 4px 12px; box-shadow: 0 6px 16px rgba(7, 47, 41, .28), inset 0 1px 0 rgba(200, 248, 240, .25); }
+.topbar .brand img { height: 36px; filter: drop-shadow(0 1px 4px rgba(0, 0, 0, .25)); }

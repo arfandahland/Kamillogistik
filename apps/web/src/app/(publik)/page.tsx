@@ -51,6 +51,7 @@ const LANGKAH = [
 export default async function Home() {
   const [semua, testimoni] = await Promise.all([getRoutePairs(), getTestimoni()]);
   const UNGGULAN = ["ekspedisi-jakarta-makassar", "ekspedisi-makassar-jakarta", "ekspedisi-jakarta-palu", "ekspedisi-jakarta-kendari", "ekspedisi-jakarta-manado", "ekspedisi-makassar-morowali"];
+  const kotaTujuan = [...new Set(semua.map((p) => p.destCity))].slice(0, 40);
   const pairs = [...semua.filter((p) => UNGGULAN.includes(p.slug)).sort((a, b) => UNGGULAN.indexOf(a.slug) - UNGGULAN.indexOf(b.slug)), ...semua.filter((p) => !UNGGULAN.includes(p.slug))].slice(0, 6);
   const slides: Slide[] = [
     { id: "laut", judul: "Darat dan laut ke seluruh Sulawesi", teks: "Dari Jakarta ke puluhan kota di Sulawesi, dan dari Makassar ke Papua dan Maluku. Tarif jelas, estimasi hari tertera.", label: "Lihat rute dan tarif", href: "/ekspedisi", art: <IlKapal /> },
@@ -84,20 +85,19 @@ export default async function Home() {
           <ResiForm />
         </div>
 
+        {kotaTujuan.length > 0 && (
+          <div className="ticker" aria-label="Kota tujuan pengiriman">
+            <div className="track">
+              {[...kotaTujuan, ...kotaTujuan].map((k, n) => <span key={k + n} aria-hidden={n >= kotaTujuan.length}>{k}</span>)}
+            </div>
+          </div>
+        )}
+
         <section aria-labelledby="layanan">
           <h2 id="layanan" className="sech">Pilih cara kirim yang pas</h2>
           <ul className="svcchips">
             {LAYANAN.map((l) => <li key={l.t} className="rv"><span className="si"><Icon name={l.icon} size={22} /></span><b>{l.t}</b><small>{l.d}</small></li>)}
           </ul>
-        </section>
-
-        <section aria-labelledby="usp">
-          <h2 id="usp" className="sech">Kenapa memilih Kamil Logistik</h2>
-          <div className="bento">
-            {USP.map((u) => (
-              <div className="tile rv" key={u.t}><span className="si"><Icon name={u.icon} size={22} /></span><h3>{u.t}</h3><p>{u.d}</p></div>
-            ))}
-          </div>
         </section>
 
         {pairs.length > 0 && (
@@ -118,6 +118,15 @@ export default async function Home() {
             </div>
           </section>
         )}
+
+        <section aria-labelledby="usp">
+          <h2 id="usp" className="sech">Kenapa memilih Kamil Logistik</h2>
+          <div className="bento">
+            {USP.map((u) => (
+              <div className="tile rv" key={u.t}><span className="si"><Icon name={u.icon} size={22} /></span><h3>{u.t}</h3><p>{u.d}</p></div>
+            ))}
+          </div>
+        </section>
 
         <section aria-labelledby="cara">
           <h2 id="cara" className="sech">Caranya gampang</h2>
