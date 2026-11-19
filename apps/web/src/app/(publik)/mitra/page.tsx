@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
 import Icon from "@/components/Icon";
-import MitraForm from "@/components/MitraForm";
+import { MitraProvider, MitraTombol } from "@/components/FormModal";
 import { breadcrumbLd, organizationLd } from "@/lib/seo";
 import { waLink } from "@/lib/brand";
 
@@ -27,13 +27,14 @@ const LANGKAH = [
 ];
 export default function Mitra() {
   return (
+    <MitraProvider>
     <main className="wrap section stack">
       <JsonLd data={[organizationLd(), breadcrumbLd([{ name: "Beranda", path: "/" }, { name: "Jadi mitra", path: "/mitra" }])]} />
       <nav aria-label="Jejak halaman" className="crumbs"><Link href="/">Beranda</Link> › <span>Jadi mitra</span></nav>
       <header className="stack">
         <h1 style={{ margin: 0 }}>Jadi mitra Kamil Logistik</h1>
         <p className="muted" style={{ margin: 0 }}>Terima kiriman di kota Anda, buat resi dan invoice dari HP, dan tumbuh bersama jaringan ekspedisi Jakarta, Sulawesi, Papua, dan Maluku.</p>
-        <p style={{ margin: 0 }}><a className="btn" href="#daftar">Daftar sekarang</a></p>
+        <p style={{ margin: 0 }}><MitraTombol>Daftar sekarang</MitraTombol></p>
       </header>
       <section aria-labelledby="manfaat">
         <h2 id="manfaat" className="sech">Yang Anda dapat sebagai mitra</h2>
@@ -41,10 +42,11 @@ export default function Mitra() {
       </section>
       <section aria-labelledby="langkah">
         <h2 id="langkah" className="sech">Cara bergabung</h2>
-        <ol className="tl2">{LANGKAH.map((l, n) => <li key={l.t}><span className="tn">{n + 1}</span><b>{l.t}</b><small>{l.d}</small></li>)}</ol>
+        <ol className="steps2">{LANGKAH.map((l, n) => <li key={l.t}><span className="tn2">{n + 1}</span><span><b>{l.t}</b><small>{l.d}</small></span></li>)}</ol>
       </section>
-      <MitraForm />
+      <section className="card ctaband"><h2>Siap bergabung?</h2><p>Isi formulir singkat, tim kami menghubungi Anda lewat WhatsApp.</p><MitraTombol>Daftar jadi mitra</MitraTombol></section>
       <p className="hint">Lebih suka bertanya dulu? <a href={waLink("Halo Kamil Logistik, saya tertarik menjadi mitra dan ingin bertanya.")} target="_blank" rel="noopener noreferrer">Chat WhatsApp</a>. Baca juga <Link href="/panduan/jadi-mitra-ekspedisi-kamil-logistik">panduan lengkap jadi mitra</Link>.</p>
     </main>
+    </MitraProvider>
   );
 }

@@ -3,6 +3,7 @@ import Icon from "@/components/Icon";
 import TabBar from "@/components/TabBar";
 import ChatBot from "@/components/ChatBot";
 import SiteNav from "@/components/SiteNav";
+import { ToastProvider } from "@/components/Toast";
 import { BRAND, waLink } from "@/lib/brand";
 import { getRoutePairs } from "@/lib/routes";
 import { kelompokWilayah } from "@kamil/core";
@@ -17,7 +18,7 @@ const TABS = [
 export default async function PublikLayout({ children }: { children: React.ReactNode }) {
   const wil = kelompokWilayah(await getRoutePairs());
   return (
-    <>
+    <ToastProvider>
       <SiteNav wilayah={wil.map((k) => ({ slug: k.wilayah.slug, nama: k.wilayah.nama, n: k.pairs.length }))} />
       {children}
       <footer className="pub">
@@ -33,6 +34,6 @@ export default async function PublikLayout({ children }: { children: React.React
       </footer>
       <ChatBot />
       <TabBar tabs={TABS} variant="pub" />
-    </>
+    </ToastProvider>
   );
 }

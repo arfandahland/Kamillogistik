@@ -829,7 +829,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await d.getByRole("button", { name: /Perusahaan/ }).click(); await d.waitForTimeout(300);
     ok("T3 dropdown Perusahaan memuat Karir, Tentang, dan Kontak", (await d.locator(".ddpanel a[href='/karir']").count()) === 1 && (await d.locator(".ddpanel a[href='/tentang']").count()) === 1 && (await d.locator(".ddpanel a[href='/kontak']").count()) === 1);
     await d.screenshot({ path: `${OUT}/e2e-navbar-desktop.png` });
-    ok("T4 beranda diringkas: tanpa bagian panduan panjang, ada bagian Gabung bersama", !/Panduan sebelum mengirim/.test(await d.content()) && /Gabung bersama Kamil Logistik/.test(await d.content()));
+    ok("T4 beranda diringkas: tanpa bagian panduan panjang dan tanpa bagian Gabung di atas footer", !/Panduan sebelum mengirim/.test(await d.content()) && !/Gabung bersama Kamil Logistik/.test(await d.content()));
     await dc.close();
     const mc = await browser.newContext({ viewport: { width: 390, height: 844 } }); const m = await mc.newPage();
     await m.goto(`${BASE}/`, { waitUntil: "networkidle" });
@@ -840,16 +840,25 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await m.locator(".msheet .mcta").click(); await m.waitForURL(/\/mitra/, { timeout: 15000 }).catch(() => {});
     ok("T7 memilih menu membuka halaman mitra dan menutup lembar menu", /\/mitra/.test(m.url()) && (await m.locator(".msheet").count()) === 0, m.url());
     await noOverflow(m, "halaman mitra (HP)");
+    ok("V1 form mitra tidak lagi ada di dasar halaman (muncul sebagai jendela balon saat diminta)", (await m.locator("#jenis").count()) === 0);
+    await m.getByRole("button", { name: "Daftar sekarang" }).first().click(); await m.waitForSelector("#jenis"); await m.waitForTimeout(400);
+    const kotak = await m.locator(".mdlbox").boundingBox();
+    ok("V2 jendela form muncul dari bawah (bottom sheet) selebar layar HP", !!kotak && kotak.width >= 380 && kotak.y + kotak.height >= 840, JSON.stringify(kotak));
+    await m.getByRole("button", { name: "Kirim pendaftaran" }).click({ force: true }); await m.waitForTimeout(500);
     await m.selectOption("#jenis", "GERAI"); await m.fill("#usaha", "Toko Uji Jaya"); await m.fill("#pemilik", "Budi Uji Mitra"); await m.fill("#hp", "0812 8888 0001"); await m.fill("#kota", "Palu");
     await m.getByRole("button", { name: "Kirim pendaftaran" }).click(); await m.waitForSelector(".nilai.done", { timeout: 20000 }).catch(() => {});
     const done = await m.locator(".nilai.done").innerText().catch(() => "");
     ok("T8 pendaftaran mitra terkirim dengan kode MTR", /MTR-\d{6}-[A-F0-9]{4}/.test(done), done.slice(0, 100));
+    ok("V3 notifikasi balon (toast) muncul saat pendaftaran berhasil", (await m.locator(".toast.ok").count()) >= 1 && /Pendaftaran terkirim/.test(await m.locator(".toast.ok").first().innerText()));
     const wa = await m.locator(".nilai.done a.btn").getAttribute("href").catch(() => "");
     ok("T9 tombol WhatsApp mitra berisi nama usaha dan kode", /^https:\/\/wa\.me\/\d+\?text=/.test(wa || "") && decodeURIComponent(wa).includes("Toko Uji Jaya"), wa);
-    const m2 = await mc.newPage(); await m2.goto(`${BASE}/mitra`, { waitUntil: "domcontentloaded" }); await m2.waitForSelector("#jenis");
+    await m.keyboard.press("Escape"); await m.waitForTimeout(300);
+    ok("V4 tombol ESC menutup jendela form", (await m.locator(".mdlbox").count()) === 0);
+    const m2 = await mc.newPage(); await m2.goto(`${BASE}/mitra`, { waitUntil: "networkidle" }); await m2.getByRole("button", { name: "Daftar sekarang" }).first().click(); await m2.waitForSelector("#jenis");
     await m2.selectOption("#jenis", "GUDANG"); await m2.fill("#usaha", "Gudang Lain"); await m2.fill("#pemilik", "Budi Uji Mitra"); await m2.fill("#hp", "081288880001"); await m2.fill("#kota", "Palu");
     await m2.getByRole("button", { name: "Kirim pendaftaran" }).click(); await m2.waitForSelector("#daftar .err", { timeout: 15000 }).catch(() => {});
     ok("T10 pendaftaran ganda dari nomor yang sama ditolak", /sudah kami terima/.test(await m2.locator("#daftar .err").innerText().catch(() => "")));
+    ok("V5 galat juga tampil sebagai notifikasi balon merah", (await m2.locator(".toast.err").count()) >= 1);
     await mc.close();
     const ow = await login(browser, "owner@uji.id", "Pemilik2026x", { width: 390, height: 844 });
     await ow.page.goto(`${BASE}/app/calon-mitra`, { waitUntil: "networkidle" });
@@ -888,6 +897,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("U4 menutup lowongan mengubah tombol menjadi Ditutup", (await hr.page.getByRole("switch", { name: /Buka lowongan Staf Gudang/ }).count()) === 1);
     const pub = await browser.newContext({ viewport: { width: 390, height: 844 } }); const pg = await pub.newPage();
     await pg.goto(`${BASE}/karir`, { waitUntil: "networkidle" });
+    await pg.getByRole("button", { name: "Lamar sekarang" }).first().click(); await pg.waitForSelector("#posisi");
     ok("U5 halaman karir menandai posisi yang ditutup dan menonaktifkannya di formulir", (await pg.locator("details.card", { hasText: "Staf Gudang" }).locator(".closedtag").count()) === 1 && (await pg.locator("#posisi option[value='staf-gudang'][disabled]").count()) === 1);
     await pub.close();
     await hr.page.getByRole("switch", { name: /Buka lowongan Staf Gudang/ }).click(); await hr.page.waitForTimeout(1500);
@@ -902,7 +912,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     const nf = await fetch(`${BASE}/halaman-yang-tidak-ada-123`); const nft = await nf.text();
     ok("U11 halaman tidak ditemukan tampil ramah dalam bahasa Indonesia dengan jalan keluar", nf.status === 404 && /Halaman tidak ditemukan/.test(nft) && /Ke beranda/.test(nft) && !/This page could not be found/.test(nft), String(nf.status));
     const gb = await fetch(`${BASE}/`); const gbt = await gb.text();
-    ok("U12 beranda: bagian Gabung hanya berisi kartu mitra dan tim (tanpa kartu panduan di bawahnya)", /Daftar jadi mitra/.test(gbt) && /Lihat lowongan/.test(gbt) && !/Baca panduan/.test(gbt));
+    ok("U12 beranda: tidak ada kartu Gabung di atas footer", !/Gabung bersama Kamil Logistik/.test(gbt) && !/Baca panduan/.test(gbt));
     const anon = await fetch(`${BASE}/app/ekspor/lamaran`, { redirect: "manual" });
     ok("U10 ekspor tanpa login dialihkan ke halaman masuk", anon.status >= 300 && anon.status < 400, String(anon.status));
   }

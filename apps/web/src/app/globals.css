@@ -878,7 +878,6 @@ footer.pub .footwil { display: flex; flex-wrap: wrap; justify-content: center; g
 html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 /* Kartu yang berupa tautan: tanpa garis bawah */
 a.card, a.card:hover { text-decoration: none; }
-a.card.lift { display: block; }
 .trute { display: inline-block; justify-self: start; padding: 3px 10px; border-radius: 99px; background: var(--teal-soft); color: var(--teal-dark); font-weight: 800; font-size: .8rem; }
 .tslide figcaption b { font-size: 1.1rem; }
 @media (max-width: 389px) { .dialitem small, .tab { font-size: 12.5px; } }
@@ -1064,3 +1063,39 @@ html.nolock, html.nolock body { overflow: hidden; }
 .switch.on { color: var(--teal-dark); border-color: var(--teal); } .switch.on i { background: var(--teal); } .switch.on i::after { transform: translateX(14px); }
 .closedtag { margin-left: 8px; font-style: normal; font-size: 11px; font-weight: 900; padding: 2px 8px; border-radius: 99px; background: #e8ecea; color: #5b6b66; vertical-align: 1px; }
 @media (prefers-color-scheme: dark) { .kpi.warn, .warnbox { background: rgba(245, 180, 107, .08); border-color: rgba(245, 180, 107, .45); } .switch { background: rgba(255, 255, 255, .06); } }
+
+/* ---------- Jendela balon (modal) dan notifikasi balon (toast) ---------- */
+.mdl { position: fixed; inset: 0; z-index: 110; display: flex; align-items: flex-end; justify-content: center; }
+.mdlback { position: absolute; inset: 0; border: 0; padding: 0; background: rgba(4, 35, 30, .55); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); animation: fadein .25s ease both; cursor: default; }
+.mdlbox { position: relative; width: 100%; max-width: 560px; max-height: calc(94dvh / var(--z, 1)); display: flex; flex-direction: column; background: var(--bg); color: var(--ink); border-radius: 28px 28px 0 0; box-shadow: 0 -20px 60px rgba(0, 0, 0, .35); animation: sheetup .32s var(--ease) both; outline: none; padding-bottom: env(safe-area-inset-bottom); }
+.mdlgrip { align-self: center; width: 44px; height: 5px; border-radius: 99px; background: rgba(7, 47, 41, .22); margin: 10px 0 2px; flex: none; }
+.mdlhead { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 6px 12px 10px 20px; flex: none; }
+.mdlhead h2 { margin: 0; font-size: 20px; }
+.mdlx { width: 44px; height: 44px; display: grid; place-items: center; border: 0; border-radius: 50%; background: rgba(15, 106, 91, .1); color: var(--teal-900); cursor: pointer; }
+.mdlbody { overflow-y: auto; overscroll-behavior: contain; padding: 4px 20px 24px; -webkit-overflow-scrolling: touch; }
+@keyframes sheetup { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } } @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+@media (min-width: 700px) { .mdl { align-items: center; } .mdlbox { border-radius: 28px; max-height: 88vh; } .mdlgrip { display: none; } .mdlhead { padding-top: 16px; } }
+.toasts { position: fixed; z-index: 140; left: 0; right: 0; top: calc(env(safe-area-inset-top) + 10px); display: grid; gap: 8px; justify-items: center; padding: 0 12px; pointer-events: none; }
+.toast { pointer-events: auto; width: min(440px, 100%); display: flex; align-items: center; gap: 10px; padding: 10px 8px 10px 12px; border-radius: 18px; font-weight: 700; font-size: 14.5px; color: #0b3a30; background: rgba(255, 255, 255, .94); border: 1px solid rgba(47, 158, 138, .45); box-shadow: 0 16px 40px rgba(7, 47, 41, .3); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); animation: toastin .4s var(--ease) both; }
+.toast.err { color: #7a1c14; border-color: rgba(214, 76, 62, .5); background: rgba(255, 244, 242, .96); }
+.toast .tic { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; color: #fff; background: var(--grad-teal); } .toast.err .tic { background: linear-gradient(180deg, #ef6a5a, #c9372a); }
+.toast .ttx { flex: 1; line-height: 1.35; } .toast button { flex: none; width: 36px; height: 36px; display: grid; place-items: center; border: 0; background: none; color: inherit; opacity: .6; cursor: pointer; border-radius: 50%; }
+@keyframes toastin { from { transform: translateY(-24px) scale(.96); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (prefers-color-scheme: dark) { .mdlbox { background: #0b2e28; } .mdlgrip { background: rgba(200, 248, 240, .3); } .mdlx { background: rgba(255, 255, 255, .1); color: #e8f8f4; } .toast { background: rgba(10, 48, 41, .94); color: #e8f8f4; } .toast.err { background: rgba(60, 20, 16, .95); color: #ffd6cf; } }
+@media (prefers-reduced-motion: reduce) { .mdlbox, .mdlback, .toast { animation: none; } }
+
+/* ============ Rapikan tampilan HP (audit) ============ */
+.prose a.btn, .prose a.btn:hover, .card a.btn { text-decoration: none; }
+.crumbs { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+footer.pub nav a, footer.pub a { text-decoration: none; }
+footer.pub { padding-bottom: 98px; }
+footer.pub nav { gap: 2px 6px; margin: 10px 0 6px; } footer.pub nav a { min-height: 40px; padding: 0 10px; font-weight: 700; font-size: 14.5px; }
+footer.pub .footwil { gap: 2px 4px; } footer.pub .footwil b { opacity: .8; font-weight: 800; width: 100%; text-align: center; }
+.joblist { gap: 8px; } .jobrow { padding: 4px 14px; } .jobrow summary { min-height: 48px; display: flex; align-items: center; font-size: 16px; } .jobrow[open] { padding-bottom: 14px; }
+.steps2 { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; counter-reset: s; }
+.steps2 li { display: flex; align-items: flex-start; gap: 14px; padding: 14px; border-radius: 18px; background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow-sm); }
+.tn2 { flex: none; width: 36px; height: 36px; border-radius: 12px; display: grid; place-items: center; font-weight: 900; color: #fff; background: var(--grad-brand); box-shadow: 0 6px 14px rgba(15, 107, 90, .3); }
+.steps2 b { display: block; font-size: 16px; } .steps2 small { display: block; color: var(--muted); font-size: 14px; line-height: 1.4; margin-top: 2px; }
+/* Tombol kirim di jendela form selalu terlihat */
+.mdlbody form > button.btn { position: sticky; bottom: -2px; z-index: 2; box-shadow: 0 -14px 20px -6px var(--bg), 0 10px 24px rgba(242, 140, 40, .35); }
+.mdlbody .nilai.done { margin-top: 4px; }

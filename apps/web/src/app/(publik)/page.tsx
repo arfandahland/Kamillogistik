@@ -155,24 +155,6 @@ export default async function Home() {
           <p>Tanyakan tarif dan jadwal langsung ke tim kami, atau pakai asisten di pojok kanan bawah.</p>
           <a className="btn" href={waLink("Halo Kamil Logistik, saya mau tanya tarif dan jadwal pengiriman.")}><Icon name="chat" size={22} /> Chat WhatsApp</a>
         </section>
-
-        <section aria-labelledby="gabung">
-          <h2 id="gabung" className="sech">Gabung bersama Kamil Logistik</h2>
-          <div className="joingrid">
-            <Link href="/mitra" className="card lift joincard">
-              <span className="si"><Icon name="store" size={24} /></span>
-              <h3>Jadi mitra</h3>
-              <p>Punya gerai atau gudang di kota Anda? Buat resi dan invoice dari HP, dapat komisi per resi.</p>
-              <b>Daftar jadi mitra <Icon name="arrow" size={18} /></b>
-            </Link>
-            <Link href="/karir" className="card lift joincard">
-              <span className="si"><Icon name="users" size={24} /></span>
-              <h3>Bergabung di tim</h3>
-              <p>Admin, sales, purchasing, vendor, gudang, dan driver. Lamar dari HP, CV langsung ke HRD.</p>
-              <b>Lihat lowongan <Icon name="arrow" size={18} /></b>
-            </Link>
-          </div>
-        </section>
       </div>
     </main>
   );

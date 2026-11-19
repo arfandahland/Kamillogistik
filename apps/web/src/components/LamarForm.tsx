@@ -2,6 +2,7 @@
 import { useState, useTransition } from "react";
 import { POSISI, KELOMPOK_POSISI, posisiDari, HRD_WA_TAMPIL } from "@kamil/core";
 import { kirimLamaran, type LamarHasil } from "@/app/(publik)/karir/aksi";
+import { useToast } from "./Toast";
 
 const MAKS_PDF = 800_000;
 
@@ -26,6 +27,7 @@ export default function LamarForm({ awal, ditutup = [] }: { awal?: string; ditut
   const [err, setErr] = useState("");
   const [hasil, setHasil] = useState<LamarHasil | null>(null);
   const [pending, start] = useTransition();
+  const toast = useToast();
   const p = posisiDari(posisi);
 
   async function pilihBerkas(f: File | undefined) {
@@ -54,13 +56,12 @@ export default function LamarForm({ awal, ditutup = [] }: { awal?: string; ditut
   );
 
   return (
-    <form id="formulir" className="card stack" onSubmit={(e) => {
+    <form id="formulir" className="stack" onSubmit={(e) => {
       e.preventDefault(); const fd = new FormData(e.currentTarget); setErr("");
-      if (!cv) { setErr("Unggah CV dulu (PDF atau foto)."); return; }
+      if (!cv) { setErr("Unggah CV dulu (PDF atau foto)."); toast.err("Unggah CV dulu (PDF atau foto)."); return; }
       fd.set("cvNama", cv.nama); fd.set("cvJenis", cv.jenis); fd.set("cvData", cv.data); fd.delete("cvFile");
-      start(async () => { const r = await kirimLamaran(fd); if (r.ok) { setHasil(r); window.scrollTo({ top: 0, behavior: "smooth" }); } else setErr(r.error ?? "Gagal."); });
+      start(async () => { const r = await kirimLamaran(fd); if (r.ok) { setHasil(r); toast.ok("Lamaran terkirim. Kode Anda " + r.kode); } else { setErr(r.error ?? "Gagal."); toast.err(r.error ?? "Gagal mengirim lamaran."); } });
     }}>
-      <h2 style={{ margin: 0 }}>Isi formulir lamaran</h2>
       <label className="f" htmlFor="posisi">Posisi yang dilamar</label>
       <select id="posisi" name="posisi" required value={posisi} onChange={(e) => setPosisi(e.target.value)}>
         <option value="">Pilih posisi…</option>

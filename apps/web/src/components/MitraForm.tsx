@@ -1,9 +1,10 @@
 "use client";
 import { useState, useTransition } from "react";
 import { kirimCalonMitra, type MitraHasil } from "@/app/(publik)/mitra/aksi";
+import { useToast } from "./Toast";
 
 export default function MitraForm() {
-  const [err, setErr] = useState(""); const [hasil, setHasil] = useState<MitraHasil | null>(null); const [pending, start] = useTransition();
+  const [err, setErr] = useState(""); const [hasil, setHasil] = useState<MitraHasil | null>(null); const [pending, start] = useTransition(); const toast = useToast();
   if (hasil?.ok) return (
     <div className="card nilai done" role="status">
       <h2 style={{ marginTop: 0 }}>Pendaftaran terkirim. Terima kasih!</h2>
@@ -12,11 +13,10 @@ export default function MitraForm() {
     </div>
   );
   return (
-    <form id="daftar" className="card stack" onSubmit={(e) => {
+    <form id="daftar" className="stack" onSubmit={(e) => {
       e.preventDefault(); setErr(""); const fd = new FormData(e.currentTarget);
-      start(async () => { const r = await kirimCalonMitra(fd); if (r.ok) { setHasil(r); window.scrollTo({ top: 0, behavior: "smooth" }); } else setErr(r.error ?? "Gagal."); });
+      start(async () => { const r = await kirimCalonMitra(fd); if (r.ok) { setHasil(r); toast.ok("Pendaftaran terkirim. Kode Anda " + r.kode); } else { setErr(r.error ?? "Gagal."); toast.err(r.error ?? "Gagal mengirim pendaftaran."); } });
     }}>
-      <h2 style={{ margin: 0 }}>Daftar jadi mitra</h2>
       <label className="f" htmlFor="jenis">Jenis kemitraan</label>
       <select id="jenis" name="jenis" required defaultValue="">
         <option value="" disabled>Pilih jenis…</option>
