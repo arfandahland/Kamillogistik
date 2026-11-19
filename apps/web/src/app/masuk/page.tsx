@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Icon from "@/components/Icon";
 import LoginForm from "@/components/LoginForm";
+import LoginHelp from "@/components/LoginHelp";
 import Scene3D from "@/components/Scene3D";
 import Waves from "@/components/Waves";
 import { BRAND, waLink } from "@/lib/brand";
@@ -64,10 +65,7 @@ export default async function Masuk({ searchParams }: { searchParams: Promise<{ 
             <div><Icon name="shield" /> Sambungan terenkripsi</div>
             <div><Icon name="check" /> Semua tindakan tercatat</div>
           </div>
-          <div className="foot">
-            <a href={waLink("Halo, saya lupa kata sandi aplikasi petugas Kamil Logistik.")}>Lupa kata sandi?</a>
-            <a href={waLink("Halo, saya butuh bantuan masuk ke aplikasi petugas.")}>Bantuan {BRAND.whatsappDisplay}</a>
-          </div>
+          <LoginHelp sarankan={e === "terkunci" ? "terkunci" : e === "salah" ? "salah" : undefined} />
         </div>
       </div>
       <Waves />

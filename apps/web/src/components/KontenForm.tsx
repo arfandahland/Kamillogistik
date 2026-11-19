@@ -1,49 +1,76 @@
 "use client";
-import { useRef, useState, useTransition } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { simpanKonten } from "@/app/app/konten/actions";
-
-/** Foto dikecilkan di HP (maks 1200 px, JPEG) supaya cepat terkirim dan hemat penyimpanan. */
-async function kecilkan(file: File): Promise<string> {
-  const url = URL.createObjectURL(file);
-  try {
-    const img = await new Promise<HTMLImageElement>((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error("x")); i.src = url; });
-    const sk = Math.min(1, 1200 / Math.max(img.width, img.height));
-    const c = document.createElement("canvas"); c.width = Math.round(img.width * sk); c.height = Math.round(img.height * sk);
-    c.getContext("2d")!.drawImage(img, 0, 0, c.width, c.height);
-    let q = 0.8, d = c.toDataURL("image/jpeg", q);
-    while (d.length > 480_000 && q > 0.4) { q -= 0.1; d = c.toDataURL("image/jpeg", q); }
-    return d;
-  } finally { URL.revokeObjectURL(url); }
-}
+import { deteksiDesain, muatGambar, olah, type Hasil, type Opsi } from "@/lib/imageTools";
 
 export type Item = { id: string; title: string; route: string | null; customer: string | null; place: string | null; quote: string | null; active: boolean; v: number };
+const JENIS = ["Pengiriman", "Pick up", "Bongkar muat"];
+const KOTA = ["Jakarta", "Makassar", "Surabaya", "Kendari", "Palu", "Manado", "Gorontalo", "Mamuju", "Parepare", "Bau-Bau", "Luwuk", "Sorong", "Jayapura", "Ambon", "Ternate", "Merauke", "Timika", "Bitung"];
+const pecah = (r: string | null): [string, string] => { const p = (r ?? "").split(/→|->/).map((x) => x.trim()); return [p[0] ?? "", p[1] ?? ""]; };
 
-/** Tambah foto baru (tanpa `item`) atau ubah keterangan/foto satu item. */
+/** Tambah foto baru (tanpa `item`) atau ubah keterangan/foto satu item. Foto diolah otomatis di peramban dan selalu ada pratinjaunya. */
 export default function KontenForm({ item, onSaved }: { item?: Item; onSaved?: () => void }) {
-  const [foto, setFoto] = useState<string | null>(null);
+  const [asli, setAsli] = useState<HTMLCanvasElement | null>(null);
+  const [opsi, setOpsi] = useState<Opsi>({ potongDesain: false, hapusCap: true, rapikan: true, potongBawah: 0 });
+  const [desain, setDesain] = useState(false);
   const [err, setErr] = useState(""); const [ok, setOk] = useState(false);
+  const [asal0, tujuan0] = pecah(item?.route ?? null);
+  const [jenis, setJenis] = useState(JENIS.find((j) => item?.title.toLowerCase().startsWith(j.toLowerCase())) ?? "Pengiriman");
+  const [asal, setAsal] = useState(asal0); const [tujuan, setTujuan] = useState(tujuan0);
+  const [judul, setJudul] = useState(item?.title ?? ""); const [manual, setManual] = useState(Boolean(item));
   const [pending, start] = useTransition();
   const ref = useRef<HTMLFormElement>(null);
+  const asliUrl = useMemo(() => (asli ? (() => { const t = document.createElement("canvas"); const s = Math.min(1, 480 / Math.max(asli.width, asli.height)); t.width = asli.width * s; t.height = asli.height * s; t.getContext("2d")!.drawImage(asli, 0, 0, t.width, t.height); return t.toDataURL("image/jpeg", 0.7); })() : ""), [asli]);
+  const [hasil, setHasil] = useState<Hasil | null>(null);
+  useEffect(() => { if (!asli) { setHasil(null); return; } const t = setTimeout(() => { try { setHasil(olah(asli, opsi)); } catch { setErr("Foto tidak bisa diolah. Coba foto lain."); } }, 120); return () => clearTimeout(t); }, [asli, opsi]);
+  // Subjek otomatis: "Pengiriman Jakarta → Kendari" selama judul belum diubah tangan
+  useEffect(() => { if (!manual && asal.trim() && tujuan.trim()) setJudul(`${jenis} ${asal.trim()} → ${tujuan.trim()}`); }, [jenis, asal, tujuan, manual]);
+
   async function pilih(f: File | undefined) {
-    setErr(""); setFoto(null); if (!f) return;
+    setErr(""); setAsli(null); setHasil(null); if (!f) return;
     if (!/^image\//.test(f.type) && !/\.(jpe?g|png|webp)$/i.test(f.name)) { setErr("Pilih berkas foto (JPG, PNG, atau WebP)."); return; }
-    try { setFoto(await kecilkan(f)); } catch { setErr("Foto tidak bisa dibaca. Coba foto lain."); }
+    try { const c = await muatGambar(f); const d = deteksiDesain(c); setDesain(d); setOpsi((o) => ({ ...o, potongDesain: d })); setAsli(c); } catch { setErr("Foto tidak bisa dibaca. Coba foto lain."); }
   }
+  const idb = item?.id ?? "baru";
   return (
     <form ref={ref} className="stack" onSubmit={(e) => {
       e.preventDefault(); setErr(""); setOk(false);
       const fd = new FormData(e.currentTarget);
-      if (!item && !foto) { setErr("Pilih foto dulu."); return; }
-      if (foto) fd.set("foto", foto); fd.delete("berkas"); if (item) fd.set("id", item.id);
-      start(async () => { const r = await simpanKonten(fd); if (r.ok) { setOk(true); setFoto(null); if (!item) ref.current?.reset(); onSaved?.(); } else setErr(r.error ?? "Gagal."); });
+      if (!item && !hasil) { setErr("Pilih foto dulu."); return; }
+      if (hasil) fd.set("foto", hasil.dataUrl); fd.delete("berkas"); if (item) fd.set("id", item.id);
+      fd.set("judul", judul); fd.set("rute", asal.trim() && tujuan.trim() ? `${asal.trim()} → ${tujuan.trim()}` : "");
+      start(async () => { const r = await simpanKonten(fd); if (r.ok) { setOk(true); setAsli(null); setHasil(null); if (!item) { ref.current?.reset(); setAsal(""); setTujuan(""); setJudul(""); setManual(false); } onSaved?.(); } else setErr(r.error ?? "Gagal."); });
     }}>
-      <label className="f" htmlFor={`b-${item?.id ?? "baru"}`}>{item ? "Ganti foto (boleh kosong)" : "Foto"}</label>
-      <input id={`b-${item?.id ?? "baru"}`} name="berkas" type="file" accept="image/*" onChange={(e) => pilih(e.target.files?.[0])} />
-      {foto && <img src={foto} alt="Pratinjau foto" style={{ maxWidth: 220, borderRadius: 14 }} />}
-      <label className="f">Judul</label><input name="judul" required minLength={3} maxLength={90} defaultValue={item?.title ?? ""} placeholder="Contoh: Pengiriman ke Kendari" />
-      <label className="f">Rute (boleh kosong)</label><input name="rute" maxLength={80} defaultValue={item?.route ?? ""} placeholder="Contoh: Jakarta → Kendari" />
+      <label className="f" htmlFor={`b-${idb}`}>{item ? "Ganti foto (boleh kosong)" : "Foto bukti pengiriman"}</label>
+      <input id={`b-${idb}`} name="berkas" type="file" accept="image/*" onChange={(e) => pilih(e.target.files?.[0])} />
+      {asli && (
+        <div className="card" style={{ background: "var(--teal-soft)" }}>
+          <b>Pengolah foto otomatis</b>
+          <p className="hint" style={{ margin: "2px 0 8px" }}>{desain ? "Terdeteksi kartu desain Kamil: hanya bagian foto yang diambil." : "Foto biasa terdeteksi."} Hasil selalu bisa Anda cek sebelum disimpan.</p>
+          <label className="chk"><input type="checkbox" checked={opsi.potongDesain} onChange={(e) => setOpsi({ ...opsi, potongDesain: e.target.checked })} /> Ambil bagian foto dari kartu desain</label>
+          <label className="chk"><input type="checkbox" checked={opsi.hapusCap} onChange={(e) => setOpsi({ ...opsi, hapusCap: e.target.checked })} /> Hapus timemark, tanggal, jam, dan watermark putih</label>
+          <label className="chk"><input type="checkbox" checked={opsi.rapikan} onChange={(e) => setOpsi({ ...opsi, rapikan: e.target.checked })} /> Cerahkan dan rapikan warna</label>
+          <label className="f" htmlFor={`pb-${idb}`}>Potong bagian bawah (untuk peta kecil atau teks yang tersisa)</label>
+          <select id={`pb-${idb}`} value={opsi.potongBawah} onChange={(e) => setOpsi({ ...opsi, potongBawah: Number(e.target.value) })}>{[0, 6, 10, 15, 20].map((v) => <option key={v} value={v}>{v === 0 ? "Tidak dipotong" : `${v}%`}</option>)}</select>
+          <div className="cmp">
+            <figure><img src={asliUrl} alt="Foto asli" /><figcaption>Asli</figcaption></figure>
+            <figure>{hasil ? <img src={hasil.dataUrl} alt="Hasil olahan" /> : <div className="cmpwait">Mengolah…</div>}<figcaption>Hasil</figcaption></figure>
+          </div>
+          {hasil && <ul className="hint" style={{ margin: "8px 0 0", paddingLeft: 18 }}>{hasil.catatan.map((c) => <li key={c}>{c}</li>)}<li>Ukuran akhir {hasil.lebar}×{hasil.tinggi}, {Math.round(hasil.dataUrl.length / 1024)} KB.</li></ul>}
+        </div>
+      )}
+      <label className="f" htmlFor={`j-${idb}`}>Jenis</label>
+      <select id={`j-${idb}`} value={jenis} onChange={(e) => setJenis(e.target.value)}>{JENIS.map((j) => <option key={j}>{j}</option>)}</select>
+      <div className="two">
+        <div><label className="f" htmlFor={`a-${idb}`}>Kota asal</label><input id={`a-${idb}`} list="kota-konten" value={asal} onChange={(e) => setAsal(e.target.value)} maxLength={30} placeholder="Jakarta" autoComplete="off" /></div>
+        <div><label className="f" htmlFor={`t-${idb}`}>Kota tujuan</label><input id={`t-${idb}`} list="kota-konten" value={tujuan} onChange={(e) => setTujuan(e.target.value)} maxLength={30} placeholder="Kendari" autoComplete="off" /></div>
+      </div>
+      <datalist id="kota-konten">{KOTA.map((k) => <option key={k} value={k} />)}</datalist>
+      <label className="f" htmlFor={`jd-${idb}`}>Judul (terisi otomatis dari jenis dan kota)</label>
+      <input id={`jd-${idb}`} required minLength={3} maxLength={90} value={judul} onChange={(e) => { setJudul(e.target.value); setManual(true); }} placeholder="Contoh: Pengiriman Jakarta → Kendari" />
+      <p className="hint" style={{ margin: 0 }}>Di beranda, poin keunggulan (Barang aman, Dokumentasi lengkap, Tim profesional, Proses tepat waktu) tampil otomatis dengan animasi bersama foto ini.</p>
       <label className="f">Nama pelanggan atau usaha (hanya bila seizin pelanggan)</label><input name="pelanggan" maxLength={80} defaultValue={item?.customer ?? ""} />
-      <label className="f">Kota (boleh kosong)</label><input name="tempat" maxLength={80} defaultValue={item?.place ?? ""} />
+      <label className="f">Kota pelanggan (boleh kosong)</label><input name="tempat" maxLength={80} defaultValue={item?.place ?? ""} />
       <label className="f">Kalimat testimoni asli (boleh kosong)</label><textarea name="kutipan" rows={2} maxLength={300} defaultValue={item?.quote ?? ""} placeholder="Tulis hanya yang benar-benar dikatakan pelanggan" />
       <label className="f">Tampil di beranda?</label>
       <select name="aktif" defaultValue={item?.active === false ? "0" : "1"}><option value="1">Tampil</option><option value="0">Disembunyikan</option></select>

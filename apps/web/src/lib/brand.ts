@@ -3,6 +3,9 @@ export const BRAND = {
   tagline: "Best Price, Best Service",
   whatsappNumber: "6285342238748",
   whatsappDisplay: "0853-4223-8748",
+  // Bantuan masuk aplikasi petugas langsung ke Pemilik
+  bantuanLoginNumber: "6282198606806",
+  bantuanLoginDisplay: "0821-9860-6806",
   instagram: "kamillogistik.id",
   alamat: { jalan: "Gudang Sarinah 2, Jl. Pancoran Timur II No. 4, RT 12/RW 8", kelurahan: "Cikoko", kecamatan: "Pancoran", kota: "Jakarta Selatan", provinsi: "DKI Jakarta", pos: "12770" },
   jam: "Buka 24 jam, setiap hari",
@@ -22,3 +25,4 @@ export function tanggalWaktu(iso: string) {
 export function tanggal(iso: string) {
   return new Date(iso).toLocaleDateString("id-ID", { timeZone: "Asia/Makassar", day: "numeric", month: "long", year: "numeric" });
 }
+export const waLinkBantuanLogin = (text: string) => `https://wa.me/${BRAND.bantuanLoginNumber}?text=${encodeURIComponent(text)}`;

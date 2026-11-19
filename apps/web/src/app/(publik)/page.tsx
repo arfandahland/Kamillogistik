@@ -1,4 +1,4 @@
-import TestimoniSlider from "@/components/TestimoniSlider";
+import BuktiShowcase from "@/components/BuktiShowcase";
 import { getTestimoni } from "@/lib/testimoni";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -138,7 +138,7 @@ export default async function Home() {
         {testimoni.length > 0 && (
           <section aria-labelledby="testimoni">
             <h2 id="testimoni" className="sech">Bukti pengiriman dari tim kami</h2>
-            <TestimoniSlider items={testimoni} />
+            <BuktiShowcase items={testimoni} />
           </section>
         )}
         <section aria-labelledby="panduan">

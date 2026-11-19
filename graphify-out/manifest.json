@@ -114,9 +114,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/page.tsx": {
-    "mtime": 1795104667.9748433,
-    "seen": 1795105360.1049387,
-    "ast_hash": "ce8908e804b968ecf58d2d1640cdb7ae",
+    "mtime": 1795106217.3469594,
+    "seen": 1795107568.6344638,
+    "ast_hash": "467dfb26a9b5c84b08e767b2b4603d30",
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/panduan/[slug]/page.tsx": {
@@ -492,9 +492,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/masuk/page.tsx": {
-    "mtime": 1795104667.9740775,
-    "seen": 1795105360.1050146,
-    "ast_hash": "c6bbe90cba7d8832aa64072cd267b324",
+    "mtime": 1795106087.975759,
+    "seen": 1795107568.6345828,
+    "ast_hash": "1e88f4f4e80cadbb9ff5e63c404eeb38",
     "semantic_hash": ""
   },
   "apps/web/src/app/portal/[token]/page.tsx": {
@@ -612,9 +612,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/KontenForm.tsx": {
-    "mtime": 1795094165.7842119,
-    "seen": 1795104170.4404361,
-    "ast_hash": "d71919906f77f194087929289fbe8151",
+    "mtime": 1795106263.744343,
+    "seen": 1795107568.6346076,
+    "ast_hash": "da070c767a8cd0b61950129e96558f68",
     "semantic_hash": ""
   },
   "apps/web/src/components/LabelStudio.tsx": {
@@ -804,9 +804,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/lib/brand.ts": {
-    "mtime": 1795087595.907792,
-    "seen": 1795104170.4404638,
-    "ast_hash": "ff3233b766fb357d6d2b8df8ffdd8ea9",
+    "mtime": 1795106081.5950012,
+    "seen": 1795107568.6346433,
+    "ast_hash": "9c9b97c95eb8cc7affecf873a3c14175",
     "semantic_hash": ""
   },
   "apps/web/src/lib/lacakGuard.ts": {
@@ -924,9 +924,9 @@
     "semantic_hash": ""
   },
   "e2e/flow.cjs": {
-    "mtime": 1795096133.4246025,
-    "seen": 1795104170.4404807,
-    "ast_hash": "a6b1f576771a947b3b6273229f023013",
+    "mtime": 1795106263.7461565,
+    "seen": 1795107568.6347191,
+    "ast_hash": "b50b575d05c1c783b17f510adb9b29dd",
     "semantic_hash": ""
   },
   "e2e/kamera.cjs": {
@@ -1557,6 +1557,24 @@
     "mtime": 1794991655.7004662,
     "seen": 1795105360.1051362,
     "ast_hash": "3cd64a488ce9dd391fc72b3401595f11",
+    "semantic_hash": ""
+  },
+  "apps/web/src/components/BuktiShowcase.tsx": {
+    "mtime": 1795106217.3319197,
+    "seen": 1795107568.6345909,
+    "ast_hash": "f26bebb12133042b298247bd4c88fbe1",
+    "semantic_hash": ""
+  },
+  "apps/web/src/components/LoginHelp.tsx": {
+    "mtime": 1795106330.245594,
+    "seen": 1795107568.6346128,
+    "ast_hash": "ecd635e72f2869f3f59969f97a78dc9b",
+    "semantic_hash": ""
+  },
+  "apps/web/src/lib/imageTools.ts": {
+    "mtime": 1795106981.4282513,
+    "seen": 1795107568.634644,
+    "ast_hash": "1d687d2318fbb2f53981d1aab3e29ce9",
     "semantic_hash": ""
   },
   "package-lock.json": {
