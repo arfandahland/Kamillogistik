@@ -114,9 +114,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/page.tsx": {
-    "mtime": 1795094165.7762632,
-    "seen": 1795104170.4403534,
-    "ast_hash": "e2ab82b55123edd3542016e1b3017a67",
+    "mtime": 1795104667.9748433,
+    "seen": 1795105360.1049387,
+    "ast_hash": "ce8908e804b968ecf58d2d1640cdb7ae",
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/panduan/[slug]/page.tsx": {
@@ -492,9 +492,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/masuk/page.tsx": {
-    "mtime": 1794976014.6008058,
-    "seen": 1795104170.4404178,
-    "ast_hash": "6bb20802eae7e1403256df07117930c5",
+    "mtime": 1795104667.9740775,
+    "seen": 1795105360.1050146,
+    "ast_hash": "c6bbe90cba7d8832aa64072cd267b324",
     "semantic_hash": ""
   },
   "apps/web/src/app/portal/[token]/page.tsx": {
@@ -1323,6 +1323,240 @@
     "mtime": 1794961425.7719588,
     "seen": 1795104170.4405408,
     "ast_hash": "63fc52156bdfd7d9e1f777f08f563f69",
+    "semantic_hash": ""
+  },
+  "db/data/pricelist_2026.sql": {
+    "mtime": 1794995181.7197216,
+    "seen": 1795105360.1050882,
+    "ast_hash": "d096d13c9a4e7c1dac582066893cc603",
+    "semantic_hash": ""
+  },
+  "db/migrations/001_init.sql": {
+    "mtime": 1794958369.8512728,
+    "seen": 1795105360.1050894,
+    "ast_hash": "c67b39a6ec9250fd90bd800e462de821",
+    "semantic_hash": ""
+  },
+  "db/migrations/002_security.sql": {
+    "mtime": 1794958369.8543162,
+    "seen": 1795105360.1050906,
+    "ast_hash": "24697b4e3ab596af161d9a81bf11ddc9",
+    "semantic_hash": ""
+  },
+  "db/migrations/003_public_api.sql": {
+    "mtime": 1794958369.8588815,
+    "seen": 1795105360.1050913,
+    "ast_hash": "e4fd25eee400f77d68cb4790f329be90",
+    "semantic_hash": ""
+  },
+  "db/migrations/004_seed_network.sql": {
+    "mtime": 1794958369.8603892,
+    "seen": 1795105360.105092,
+    "ast_hash": "6c714a7025a459400f33e6d31dde952f",
+    "semantic_hash": ""
+  },
+  "db/migrations/005_staff_app.sql": {
+    "mtime": 1794960210.074654,
+    "seen": 1795105360.105093,
+    "ast_hash": "b9ba8d9e2af5cc0fe1023608ab54da94",
+    "semantic_hash": ""
+  },
+  "db/migrations/006_owner_dashboard.sql": {
+    "mtime": 1794966261.1278546,
+    "seen": 1795105360.105095,
+    "ast_hash": "7d873e158f73fb8d09cfec5c6648901d",
+    "semantic_hash": ""
+  },
+  "db/migrations/007_admin_finance.sql": {
+    "mtime": 1794968709.9113376,
+    "seen": 1795105360.1050959,
+    "ast_hash": "5004501bf593f339d771225cc7d8d72d",
+    "semantic_hash": ""
+  },
+  "db/migrations/008_pod.sql": {
+    "mtime": 1794973235.8779733,
+    "seen": 1795105360.1050973,
+    "ast_hash": "ad99be0ccb24e06fdbc49744163e2d37",
+    "semantic_hash": ""
+  },
+  "db/migrations/009_speed.sql": {
+    "mtime": 1794974358.4730175,
+    "seen": 1795105360.1050982,
+    "ast_hash": "d684e18062becf3d93e4401d48de916c",
+    "semantic_hash": ""
+  },
+  "db/migrations/010_security.sql": {
+    "mtime": 1794975967.2902257,
+    "seen": 1795105360.1050992,
+    "ast_hash": "f2bd249ca6eacacc77056a98fb5df965",
+    "semantic_hash": ""
+  },
+  "db/migrations/011_kode_resi.sql": {
+    "mtime": 1794983995.060405,
+    "seen": 1795105360.1051004,
+    "ast_hash": "7bd4bfd29e6104feae49636bac34bb4d",
+    "semantic_hash": ""
+  },
+  "db/migrations/012_manifest.sql": {
+    "mtime": 1794983882.5264864,
+    "seen": 1795105360.105101,
+    "ast_hash": "6ab7c892bc5796bce8ac9c606cd1ca1f",
+    "semantic_hash": ""
+  },
+  "db/migrations/013_korporat.sql": {
+    "mtime": 1794984722.7816858,
+    "seen": 1795105360.105102,
+    "ast_hash": "e2ca4a1129fc5ac155629af8cfddc1f0",
+    "semantic_hash": ""
+  },
+  "db/migrations/014_tindak_lanjut.sql": {
+    "mtime": 1794991621.0386984,
+    "seen": 1795105360.1051028,
+    "ast_hash": "eb41692ebcc5e86700d585a50b6a16f8",
+    "semantic_hash": ""
+  },
+  "db/migrations/015_pemeriksaan_fisik.sql": {
+    "mtime": 1794992339.8859313,
+    "seen": 1795105360.1051042,
+    "ast_hash": "4d5261d52266e4fcfb0bfc5ad1dabc93",
+    "semantic_hash": ""
+  },
+  "db/migrations/016_riwayat_harga_komisi.sql": {
+    "mtime": 1794993290.6437612,
+    "seen": 1795105360.105105,
+    "ast_hash": "35a5629c14752e2ff6a0581f9ee4aca2",
+    "semantic_hash": ""
+  },
+  "db/migrations/017_pantauan_pemilik.sql": {
+    "mtime": 1794993617.9294758,
+    "seen": 1795105360.1051059,
+    "ast_hash": "3329366da6dfa9b43dd081bc89ba404a",
+    "semantic_hash": ""
+  },
+  "db/migrations/018_pelanggan.sql": {
+    "mtime": 1794995380.9607465,
+    "seen": 1795105360.1051068,
+    "ast_hash": "e8fcaf8647636902b9b0e9cbc92506d1",
+    "semantic_hash": ""
+  },
+  "db/migrations/019_lamaran.sql": {
+    "mtime": 1795090077.2770433,
+    "seen": 1795105360.1051078,
+    "ast_hash": "7b9b3702b914148eb81a6faca1fb8772",
+    "semantic_hash": ""
+  },
+  "db/migrations/020_konten_peran_keamanan.sql": {
+    "mtime": 1795093936.665255,
+    "seen": 1795105360.105109,
+    "ast_hash": "77a96ea1d0f09d811109c2ea8e6a360a",
+    "semantic_hash": ""
+  },
+  "db/migrations/021_lamaran_batas.sql": {
+    "mtime": 1795094770.7450953,
+    "seen": 1795105360.10511,
+    "ast_hash": "fcf106d6b4f3623b51eb0b21d8335299",
+    "semantic_hash": ""
+  },
+  "db/perf/seed.sql": {
+    "mtime": 1794974220.1090598,
+    "seen": 1795105360.1051111,
+    "ast_hash": "4d3ed28ee8d808eaf48b4f0697105ce4",
+    "semantic_hash": ""
+  },
+  "db/test/00_stub_auth.sql": {
+    "mtime": 1794968709.9125495,
+    "seen": 1795105360.1051133,
+    "ast_hash": "2e99c53bef35d32ebcf56a32400ae776",
+    "semantic_hash": ""
+  },
+  "db/test/admin_finance.sql": {
+    "mtime": 1794982622.2492642,
+    "seen": 1795105360.1051145,
+    "ast_hash": "c123e6e9170ba13ec227e99b518b737d",
+    "semantic_hash": ""
+  },
+  "db/test/kode_resi.sql": {
+    "mtime": 1794992101.5952647,
+    "seen": 1795105360.1051154,
+    "ast_hash": "581d3f7beda5dfa7715e89b343d2543f",
+    "semantic_hash": ""
+  },
+  "db/test/konten.sql": {
+    "mtime": 1795093958.6605809,
+    "seen": 1795105360.1051161,
+    "ast_hash": "c999c1e140f26f9a8de201f9db5690a8",
+    "semantic_hash": ""
+  },
+  "db/test/korporat.sql": {
+    "mtime": 1794992101.5957932,
+    "seen": 1795105360.1051168,
+    "ast_hash": "c8f3c96d5cebc6472c262d907396c001",
+    "semantic_hash": ""
+  },
+  "db/test/lamaran.sql": {
+    "mtime": 1795094770.749729,
+    "seen": 1795105360.105118,
+    "ast_hash": "097f11504b6404dd0bb3e48adabb2db7",
+    "semantic_hash": ""
+  },
+  "db/test/manifest.sql": {
+    "mtime": 1794983995.0625567,
+    "seen": 1795105360.1051235,
+    "ast_hash": "961b611edea24703fc0871e4983c3c80",
+    "semantic_hash": ""
+  },
+  "db/test/owner_dashboard.sql": {
+    "mtime": 1794966295.7715237,
+    "seen": 1795105360.1051247,
+    "ast_hash": "998e7ff3c78c8dd34ba1823d8359b2ed",
+    "semantic_hash": ""
+  },
+  "db/test/pantauan.sql": {
+    "mtime": 1794993617.9361362,
+    "seen": 1795105360.1051257,
+    "ast_hash": "c4397b55a57053fdd4ea6b4e2b7d26d6",
+    "semantic_hash": ""
+  },
+  "db/test/pelanggan.sql": {
+    "mtime": 1794995404.98145,
+    "seen": 1795105360.1051264,
+    "ast_hash": "c9f76eb66b87294c3c09315fe8d21ba4",
+    "semantic_hash": ""
+  },
+  "db/test/pemeriksaan.sql": {
+    "mtime": 1794992345.08354,
+    "seen": 1795105360.1051273,
+    "ast_hash": "4f54b00f17f818e7152506c3ea2c206f",
+    "semantic_hash": ""
+  },
+  "db/test/pod.sql": {
+    "mtime": 1794973270.44783,
+    "seen": 1795105360.1051283,
+    "ast_hash": "01344c64e18fd7f118953cc48d00b39c",
+    "semantic_hash": ""
+  },
+  "db/test/riwayat_komisi.sql": {
+    "mtime": 1794993298.0884519,
+    "seen": 1795105360.1051302,
+    "ast_hash": "eddd30805b428ec019e4f7ffe23ef1d5",
+    "semantic_hash": ""
+  },
+  "db/test/security.sql": {
+    "mtime": 1794982585.428423,
+    "seen": 1795105360.1051326,
+    "ast_hash": "a69a6e1659f9026282b6c9ba460d7bda",
+    "semantic_hash": ""
+  },
+  "db/test/staff_flow.sql": {
+    "mtime": 1794992101.5946722,
+    "seen": 1795105360.1051335,
+    "ast_hash": "178c265c45a67242366147f642269ec7",
+    "semantic_hash": ""
+  },
+  "db/test/tindak_lanjut.sql": {
+    "mtime": 1794991655.7004662,
+    "seen": 1795105360.1051362,
+    "ast_hash": "3cd64a488ce9dd391fc72b3401595f11",
     "semantic_hash": ""
   },
   "package-lock.json": {
