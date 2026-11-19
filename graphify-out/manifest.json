@@ -1709,6 +1709,18 @@
     "ast_hash": "06bd613674dfaf0e2d17930ac5690e77",
     "semantic_hash": ""
   },
+  "db/migrations/023_dashboard_hrd.sql": {
+    "mtime": 1795110328.7044117,
+    "seen": 1795118871.2496066,
+    "ast_hash": "788d31d62ded47b0056420234fe135b0",
+    "semantic_hash": ""
+  },
+  "db/test/hrd.sql": {
+    "mtime": 1795110353.8959215,
+    "seen": 1795118871.249614,
+    "ast_hash": "033e82b5f17106afff6122d69be68314",
+    "semantic_hash": ""
+  },
   "package-lock.json": {
     "mtime": 1794983214.1951408,
     "seen": 1795104170.4405415,
