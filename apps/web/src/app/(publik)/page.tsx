@@ -171,12 +171,6 @@ export default async function Home() {
               <p>Admin, sales, purchasing, vendor, gudang, dan driver. Lamar dari HP, CV langsung ke HRD.</p>
               <b>Lihat lowongan <Icon name="arrow" size={18} /></b>
             </Link>
-            <Link href="/panduan" className="card lift joincard">
-              <span className="si"><Icon name="file" size={24} /></span>
-              <h3>Panduan kirim barang</h3>
-              <p>Cara hitung ongkir, packing aman, lama pengiriman, dan barang yang boleh dikirim.</p>
-              <b>Baca panduan <Icon name="arrow" size={18} /></b>
-            </Link>
           </div>
         </section>
       </div>

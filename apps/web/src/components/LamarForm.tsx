@@ -20,7 +20,7 @@ async function kecilkan(file: File): Promise<string> {
 }
 const bacaPdf = (f: File) => new Promise<string>((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result)); r.onerror = () => rej(new Error("x")); r.readAsDataURL(f); });
 
-export default function LamarForm({ awal }: { awal?: string }) {
+export default function LamarForm({ awal, ditutup = [] }: { awal?: string; ditutup?: string[] }) {
   const [posisi, setPosisi] = useState(posisiDari(awal)?.slug ?? "");
   const [cv, setCv] = useState<{ nama: string; jenis: string; data: string } | null>(null);
   const [err, setErr] = useState("");
@@ -64,7 +64,7 @@ export default function LamarForm({ awal }: { awal?: string }) {
       <label className="f" htmlFor="posisi">Posisi yang dilamar</label>
       <select id="posisi" name="posisi" required value={posisi} onChange={(e) => setPosisi(e.target.value)}>
         <option value="">Pilih posisi…</option>
-        {KELOMPOK_POSISI.map((k) => <optgroup key={k} label={k}>{POSISI.filter((x) => x.kelompok === k).map((x) => <option key={x.slug} value={x.slug}>{x.judul}</option>)}</optgroup>)}
+        {KELOMPOK_POSISI.map((k) => <optgroup key={k} label={k}>{POSISI.filter((x) => x.kelompok === k).map((x) => <option key={x.slug} value={x.slug} disabled={ditutup.includes(x.slug)}>{x.judul}{ditutup.includes(x.slug) ? " (ditutup)" : ""}</option>)}</optgroup>)}
       </select>
       <label className="f" htmlFor="nama">Nama lengkap</label>
       <input id="nama" name="nama" required minLength={3} maxLength={80} autoComplete="name" placeholder="Sesuai KTP" />

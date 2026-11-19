@@ -15,7 +15,7 @@ export async function kirimLamaran(fd: FormData): Promise<LamarHasil> {
     p_position: posisi.slug, p_name: nama, p_phone: s(fd, "hp", 20), p_email: s(fd, "email", 120), p_city: s(fd, "kota", 60),
     p_experience: s(fd, "pengalaman", 600), p_sim: s(fd, "sim", 40), p_note: s(fd, "catatan", 600),
     p_cv_name: s(fd, "cvNama", 120), p_cv_type: s(fd, "cvJenis", 40), p_cv_data: String(fd.get("cvData") ?? "").slice(0, 1_200_000),
-  }, /nama|nomor|email|kota|posisi|panjang|cv|berkas|lamaran|terlalu|pdf|foto/i);
+  }, /nama|nomor|email|kota|posisi|panjang|cv|berkas|lamaran|terlalu|pdf|foto|ditutup|lowongan/i);
   if (r.error || !r.data?.code) return { ok: false, error: r.error ?? "Lamaran belum terkirim. Coba lagi." };
   return { ok: true, kode: r.data.code, wa: waHrdLink(pesanKeHrd(nama, posisi.judul, r.data.code)) };
 }

@@ -23,6 +23,7 @@ export default async function Lamaran({ searchParams }: { searchParams: Promise<
         <Link href={href(undefined, posisi)} className={`fchip ${!status ? "on" : ""}`}>Semua <b>{total}</b></Link>
         {STATUS_LAMARAN.map((st) => <Link key={st} href={href(st, posisi)} className={`fchip ${status === st ? "on" : ""}`}>{LABEL_STATUS_LAMARAN[st]}{q.data?.counts?.[st] ? <b>{q.data.counts[st]}</b> : null}</Link>)}
       </div>
+      <p style={{ margin: 0 }}><Link href="/app/rekrutmen">Dashboard rekrutmen</Link> · <a href="/app/ekspor/lamaran">Unduh Excel (CSV)</a></p>
       <form method="get" action="/app/lamaran" className="card" style={{ display: "flex", gap: 8 }}>
         {status && <input type="hidden" name="s" value={status} />}
         <select name="p" defaultValue={posisi ?? ""} aria-label="Posisi" style={{ flex: 1 }}>

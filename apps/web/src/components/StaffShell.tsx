@@ -13,7 +13,7 @@ export default function StaffShell({ me, pending, children, forceFull }: { me: M
   const finance = owner || me.role === "HUB_MANAGER" || me.role === "MITRA_POS";
   // Menu bawah di HP (maks 5) dan menu samping di komputer (lengkap).
   const tabs = me.role === "HRD"
-    ? [{ href: "/app/lamaran", label: "Lamaran", icon: "users" }, { href: "/app/akun", label: "Akun", icon: "user" }]
+    ? [{ href: "/app/rekrutmen", label: "Dashboard", icon: "chart" }, { href: "/app/lamaran", label: "Lamaran", icon: "users" }, { href: "/app/akun", label: "Akun", icon: "user" }]
     : me.role === "KONTEN"
     ? [{ href: "/app/konten", label: "Konten", icon: "grid" }, { href: "/app/akun", label: "Akun", icon: "user" }]
     : owner

@@ -752,8 +752,8 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("S5 pemilik membuat akun Admin konten tanpa cabang", /dibuat/.test(await buat("Pak Konten Uji", "konten.uji@uji.id", "KONTEN")));
     ok("S6 pemilik membuat Admin pusat (akses penuh)", /dibuat/.test(await buat("Admin Dua Uji", "admin2.uji@uji.id", "SUPER_ADMIN")));
     const hr = await login(browser, "hrd.uji@uji.id", "Sandi2026a");
-    await hr.page.waitForURL(/\/app\/lamaran/, { timeout: 10000 }).catch(() => {});
-    ok("S7 HRD masuk dan langsung ke daftar lamaran", hr.loggedIn && /\/app\/lamaran/.test(hr.page.url()), hr.page.url());
+    await hr.page.waitForURL(/\/app\/rekrutmen/, { timeout: 10000 }).catch(() => {});
+    ok("S7 HRD masuk dan langsung ke dashboard rekrutmen", hr.loggedIn && /\/app\/rekrutmen/.test(hr.page.url()), hr.page.url());
     await hr.page.goto(`${BASE}/app/konten`, { waitUntil: "networkidle" });
     ok("S8 HRD tidak bisa membuka menu Konten", !/\/app\/konten/.test(hr.page.url()));
     await hr.page.goto(`${BASE}/app/petugas`, { waitUntil: "networkidle" });
@@ -864,6 +864,47 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await l.goto(`${BASE}/masuk?e=google-belum`, { waitUntil: "networkidle" });
     ok("T15 pesan akun Google belum terdaftar tampil jelas", /belum terdaftar sebagai petugas/.test(await l.locator(".err").innerText().catch(() => "")));
     await lg.close();
+  }
+
+  console.log("\n[U] Dashboard HRD, buka tutup lowongan, ekspor CSV");
+  {
+    const vc = await browser.newContext({ viewport: { width: 390, height: 844 } }); const v = await vc.newPage();
+    await v.goto(`${BASE}/karir?posisi=staf-gudang`, { waitUntil: "networkidle" });
+    await v.fill("#nama", "=SUM(1+1) Uji Rumus"); await v.fill("#hp", "0812 6666 0001"); await v.fill("#kota", "Makassar");
+    await v.setInputFiles("#cvFile", { name: "cv.pdf", mimeType: "application/pdf", buffer: Buffer.from("%PDF-1.4 uji rumus") }); await v.waitForTimeout(500);
+    await v.getByRole("button", { name: "Kirim lamaran" }).click(); await v.waitForSelector(".nilai.done", { timeout: 20000 }).catch(() => {});
+    await vc.close();
+    const hr = await login(browser, "hrd.uji@uji.id", "Sandi2026a", { width: 1366, height: 900 });
+    await hr.page.waitForURL(/\/app\/rekrutmen/, { timeout: 10000 }).catch(() => {});
+    ok("U1 HRD langsung masuk ke dashboard rekrutmen", /\/app\/rekrutmen/.test(hr.page.url()), hr.page.url());
+    await hr.page.waitForSelector(".kpi", { timeout: 20000 }).catch(() => {});
+    const teks = await hr.page.locator("main").innerText();
+    ok("U2 dashboard memuat kartu ringkasan, alur seleksi, dan tren", (await hr.page.locator(".kpi").count()) === 5 && /Alur seleksi/.test(teks) && /Pelamar masuk, 14 hari/.test(teks) && (await hr.page.locator("svg.trend rect").count()) === 14);
+    ok("U3 dashboard memuat 12 posisi dengan tombol buka/tutup", (await hr.page.locator(".posrow").count()) === 12 && (await hr.page.locator(".switch").count()) === 12);
+    await hr.page.screenshot({ path: `${OUT}/e2e-dashboard-hrd.png`, fullPage: true });
+    await noOverflow(hr.page, "dashboard rekrutmen (desktop)");
+    const sw = hr.page.getByRole("switch", { name: /Tutup lowongan Staf Gudang/ });
+    await sw.click(); await hr.page.waitForTimeout(1500);
+    ok("U4 menutup lowongan mengubah tombol menjadi Ditutup", (await hr.page.getByRole("switch", { name: /Buka lowongan Staf Gudang/ }).count()) === 1);
+    const pub = await browser.newContext({ viewport: { width: 390, height: 844 } }); const pg = await pub.newPage();
+    await pg.goto(`${BASE}/karir`, { waitUntil: "networkidle" });
+    ok("U5 halaman karir menandai posisi yang ditutup dan menonaktifkannya di formulir", (await pg.locator("details.card", { hasText: "Staf Gudang" }).locator(".closedtag").count()) === 1 && (await pg.locator("#posisi option[value='staf-gudang'][disabled]").count()) === 1);
+    await pub.close();
+    await hr.page.getByRole("switch", { name: /Buka lowongan Staf Gudang/ }).click(); await hr.page.waitForTimeout(1500);
+    ok("U6 membuka kembali lowongan", (await hr.page.getByRole("switch", { name: /Tutup lowongan Staf Gudang/ }).count()) === 1);
+    const csv = await hr.ctx.request.get(`${BASE}/app/ekspor/lamaran`);
+    const body = await csv.text();
+    ok("U7 ekspor CSV lamaran berisi data dan bisa dibuka Excel (BOM, tipe berkas)", csv.status() === 200 && /text\/csv/.test(csv.headers()["content-type"] || "") && body.charCodeAt(0) === 0xfeff && /Budi Uji Karir/.test(body));
+    ok("U8 ekspor CSV mencegah rumus Excel berbahaya (sel diawali = diberi petik)", /"'=SUM\(1\+1\) Uji Rumus"/.test(body) && !/,"=SUM/.test(body), body.split("\n").find((l) => /Rumus/.test(l)) || "");
+    const mi = await hr.ctx.request.get(`${BASE}/app/ekspor/calon-mitra`);
+    ok("U9 HRD tidak boleh mengunduh data calon mitra", mi.status() === 403, String(mi.status()));
+    await hr.ctx.close();
+    const nf = await fetch(`${BASE}/halaman-yang-tidak-ada-123`); const nft = await nf.text();
+    ok("U11 halaman tidak ditemukan tampil ramah dalam bahasa Indonesia dengan jalan keluar", nf.status === 404 && /Halaman tidak ditemukan/.test(nft) && /Ke beranda/.test(nft) && !/This page could not be found/.test(nft), String(nf.status));
+    const gb = await fetch(`${BASE}/`); const gbt = await gb.text();
+    ok("U12 beranda: bagian Gabung hanya berisi kartu mitra dan tim (tanpa kartu panduan di bawahnya)", /Daftar jadi mitra/.test(gbt) && /Lihat lowongan/.test(gbt) && !/Baca panduan/.test(gbt));
+    const anon = await fetch(`${BASE}/app/ekspor/lamaran`, { redirect: "manual" });
+    ok("U10 ekspor tanpa login dialihkan ke halaman masuk", anon.status >= 300 && anon.status < 400, String(anon.status));
   }
 
   await browser.close();

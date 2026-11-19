@@ -14,6 +14,7 @@ const ITEMS = [
   { href: "/app/konten", icon: "grid", t: "Konten website", d: "Unggah dan atur foto dokumentasi dan testimoni yang tampil di beranda." },
   { href: "/app/catatan", icon: "clock", t: "Catatan aktivitas", d: "Siapa mengubah apa dan kapan: akun, tarif, lamaran, konten." },
   { href: "/app/calon-mitra", icon: "store", t: "Calon mitra", d: "Pendaftar mitra dari website: hubungi, survei, dan catat statusnya." },
+  { href: "/app/rekrutmen", icon: "chart", t: "Dashboard rekrutmen", d: "Pelamar masuk, alur seleksi, waktu respon, dan buka tutup lowongan per posisi." },
   { href: "/app/lamaran", icon: "users", t: "Lamaran kerja", d: "Pelamar dari halaman karir: baca CV, hubungi lewat WhatsApp, dan catat statusnya." },
   { href: "/app/petugas", icon: "users", t: "Petugas", d: "Buat akun, ganti sandi, atau nonaktifkan kurir, gudang, kasir, dan lainnya." },
   { href: "/app/tarif", icon: "tag", t: "Tarif dan rute", d: "Ubah harga, minimal berat, dan jadwal. Website langsung memakai harga baru." },

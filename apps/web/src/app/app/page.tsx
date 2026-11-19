@@ -7,7 +7,7 @@ import { staffRpc, getMe, type Staff } from "@/lib/supabase/server";
 export default async function Beranda({ searchParams }: { searchParams: Promise<{ s?: string; q?: string; n?: string }> }) {
   const sp = await searchParams;
   const who = (await getMe()).data;
-  if (who?.role === "HRD") redirect("/app/lamaran");
+  if (who?.role === "HRD") redirect("/app/rekrutmen");
   if (who?.role === "KONTEN") redirect("/app/konten");
   if (who?.role === OWNER_ROLE) {
     const o = await staffRpc<OwnerData>("owner_dashboard", { p_days: 30 });

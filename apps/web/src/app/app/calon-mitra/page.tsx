@@ -16,6 +16,7 @@ export default async function CalonMitra({ searchParams }: { searchParams: Promi
       <h1>Calon mitra</h1>
       <p className="muted" style={{ marginTop: -6 }}>Pendaftar dari halaman <Link href="/mitra">/mitra</Link>. Ketuk Chat untuk menghubungi, pesan sudah terisi.</p>
       {q.error && <div className="err">{q.error}</div>}
+      <p style={{ margin: 0 }}><a href="/app/ekspor/calon-mitra">Unduh Excel (CSV)</a></p>
       <div className="fchips" role="tablist" aria-label="Status">
         <Link href="/app/calon-mitra" className={`fchip ${!status ? "on" : ""}`}>Semua <b>{total}</b></Link>
         {Object.entries(STATUS_MITRA).map(([k, v]) => <Link key={k} href={`/app/calon-mitra?s=${k}`} className={`fchip ${status === k ? "on" : ""}`}>{v}{q.data?.counts?.[k] ? <b>{q.data.counts[k]}</b> : null}</Link>)}
