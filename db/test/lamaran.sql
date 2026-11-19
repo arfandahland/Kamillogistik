@@ -37,3 +37,14 @@ END $$;
 SELECT t.fails($$select public.staff_application_set(gen_random_uuid(),'BARU',NULL)$$, 'tidak ditemukan');
 SELECT t.fails($$select public.staff_application_set(current_setting('t.app')::uuid,'NGAWUR',NULL)$$, 'Status tidak dikenal');
 RESET ROLE;
+-- HRD/Pemilik bisa menghapus lamaran
+SELECT t.as_anon();
+SELECT t.fails($$select public.staff_application_delete(gen_random_uuid())$$, 'permission denied');
+SELECT t.fails($$select public.public_apply('admin-sales','Dewi Lestari','081200000077',NULL,'Palu',NULL,NULL,NULL,'a.pdf','application/pdf','data:application/pdf;base64,JVBERi0' || repeat('A', 1100000))$$, 'terlalu besar');
+SELECT t.as_user('00000000-0000-0000-0000-000000000001');
+DO $$ DECLARE id uuid; BEGIN
+  id := (public.staff_applications()->'items'->0->>'id')::uuid;
+  PERFORM public.staff_application_delete(id);
+  ASSERT NOT EXISTS (SELECT 1 FROM jsonb_array_elements(public.staff_applications()->'items') x WHERE x->>'id' = id::text), 'lamaran terhapus';
+END $$;
+RESET ROLE;

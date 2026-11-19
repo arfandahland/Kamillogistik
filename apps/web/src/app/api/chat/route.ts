@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
-import { handleTrack, jawab, type ChatCtx, type PublicTrack } from "@kamil/core";
-import { repo, publicRepo } from "@/lib/repo";
+import { jawab, type ChatCtx, type PublicTrack } from "@kamil/core";
+import { publicRepo } from "@/lib/repo";
+import { lacakDenganJaga } from "@/lib/lacakGuard";
 import { waLink } from "@/lib/brand";
 
 export const dynamic = "force-dynamic";
@@ -21,7 +22,7 @@ export async function POST(req: Request) {
   try {
     const r = await jawab({
       routes: () => publicRepo.listRoutes(),
-      track: async (resi) => { const t = await handleTrack(repo, resi); return t.status === 200 ? (t.body as PublicTrack) : null; },
+      track: async (resi) => { const t = await lacakDenganJaga(resi); return t.status === 200 ? (t.body as PublicTrack) : null; },
       waLink,
     }, message, ctx);
     return NextResponse.json(r, { headers: { "cache-control": "no-store" } });

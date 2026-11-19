@@ -1,7 +1,7 @@
 "use client";
 import { useState, useTransition } from "react";
 import { LABEL_STATUS_LAMARAN, STATUS_LAMARAN, type StatusLamaran } from "@kamil/core";
-import { ubahLamaran } from "@/app/app/lamaran/actions";
+import { hapusLamaran, ubahLamaran } from "@/app/app/lamaran/actions";
 import { waNumber } from "@/lib/publicRpc";
 
 export type Lamaran = { id: string; code: string; position: string; name: string; phone: string; email: string | null; city: string; experience: string | null; sim: string | null; note: string | null; status: StatusLamaran; hrdNote: string | null; cvName: string; cvType: string; createdAt: string };
@@ -31,6 +31,7 @@ export default function LamaranKartu({ a, posisi, pesan }: { a: Lamaran; posisi:
       </select>
       <label className="f" htmlFor={`c-${a.id}`}>Catatan HRD</label>
       <textarea id={`c-${a.id}`} rows={2} maxLength={500} value={cat} onChange={(e) => setCat(e.target.value)} onBlur={() => cat !== (a.hrdNote ?? "") && simpan(st)} placeholder="Contoh: wawancara Senin 10.00" />
+      <button type="button" className="btn ghost" style={{ borderColor: "var(--danger)", color: "var(--danger)" }} disabled={pending} onClick={() => { if (confirm(`Hapus lamaran ${a.name}? CV ikut terhapus dan tidak bisa dikembalikan.`)) start(async () => { const r = await hapusLamaran(a.id); if (!r.ok) setErr(r.error ?? "Gagal."); }); }}>Hapus lamaran</button>
       {err && <div className="err">{err}</div>}{saved && <span className="hint">Tersimpan.</span>}
     </article>
   );

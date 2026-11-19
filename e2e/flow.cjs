@@ -766,8 +766,11 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("S11 Admin konten tidak bisa membuka Lamaran", !/\/app\/lamaran/.test(kn.page.url()));
     await kn.page.goto(`${BASE}/app/konten`, { waitUntil: "networkidle" });
     ok("S12 tersedia tombol salin foto bawaan", (await kn.page.getByRole("button", { name: /Salin 5 foto bawaan/ }).count()) === 1);
-    await kn.page.getByRole("button", { name: /Salin 5 foto bawaan/ }).click();
-    await kn.page.waitForSelector("details.admitem", { timeout: 60000 }).catch(() => {});
+    for (let t = 0; t < 3 && (await kn.page.locator("details.admitem").count()) === 0; t++) { // klik ulang bila halaman belum selesai hidrasi
+      const tb = kn.page.getByRole("button", { name: /Salin 5 foto bawaan|Menyalin/ }); if (await tb.count()) await tb.first().click().catch(() => {});
+      await kn.page.waitForSelector("details.admitem", { timeout: 25000 }).catch(() => {});
+      if ((await kn.page.locator("details.admitem").count()) === 0) await kn.page.goto(`${BASE}/app/konten`, { waitUntil: "networkidle" });
+    }
     ok("S13 5 foto bawaan tersalin ke daftar", (await kn.page.locator("details.admitem").count()) === 5, String(await kn.page.locator("details.admitem").count()));
     // unggah satu foto baru (PNG kecil), lalu geser, sembunyikan, hapus
     const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mNk+M9Qz0AEYBxVSF+FABJADveWkH6oAAAAAElFTkSuQmCC", "base64");

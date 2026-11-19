@@ -85,3 +85,11 @@ Beranda, daftar rute `/ekspedisi`, dan satu halaman per rute (misalnya `/ekspedi
 ## Yang masih perlu Anda siapkan
 1. Konfirmasi tarif (lihat daftar pertanyaan di README).
 2. Nomor WhatsApp Business untuk notifikasi otomatis (fase berikutnya).
+
+## Lowongan kerja, konten website, dan akun baru
+
+- **Tautan lowongan:** `https://kamillogistik.com/karir`. Pelamar memilih posisi, mengisi formulir, dan mengunggah CV. Setelah terkirim, ada tombol WhatsApp ke HRD dengan pesan terisi. CV disimpan privat di sistem.
+- **Menu Lamaran kerja** (Pemilik, Admin pusat, atau akun HRD): buka CV, hubungi pelamar lewat tombol Chat, atur status (Baru, Dihubungi, Wawancara, Diterima, Tidak lolos), tulis catatan, atau hapus lamaran.
+- **Menu Konten website** (Pemilik, Admin pusat, atau akun Admin konten): unggah foto dokumentasi/testimoni untuk slider beranda, atur urutan, sembunyikan, ubah keterangan, atau hapus. Hanya tayangkan foto yang pelanggannya setuju dan tanpa data pribadi yang terlihat.
+- **Menu Petugas, Peran baru:** *HRD* (hanya Lamaran kerja), *Admin konten* (hanya Konten website), *Admin pusat* (akses penuh seperti Pemilik, berikan dengan hati-hati). Ketiganya tidak terikat cabang.
+- **Catatan aktivitas** (Kelola): jejak siapa mengubah apa dan kapan. Tidak bisa diubah atau dihapus.

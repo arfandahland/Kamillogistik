@@ -3,7 +3,7 @@ import { useState, useTransition } from "react";
 import { POSISI, KELOMPOK_POSISI, posisiDari, HRD_WA_TAMPIL } from "@kamil/core";
 import { kirimLamaran, type LamarHasil } from "@/app/(publik)/karir/aksi";
 
-const MAKS_PDF = 1_000_000;
+const MAKS_PDF = 800_000;
 
 /** Foto CV dikecilkan di HP supaya cepat terkirim (maks 1600 px, JPEG). */
 async function kecilkan(file: File): Promise<string> {
@@ -14,7 +14,7 @@ async function kecilkan(file: File): Promise<string> {
     const c = document.createElement("canvas"); c.width = Math.round(img.width * sk); c.height = Math.round(img.height * sk);
     c.getContext("2d")!.drawImage(img, 0, 0, c.width, c.height);
     let q = 0.8, d = c.toDataURL("image/jpeg", q);
-    while (d.length > 1_300_000 && q > 0.4) { q -= 0.1; d = c.toDataURL("image/jpeg", q); }
+    while (d.length > 1_000_000 && q > 0.4) { q -= 0.1; d = c.toDataURL("image/jpeg", q); }
     return d;
   } finally { URL.revokeObjectURL(url); }
 }
@@ -33,7 +33,7 @@ export default function LamarForm({ awal }: { awal?: string }) {
     if (!f) return;
     try {
       if (f.type === "application/pdf") {
-        if (f.size > MAKS_PDF) { setErr("PDF terlalu besar (maksimal 1 MB). Kecilkan dulu atau foto saja CV-nya."); return; }
+        if (f.size > MAKS_PDF) { setErr("PDF terlalu besar (maksimal 800 KB). Kecilkan dulu atau foto saja CV-nya."); return; }
         setCv({ nama: f.name, jenis: f.type, data: await bacaPdf(f) });
       } else if (/^image\/(jpeg|png|webp|heic)/.test(f.type) || /\.(jpe?g|png|webp)$/i.test(f.name)) {
         setCv({ nama: f.name.replace(/\.[^.]+$/, "") + ".jpg", jenis: "image/jpeg", data: await kecilkan(f) });
@@ -80,7 +80,7 @@ export default function LamarForm({ awal }: { awal?: string }) {
       </>}
       <label className="f" htmlFor="pengalaman">Pengalaman kerja (singkat)</label>
       <textarea id="pengalaman" name="pengalaman" rows={3} maxLength={600} placeholder="Contoh: 2 tahun admin gudang di PT …" />
-      <label className="f" htmlFor="cvFile">CV (PDF atau foto, maksimal 1 MB)</label>
+      <label className="f" htmlFor="cvFile">CV (PDF atau foto, maksimal 800 KB)</label>
       <input id="cvFile" name="cvFile" type="file" accept="application/pdf,image/*" onChange={(e) => pilihBerkas(e.target.files?.[0])} />
       {cv && <p className="hint" style={{ margin: 0 }}>Siap dikirim: {cv.nama}</p>}
       <label className="f" htmlFor="catatan">Catatan untuk HRD (boleh kosong)</label>

@@ -881,3 +881,4 @@ a.card, a.card:hover { text-decoration: none; }
 a.card.lift { display: block; }
 .trute { display: inline-block; justify-self: start; padding: 3px 10px; border-radius: 99px; background: var(--teal-soft); color: var(--teal-dark); font-weight: 800; font-size: .8rem; }
 .tslide figcaption b { font-size: 1.1rem; }
+@media (max-width: 389px) { .dialitem small, .tab { font-size: 12.5px; } }

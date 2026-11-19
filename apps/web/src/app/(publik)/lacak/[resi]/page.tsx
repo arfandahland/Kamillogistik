@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { handleTrack, parseResi, type PublicTrack } from "@kamil/core";
-import { repo } from "@/lib/repo";
+import { parseResi, type PublicTrack } from "@kamil/core";
+import { lacakDenganJaga } from "@/lib/lacakGuard";
 import { tanggal, tanggalWaktu, waLink } from "@/lib/brand";
 import ResiForm from "@/components/ResiForm";
 import NilaiForm from "@/components/NilaiForm";
@@ -14,7 +14,7 @@ type P = { params: Promise<{ resi: string }> };
 
 export async function generateMetadata({ params }: P): Promise<Metadata> {
   const resi = decodeURIComponent((await params).resi);
-  const r = await handleTrack(repo, resi);
+  const r = await lacakDenganJaga(resi);
   const t = r.status === 200 ? (r.body as PublicTrack) : null;
   const judul = t ? `Resi ${t.resi}: ${t.statusLabel}` : `Resi ${resi}`;
   const desk = t ? `${t.route.origin} → ${t.route.dest}. Pantau perjalanan barang Anda di Kamil Logistik, tanpa login.` : "Pantau perjalanan barang Anda di Kamil Logistik.";
@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: P): Promise<Metadata> {
 
 export default async function Track({ params }: P) {
   const resi = decodeURIComponent((await params).resi);
-  const r = await handleTrack(repo, resi);
+  const r = await lacakDenganJaga(resi);
 
   if (r.status !== 200) {
     return (

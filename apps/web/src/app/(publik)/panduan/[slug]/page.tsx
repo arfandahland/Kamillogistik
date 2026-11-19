@@ -10,7 +10,6 @@ import { abs } from "@/lib/site";
 import { waLink } from "@/lib/brand";
 
 export const revalidate = 300;
-export const dynamicParams = false;
 export const generateStaticParams = () => ARTIKEL.map((a) => ({ slug: a.slug }));
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
