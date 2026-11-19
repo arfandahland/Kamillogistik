@@ -18,7 +18,7 @@ export function waNumber(phone?: string | null): string | null {
 }
 
 /** Seperti publicRpc, tetapi mengembalikan pesan galat dari database (untuk formulir publik, misalnya penilaian). */
-export async function publicRpcResult<T = any>(fn: string, args: Record<string, unknown> = {}): Promise<{ data: T | null; error: string | null }> {
+export async function publicRpcResult<T = any>(fn: string, args: Record<string, unknown> = {}, tampilkan: RegExp = /nomor hp|resi|nilai|bintang|dinilai|diterima|komentar|angka/i): Promise<{ data: T | null; error: string | null }> {
   const url = process.env.SUPABASE_URL, key = process.env.SUPABASE_PUBLISHABLE_KEY;
   if (!url || !key) return { data: null, error: "Layanan belum siap." };
   try {
@@ -26,6 +26,6 @@ export async function publicRpcResult<T = any>(fn: string, args: Record<string, 
     const j = await r.json().catch(() => null);
     if (r.ok) return { data: j as T, error: null };
     const m = String((j as { message?: string } | null)?.message ?? "");
-    return { data: null, error: /nomor hp|resi|nilai|bintang|dinilai|diterima|komentar|angka/i.test(m) ? m : "Maaf, penilaian belum bisa disimpan. Coba lagi sebentar." };
+    return { data: null, error: tampilkan.test(m) ? m : "Maaf, data belum bisa disimpan. Coba lagi sebentar." };
   } catch { return { data: null, error: "Koneksi terputus. Coba lagi." }; }
 }

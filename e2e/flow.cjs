@@ -688,6 +688,49 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await pc.close();
   }
 
+  console.log("\n[R] Karir: formulir lamaran, CV privat, daftar untuk HRD");
+  {
+    const pc = await browser.newContext({ viewport: { width: 390, height: 844 } }); const p = await pc.newPage();
+    await p.goto(`${BASE}/karir`, { waitUntil: "networkidle" });
+    ok("R1 halaman karir memuat 12 posisi", (await p.locator("details.card").count()) === 12);
+    ok("R2 JSON-LD JobPosting ada", (await p.locator("script[type='application/ld+json']").allInnerTexts()).join("").includes("JobPosting"));
+    await noOverflow(p, "halaman karir (HP)");
+    await p.goto(`${BASE}/karir?posisi=driver-sim-b#formulir`, { waitUntil: "networkidle" });
+    ok("R3 posisi terpilih dari tautan dan kolom SIM muncul", (await p.locator("#posisi").inputValue()) === "driver-sim-b" && (await p.locator("#sim").count()) === 1);
+    let g = await act(p, p.getByRole("button", { name: "Kirim lamaran" }));
+    await p.fill("#nama", "Budi Uji Karir"); await p.fill("#hp", "0812 7777 0001"); await p.fill("#kota", "Makassar"); await p.fill("#sim", "B2 Umum");
+    await p.getByRole("button", { name: "Kirim lamaran" }).click({ force: true }); await p.waitForTimeout(800);
+    ok("R4 tanpa CV lamaran ditolak dengan pesan jelas", /Unggah CV/.test(await p.locator("#formulir .err").innerText().catch(() => "")));
+    await p.setInputFiles("#cvFile", { name: "cv-budi.pdf", mimeType: "application/pdf", buffer: Buffer.from("%PDF-1.4 uji cv budi") });
+    await p.waitForTimeout(500);
+    await p.getByRole("button", { name: "Kirim lamaran" }).click(); await p.waitForSelector(".nilai.done", { timeout: 15000 }).catch(() => {});
+    const done = await p.locator(".nilai.done").innerText().catch(() => "");
+    ok("R5 lamaran terkirim dengan kode KRR", /KRR-\d{6}-[A-F0-9]{4}/.test(done), done.slice(0, 120));
+    const wa = await p.locator(".nilai.done a.btn").getAttribute("href").catch(() => "");
+    ok("R6 tombol WhatsApp mengarah ke nomor HRD dengan pesan terisi", /^https:\/\/wa\.me\/6287767021005\?text=/.test(wa || "") && decodeURIComponent(wa).includes("Budi Uji Karir") && decodeURIComponent(wa).includes("Driver SIM B1"), wa);
+    const p2 = await pc.newPage(); await p2.goto(`${BASE}/karir?posisi=driver-sim-b&ulang=1#formulir`, { waitUntil: "domcontentloaded" });
+    await p2.fill("#nama", "Budi Uji Karir"); await p2.fill("#hp", "081277770001"); await p2.fill("#kota", "Makassar"); await p2.fill("#sim", "B2");
+    await p2.setInputFiles("#cvFile", { name: "cv.pdf", mimeType: "application/pdf", buffer: Buffer.from("%PDF-1.4 lagi") }); await p2.waitForTimeout(500);
+    await p2.getByRole("button", { name: "Kirim lamaran" }).click(); await p2.waitForSelector("#formulir .err", { timeout: 10000 }).catch(() => {});
+    ok("R7 lamaran ganda untuk posisi sama ditolak", /sudah kami terima/.test(await p2.locator("#formulir .err").innerText().catch(() => "")));
+    const anon = await pc.request.get(`${BASE}/app/cv/00000000-0000-0000-0000-000000000000`, { maxRedirects: 0 });
+    ok("R8 CV tidak bisa dibuka tanpa login", anon.status() !== 200);
+    await pc.close();
+    const hr = await login(browser, "owner@uji.id", "Pemilik2026x", { width: 390, height: 844 });
+    await hr.page.goto(`${BASE}/app/lamaran`, { waitUntil: "networkidle" });
+    ok("R9 pemilik/HRD melihat pelamar di daftar", /Budi Uji Karir/.test(await hr.page.locator("main").innerText()));
+    ok("R10 tombol chat pelamar memakai nomor pelamar", (await hr.page.locator("a[href^='https://wa.me/6281277770001']").count()) === 1);
+    const href = await hr.page.locator("a:has-text('Buka CV')").first().getAttribute("href");
+    const cvr = await hr.ctx.request.get(`${BASE}${href}`);
+    ok("R11 CV terbuka sebagai PDF untuk HRD", cvr.status() === 200 && /pdf/.test(cvr.headers()["content-type"] || "") && (await cvr.text()).includes("uji cv budi"));
+    await hr.page.selectOption("select[id^='s-']", "WAWANCARA"); await hr.page.waitForTimeout(1200);
+    await hr.page.goto(`${BASE}/app/lamaran?s=WAWANCARA`, { waitUntil: "networkidle" });
+    ok("R12 status berubah dan filter bekerja", /Budi Uji Karir/.test(await hr.page.locator("main").innerText()));
+    await noOverflow(hr.page, "daftar lamaran (HP)");
+    await hr.page.screenshot({ path: `${OUT}/e2e-lamaran.png`, fullPage: true });
+    await hr.ctx.close();
+  }
+
   await browser.close();
   const fail = results.filter((r) => !r.ok);
   console.log(`\n==== HASIL: ${results.length - fail.length}/${results.length} lolos ====`);
