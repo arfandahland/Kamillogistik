@@ -6,41 +6,52 @@ import JsonLd from "@/components/JsonLd";
 import { getRoutePairs } from "@/lib/routes";
 import { breadcrumbLd, faqLd, organizationLd, serviceLd } from "@/lib/seo";
 import { waLink } from "@/lib/brand";
-import { buildFaq, cityInfo, optionName, priceLabel, relatedPairs, routeIntro, unitLabel } from "@kamil/core";
+import WilayahPage from "@/components/WilayahPage";
+import { buildFaq, cityInfo, kelompokWilayah, KETERANGAN_TARIF, optionName, posisiHarga, priceLabel, relatedPairs, routeIntro, unitLabel, wilayahDariPath, wilayahPath, WILAYAH } from "@kamil/core";
 
 /** Halaman rute otomatis: /ekspedisi-jakarta-makassar dibuat dari data rute. Rute baru dari Pemilik langsung punya halaman. */
 export const revalidate = 300;
 export const dynamicParams = true;
 
 export async function generateStaticParams() {
-  return (await getRoutePairs()).map((p) => ({ slug: p.slug }));
+  const all = await getRoutePairs();
+  return [...all.map((p) => ({ slug: p.slug })), ...kelompokWilayah(all).map((k) => ({ slug: wilayahPath(k.wilayah) }))];
 }
 
 async function find(slug: string) {
   if (!slug.startsWith("ekspedisi-")) return null;
   const all = await getRoutePairs();
+  const w = wilayahDariPath(slug);
+  if (w) { const s = kelompokWilayah(all).find((k) => k.wilayah.slug === w.slug); return s ? ({ kind: "wilayah", wilayah: s, all } as const) : null; }
   const pair = all.find((p) => p.slug === slug);
-  return pair ? { pair, all } : null;
+  return pair ? ({ kind: "rute", pair, all } as const) : null;
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const f = await find((await params).slug);
   if (!f) return { title: "Rute tidak ditemukan", robots: { index: false } };
+  if (f.kind === "wilayah") {
+    const w = f.wilayah.wilayah; const d = `Tarif ekspedisi ke ${w.nama} mulai ${priceLabel(f.wilayah.termurah.minPrice)}: ${f.wilayah.pairs.length} kota tujuan, estimasi hari, dan cara hitung ongkir. Pantau resi tanpa login.`;
+    return { title: `Ekspedisi ke ${w.nama}: ${f.wilayah.pairs.length} Kota, Mulai ${priceLabel(f.wilayah.termurah.minPrice)}`, description: d.slice(0, 160), alternates: { canonical: `/${wilayahPath(w)}` },
+      openGraph: { type: "website", locale: "id_ID", title: `Ekspedisi ke ${w.nama} | Kamil Logistik`, description: d.slice(0, 160) }, twitter: { card: "summary_large_image" } };
+  }
   const { pair: p } = f;
   const desc = routeIntro(p).slice(0, 158);
   return {
     title: `Ekspedisi ${p.originCity} ke ${p.destCity}: Tarif Mulai ${priceLabel(p.minPrice)}`,
     description: desc,
     alternates: { canonical: `/${p.slug}` },
-    openGraph: { type: "website", locale: "id_ID", title: `Ekspedisi ${p.originCity} ke ${p.destCity} | Kamil Logistik`, description: desc, images: ["/og.png"] },
-    twitter: { card: "summary_large_image", images: ["/og.png"] },
+    openGraph: { type: "website", locale: "id_ID", title: `Ekspedisi ${p.originCity} ke ${p.destCity} | Kamil Logistik`, description: desc },
+    twitter: { card: "summary_large_image" },
   };
 }
 
 export default async function RoutePage({ params }: { params: Promise<{ slug: string }> }) {
   const f = await find((await params).slug);
   if (!f) notFound();
+  if (f.kind === "wilayah") { const sem = kelompokWilayah(f.all); return <WilayahPage s={f.wilayah} lain={sem.filter((k) => k.wilayah.slug !== f.wilayah.wilayah.slug)} />; }
   const { pair: p, all } = f;
+  const pos = posisiHarga(p, all);
   const faq = buildFaq(p);
   const related = relatedPairs(all, p);
   const kgOpt = p.minPrice.basis === "PER_KG" ? p.minPrice : p.options.find((o) => o.basis === "PER_KG");
@@ -84,6 +95,17 @@ export default async function RoutePage({ params }: { params: Promise<{ slug: st
         <h2 id="tentang">Tentang rute ini</h2>
         <p className="muted">{cityInfo(p.originCity)}</p>
         <p className="muted">{cityInfo(p.destCity)}</p>
+        {pos && pos.total > 1 && (
+          <p className="muted">
+            Di {pos.wilayah.nama}, {p.destCity} berada di urutan {pos.urut} dari {pos.total} kota tujuan dari {p.originCity} berdasarkan tarif per kilo{pos.urut === 1 ? " (termurah)" : `; yang termurah adalah ${pos.termurah.destCity} (${priceLabel(pos.termurah.minPrice)})`}.
+            {" "}Lihat semua tujuan di <Link href={`/${wilayahPath(pos.wilayah)}`}>ekspedisi ke {pos.wilayah.nama}</Link>.
+          </p>
+        )}
+      </section>
+
+      <section className="card" aria-labelledby="ket">
+        <h2 id="ket">Keterangan tarif</h2>
+        <ul className="ketlist">{KETERANGAN_TARIF.map((k) => <li key={k}>{k}</li>)}</ul>
       </section>
 
       <section aria-labelledby="faq">

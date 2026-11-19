@@ -5,7 +5,7 @@ import { kirimNilai } from "@/app/(publik)/lacak/aksi";
 const TEKS = ["", "Kurang baik", "Cukup", "Baik", "Sangat baik", "Luar biasa"];
 
 /** Penilaian satu ketukan setelah barang diterima. Verifikasi: 4 angka terakhir nomor HP di resi. */
-export default function NilaiForm({ resi }: { resi: string }) {
+export default function NilaiForm({ resi, ulasanUrl }: { resi: string; ulasanUrl?: string }) {
   const [n, setN] = useState(0);
   const [hov, setHov] = useState(0);
   const [err, setErr] = useState("");
@@ -13,7 +13,7 @@ export default function NilaiForm({ resi }: { resi: string }) {
   const [hp, setHp] = useState("");
   const [ok, setOk] = useState(false);
   const [pending, start] = useTransition();
-  if (ok) return <div className="card nilai done"><b>Terima kasih atas penilaian Anda!</b><p className="muted" style={{ margin: "4px 0 0" }}>Masukan Anda membantu kami melayani lebih baik.</p></div>;
+  if (ok) return <div className="card nilai done"><b>Terima kasih atas penilaian Anda!</b><p className="muted" style={{ margin: "4px 0 0" }}>Masukan Anda membantu kami melayani lebih baik.</p>{ulasanUrl && n >= 4 && <a className="btn" style={{ marginTop: 10 }} href={ulasanUrl} target="_blank" rel="noopener noreferrer">★ Bagikan ulasan di Google</a>}</div>;
   const tampil = hov || n;
   return (
     <form className="card nilai" action={(fd) => { setErr(""); fd.set("bintang", String(n)); fd.set("resi", resi); start(async () => { const r = await kirimNilai(fd); if (r.ok) setOk(true); else setErr(r.error ?? "Gagal."); }); }}>

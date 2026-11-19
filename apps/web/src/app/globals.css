@@ -843,3 +843,7 @@ details.admitem .admbody { padding: 4px 18px 18px; border-top: 1px dashed var(--
 .rc-price { font-size: 12.5px; }
 .loginhelp a, .masuk a[href^="https://wa.me"] { display: inline-flex; align-items: center; min-height: 44px; }
 .foot a { display: inline-flex; align-items: center; min-height: 44px; }
+.tbl-scroll { overflow-x: auto; margin: 0 -4px; padding: 0 4px; } .tbl-scroll table { min-width: 440px; } .ketlist { margin: 6px 0 0; padding-left: 20px; color: var(--muted); } .ketlist li { margin: 4px 0; }
+
+.wilchips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; } .wilchips .tag { min-height: 44px; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
+footer.pub .footwil { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 12px; margin: 6px 0 10px; font-size: 13.5px; } footer.pub .footwil a { color: #bff3e4; display: inline-flex; align-items: center; min-height: 44px; }

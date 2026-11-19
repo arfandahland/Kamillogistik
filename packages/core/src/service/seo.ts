@@ -86,6 +86,7 @@ export function buildFaq(p: RoutePair): Faq[] {
       "Anda bisa mencoba sendiri di halaman Hitung Ongkir."].filter(Boolean).join(" ") },
     { q: "Bagaimana cara memantau barang saya?", a: "Setelah barang dijemput, Anda mendapat nomor resi. Masukkan nomor resi di halaman Cek Resi untuk melihat tahap pengiriman kapan saja, tanpa perlu login." },
     { q: "Bagaimana cara membayar?", a: "Pembayaran lewat transfer ke rekening Kamil Logistik atau tunai, setelah barang ditimbang. Anda menerima invoice resmi yang bisa dibuka dan dicetak dari tautan." },
+    { q: "Apa saja yang belum termasuk dalam tarif?", a: "Tarif belum termasuk asuransi barang, pajak yang berlaku (sebesar 1,1% bila dikenakan), serta biaya bongkar muat dan biaya lain di lokasi. Harga masih dapat dinegosiasikan, terutama untuk pengiriman dalam jumlah besar." },
   ];
   return faq;
 }

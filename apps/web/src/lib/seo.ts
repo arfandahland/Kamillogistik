@@ -13,6 +13,21 @@ export const organizationLd = () => ({
   contactPoint: [{ "@type": "ContactPoint", telephone: `+${BRAND.whatsappNumber}`, contactType: "customer service", areaServed: "ID", availableLanguage: ["Indonesian"] }],
 });
 
+export const localBusinessLd = () => ({
+  "@context": "https://schema.org", "@type": "LocalBusiness", "@id": `${SITE_URL}/#gudang-jakarta`, name: `${BRAND.name} Express, Gudang Jakarta`,
+  description: "Jasa ekspedisi dan cargo: gudang dan titik layanan Kamil Logistik di Jakarta Selatan untuk pengiriman barang ke seluruh Sulawesi, Papua, dan Maluku.",
+  url: SITE_URL, image: abs("/og.png"), logo: abs("/logo.png"), telephone: `+${BRAND.whatsappNumber}`, priceRange: "Rp2.500 - Rp10.000 per kg", parentOrganization: { "@id": orgId },
+  address: { "@type": "PostalAddress", streetAddress: BRAND.alamat.jalan, addressLocality: `${BRAND.alamat.kelurahan}, ${BRAND.alamat.kecamatan}, ${BRAND.alamat.kota}`, addressRegion: BRAND.alamat.provinsi, postalCode: BRAND.alamat.pos, addressCountry: "ID" },
+  openingHoursSpecification: [{ "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], opens: "00:00", closes: "23:59" }],
+  areaServed: [{ "@type": "AdministrativeArea", name: "Sulawesi" }, { "@type": "AdministrativeArea", name: "Papua" }, { "@type": "AdministrativeArea", name: "Maluku" }],
+  hasMap: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${BRAND.alamat.jalan}, ${BRAND.alamat.kelurahan}, ${BRAND.alamat.kota} ${BRAND.alamat.pos}`)}`,
+});
+
+export const itemListLd = (nama: string, items: { name: string; path: string }[]) => ({
+  "@context": "https://schema.org", "@type": "ItemList", name, numberOfItems: items.length,
+  itemListElement: items.map((it, i) => ({ "@type": "ListItem", position: i + 1, name: it.name, url: abs(it.path) })),
+});
+
 export const websiteLd = () => ({
   "@context": "https://schema.org", "@type": "WebSite", url: SITE_URL, name: BRAND.name, inLanguage: "id-ID", publisher: { "@id": orgId },
   potentialAction: { "@type": "SearchAction", target: { "@type": "EntryPoint", urlTemplate: `${SITE_URL}/lacak/{search_term_string}` }, "query-input": "required name=search_term_string" },

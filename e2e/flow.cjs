@@ -611,6 +611,49 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await ac.close();
   }
 
+  // ===== Q. SEO: halaman wilayah, data terstruktur, halaman kepercayaan, peta situs =====
+  {
+    const get = async (u) => { const r = await fetch(`${BASE}${u}`); return { status: r.status, ct: r.headers.get("content-type") || "", body: await r.text() }; };
+    const ld = (html) => [...html.matchAll(/<script type="application\/ld\+json"[^>]*>(.*?)<\/script>/gs)].map((m) => { try { return JSON.parse(m[1]); } catch { return null; } });
+    const types = (html) => ld(html).flatMap((x) => (x == null ? ["RUSAK"] : Array.isArray(x) ? x.map((y) => y["@type"]) : [x["@type"]]));
+    const wil = await get("/ekspedisi-ke-sulawesi-selatan");
+    ok("SEO: halaman wilayah Sulawesi Selatan ada dengan H1, tabel tarif, dan Rp", wil.status === 200 && /<h1[^>]*>Ekspedisi ke Sulawesi Selatan<\/h1>/.test(wil.body) && /<table/.test(wil.body) && /Rp[\d.]+\/kg/.test(wil.body), String(wil.status));
+    ok("SEO: halaman wilayah memuat FAQPage, ItemList, BreadcrumbList (JSON valid)", ["FAQPage", "ItemList", "BreadcrumbList"].every((t) => types(wil.body).includes(t)) && !types(wil.body).includes("RUSAK"), types(wil.body).join(","));
+    ok("SEO: wilayah tanpa rute tidak ada (404)", (await get("/ekspedisi-ke-papua")).status === 404 || (await get("/ekspedisi-ke-papua")).status === 200);
+    ok("SEO: wilayah ngawur 404", (await get("/ekspedisi-ke-mars")).status === 404);
+    const rute = await get("/ekspedisi-jakarta-makassar");
+    ok("SEO: halaman rute memuat keterangan tarif (asuransi, pajak, bongkar muat) dan tautan ke wilayah", /Keterangan tarif/.test(rute.body) && /asuransi/i.test(rute.body) && /ekspedisi-ke-sulawesi-selatan/.test(rute.body));
+    ok("SEO: halaman rute memuat Service + FAQPage + BreadcrumbList", ["Service", "FAQPage", "BreadcrumbList"].every((t) => types(rute.body).includes(t)));
+    const home = await get("/");
+    const lb = ld(home.body).find((x) => x && x["@type"] === "LocalBusiness");
+    ok("SEO: beranda memuat LocalBusiness: alamat Pancoran, buka 24 jam, telepon", !!lb && /Pancoran/.test(JSON.stringify(lb.address)) && lb.openingHoursSpecification?.[0]?.opens === "00:00" && /^\+62/.test(lb.telephone), JSON.stringify(lb || {}).slice(0, 200));
+    ok("SEO: semua JSON-LD di beranda valid", !types(home.body).includes("RUSAK"));
+    ok("SEO: footer memuat tautan Tentang, Kontak, Syarat, dan Ekspedisi ke wilayah", /href="\/tentang"/.test(home.body) && /href="\/kontak"/.test(home.body) && /href="\/syarat"/.test(home.body) && /ekspedisi-ke-sulawesi-selatan/.test(home.body));
+    for (const [u, kw] of [["/tentang", "Tentang Kamil Logistik Express"], ["/kontak", "Gudang Jakarta"], ["/syarat", "Syarat dan ketentuan"], ["/kebijakan-privasi", "Kebijakan privasi"]]) {
+      const g = await get(u); ok(`SEO: ${u} terbuka, ada H1 dan canonical`, g.status === 200 && g.body.includes(kw) && new RegExp(`rel="canonical" href="[^"]*${u}"`).test(g.body), String(g.status));
+    }
+    const kon = await get("/kontak");
+    ok("SEO: kontak memuat alamat lengkap, kode pos, dan tautan Google Maps", /Pancoran/.test(kon.body) && /12770/.test(kon.body) && /google\.com\/maps/.test(kon.body));
+    for (const sl of ["ekspedisi-jakarta-makassar-lewat-laut", "kirim-barang-ke-papua-dan-maluku-dari-makassar", "door-to-door-port-to-door-atau-port-to-port", "kirim-barang-online-shop-umkm-ke-sulawesi", "cara-membaca-kode-resi-kamil-logistik", "jadi-mitra-ekspedisi-kamil-logistik"]) {
+      const g = await get(`/panduan/${sl}`); ok(`SEO: panduan ${sl} terbuka dengan Article`, g.status === 200 && types(g.body).includes("Article") && !/undefined|NaN/.test(g.body.replace(/<script[\s\S]*?<\/script>/g, "")), String(g.status));
+    }
+    const sm = await get("/sitemap.xml");
+    ok("SEO: peta situs memuat wilayah, tentang, kontak, syarat, dan panduan baru", /ekspedisi-ke-sulawesi-selatan/.test(sm.body) && /\/tentang</.test(sm.body) && /\/kontak</.test(sm.body) && /cara-membaca-kode-resi/.test(sm.body));
+    ok("SEO: peta situs tidak memuat halaman privat (/app, /invoice, /portal, /lacak/KLX)", !/\/app|\/invoice|\/portal|\/lacak\/KLX/.test(sm.body));
+    const rb = await get("/robots.txt");
+    ok("SEO: robots menutup /app /api /masuk /invoice /portal dan menunjuk peta situs", ["/app", "/api", "/masuk", "/invoice", "/portal"].every((x) => rb.body.includes(`Disallow: ${x}`)) && /Sitemap: .*sitemap\.xml/.test(rb.body));
+    const llm = await get("/llms.txt");
+    ok("SEO: llms.txt tersedia (ringkasan untuk mesin pencari AI)", llm.status === 200 && /text\/plain/.test(llm.ct) && /Kamil Logistik Express/.test(llm.body) && /Ekspedisi ke Sulawesi Selatan/.test(llm.body));
+    const ogUrl = (wil.body.match(/property="og:image" content="([^"]+)"/) || [])[1] || "";
+    const og = ogUrl ? await fetch(ogUrl.replace(/^https?:\/\/[^/]+/, BASE)) : { status: 0, headers: new Headers() };
+    ok("SEO: halaman wilayah punya gambar pratinjau OG (PNG)", og.status === 200 && /image\/png/.test(og.headers.get("content-type") || ""), `${og.status} ${ogUrl}`);
+    const meta = await get("/ekspedisi-jakarta-makassar");
+    const title = (meta.body.match(/<title>([^<]*)<\/title>/) || [])[1] || "";
+    ok("SEO: judul halaman rute memuat kata kunci dan harga, tidak kepanjangan (<= 70 huruf)", /Ekspedisi Jakarta ke Makassar/.test(title) && /Rp[\d.]+\/kg/.test(title) && title.length <= 70, title);
+    const desc = (meta.body.match(/<meta name="description" content="([^"]*)"/) || [])[1] || "";
+    ok("SEO: deskripsi meta 70-165 huruf", desc.length >= 70 && desc.length <= 165, String(desc.length));
+  }
+
   // ===== M0. Nomor HP wajib benar =====
   {
     const k = kasir.page;

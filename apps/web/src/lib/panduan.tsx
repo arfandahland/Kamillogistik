@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { priceLabel, type RoutePair } from "@kamil/core";
+import { priceLabel, wilayahSlug, type RoutePair } from "@kamil/core";
 
 /**
  * Panduan untuk pencarian informasional ("cara hitung ongkir cargo", "berapa lama kirim lewat laut", dst.).
@@ -193,6 +193,161 @@ export const ARTIKEL: Artikel[] = [
       </ul>
       <h2>Bila status lama tidak berubah</h2>
       <p>Status berubah saat petugas yang memegang barang mencatatnya, jadi selama pelayaran status bisa sama selama beberapa hari. Itu wajar. Bila terasa terlalu lama, tekan tombol <b>Tanya soal resi ini</b> di halaman hasil, dan tim kami akan mengecek. Bila ingin tahu perkiraan lama kirim, baca <Link href="/panduan/berapa-lama-kirim-barang-lewat-cargo-laut">tahapan pengiriman cargo laut</Link>.</p>
+    </>),
+  },
+  {
+    slug: "ekspedisi-jakarta-makassar-lewat-laut",
+    title: "Ekspedisi Jakarta ke Makassar Lewat Laut: Biaya dan Lama Kirim",
+    heading: "Ekspedisi Jakarta ke Makassar lewat laut: biaya, lama kirim, dan cara memilih",
+    description: "Panduan mengirim barang dari Jakarta ke Makassar lewat cargo laut: perkiraan biaya per kilo, minimal berat, lama pengiriman, dan hal yang perlu dibandingkan sebelum memilih ekspedisi.",
+    updated: "2026-11-19",
+    body: ({ pairs }) => (<>
+      <p>Jakarta ke Makassar adalah salah satu jalur cargo laut tersibuk ke Indonesia Timur. Karena banyak pilihan ekspedisi, harga dan syaratnya sering berbeda-beda. Berikut yang perlu Anda bandingkan.</p>
+      <h2>Berapa biayanya?</h2>
+      <p>Di Kamil Logistik, tarif Jakarta ke Makassar mulai <b>{harga(pairs, "ekspedisi-jakarta-makassar")}</b>, dengan perkiraan waktu sekitar <b>{hari(pairs, "ekspedisi-jakarta-makassar") ?? "beberapa"} hari</b>. Angka ini selalu mengikuti <Link href="/ekspedisi-jakarta-makassar">halaman rute Jakarta ke Makassar</Link>, jadi tidak perlu menebak. Ingin mencoba sendiri? Pakai <Link href="/ongkir?dari=JKT&ke=MKS">kalkulator ongkir</Link>.</p>
+      <h2>Lima hal yang perlu dibandingkan</h2>
+      <ol>
+        <li><b>Minimal berat.</b> Ada ekspedisi yang menetapkan minimal 10 kg, ada yang 30 kg atau lebih. Pengiriman kecil bisa terasa mahal bila minimalnya tinggi.</li>
+        <li><b>Cara hitung berat.</b> Pastikan memakai berat aktual atau berat volume mana yang lebih besar, dan tanyakan pembaginya. Di sini 4.000 untuk laut dan darat. Pelajari <Link href="/panduan/cara-hitung-ongkir-cargo">caranya</Link>.</li>
+        <li><b>Sampai mana barang diantar.</b> Sampai pelabuhan, sampai alamat, atau dijemput dan diantar. Harga yang sama bisa berarti layanan yang berbeda.</li>
+        <li><b>Yang belum termasuk.</b> Asuransi, pajak, dan bongkar muat di lokasi sering dihitung terpisah. Tanyakan sebelum setuju.</li>
+        <li><b>Pelacakan.</b> Pilih ekspedisi yang memberi nomor resi dan bisa dilacak tanpa harus bertanya ke admin.</li>
+      </ol>
+      <h2>Alur pengiriman</h2>
+      <p>Barang dijemput kurir atau diantar sendiri ke gudang, diperiksa dan ditimbang, dimuat ke kontainer, berlayar, dibongkar di Makassar, lalu diantar ke penerima dengan bukti terima berupa foto dan tanda tangan. Setiap tahap bisa dipantau lewat <Link href="/lacak">cek resi</Link>.</p>
+      <h2>Tips agar biaya pas</h2>
+      <ul>
+        <li>Gunakan kardus yang pas dengan isi. Rongga kosong ikut dihitung. Lihat <Link href="/panduan/cara-packing-barang-cargo-laut">cara packing barang untuk cargo laut</Link>.</li>
+        <li>Kirim dalam satu pengiriman bila memungkinkan, karena minimal berat berlaku per pengiriman.</li>
+        <li>Untuk jumlah besar atau rutin, tanyakan harga khusus lewat WhatsApp.</li>
+      </ul>
+    </>),
+  },
+  {
+    slug: "kirim-barang-ke-papua-dan-maluku-dari-makassar",
+    title: "Kirim Barang ke Papua dan Maluku dari Makassar: Tarif dan Estimasi",
+    heading: "Kirim barang ke Papua dan Maluku dari Makassar: tarif, estimasi, dan tips",
+    description: "Cara mengirim barang cargo dari Makassar ke Papua dan Maluku: daftar kota tujuan, tarif per kilo, perkiraan lama kirim, minimal berat, dan tips agar barang aman.",
+    updated: "2026-11-19",
+    body: ({ pairs }) => {
+      const tujuan = pairs.filter((p) => p.originCode === "MKS" && ["papua", "maluku", "maluku-utara"].includes(wilayahSlug(p.destCity) ?? ""));
+      return (<>
+        <p>Makassar adalah pintu gerbang Indonesia Timur, sehingga banyak pengiriman ke Papua dan Maluku berangkat dari sini. Karena jaraknya jauh dan jadwal kapal tidak sesering di Jawa, perencanaan sangat berpengaruh pada biaya dan waktu.</p>
+        <h2>Kota tujuan dari Makassar</h2>
+        {tujuan.length > 0 ? (
+          <ul>{tujuan.map((p) => <li key={p.slug}><Link href={`/${p.slug}`}>{p.destCity}</Link>: {priceLabel(p.minPrice)}{p.minPrice.minChargeable ? `, minimal ${p.minPrice.minChargeable} kg` : ""}{p.etaDays ? `, sekitar ${p.etaDays} hari` : ""}</li>)}</ul>
+        ) : <p>Daftar tujuan terbaru ada di <Link href="/ekspedisi">halaman rute</Link>.</p>}
+        <p>Lihat juga ringkasan <Link href="/ekspedisi-ke-papua">ekspedisi ke Papua</Link>, <Link href="/ekspedisi-ke-maluku">Maluku</Link>, dan <Link href="/ekspedisi-ke-maluku-utara">Maluku Utara</Link>.</p>
+        <h2>Hal yang perlu disiapkan</h2>
+        <ul>
+          <li><b>Estimasi bukan jaminan.</b> Waktu tempuh bergantung jadwal dan cuaca laut. Beri jeda waktu yang cukup bila barang dibutuhkan untuk acara atau proyek.</li>
+          <li><b>Layanan sampai pelabuhan.</b> Untuk sebagian tujuan, tarif berlaku sampai pelabuhan tujuan. Tanyakan pengambilan atau pengantaran selanjutnya.</li>
+          <li><b>Packing lebih kuat.</b> Perjalanan panjang dan beberapa kali bongkar muat membuat kemasan perlu lebih rapat dan kokoh. Baca <Link href="/panduan/cara-packing-barang-cargo-laut">panduan packing</Link>.</li>
+          <li><b>Data penerima lengkap.</b> Nama, nomor HP aktif, dan alamat jelas mempercepat pengambilan di tujuan.</li>
+        </ul>
+        <h2>Cara kirim</h2>
+        <p>Hubungi kami lewat WhatsApp, sebutkan kota tujuan dan berat perkiraan. Barang dijemput atau diantar ke gudang, ditimbang, lalu Anda menerima invoice dan nomor resi untuk <Link href="/lacak">dilacak</Link>.</p>
+      </>);
+    },
+  },
+  {
+    slug: "door-to-door-port-to-door-atau-port-to-port",
+    title: "Door to Door, Port to Door, atau Port to Port: Pilih yang Mana?",
+    heading: "Door to door, port to door, atau port to port: apa bedanya dan mana yang pas?",
+    description: "Penjelasan tiga jenis layanan cargo: door to door, port to door, dan port to port, plus perbedaan barang dijemput kurir dan diantar sendiri ke gudang.",
+    updated: "2026-11-19",
+    body: () => (<>
+      <p>Saat melihat daftar harga cargo, Anda akan menemukan istilah yang membingungkan. Padahal intinya hanya soal: <b>dari mana</b> barang diambil dan <b>sampai mana</b> barang diantar.</p>
+      <h2>Tiga jenis layanan</h2>
+      <ul>
+        <li><b>Port to port (sampai pelabuhan tujuan).</b> Barang dibawa sampai pelabuhan di kota tujuan. Penerima mengambil sendiri atau mengurus pengantaran lanjutan. Biasanya paling murah.</li>
+        <li><b>Port to door (diantar sampai alamat).</b> Barang diantar sampai alamat penerima. Ini yang paling umum untuk pengiriman antarkota.</li>
+        <li><b>Door to door (dijemput dan diantar).</b> Kurir menjemput di alamat pengirim, lalu mengantar sampai alamat penerima. Paling praktis.</li>
+      </ul>
+      <h2>Dijemput atau diantar sendiri?</h2>
+      <p>Terlepas dari jenis layanan, Anda bisa memilih cara barang masuk: <b>dijemput kurir</b> ke alamat Anda, atau <b>diantar sendiri</b> ke gudang. Barang yang diantar sendiri melewati satu tahap lebih sedikit, dan petugas gudang langsung memeriksa dan mencatatnya di depan Anda.</p>
+      <h2>Mana yang pas?</h2>
+      <ul>
+        <li>Barang banyak dan Anda punya kendaraan: <b>antar sendiri</b> ke gudang bisa lebih hemat waktu.</li>
+        <li>Barang besar atau Anda tidak sempat: pilih <b>dijemput</b>.</li>
+        <li>Penerima memiliki armada sendiri di pelabuhan: <b>port to port</b> bisa menekan biaya.</li>
+      </ul>
+      <p>Cek jenis layanan yang tersedia di <Link href="/ekspedisi">halaman rute</Link>. Setiap pilihan tertulis jelas di kalkulator.</p>
+    </>),
+  },
+  {
+    slug: "kirim-barang-online-shop-umkm-ke-sulawesi",
+    title: "Kirim Barang Online Shop dan UMKM ke Sulawesi: Panduan Praktis",
+    heading: "Kirim barang online shop dan UMKM ke Sulawesi: panduan praktis agar murah dan aman",
+    description: "Tips pelaku online shop dan UMKM mengirim stok atau pesanan dalam jumlah banyak ke Sulawesi lewat cargo: hitung biaya per paket, packing, resi, dan layanan korporat.",
+    updated: "2026-11-19",
+    body: ({ pairs }) => (<>
+      <p>Pengiriman ke Sulawesi lewat cargo umumnya jauh lebih murah per kilo dibanding kurir paket, terutama untuk stok dalam jumlah banyak. Berikut cara memanfaatkannya.</p>
+      <h2>Kirim stok ke gudang tujuan, bukan paket satuan</h2>
+      <p>Untuk reseller atau toko dengan gudang di Makassar atau kota lain, mengirim stok sekaligus lewat cargo lalu mengirimkan pesanan lokal biasanya lebih hemat. Contohnya Jakarta ke Makassar mulai {harga(pairs, "ekspedisi-jakarta-makassar")}. Hitung dulu di <Link href="/ongkir">kalkulator ongkir</Link>.</p>
+      <h2>Rapikan kemasan</h2>
+      <ul>
+        <li>Seragamkan ukuran kardus supaya mudah disusun dan dihitung.</li>
+        <li>Pakai pengisi untuk barang pecah belah, dan segel kardus berlapis.</li>
+        <li>Tulis nama dan nomor HP penerima di luar kardus. Baca <Link href="/panduan/cara-packing-barang-cargo-laut">panduan packing</Link>.</li>
+      </ul>
+      <h2>Pantau semua kiriman</h2>
+      <p>Setiap pengiriman punya nomor resi dan barcode di label. Anda dan pembeli atau penerima bisa <Link href="/lacak">melacaknya</Link> tanpa login.</p>
+      <h2>Pengiriman rutin? Pakai layanan perusahaan</h2>
+      <p>Bila Anda mengirim rutin, tanyakan layanan untuk perusahaan: tempo pembayaran, batas kredit, tarif khusus per rute, dan portal untuk melihat resi dan tagihan sendiri. Hubungi kami lewat WhatsApp untuk pengajuan.</p>
+      <h2>Catatan biaya</h2>
+      <p>Tarif belum termasuk asuransi, pajak yang berlaku, serta bongkar muat di lokasi. Lihat <Link href="/syarat">syarat dan ketentuan</Link> untuk rincian.</p>
+    </>),
+  },
+  {
+    slug: "cara-membaca-kode-resi-kamil-logistik",
+    title: "Cara Membaca Kode Resi Kamil Logistik (KLX-…)",
+    heading: "Cara membaca kode resi Kamil Logistik: arti setiap bagian",
+    description: "Kode resi Kamil Logistik bisa dibaca manusia: kota asal, tujuan, jalur, cara barang masuk, tanggal, jam, urutan, dan huruf pemeriksa. Contoh dan cara mengeceknya.",
+    updated: "2026-11-19",
+    body: () => (<>
+      <p>Nomor resi Kamil Logistik dirancang agar mudah dibaca oleh pelanggan dan petugas. Contohnya: <code>KLX-MKS-JKT-LJ-261118-1432-0007-VP</code>.</p>
+      <h2>Arti tiap bagian</h2>
+      <ul>
+        <li><b>KLX</b>: tanda Kamil Logistik Express.</li>
+        <li><b>MKS</b>: kode kota asal (di contoh, Makassar).</li>
+        <li><b>JKT</b>: kode kota tujuan (Jakarta).</li>
+        <li><b>LJ</b>: dua huruf. Huruf pertama adalah jalur: <b>L</b> laut, <b>U</b> udara, <b>D</b> darat. Huruf kedua adalah cara barang masuk: <b>J</b> dijemput kurir, <b>A</b> diantar sendiri ke gudang.</li>
+        <li><b>261118</b>: tanggal pembuatan resi (tahun-bulan-hari, yaitu 18 November 2026).</li>
+        <li><b>1432</b>: jam pembuatan (14.32 WITA).</li>
+        <li><b>0007</b>: nomor urut resi pada hari itu di kota asal.</li>
+        <li><b>VP</b>: dua huruf pemeriksa. Bila ada satu karakter yang salah ketik, sistem langsung tahu kode itu tidak valid.</li>
+      </ul>
+      <p>Setiap barang dalam satu resi punya kode sendiri dengan tambahan <code>-01</code>, <code>-02</code>, dan seterusnya, yang tercetak sebagai barcode dan QR di label.</p>
+      <h2>Cara melacak</h2>
+      <p>Masukkan kode lengkap di <Link href="/lacak">halaman cek resi</Link>, atau pindai QR di struk dengan kamera HP. Huruf kecil dan spasi tidak masalah, sistem merapikannya otomatis.</p>
+      <p>Bila kode tidak ditemukan, periksa lagi dua huruf terakhir dan nomor urutnya. Masih bingung? Tekan tombol bantuan di pojok kanan bawah dan pilih Chat WhatsApp.</p>
+    </>),
+  },
+  {
+    slug: "jadi-mitra-ekspedisi-kamil-logistik",
+    title: "Jadi Mitra Ekspedisi Kamil Logistik: Cara Bergabung",
+    heading: "Jadi mitra ekspedisi Kamil Logistik: apa yang didapat dan cara bergabung",
+    description: "Punya gerai, gudang, atau toko di kota tujuan? Pelajari cara menjadi mitra Kamil Logistik: akun resmi, aplikasi buat resi dan invoice dari HP, dan pantauan dari pusat.",
+    updated: "2026-11-19",
+    body: () => (<>
+      <p>Kamil Logistik bekerja sama dengan mitra resmi di berbagai kota. Mitra menjadi titik terima dan antar barang di kotanya, memakai aplikasi yang sama dengan seluruh jaringan.</p>
+      <h2>Yang didapat mitra</h2>
+      <ul>
+        <li><b>Akun resmi</b> yang dibuat oleh admin pusat, lengkap dengan peran yang sesuai (kasir, gudang, atau kurir).</li>
+        <li><b>Aplikasi di HP</b> untuk membuat resi, mencetak label, menimbang, menerbitkan invoice, dan mencatat pembayaran.</li>
+        <li><b>Harga yang sama di seluruh jaringan.</b> Tarif diatur terpusat, jadi pelanggan melihat harga yang sama di mana pun.</li>
+        <li><b>Daftar pelanggan yang perlu dihubungi</b>, dengan tombol chat WhatsApp yang pesannya sudah terisi.</li>
+        <li><b>Laporan</b> resi dan komisi sesuai kesepakatan.</li>
+      </ul>
+      <h2>Yang diharapkan dari mitra</h2>
+      <ul>
+        <li>Tempat yang bisa menyimpan barang dengan aman.</li>
+        <li>Petugas yang mau mencatat setiap tahap di aplikasi, termasuk foto dan kondisi barang.</li>
+        <li>Pelayanan yang ramah dan tepat waktu kepada pelanggan.</li>
+      </ul>
+      <h2>Cara bergabung</h2>
+      <p>Hubungi tim kami lewat WhatsApp dan ceritakan kota, jenis usaha, dan lokasi Anda. Setelah disetujui, admin pusat membuatkan akun petugas dan mendampingi cara memakai aplikasi. Lihat juga <Link href="/tentang">tentang Kamil Logistik</Link>.</p>
     </>),
   },
 ];

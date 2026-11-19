@@ -8,8 +8,8 @@ import Icon from "@/components/Icon";
 import JsonLd from "@/components/JsonLd";
 import { ARTIKEL } from "@/lib/panduan";
 import { getRoutePairs } from "@/lib/routes";
-import { HOME_FAQ, faqLd, organizationLd, websiteLd } from "@/lib/seo";
-import { priceLabel } from "@kamil/core";
+import { HOME_FAQ, faqLd, localBusinessLd, organizationLd, websiteLd } from "@/lib/seo";
+import { kelompokWilayah, priceLabel } from "@kamil/core";
 import { waLink } from "@/lib/brand";
 
 export const revalidate = 300;
@@ -59,7 +59,7 @@ export default async function Home() {
   ];
   return (
     <main>
-      <JsonLd data={[organizationLd(), websiteLd(), faqLd(HOME_FAQ)]} />
+      <JsonLd data={[organizationLd(), localBusinessLd(), websiteLd(), faqLd(HOME_FAQ)]} />
       <section className="hero hero2">
         <div className="wrap herogrid">
           <div className="herotext">
@@ -111,6 +111,9 @@ export default async function Home() {
               ))}
             </div>
             <Link href="/ekspedisi" className="btn ghost" style={{ marginTop: 12 }}>Lihat semua {semua.length} rute</Link>
+            <div className="wilchips" aria-label="Tujuan per wilayah">
+              {kelompokWilayah(semua).map((k) => <Link key={k.wilayah.slug} href={`/ekspedisi-ke-${k.wilayah.slug}`} className="tag">Ke {k.wilayah.nama} <small>({k.pairs.length})</small></Link>)}
+            </div>
           </section>
         )}
 
