@@ -22,7 +22,7 @@ npm run dev        # http://localhost:3000 (data contoh; isi apps/web/.env.local
 - Pembulatan berat/volume, min. berat Jakarta→Makassar per kg, dan format nomor resi/invoice belum final.
 
 ## Identitas visual (dari materi promosi)
-Hijau teal (primer), oranye (aksen), kuning (sorotan), tagline "Best Price Best Service", WA 0853-4223-8748. Domain resmi menyusul (belum ada).
+Hijau teal (primer), oranye (aksen), kuning (sorotan), tagline "Best Price Best Service", WA 0853-4223-8748. Domain resmi: kamillogistik.com (DNS di Hostinger menunjuk ke Vercel; `SITE_URL` di Vercel = https://kamillogistik.com).
 
 ## Fitur inti
 - **Kode resi terbaca** `KLX-MKS-JKT-LJ-261118-1432-0007-VP`: asal, tujuan, jalur (L laut / U udara / D darat) + cara masuk (J dijemput / A antar sendiri), tanggal, jam WITA, urutan harian, dua huruf pemeriksa. Kode manifest `MNF-...` memakai pola yang sama.
