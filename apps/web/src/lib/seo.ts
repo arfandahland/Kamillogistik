@@ -24,7 +24,7 @@ export const localBusinessLd = () => ({
 });
 
 export const itemListLd = (nama: string, items: { name: string; path: string }[]) => ({
-  "@context": "https://schema.org", "@type": "ItemList", name, numberOfItems: items.length,
+  "@context": "https://schema.org", "@type": "ItemList", name: nama, numberOfItems: items.length,
   itemListElement: items.map((it, i) => ({ "@type": "ListItem", position: i + 1, name: it.name, url: abs(it.path) })),
 });
 
