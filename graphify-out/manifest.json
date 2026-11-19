@@ -96,9 +96,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/layout.tsx": {
-    "mtime": 1795090196.321261,
-    "seen": 1795104170.4403505,
-    "ast_hash": "7421ef161e3b51f7f46d2595be75c8ea",
+    "mtime": 1795108029.9571023,
+    "seen": 1795108723.8976433,
+    "ast_hash": "341bd24a4aa99bfe9938931b134b05da",
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/ongkir/loading.tsx": {
@@ -114,9 +114,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/page.tsx": {
-    "mtime": 1795106217.3469594,
-    "seen": 1795107568.6344638,
-    "ast_hash": "467dfb26a9b5c84b08e767b2b4603d30",
+    "mtime": 1795107902.1897109,
+    "seen": 1795108723.8977382,
+    "ast_hash": "e23d6abcc67e78aab2f8d50df09a2919",
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/panduan/[slug]/page.tsx": {
@@ -222,9 +222,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/kelola/page.tsx": {
-    "mtime": 1795094115.9923797,
-    "seen": 1795104170.440372,
-    "ast_hash": "4db8bd1b9b1731978380aa3178230581",
+    "mtime": 1795108029.9522429,
+    "seen": 1795108723.8981872,
+    "ast_hash": "5839a325b45462dc75b6f6982bb0781e",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/keuangan/komisi/page.tsx": {
@@ -480,9 +480,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/llms.txt/route.ts": {
-    "mtime": 1795090196.3210824,
-    "seen": 1795104170.440416,
-    "ast_hash": "66a512e43c65f4da7c97e0524a3b9d8b",
+    "mtime": 1795108029.9543061,
+    "seen": 1795108723.899237,
+    "ast_hash": "44e1c5d81a88d1d229cecb3aba7d2aca",
     "semantic_hash": ""
   },
   "apps/web/src/app/manifest.ts": {
@@ -492,9 +492,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/masuk/page.tsx": {
-    "mtime": 1795106087.975759,
-    "seen": 1795107568.6345828,
-    "ast_hash": "1e88f4f4e80cadbb9ff5e63c404eeb38",
+    "mtime": 1795108060.0575051,
+    "seen": 1795108723.8992586,
+    "ast_hash": "672af89452e3840cb5ae61a0dcb3588b",
     "semantic_hash": ""
   },
   "apps/web/src/app/portal/[token]/page.tsx": {
@@ -504,15 +504,15 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/robots.ts": {
-    "mtime": 1794995514.9911492,
-    "seen": 1795104170.4404197,
-    "ast_hash": "b2f83b0d9158d0cfd159dee081f0cb32",
+    "mtime": 1795108060.0582633,
+    "seen": 1795108723.899285,
+    "ast_hash": "49ecdd7558e5382a7cc58cd3c529334f",
     "semantic_hash": ""
   },
   "apps/web/src/app/sitemap.ts": {
-    "mtime": 1795090196.3207376,
-    "seen": 1795104170.4404204,
-    "ast_hash": "1bed35e80b5992bffd3ea7ffe636a1c2",
+    "mtime": 1795108029.9525278,
+    "seen": 1795108723.8992865,
+    "ast_hash": "55e4adc155bd75f3b51ee6aeeeb3cb14",
     "semantic_hash": ""
   },
   "apps/web/src/app/template.tsx": {
@@ -564,9 +564,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/Icon.tsx": {
-    "mtime": 1794982795.4764657,
-    "seen": 1795104170.4404294,
-    "ast_hash": "28ed1de899d20490186b6242c8d25d38",
+    "mtime": 1795107892.1303473,
+    "seen": 1795108723.899484,
+    "ast_hash": "64d4d10bdfd999294a85f71ddc4d5d41",
     "semantic_hash": ""
   },
   "apps/web/src/components/Ilustrasi.tsx": {
@@ -900,9 +900,9 @@
     "semantic_hash": ""
   },
   "db/test/run.sh": {
-    "mtime": 1795094770.7470586,
-    "seen": 1795104170.4404774,
-    "ast_hash": "524501749d58d370a6aae9c2382c91aa",
+    "mtime": 1795107931.2790883,
+    "seen": 1795108723.9013774,
+    "ast_hash": "a9c7b2c808799fc741c376c4904ef76b",
     "semantic_hash": ""
   },
   "db/test/tariff-cases.json": {
@@ -924,9 +924,9 @@
     "semantic_hash": ""
   },
   "e2e/flow.cjs": {
-    "mtime": 1795106263.7461565,
-    "seen": 1795107568.6347191,
-    "ast_hash": "b50b575d05c1c783b17f510adb9b29dd",
+    "mtime": 1795108087.4036527,
+    "seen": 1795108723.9014869,
+    "ast_hash": "5bd7d799dae168be0513396522342154",
     "semantic_hash": ""
   },
   "e2e/kamera.cjs": {
@@ -942,9 +942,9 @@
     "semantic_hash": ""
   },
   "e2e/pentest.cjs": {
-    "mtime": 1795096047.8503022,
-    "seen": 1795104170.4404838,
-    "ast_hash": "021ad01b1d5f92bfb2b56a5f8c6951d4",
+    "mtime": 1795108087.4045584,
+    "seen": 1795108723.901523,
+    "ast_hash": "4904b7a48a6a06b90f3d800b37e3a04e",
     "semantic_hash": ""
   },
   "e2e/run.sh": {
@@ -954,9 +954,9 @@
     "semantic_hash": ""
   },
   "e2e/setup.sh": {
-    "mtime": 1795094770.749729,
-    "seen": 1795104170.4404857,
-    "ast_hash": "68419fab54834bea158cc714ae3e3ea1",
+    "mtime": 1795107931.282089,
+    "seen": 1795108723.901542,
+    "ast_hash": "204c7bedc50bed77117b1f9a93c4e2fe",
     "semantic_hash": ""
   },
   "e2e/skenario.cjs": {
@@ -1566,15 +1566,69 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/LoginHelp.tsx": {
-    "mtime": 1795106330.245594,
-    "seen": 1795107568.6346128,
-    "ast_hash": "ecd635e72f2869f3f59969f97a78dc9b",
+    "mtime": 1795108060.0580397,
+    "seen": 1795108723.8997502,
+    "ast_hash": "6e326341c3b5ea1024b9ec196eba6105",
     "semantic_hash": ""
   },
   "apps/web/src/lib/imageTools.ts": {
     "mtime": 1795106981.4282513,
     "seen": 1795107568.634644,
     "ast_hash": "1d687d2318fbb2f53981d1aab3e29ce9",
+    "semantic_hash": ""
+  },
+  "apps/web/src/app/(publik)/mitra/aksi.ts": {
+    "mtime": 1795108029.932062,
+    "seen": 1795108723.8976467,
+    "ast_hash": "e67ca3a537d97e12971d9c8a022bc281",
+    "semantic_hash": ""
+  },
+  "apps/web/src/app/(publik)/mitra/page.tsx": {
+    "mtime": 1795108029.9349604,
+    "seen": 1795108723.8976488,
+    "ast_hash": "bd707d442a48ded7716f29699685a822",
+    "semantic_hash": ""
+  },
+  "apps/web/src/app/app/calon-mitra/actions.ts": {
+    "mtime": 1795108029.9362514,
+    "seen": 1795108723.898067,
+    "ast_hash": "01b49b7d1784c7c4e2f5f1eab69b053c",
+    "semantic_hash": ""
+  },
+  "apps/web/src/app/app/calon-mitra/page.tsx": {
+    "mtime": 1795108029.9388623,
+    "seen": 1795108723.8980684,
+    "ast_hash": "68d2a46bd3f1dfe65fff76bb1c49033f",
+    "semantic_hash": ""
+  },
+  "apps/web/src/app/auth/callback/route.ts": {
+    "mtime": 1795108060.0433636,
+    "seen": 1795108723.8990848,
+    "ast_hash": "c45320f2d956c2bfd118cbf1ea478ab5",
+    "semantic_hash": ""
+  },
+  "apps/web/src/components/CalonMitraKartu.tsx": {
+    "mtime": 1795108029.9374917,
+    "seen": 1795108723.899379,
+    "ast_hash": "3ff755ac3c83bc2ea4c7f8205e958e8b",
+    "semantic_hash": ""
+  },
+  "apps/web/src/components/MitraForm.tsx": {
+    "mtime": 1795108029.9336064,
+    "seen": 1795108723.8997743,
+    "ast_hash": "f5c58981aa3bb25ba59c855b3f6bf840",
+    "semantic_hash": ""
+  },
+  "apps/web/src/components/SiteNav.tsx": {
+    "mtime": 1795108138.1901455,
+    "seen": 1795108723.9000926,
+    "ast_hash": "0af508a57b19680ab55804400ab91e04",
+    "semantic_hash": ""
+  },
+  "docs/LOGIN-GOOGLE.md": {
+    "mtime": 1795108149.650908,
+    "seen": 1795108723.9024277,
+    "ast_hash": "6cc94a457bb158e0b62982536bd41760",
     "semantic_hash": ""
   },
   "package-lock.json": {

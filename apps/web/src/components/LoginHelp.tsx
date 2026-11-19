@@ -19,7 +19,7 @@ const OPSI: Opsi[] = [
 ];
 
 /** Tombol bantuan masuk: lembar kaca kecil dengan pilihan masalah. Tiap pilihan membuka WhatsApp ke Pemilik dengan pesan siap kirim. */
-export default function LoginHelp({ sarankan }: { sarankan?: "terkunci" | "salah" }) {
+export default function LoginHelp({ sarankan }: { sarankan?: "terkunci" | "salah" | "baru" }) {
   const [buka, setBuka] = useState(false);
   const box = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -36,7 +36,7 @@ export default function LoginHelp({ sarankan }: { sarankan?: "terkunci" | "salah
     const wk = new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Makassar" }).format(new Date());
     return `\n\nEmail akun: ${em || "(belum saya isi)"}\nWaktu: ${wk} WITA`;
   };
-  const urut = sarankan === "terkunci" ? [OPSI[1]!, ...OPSI.filter((o) => o.id !== "terkunci")] : sarankan === "salah" ? [OPSI[0]!, ...OPSI.filter((o) => o.id !== "sandi")] : OPSI;
+  const urut = sarankan === "terkunci" ? [OPSI[1]!, ...OPSI.filter((o) => o.id !== "terkunci")] : sarankan === "salah" ? [OPSI[0]!, ...OPSI.filter((o) => o.id !== "sandi")] : sarankan === "baru" ? [OPSI[2]!, ...OPSI.filter((o) => o.id !== "baru")] : OPSI;
   return (
     <div className="lhelp" ref={box}>
       <button type="button" className="lhbtn" aria-expanded={buka} aria-haspopup="menu" onClick={() => setBuka((v) => !v)}>

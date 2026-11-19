@@ -141,14 +141,6 @@ export default async function Home() {
             <BuktiShowcase items={testimoni} />
           </section>
         )}
-        <section aria-labelledby="panduan">
-          <h2 id="panduan" className="sech">Panduan sebelum mengirim</h2>
-          <div className="guides">
-            {ARTIKEL.slice(0, 3).map((a) => <Link key={a.slug} href={`/panduan/${a.slug}`} className="guide rv"><b>{a.heading}</b><small>{a.description}</small><span>Baca <Icon name="arrow" size={14} /></span></Link>)}
-          </div>
-          <Link href="/panduan" className="btn ghost" style={{ marginTop: 12 }}>Lihat semua panduan</Link>
-        </section>
-
         <section aria-labelledby="faq">
           <h2 id="faq" className="sech">Pertanyaan yang sering ditanyakan</h2>
           <div className="faq">
@@ -164,15 +156,28 @@ export default async function Home() {
           <a className="btn" href={waLink("Halo Kamil Logistik, saya mau tanya tarif dan jadwal pengiriman.")}><Icon name="chat" size={22} /> Chat WhatsApp</a>
         </section>
 
-        <section className="card partnerband" aria-labelledby="mitra">
-          <div><h2 id="mitra">Punya gerai atau gudang? Jadilah mitra Kamil</h2>
-            <p className="muted">Terima kiriman di kota Anda, buat resi dan invoice sendiri lewat HP, dan pantau semuanya dalam satu aplikasi.</p></div>
-          <a className="btn ghost" href={waLink("Halo Kamil Logistik, saya tertarik menjadi mitra gerai.")}>Tanya jadi mitra</a>
-        </section>
-        <section className="card partnerband" aria-labelledby="karir">
-          <div><h2 id="karir">Ingin bergabung dengan tim kami?</h2>
-            <p>Kami membuka posisi admin, sales, purchasing, vendor, gudang, dan driver. Lamar dari HP, CV langsung diterima HRD.</p></div>
-          <Link className="btn" href="/karir">Lihat lowongan</Link>
+        <section aria-labelledby="gabung">
+          <h2 id="gabung" className="sech">Gabung bersama Kamil Logistik</h2>
+          <div className="joingrid">
+            <Link href="/mitra" className="card lift joincard">
+              <span className="si"><Icon name="store" size={24} /></span>
+              <h3>Jadi mitra</h3>
+              <p>Punya gerai atau gudang di kota Anda? Buat resi dan invoice dari HP, dapat komisi per resi.</p>
+              <b>Daftar jadi mitra <Icon name="arrow" size={18} /></b>
+            </Link>
+            <Link href="/karir" className="card lift joincard">
+              <span className="si"><Icon name="users" size={24} /></span>
+              <h3>Bergabung di tim</h3>
+              <p>Admin, sales, purchasing, vendor, gudang, dan driver. Lamar dari HP, CV langsung ke HRD.</p>
+              <b>Lihat lowongan <Icon name="arrow" size={18} /></b>
+            </Link>
+            <Link href="/panduan" className="card lift joincard">
+              <span className="si"><Icon name="file" size={24} /></span>
+              <h3>Panduan kirim barang</h3>
+              <p>Cara hitung ongkir, packing aman, lama pengiriman, dan barang yang boleh dikirim.</p>
+              <b>Baca panduan <Icon name="arrow" size={18} /></b>
+            </Link>
+          </div>
         </section>
       </div>
     </main>

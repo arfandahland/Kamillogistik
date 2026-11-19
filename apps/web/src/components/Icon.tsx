@@ -2,6 +2,7 @@ import type { SVGProps } from "react";
 
 const P: Record<string, string> = {
   home: "M3 11l9-8 9 8M5 10v10h14V10M10 20v-6h4v6",
+  menu: "M4 7h16M4 12h16M4 17h16",
   plus: "M12 5v14M5 12h14",
   swap: "M7 7h11l-3-3M17 17H6l3 3",
   user: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM4 21c1-4 4-6 8-6s7 2 8 6",

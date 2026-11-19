@@ -818,6 +818,54 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await ow.ctx.close();
   }
 
+  console.log("\n[T] Navbar lengkap, halaman mitra, landing ringkas, login Google");
+  {
+    const dc = await browser.newContext({ viewport: { width: 1366, height: 820 } }); const d = await dc.newPage();
+    await d.goto(`${BASE}/`, { waitUntil: "networkidle" });
+    const nav = await d.locator("header.topbar").innerText();
+    ok("T1 navbar desktop memuat Cek resi, Hitung ongkir, Tujuan, Panduan, Perusahaan, Jadi mitra, Masuk", ["Cek resi", "Hitung ongkir", "Tujuan", "Panduan", "Perusahaan", "Jadi mitra", "Masuk"].every((k) => nav.includes(k)), nav.replace(/\s+/g, " "));
+    await d.getByRole("button", { name: /Tujuan/ }).click(); await d.waitForTimeout(300);
+    ok("T2 dropdown Tujuan menampilkan wilayah dan tautan semua rute", (await d.locator(".ddpanel.mega a[href^='/ekspedisi-ke-']").count()) >= 1 && (await d.locator(".ddpanel .ddall").count()) === 1);
+    await d.getByRole("button", { name: /Perusahaan/ }).click(); await d.waitForTimeout(300);
+    ok("T3 dropdown Perusahaan memuat Karir, Tentang, dan Kontak", (await d.locator(".ddpanel a[href='/karir']").count()) === 1 && (await d.locator(".ddpanel a[href='/tentang']").count()) === 1 && (await d.locator(".ddpanel a[href='/kontak']").count()) === 1);
+    await d.screenshot({ path: `${OUT}/e2e-navbar-desktop.png` });
+    ok("T4 beranda diringkas: tanpa bagian panduan panjang, ada bagian Gabung bersama", !/Panduan sebelum mengirim/.test(await d.content()) && /Gabung bersama Kamil Logistik/.test(await d.content()));
+    await dc.close();
+    const mc = await browser.newContext({ viewport: { width: 390, height: 844 } }); const m = await mc.newPage();
+    await m.goto(`${BASE}/`, { waitUntil: "networkidle" });
+    ok("T5 di HP: tombol menu (burger) tampil, tautan desktop disembunyikan", (await m.locator(".burger").isVisible()) && !(await m.locator(".topbar .navlinks").isVisible()));
+    await m.locator(".burger").click(); await m.waitForTimeout(500);
+    ok("T6 lembar menu HP memuat Daftar jadi mitra, Karir, Panduan, dan wilayah", (await m.locator(".msheet .mcta[href='/mitra']").count()) === 1 && (await m.locator(".msheet a[href='/karir']").count()) === 1 && (await m.locator(".msheet a[href='/panduan']").count()) === 1);
+    await m.screenshot({ path: `${OUT}/e2e-menu-hp.png` });
+    await m.locator(".msheet .mcta").click(); await m.waitForURL(/\/mitra/, { timeout: 15000 }).catch(() => {});
+    ok("T7 memilih menu membuka halaman mitra dan menutup lembar menu", /\/mitra/.test(m.url()) && (await m.locator(".msheet").count()) === 0, m.url());
+    await noOverflow(m, "halaman mitra (HP)");
+    await m.selectOption("#jenis", "GERAI"); await m.fill("#usaha", "Toko Uji Jaya"); await m.fill("#pemilik", "Budi Uji Mitra"); await m.fill("#hp", "0812 8888 0001"); await m.fill("#kota", "Palu");
+    await m.getByRole("button", { name: "Kirim pendaftaran" }).click(); await m.waitForSelector(".nilai.done", { timeout: 20000 }).catch(() => {});
+    const done = await m.locator(".nilai.done").innerText().catch(() => "");
+    ok("T8 pendaftaran mitra terkirim dengan kode MTR", /MTR-\d{6}-[A-F0-9]{4}/.test(done), done.slice(0, 100));
+    const wa = await m.locator(".nilai.done a.btn").getAttribute("href").catch(() => "");
+    ok("T9 tombol WhatsApp mitra berisi nama usaha dan kode", /^https:\/\/wa\.me\/\d+\?text=/.test(wa || "") && decodeURIComponent(wa).includes("Toko Uji Jaya"), wa);
+    const m2 = await mc.newPage(); await m2.goto(`${BASE}/mitra`, { waitUntil: "domcontentloaded" }); await m2.waitForSelector("#jenis");
+    await m2.selectOption("#jenis", "GUDANG"); await m2.fill("#usaha", "Gudang Lain"); await m2.fill("#pemilik", "Budi Uji Mitra"); await m2.fill("#hp", "081288880001"); await m2.fill("#kota", "Palu");
+    await m2.getByRole("button", { name: "Kirim pendaftaran" }).click(); await m2.waitForSelector("#daftar .err", { timeout: 15000 }).catch(() => {});
+    ok("T10 pendaftaran ganda dari nomor yang sama ditolak", /sudah kami terima/.test(await m2.locator("#daftar .err").innerText().catch(() => "")));
+    await mc.close();
+    const ow = await login(browser, "owner@uji.id", "Pemilik2026x", { width: 390, height: 844 });
+    await ow.page.goto(`${BASE}/app/calon-mitra`, { waitUntil: "networkidle" });
+    ok("T11 Pemilik melihat calon mitra di daftar", /Toko Uji Jaya/.test(await ow.page.locator("main").innerText()));
+    ok("T12 tombol chat calon mitra memakai nomor pendaftar", (await ow.page.locator("a[href^='https://wa.me/6281288880001']").count()) === 1);
+    await noOverflow(ow.page, "daftar calon mitra (HP)"); await ow.ctx.close();
+    const lg = await browser.newContext({ viewport: { width: 390, height: 844 } }); const l = await lg.newPage();
+    await l.goto(`${BASE}/masuk`, { waitUntil: "networkidle" });
+    ok("T13 tombol Masuk dengan Google tersembunyi sebelum diaktifkan", (await l.getByText("Masuk dengan Google").count()) === 0);
+    const cb = await fetch(`${BASE}/auth/callback`, { redirect: "manual" });
+    ok("T14 alamat kembali Google tanpa kode dialihkan ke halaman masuk dengan pesan", cb.status >= 300 && cb.status < 400 && /e=google/.test(cb.headers.get("location") || ""), `${cb.status} ${cb.headers.get("location")}`);
+    await l.goto(`${BASE}/masuk?e=google-belum`, { waitUntil: "networkidle" });
+    ok("T15 pesan akun Google belum terdaftar tampil jelas", /belum terdaftar sebagai petugas/.test(await l.locator(".err").innerText().catch(() => "")));
+    await lg.close();
+  }
+
   await browser.close();
   const fail = results.filter((r) => !r.ok);
   console.log(`\n==== HASIL: ${results.length - fail.length}/${results.length} lolos ====`);

@@ -22,7 +22,7 @@ export async function GET() {
     `- [Hitung ongkir](${abs("/ongkir")}): kalkulator ongkir dengan rumus yang sama seperti di gudang`,
     `- [Cek resi](${abs("/lacak")}): lacak barang dengan nomor resi, tanpa login`,
     `- [Semua rute dan tarif](${abs("/ekspedisi")})`,
-    `- [Tentang](${abs("/tentang")}) | [Kontak](${abs("/kontak")}) | [Lowongan kerja](${abs("/karir")}) | [Syarat dan ketentuan](${abs("/syarat")})`,
+    `- [Tentang](${abs("/tentang")}) | [Kontak](${abs("/kontak")}) | [Jadi mitra](${abs("/mitra")}) | [Lowongan kerja](${abs("/karir")}) | [Syarat dan ketentuan](${abs("/syarat")})`,
     ``,
     `## Wilayah tujuan`,
     ...wil.map((k) => `- [Ekspedisi ke ${k.wilayah.nama}](${abs(`/ekspedisi-ke-${k.wilayah.slug}`)}): ${k.pairs.length} kota, mulai ${priceLabel(k.termurah.minPrice)}`),
