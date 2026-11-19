@@ -1,3 +1,5 @@
+import TestimoniSlider from "@/components/TestimoniSlider";
+import { TESTIMONI } from "@/lib/testimoni";
 import type { Metadata } from "next";
 import Link from "next/link";
 import ResiForm from "@/components/ResiForm";
@@ -124,6 +126,12 @@ export default async function Home() {
           </ol>
         </section>
 
+        {TESTIMONI.length > 0 && (
+          <section aria-labelledby="testimoni">
+            <h2 id="testimoni" className="sech">Kata pelanggan kami</h2>
+            <TestimoniSlider items={TESTIMONI} />
+          </section>
+        )}
         <section aria-labelledby="panduan">
           <h2 id="panduan" className="sech">Panduan sebelum mengirim</h2>
           <div className="guides">
@@ -151,6 +159,11 @@ export default async function Home() {
           <div><h2 id="mitra">Punya gerai atau gudang? Jadilah mitra Kamil</h2>
             <p className="muted">Terima kiriman di kota Anda, buat resi dan invoice sendiri lewat HP, dan pantau semuanya dalam satu aplikasi.</p></div>
           <a className="btn ghost" href={waLink("Halo Kamil Logistik, saya tertarik menjadi mitra gerai.")}>Tanya jadi mitra</a>
+        </section>
+        <section className="card partnerband" aria-labelledby="karir">
+          <div><h2 id="karir">Ingin bergabung dengan tim kami?</h2>
+            <p>Kami membuka posisi admin, sales, purchasing, vendor, gudang, dan driver. Lamar dari HP, CV langsung diterima HRD.</p></div>
+          <Link className="btn" href="/karir">Lihat lowongan</Link>
         </section>
       </div>
     </main>
