@@ -1998,9 +1998,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/lib/videoDaftar.json": {
-    "mtime": 1795208857.1692085,
-    "seen": 1795208910.2965372,
-    "ast_hash": "58e0494c51d30eb3494f7c9198986bb9",
+    "mtime": 1795210513.5441399,
+    "seen": 1795210559.1228747,
+    "ast_hash": "b994ff90c2f0cbc2c6c86cac7d4af40b",
     "semantic_hash": ""
   },
   "db/migrations/027_indeks_performa.sql": {
@@ -2016,15 +2016,63 @@
     "semantic_hash": ""
   },
   "tools/video/lib.cjs": {
-    "mtime": 1795208755.1305768,
-    "seen": 1795208910.2981803,
-    "ast_hash": "0a70b38ddf11436fb5933d905e1ed896",
+    "mtime": 1795210541.1557145,
+    "seen": 1795210559.1245363,
+    "ast_hash": "5a976145c1ac6eb33cb480687428d15e",
     "semantic_hash": ""
   },
   "tools/video/skenario.cjs": {
-    "mtime": 1795208837.1820865,
-    "seen": 1795208910.2981813,
-    "ast_hash": "382df3c33313a509486405cb0ff13c97",
+    "mtime": 1795210541.1561804,
+    "seen": 1795210559.1245399,
+    "ast_hash": "935f92dd3e2b723027d18739de958333",
+    "semantic_hash": ""
+  },
+  "apps/web/public/video/daftar.json": {
+    "mtime": 1795210513.5441399,
+    "seen": 1795210559.1188838,
+    "ast_hash": "b994ff90c2f0cbc2c6c86cac7d4af40b",
+    "semantic_hash": ""
+  },
+  "tools/video/seed-demo.sql": {
+    "mtime": 1795208837.1805947,
+    "seen": 1795210559.1245382,
+    "ast_hash": "39585fef320073a05e408fec08415d0f",
+    "semantic_hash": ""
+  },
+  "apps/web/public/video/mulai.html": {
+    "mtime": 1795210429.195893,
+    "seen": 1795210559.1245918,
+    "ast_hash": "32c23317ae4f75d1daecad8946501b2d",
+    "semantic_hash": ""
+  },
+  "apps/web/public/video/cek-resi.jpg": {
+    "mtime": 1795210356.118845,
+    "seen": 1795210559.124908,
+    "ast_hash": "0cb6c7b7f2e0717a183e86744c6f3671",
+    "semantic_hash": ""
+  },
+  "apps/web/public/video/hitung-ongkir.jpg": {
+    "mtime": 1795210513.5351677,
+    "seen": 1795210559.124914,
+    "ast_hash": "ebe8647410d0354331cfeb554b96dadc",
+    "semantic_hash": ""
+  },
+  "apps/web/public/video/.tmp-hitung-ongkir/page@c8471f003af8cc5ab3d76e214e836058.webm": {
+    "mtime": 1795210556.1001415,
+    "seen": 1795210559.1249485,
+    "ast_hash": "5db57a63e2da84b212a8c1d50240585f",
+    "semantic_hash": ""
+  },
+  "apps/web/public/video/cek-resi.mp4": {
+    "mtime": 1795210356.0416725,
+    "seen": 1795210559.1249495,
+    "ast_hash": "26b5bd1d3b6cc391a2f8a308827f3b95",
+    "semantic_hash": ""
+  },
+  "apps/web/public/video/hitung-ongkir.mp4": {
+    "mtime": 1795210513.460122,
+    "seen": 1795210559.1249504,
+    "ast_hash": "9cd1bf1fd8461f09e84d83563e8e63bc",
     "semantic_hash": ""
   },
   "package-lock.json": {
