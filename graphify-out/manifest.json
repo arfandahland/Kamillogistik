@@ -1949,6 +1949,24 @@
     "ast_hash": "10353c495a7ca601b5d1bdd497d94389",
     "semantic_hash": ""
   },
+  "db/migrations/026_dashboard_per_peran.sql": {
+    "mtime": 1795188388.7923348,
+    "seen": 1795188552.0505111,
+    "ast_hash": "d3e8a1dfbb50397573f72e5184d808be",
+    "semantic_hash": ""
+  },
+  "db/test/per_peran.sql": {
+    "mtime": 1795188405.2011316,
+    "seen": 1795188552.05053,
+    "ast_hash": "5b0e4a5bb1bd90a1aae95b37ae0ddf06",
+    "semantic_hash": ""
+  },
+  "docs/FITUR-PER-PERAN.md": {
+    "mtime": 1795188540.7283401,
+    "seen": 1795188552.050589,
+    "ast_hash": "fd8708ab1be699b40581f4f90fec501c",
+    "semantic_hash": ""
+  },
   "package-lock.json": {
     "mtime": 1794983214.1951408,
     "seen": 1795104170.4405415,
