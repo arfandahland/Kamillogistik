@@ -33,3 +33,6 @@ export const hpTampil = (p?: string | null) => {
   const lokal = d.startsWith("62") ? "0" + d.slice(2) : d;
   return lokal.replace(/^(\d{4})(\d{4})(\d+)$/, "$1-$2-$3");
 };
+
+/** Tanggal "YYYY-MM-DD" dalam zona WITA. Server Vercel berjalan di UTC, jadi tanggal harus dikoreksi supaya "hari ini" benar pukul 00.00-08.00 WITA. */
+export const tanggalWita = (d: Date = new Date()) => new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Makassar", year: "numeric", month: "2-digit", day: "2-digit" }).format(d);

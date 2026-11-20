@@ -4,7 +4,7 @@ import OwnerDashboard from "@/components/OwnerDashboard";
 import { OwnerInsights, KasirDash, KurirDash, GudangDash, SopirDash, type OwnerInsight, type KasirData, type KurirData, type GudangData, type SopirData } from "@/components/PeranDashboard";
 import HubDashboard, { type HubData } from "@/components/HubDashboard";
 import StaffHome, { TABS, type Pending, type Row } from "@/components/StaffHome";
-import { staffRpc, getMe, type Staff } from "@/lib/supabase/server";
+import { staffRpc, getMe, getPending } from "@/lib/supabase/server";
 
 export default async function Beranda({ searchParams }: { searchParams: Promise<{ s?: string; q?: string; n?: string }> }) {
   const sp = await searchParams;
@@ -12,26 +12,27 @@ export default async function Beranda({ searchParams }: { searchParams: Promise<
   if (who?.role === "HRD") redirect("/app/rekrutmen");
   if (who?.role === "KONTEN") redirect("/app/konten");
   if (who?.role === OWNER_ROLE) {
-    const o = await staffRpc<OwnerData>("owner_dashboard", { p_days: 30 });
-    const ins = await staffRpc<OwnerInsight>("owner_insights");
+    const [o, ins] = await Promise.all([staffRpc<OwnerData>("owner_dashboard", { p_days: 30 }), staffRpc<OwnerInsight>("owner_insights")]);
     return <>{ins.data && <OwnerInsights d={ins.data} />}<OwnerDashboard initial={o.data} initialError={o.error} /></>;
   }
-  const hub = who?.role === "HUB_MANAGER" ? await staffRpc<HubData>("hub_dashboard", {}) : null;
   const peran = who?.role;
-  const [kas, kur, gud, sop] = await Promise.all([
-    peran === "MITRA_POS" ? staffRpc<KasirData>("kasir_dashboard") : null, peran === "DRIVER" ? staffRpc<KurirData>("kurir_dashboard") : null,
-    peran === "WAREHOUSE" ? staffRpc<GudangData>("gudang_dashboard") : null, peran === "CONTAINER_DRIVER" ? staffRpc<SopirData>("sopir_dashboard") : null]);
-  const punyaDash = !!(hub?.data || kas?.data || kur?.data || gud?.data || sop?.data);
   const tab = TABS.find((t) => t.k === sp.s)?.k ?? "aktif";
   const q = (sp.q ?? "").trim();
   const n = Math.min(100, Math.max(30, Number(sp.n) || 30)); // baris yang ditampilkan (HTML lebih ringan di HP)
-  const hasQueue = who?.role !== undefined && ["HUB_MANAGER", "MITRA_POS", "WAREHOUSE"].includes(who.role);
-  const [me, list, pend, fq] = await Promise.all([
+  const hasQueue = peran !== undefined && ["HUB_MANAGER", "MITRA_POS", "WAREHOUSE"].includes(peran);
+  // Semua panggilan database dijalankan bersamaan (satu putaran), bukan berurutan.
+  const [me, list, pend, fq, hub, kas, kur, gud, sop] = await Promise.all([
     getMe(),
     staffRpc<Row[]>("staff_list_shipments", { p_q: q || null, p_limit: 100 }),
-    staffRpc<Pending[]>("my_pending_handovers"),
+    getPending() as Promise<{ data: Pending[] | null; error: string | null }>,
     hasQueue ? staffRpc<{ count: number }>("followup_queue", { p_only_count: true }) : Promise.resolve(null),
+    peran === "HUB_MANAGER" ? staffRpc<HubData>("hub_dashboard", {}) : Promise.resolve(null),
+    peran === "MITRA_POS" ? staffRpc<KasirData>("kasir_dashboard") : Promise.resolve(null),
+    peran === "DRIVER" ? staffRpc<KurirData>("kurir_dashboard") : Promise.resolve(null),
+    peran === "WAREHOUSE" ? staffRpc<GudangData>("gudang_dashboard") : Promise.resolve(null),
+    peran === "CONTAINER_DRIVER" ? staffRpc<SopirData>("sopir_dashboard") : Promise.resolve(null),
   ]);
+  const punyaDash = !!(hub?.data || kas?.data || kur?.data || gud?.data || sop?.data);
   const all = list.data ?? [];
   const aktif = (STATUS_GROUPS.aktif as readonly string[]);
   const rows = all.filter((r) => (tab === "semua" ? true : (STATUS_GROUPS[tab] as readonly string[]).includes(r.status)));

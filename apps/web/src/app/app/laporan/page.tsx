@@ -4,16 +4,17 @@ import LaporanCharts, { type DataLaporan } from "@/components/LaporanCharts";
 import PrintButton from "@/components/PrintButton";
 import { requireOwner } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
-import { rupiah, tanggal } from "@/lib/brand";
+import { rupiah, tanggal, tanggalWita } from "@/lib/brand";
 
 export const metadata: Metadata = { title: "Laporan Lengkap" };
 type Ringkas = Record<"resiBaru" | "terkirim" | "dibatalkan" | "bermasalah" | "tagihan" | "omzet" | "terbayar" | "kasMasuk" | "belumLunas" | "jatuhTempo" | "rataTagihan" | "komisi" | "jemputBaru" | "klaimBaru" | "klaimTerbuka", number> & { rataHariKirim: number | null };
 type Laporan = DataLaporan & { dari: string; sampai: string; ringkas: Ringkas; pembayaran: { k: string; n: number; jumlah: number }[]; layanan: { jemput: Record<string, number>; klaim: Record<string, number> } };
 
-const iso = (d: Date) => new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
-const geser = (n: number) => { const d = new Date(); d.setDate(d.getDate() - n); return iso(d); };
-const awalBulan = (off: number) => iso(new Date(new Date().getFullYear(), new Date().getMonth() + off, 1));
-const akhirBulan = (off: number) => iso(new Date(new Date().getFullYear(), new Date().getMonth() + off + 1, 0));
+const iso = (d: Date) => tanggalWita(d);
+const geser = (n: number) => tanggalWita(new Date(Date.now() - n * 86400000));
+const bulanIni = () => tanggalWita().split("-").map(Number) as [number, number, number];
+const awalBulan = (off: number) => { const [y, m] = bulanIni(); return new Date(Date.UTC(y, m - 1 + off, 1)).toISOString().slice(0, 10); };
+const akhirBulan = (off: number) => { const [y, m] = bulanIni(); return new Date(Date.UTC(y, m + off, 0)).toISOString().slice(0, 10); };
 const EKSPOR: { jenis: string; label: string; ket: string }[] = [
   { jenis: "resi", label: "Daftar resi", ket: "Semua resi, rute, berat, status, dan tagihan" },
   { jenis: "tagihan", label: "Tagihan", ket: "Nomor tagihan, pelanggan, jatuh tempo, terbayar" },
@@ -32,7 +33,7 @@ export default async function LaporanPemilik({ searchParams }: { searchParams: P
   const qs = `?dari=${dari}&sampai=${sampai}`;
   const CEPAT = [
     { t: "7 hari", d: geser(6), s: iso(new Date()) }, { t: "30 hari", d: geser(29), s: iso(new Date()) }, { t: "Bulan ini", d: awalBulan(0), s: iso(new Date()) },
-    { t: "Bulan lalu", d: awalBulan(-1), s: akhirBulan(-1) }, { t: "Tahun ini", d: `${new Date().getFullYear()}-01-01`, s: iso(new Date()) },
+    { t: "Bulan lalu", d: awalBulan(-1), s: akhirBulan(-1) }, { t: "Tahun ini", d: `${bulanIni()[0]}-01-01`, s: iso(new Date()) },
   ];
   const persen = k && k.omzet > 0 ? Math.round((k.terbayar / k.omzet) * 100) : 0;
   return (

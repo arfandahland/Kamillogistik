@@ -38,3 +38,5 @@ export async function staffRpc<T = any>(fn: string, args: Record<string, unknown
 
 /** Data petugas yang sedang masuk. Dipakai layout dan halaman sekaligus, tetapi hanya 1 kali ke database per permintaan. */
 export const getMe = cache(() => staffRpc<Staff>("staff_me"));
+/** Serah terima yang menunggu saya: dipakai layout dan beranda, cukup satu panggilan per permintaan. */
+export const getPending = cache(() => staffRpc<any[]>("my_pending_handovers"));

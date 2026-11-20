@@ -1,0 +1,21 @@
+-- 027: Indeks untuk dashboard peran dan kunci asing yang sering dipakai (mempercepat saat data membesar).
+CREATE INDEX IF NOT EXISTS tracking_logs_user_ts_idx ON public.tracking_logs(user_id, server_ts DESC);
+CREATE INDEX IF NOT EXISTS shipments_origin_status_idx ON public.shipments(origin_id, status);
+CREATE INDEX IF NOT EXISTS shipments_dest_status_idx ON public.shipments(dest_id, status);
+CREATE INDEX IF NOT EXISTS shipments_created_by_idx ON public.shipments(created_by);
+CREATE INDEX IF NOT EXISTS shipments_route_service_idx ON public.shipments(route_service_id);
+CREATE INDEX IF NOT EXISTS payments_recorded_by_idx ON public.payments(recorded_by, paid_at DESC);
+CREATE INDEX IF NOT EXISTS payments_verified_by_idx ON public.payments(verified_by);
+CREATE INDEX IF NOT EXISTS payments_bank_account_idx ON public.payments(bank_account_id);
+CREATE INDEX IF NOT EXISTS invoices_company_idx2 ON public.invoices(company_id);
+CREATE INDEX IF NOT EXISTS manifests_holder_idx ON public.manifests(holder_user_id);
+CREATE INDEX IF NOT EXISTS manifests_pending_to_idx ON public.manifests(pending_to_user);
+CREATE INDEX IF NOT EXISTS manifests_driver_idx ON public.manifests(driver_user_id);
+CREATE INDEX IF NOT EXISTS commission_records_shipment_idx ON public.commission_records(shipment_id);
+CREATE INDEX IF NOT EXISTS discrepancy_cases_manifest_idx ON public.discrepancy_cases(manifest_id);
+CREATE INDEX IF NOT EXISTS handover_events_from_idx ON public.handover_events(from_user_id);
+CREATE INDEX IF NOT EXISTS notifications_shipment_idx ON public.notifications(shipment_id);
+CREATE INDEX IF NOT EXISTS followup_log_user_idx ON public.followup_log(user_id);
+CREATE INDEX IF NOT EXISTS employee_profiles_branch_idx ON public.employee_profiles(branch_id);
+CREATE INDEX IF NOT EXISTS audit_logs_actor_idx ON public.audit_logs(actor_id);
+CREATE INDEX IF NOT EXISTS shipment_inspections_reported_idx ON public.shipment_inspections(reported_by);

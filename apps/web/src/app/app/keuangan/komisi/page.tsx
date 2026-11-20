@@ -2,16 +2,16 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { requireOwner } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
-import { rupiah } from "@/lib/brand";
+import { rupiah, tanggalWita } from "@/lib/brand";
 
 export const metadata: Metadata = { title: "Komisi Mitra" };
 type Row = { id: string; name: string; city: string; type: string; pct: number; status: string; resi: number; delivered: number; revenue: number; paid: number; commission: number; commissionPaid: number };
-const iso = (d: Date) => d.toISOString().slice(0, 10);
+const iso = (d: Date) => tanggalWita(d);
 
 export default async function Komisi({ searchParams }: { searchParams: Promise<{ dari?: string; sampai?: string }> }) {
   await requireOwner();
   const sp = await searchParams;
-  const today = new Date(); const first = new Date(today.getFullYear(), today.getMonth(), 1);
+  const today = new Date(); const first = new Date(`${tanggalWita(today).slice(0, 8)}01T00:00:00+08:00`);
   const dari = /^\d{4}-\d{2}-\d{2}$/.test(sp.dari ?? "") ? sp.dari! : iso(first), sampai = /^\d{4}-\d{2}-\d{2}$/.test(sp.sampai ?? "") ? sp.sampai! : iso(today);
   const r = await staffRpc<{ rows: Row[] }>("owner_commission_report", { p_from: dari, p_to: sampai });
   const rows = r.data?.rows ?? [];
