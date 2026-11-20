@@ -78,9 +78,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/lacak/[resi]/page.tsx": {
-    "mtime": 1795186217.6798491,
-    "seen": 1795186434.3319323,
-    "ast_hash": "6da839c43e9b1582b3273edb331616be",
+    "mtime": 1795214622.9926136,
+    "seen": 1795214702.9766972,
+    "ast_hash": "b9f9a751fd70a621f8adc0d0e2394789",
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/lacak/aksi.ts": {
@@ -96,9 +96,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/layout.tsx": {
-    "mtime": 1795214483.3886387,
-    "seen": 1795214549.5649774,
-    "ast_hash": "ae3d3c0815b823b47fc1949743ced4c4",
+    "mtime": 1795214622.9907384,
+    "seen": 1795214702.9767065,
+    "ast_hash": "931535bd40c01ae16d30be48bb77e1c9",
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/ongkir/loading.tsx": {
@@ -198,9 +198,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/cari/page.tsx": {
-    "mtime": 1794991728.046622,
-    "seen": 1795104170.4403682,
-    "ast_hash": "a94ae1efd9853404f45c398ebaa4465a",
+    "mtime": 1795214622.9924285,
+    "seen": 1795214702.9767396,
+    "ast_hash": "06f270b8b1ed0acac9e717de145739c0",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/catatan/page.tsx": {
@@ -222,9 +222,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/kelola/page.tsx": {
-    "mtime": 1795214483.3899245,
-    "seen": 1795214549.5650122,
-    "ast_hash": "c97b5783ba6f65074ffe69446f88ea56",
+    "mtime": 1795214622.9908729,
+    "seen": 1795214702.9767494,
+    "ast_hash": "434ae010cb0862e620a70bcf2b98e8b3",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/keuangan/komisi/page.tsx": {
@@ -348,9 +348,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/petugas/page.tsx": {
-    "mtime": 1795094115.9936507,
-    "seen": 1795104170.4403944,
-    "ast_hash": "1e33443e7668dc7784dfbb9aaf9d766f",
+    "mtime": 1795214622.9910212,
+    "seen": 1795214702.976781,
+    "ast_hash": "77398fb5a11a79ca8299a4b00a8fdd3c",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/pindai/actions.ts": {
@@ -414,9 +414,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/tagihan/page.tsx": {
-    "mtime": 1794974623.783784,
-    "seen": 1795104170.4404058,
-    "ast_hash": "1465283daa507f8e0e40f1ef4dc03a53",
+    "mtime": 1795214622.991203,
+    "seen": 1795214702.976798,
+    "ast_hash": "0da3270edeb4ef3c86b11eb585b08c82",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/tarif/page.tsx": {
@@ -756,9 +756,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/StaffShell.tsx": {
-    "mtime": 1795186304.268444,
-    "seen": 1795186434.3345184,
-    "ast_hash": "5bdd8095a9c72edc3c4b6af2bb14da73",
+    "mtime": 1795214622.990412,
+    "seen": 1795214702.9768891,
+    "ast_hash": "8f7eb2db4206b85d2d3ac74d679d843f",
     "semantic_hash": ""
   },
   "apps/web/src/components/SubmitButton.tsx": {
@@ -822,9 +822,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/lib/panduan.tsx": {
-    "mtime": 1795087747.3274693,
-    "seen": 1795104170.4404664,
-    "ast_hash": "1cf5fef47fc221e0b2cb3cdd8f2e25c0",
+    "mtime": 1795214660.335946,
+    "seen": 1795214702.976908,
+    "ast_hash": "dfc9c482fd91cadf528d6b6edbc3a856",
     "semantic_hash": ""
   },
   "apps/web/src/lib/publicRpc.ts": {
@@ -924,9 +924,9 @@
     "semantic_hash": ""
   },
   "e2e/flow.cjs": {
-    "mtime": 1795214483.3928971,
-    "seen": 1795214549.5652306,
-    "ast_hash": "f78522cf4404eaf409332950c62e417d",
+    "mtime": 1795214677.2834074,
+    "seen": 1795214702.9769776,
+    "ast_hash": "698572961284126d3b76eafc1bfa1f41",
     "semantic_hash": ""
   },
   "e2e/kamera.cjs": {
@@ -1983,6 +1983,12 @@
     "mtime": 1795208361.3875492,
     "seen": 1795208910.2970166,
     "ast_hash": "d3bdee96ffff29cd66173f6f5679ba95",
+    "semantic_hash": ""
+  },
+  "apps/web/src/components/AutoLabel.tsx": {
+    "mtime": 1795214622.9796016,
+    "seen": 1795214702.9768264,
+    "ast_hash": "42e281866fea9e40c65c996896ee01df",
     "semantic_hash": ""
   },
   "package-lock.json": {
