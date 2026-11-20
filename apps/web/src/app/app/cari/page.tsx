@@ -4,7 +4,7 @@ import { MODA_LABEL, statusLabel, type AnyStatus } from "@kamil/core";
 import Icon from "@/components/Icon";
 import { staffRpc } from "@/lib/supabase/server";
 
-export const metadata: Metadata = { title: "Cari" };
+export const metadata: Metadata = { title: "Cari Resi atau Pelanggan" };
 type Hit = { id: string; resiNo: string; status: AnyStatus; origin: string; dest: string; senderName: string; receiverName: string; mode: "LAUT" | "DARAT" | "UDARA"; match: string };
 type Man = { id: string; code: string; status: string; origin: string; dest: string };
 

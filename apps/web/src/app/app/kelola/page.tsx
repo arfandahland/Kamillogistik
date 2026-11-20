@@ -3,7 +3,7 @@ import Link from "next/link";
 import Icon from "@/components/Icon";
 import { requireOwner } from "@/lib/auth";
 
-export const metadata: Metadata = { title: "Kelola" };
+export const metadata: Metadata = { title: "Kelola Bisnis" };
 
 const ITEMS = [
   { href: "/app/laporan", icon: "chart", t: "Laporan lengkap", d: "Omzet, piutang, rute, kinerja mitra, jemput dan klaim per periode. Unduh Excel untuk pembukuan." },

@@ -28,6 +28,7 @@ export default async function Track({ params }: P) {
   if (r.status !== 200) {
     return (
       <main className="wrap section stack">
+        <h1 className="sr-only">Hasil pelacakan resi</h1>
         <div className="err">{(r.body as { error: string }).error}</div>
         <div className="card"><ResiForm initial={resi} /></div>
       </main>

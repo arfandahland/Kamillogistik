@@ -4,6 +4,7 @@ import StaffHeader from "./StaffHeader";
 import TabBar from "./TabBar";
 import Icon from "./Icon";
 import Gerak from "./Gerak";
+import AutoLabel from "./AutoLabel";
 import { keluar } from "@/app/app/actions";
 import { initials, sapaan } from "@/lib/ui";
 
@@ -70,6 +71,7 @@ export default function StaffShell({ me, pending, children, forceFull }: { me: M
         </div>
         {children}
         <Gerak />
+        <AutoLabel />
       </div>
       <TabBar tabs={tabs} />
     </div>

@@ -7,7 +7,7 @@ import { staffRpc } from "@/lib/supabase/server";
 import { tanggalWaktu } from "@/lib/brand";
 import { buatPetugas, resetSandi, ubahStatusPetugas } from "../admin-actions";
 
-export const metadata: Metadata = { title: "Petugas" };
+export const metadata: Metadata = { title: "Daftar Petugas" };
 type S = { id: string; name: string; email: string; role: string; branchName: string | null; status: string; lastLogin: string | null };
 type P = { id: string; name: string; type: string; city: string; status: string };
 

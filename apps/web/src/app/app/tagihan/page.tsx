@@ -4,7 +4,7 @@ import Icon from "@/components/Icon";
 import { staffRpc } from "@/lib/supabase/server";
 import { rupiah, tanggal } from "@/lib/brand";
 
-export const metadata: Metadata = { title: "Tagihan" };
+export const metadata: Metadata = { title: "Daftar Tagihan" };
 
 type Row = { id: string; invoiceNo: string; resiNo: string; customer: string; total: number; paid: number; outstanding: number; dueDate: string; status: string };
 const TABS = [

@@ -1084,6 +1084,28 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     }
   }
 
+  console.log("\n[AA] Aksesibilitas dan artikel panduan baru");
+  {
+    const get = async (u) => { const r = await fetch(`${BASE}${u}`); return { status: r.status, body: (await r.text()).replace(/<!-- -->/g, "") }; };
+    for (const sl of ["cara-kirim-motor-dan-mobil-antar-pulau", "cara-kirim-alat-berat-antar-pulau", "lcl-atau-fcl-kirim-lewat-kontainer"]) {
+      const a = await get(`/panduan/${sl}`);
+      ok(`AA panduan ${sl}: terbuka dengan H1, FAQ/artikel terstruktur, dan tautan layanan`, a.status === 200 && /<h1/.test(a.body) && /href="\/(layanan|alat|jemput|klaim|kontak|ekspedisi)/.test(a.body) && !/undefined/.test(a.body.slice(0, 4000)), String(a.status));
+    }
+    const idx = await get("/panduan"); ok("AA indeks panduan memuat 3 artikel baru", /cara-kirim-motor-dan-mobil-antar-pulau/.test(idx.body) && /cara-kirim-alat-berat-antar-pulau/.test(idx.body) && /lcl-atau-fcl-kirim-lewat-kontainer/.test(idx.body));
+    const sm = await get("/sitemap/3.xml"); ok("AA sitemap panduan memuat artikel baru", /lcl-atau-fcl-kirim-lewat-kontainer/.test(sm.body));
+    const ow = await login(browser, "owner@uji.id", "Pemilik2026x", { width: 390, height: 844 });
+    for (const u of ["/app/petugas", "/app/tarif", "/app/mitra", "/app/pengaturan"]) {
+      await ow.page.goto(`${BASE}${u}`, { waitUntil: "networkidle" }); await ow.page.waitForTimeout(500);
+      const tanpa = await ow.page.evaluate(() => [...document.querySelectorAll("input:not([type=hidden]),select,textarea")].filter((e) => !e.labels?.length && !e.getAttribute("aria-label") && !e.placeholder && !e.closest("label")).length);
+      ok(`AA ${u}: semua kolom isian punya label yang terhubung`, tanpa === 0, String(tanpa));
+    }
+    for (const [u, t] of [["/app/kelola", /Kelola Bisnis/], ["/app/petugas", /Daftar Petugas/], ["/app/tagihan", /Daftar Tagihan/], ["/app/cari?q=a", /Cari Resi/]]) { await ow.page.goto(`${BASE}${u}`, { waitUntil: "networkidle" }); ok(`AA judul tab ${u} jelas`, t.test(await ow.page.title())); }
+    await ow.ctx.close();
+    const pg = await (await browser.newContext({ viewport: { width: 390, height: 844 } })).newPage();
+    await pg.goto(`${BASE}/lacak/RESI-TIDAK-ADA`, { waitUntil: "networkidle" }); ok("AA halaman resi tidak ditemukan punya judul utama (h1)", (await pg.locator("h1").count()) >= 1);
+    await pg.close();
+  }
+
   await browser.close();
   const fail = results.filter((r) => !r.ok);
   console.log(`\n==== HASIL: ${results.length - fail.length}/${results.length} lolos ====`);

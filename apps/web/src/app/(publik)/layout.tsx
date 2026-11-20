@@ -1,4 +1,5 @@
 import Gerak from "@/components/Gerak";
+import AutoLabel from "@/components/AutoLabel";
 import Sosmed from "@/components/Sosmed";
 import Link from "next/link";
 import Icon from "@/components/Icon";
@@ -41,6 +42,7 @@ export default async function PublikLayout({ children }: { children: React.React
         </div>
       </footer>
       <Gerak />
+      <AutoLabel />
       <ChatBot />
       <TabBar tabs={TABS} variant="pub" />
     </ToastProvider>

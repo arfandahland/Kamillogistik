@@ -350,4 +350,92 @@ export const ARTIKEL: Artikel[] = [
       <p>Hubungi tim kami lewat WhatsApp dan ceritakan kota, jenis usaha, dan lokasi Anda. Setelah disetujui, admin pusat membuatkan akun petugas dan mendampingi cara memakai aplikasi. Lihat juga <Link href="/tentang">tentang Kamil Logistik</Link>.</p>
     </>),
   },
+  {
+    slug: "cara-kirim-motor-dan-mobil-antar-pulau",
+    title: "Cara Kirim Motor dan Mobil Antar Pulau: Persiapan dan Dokumen",
+    heading: "Cara kirim motor dan mobil antar pulau: persiapan, dokumen, dan hal yang perlu dicek",
+    description: "Panduan mengirim motor atau mobil antar pulau lewat ekspedisi: persiapan kendaraan, foto kondisi, dokumen, bahan bakar, dan cara memantau pengirimannya.",
+    updated: "2026-11-21",
+    body: () => (<>
+      <p>Mengirim kendaraan lewat ekspedisi lebih praktis daripada membawanya sendiri, terutama untuk pindah kota atau pulau. Supaya prosesnya lancar dan tidak ada sengketa kondisi, siapkan hal-hal berikut sebelum kendaraan diserahkan.</p>
+      <h2>Persiapan kendaraan</h2>
+      <ul>
+        <li><b>Bersihkan kendaraan</b> dan keluarkan semua barang pribadi dari dalamnya. Barang di dalam kabin sebaiknya tidak ikut dikirim.</li>
+        <li><b>Foto dari semua sisi</b>: depan, belakang, kiri, kanan, atap, panel dalam, dan angka kilometer. Foto ini bukti kondisi awal.</li>
+        <li>Catat <b>goresan atau penyok yang sudah ada</b> dan tunjukkan pada petugas saat serah terima.</li>
+        <li>Isi bahan bakar secukupnya saja. Umumnya kendaraan dikirim dengan tangki hampir kosong, tanyakan aturan pastinya ke petugas.</li>
+        <li>Cabut atau amankan aksesori yang mudah lepas, misalnya spion tambahan, box, atau kamera.</li>
+      </ul>
+      <h2>Dokumen yang biasanya diminta</h2>
+      <p>Umumnya salinan identitas pemilik dan dokumen kendaraan. Persyaratan pastinya dikonfirmasi tim saat Anda menghubungi kami, karena bisa berbeda untuk motor, mobil pribadi, dan kendaraan perusahaan.</p>
+      <h2>Saat serah terima</h2>
+      <ol>
+        <li>Petugas memeriksa dan memotret kondisi kendaraan bersama Anda.</li>
+        <li>Anda menerima <b>nomor resi</b> yang bisa dilacak kapan saja di halaman <Link href="/lacak">Cek resi</Link>.</li>
+        <li>Setiap perpindahan tangan tercatat di aplikasi, lengkap dengan foto kondisi.</li>
+      </ol>
+      <h2>Saat kendaraan tiba</h2>
+      <p>Periksa kendaraan dan bandingkan dengan foto awal sebelum menandatangani bukti terima. Bila ada kerusakan, sampaikan saat itu juga dan laporkan lewat halaman <Link href="/klaim">Klaim dan keluhan</Link> agar bisa dicocokkan dengan foto kondisi yang tersimpan.</p>
+      <p>Kebutuhan lengkap ada di halaman layanan <Link href="/layanan/kirim-kendaraan">kirim kendaraan</Link>. Untuk meminta dijemput, gunakan <Link href="/jemput">Pesan jemput</Link>.</p>
+    </>),
+  },
+  {
+    slug: "cara-kirim-alat-berat-antar-pulau",
+    title: "Cara Kirim Alat Berat Antar Pulau: Yang Perlu Disiapkan",
+    heading: "Cara kirim alat berat antar pulau: ukuran, berat, dan persiapan di lokasi",
+    description: "Panduan mengirim alat berat (excavator, loader, genset, dan sejenisnya): data yang perlu disiapkan, hitungan ukuran dan berat, serta persiapan muat dan bongkar.",
+    updated: "2026-11-21",
+    body: () => (<>
+      <p>Alat berat termasuk muatan khusus: ukurannya besar, bobotnya tinggi, dan butuh cara muat serta bongkar yang berbeda dari cargo biasa. Semakin lengkap data yang Anda siapkan di awal, semakin cepat tim dapat memberi gambaran biaya dan jadwal.</p>
+      <h2>Data yang perlu disiapkan</h2>
+      <ul>
+        <li><b>Jenis dan merek</b> alat, misalnya excavator, loader, genset, atau compressor.</li>
+        <li><b>Ukuran</b>: panjang, lebar, dan tinggi dalam keadaan siap kirim.</li>
+        <li><b>Berat</b> sesuai spesifikasi pabrik atau hasil timbangan.</li>
+        <li><b>Alamat muat dan alamat tujuan</b>, termasuk kondisi akses jalan (lebar, tanjakan, jembatan).</li>
+        <li>Foto alat dari beberapa sisi.</li>
+      </ul>
+      <h2>Persiapan sebelum muat</h2>
+      <ul>
+        <li>Bersihkan alat dari tanah dan material, dan pastikan <b>tidak ada kebocoran</b> oli atau bahan bakar.</li>
+        <li>Lipat atau lepas bagian yang bisa dilepas (misalnya bucket atau boom) bila disarankan petugas.</li>
+        <li>Kunci bagian yang bergerak, dan catat kondisi awal dengan foto.</li>
+        <li>Pastikan ada <b>akses dan ruang</b> bagi kendaraan pengangkut di lokasi muat.</li>
+      </ul>
+      <h2>Mengapa ukuran dan berat sangat penting</h2>
+      <p>Ukuran menentukan jenis angkutan (truk, trailer, atau kontainer jenis tertentu) dan cara muat. Berat menentukan peralatan angkat yang dibutuhkan. Data yang keliru bisa membuat jadwal mundur dan biaya berubah, jadi sebutkan apa adanya.</p>
+      <h2>Di tempat tujuan</h2>
+      <p>Siapkan lokasi bongkar yang rata dan cukup luas. Periksa alat bersama petugas dan bandingkan dengan foto awal sebelum menandatangani bukti terima.</p>
+      <p>Lihat layanan <Link href="/layanan/kirim-alat-berat">kirim alat berat</Link> dan hitung berat volume barang di <Link href="/alat/berat-volumetrik">kalkulator berat volume</Link>. Biaya pasti ditentukan tim setelah data lengkap, hubungi lewat <Link href="/kontak">halaman Kontak</Link>.</p>
+    </>),
+  },
+  {
+    slug: "lcl-atau-fcl-kirim-lewat-kontainer",
+    title: "LCL atau FCL? Memilih Cara Kirim Lewat Kontainer",
+    heading: "LCL atau FCL: mana yang lebih hemat untuk kirim barang lewat kontainer?",
+    description: "Perbedaan LCL (kontainer gabungan) dan FCL (kontainer penuh): kapan memilih masing-masing, kelebihan, kekurangan, dan cara menentukan yang paling hemat.",
+    updated: "2026-11-21",
+    body: () => (<>
+      <p>Saat mengirim barang dalam jumlah besar lewat laut, Anda akan bertemu dua istilah: <b>LCL</b> dan <b>FCL</b>. Memahami perbedaannya membantu menghemat biaya dan waktu.</p>
+      <h2>Apa itu LCL?</h2>
+      <p><b>LCL (Less than Container Load)</b> berarti barang Anda berbagi kontainer dengan barang pelanggan lain. Anda hanya membayar ruang yang dipakai, biasanya dihitung berdasarkan berat atau volume.</p>
+      <h2>Apa itu FCL?</h2>
+      <p><b>FCL (Full Container Load)</b> berarti Anda menyewa satu kontainer penuh untuk barang sendiri, berapa pun isinya.</p>
+      <h2>Perbandingan singkat</h2>
+      <ul>
+        <li><b>Biaya</b>: LCL cocok untuk muatan kecil sampai menengah. FCL lebih hemat per unit bila isi kontainer sudah banyak.</li>
+        <li><b>Keamanan</b>: FCL disegel dan hanya berisi barang Anda. LCL digabung dengan barang lain.</li>
+        <li><b>Waktu</b>: LCL kadang menunggu kontainer terisi dulu. FCL bisa berangkat sesuai jadwal Anda.</li>
+        <li><b>Penanganan</b>: FCL biasanya lebih sedikit dipindah-pindah, sehingga risiko lecet lebih kecil.</li>
+      </ul>
+      <h2>Cara memilih</h2>
+      <ol>
+        <li>Hitung <b>total volume dan berat</b> barang Anda lebih dulu (lihat <Link href="/alat/berat-volumetrik">kalkulator berat volume</Link>).</li>
+        <li>Bila muatan hanya sebagian kecil kontainer, LCL biasanya lebih hemat.</li>
+        <li>Bila muatan sudah memenuhi sebagian besar kontainer, minta perbandingan biaya FCL.</li>
+        <li>Pertimbangkan nilai dan kerapuhan barang. Barang bernilai tinggi atau mudah rusak lebih aman di FCL.</li>
+      </ol>
+      <p>Kamil Logistik melayani sewa kontainer sesuai kebutuhan, lihat <Link href="/layanan/sewa-kontainer">penyewaan kontainer (LCL dan FCL)</Link>. Tarif per rute ada di <Link href="/ekspedisi">rute dan tarif</Link>, dan tim siap membantu menghitung pilihan terbaik lewat <Link href="/kontak">halaman Kontak</Link>.</p>
+    </>),
+  },
 ];
