@@ -1247,3 +1247,14 @@ a.card:active, .tile:active { transform: scale(.985); }
 .shiftnums.three { grid-template-columns: repeat(3, 1fr); } .shiftnums b { overflow-wrap: anywhere; }
 .rows li > a:first-child small + small { margin-top: 1px; }
 .hub.wrap { padding-top: 0; }
+
+/* perbaikan geser samping: kolom grid beranda boleh menyempit, deretan chip menggulir sendiri */
+.homegrid { grid-template-columns: minmax(0, 1fr); } .homegrid > * { min-width: 0; }
+@media (min-width: 1024px) { .homegrid { grid-template-columns: minmax(0, 1fr) 310px; } }
+.chips, .fchips { max-width: 100%; overflow-x: auto; scrollbar-width: none; } .chips::-webkit-scrollbar, .fchips::-webkit-scrollbar { display: none; }
+.hub, .hubgrid, .hubcard { min-width: 0; } .hubcard * { min-width: 0; }
+
+/* menu atas publik: tidak boleh meluber di lebar mana pun */
+@media (min-width: 900px) and (max-width: 1099px) { .topbar .navlinks { display: none !important; } .burger { display: grid !important; } .msheet { display: block !important; } .topbar .nav.mitrabtn span { display: none; } }
+@media (min-width: 1100px) { .topbar .wrap { max-width: 1240px; gap: 8px; } .topbar .navlinks a, .ddbtn { padding: 10px 11px; font-size: 14.5px; } .topbar .nav { padding: 10px 13px; font-size: 14.5px; } .topbar .navact { display: flex; gap: 8px; align-items: center; flex: none; } .topbar .navlinks { flex: 1 1 auto; min-width: 0; justify-content: center; } }
+@media (min-width: 1100px) and (max-width: 1499px) { .topbar .nav.jemputbtn { display: none; } }

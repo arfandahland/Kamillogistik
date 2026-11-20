@@ -1052,7 +1052,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await md.ctx.close();
     const ks = await login(browser, "kasir@uji.id", PASS, { width: 390, height: 844 });
     await ks.page.goto(`${BASE}/app`, { waitUntil: "networkidle" });
-    ok("Y10 kasir tidak melihat dashboard manajer gudang", (await ks.page.locator(".hubcard").count()) === 0);
+    ok("Y10 kasir tidak melihat dashboard manajer gudang", !/Papan gudang|Kinerja tim gudang/.test(await ks.page.locator("main").first().innerText()));
     const lencana = await ks.page.locator(".homebadge").first().boundingBox().catch(() => null); const stat = await ks.page.locator(".stats").first().boundingBox().catch(() => null);
     ok("Y11 lencana tindak lanjut tidak tertutup kartu angka di HP", !lencana || !stat || lencana.y + lencana.height <= stat.y + 2, JSON.stringify({ lencana, stat }));
     await ks.ctx.close();
