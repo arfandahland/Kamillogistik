@@ -330,9 +330,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/page.tsx": {
-    "mtime": 1795110433.7477403,
-    "seen": 1795111729.019532,
-    "ast_hash": "32bf4afa98be21476bbe4ec6282cd501",
+    "mtime": 1795187903.9645011,
+    "seen": 1795188089.0557976,
+    "ast_hash": "6dc09587c06f1678fa0411a4ae0f8982",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/pengaturan/page.tsx": {
@@ -750,9 +750,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/StaffHome.tsx": {
-    "mtime": 1795186308.008671,
-    "seen": 1795186434.3345172,
-    "ast_hash": "5e88ce80ed2d11509f192c0756628f09",
+    "mtime": 1795187903.964814,
+    "seen": 1795188089.0582962,
+    "ast_hash": "a143dbb2a94933616748120f6989cdcf",
     "semantic_hash": ""
   },
   "apps/web/src/components/StaffShell.tsx": {
@@ -804,9 +804,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/lib/brand.ts": {
-    "mtime": 1795185791.5300574,
-    "seen": 1795186434.3346624,
-    "ast_hash": "242cdffed32e8d97beecf291da953066",
+    "mtime": 1795187929.5043182,
+    "seen": 1795188089.0584652,
+    "ast_hash": "2b266a099112d56f0b6dbe1c1fa5652a",
     "semantic_hash": ""
   },
   "apps/web/src/lib/lacakGuard.ts": {
@@ -900,9 +900,9 @@
     "semantic_hash": ""
   },
   "db/test/run.sh": {
-    "mtime": 1795186130.5058331,
-    "seen": 1795186434.3355641,
-    "ast_hash": "9047edd379445704795a5f9aa6878fe0",
+    "mtime": 1795187846.0055778,
+    "seen": 1795188089.0594637,
+    "ast_hash": "ada7d80759745fe946b0f6c48ae3ceb4",
     "semantic_hash": ""
   },
   "db/test/tariff-cases.json": {
@@ -924,9 +924,9 @@
     "semantic_hash": ""
   },
   "e2e/flow.cjs": {
-    "mtime": 1795187198.659002,
-    "seen": 1795187259.3227947,
-    "ast_hash": "0c7a87f5cd051d9755bd90f845e221d9",
+    "mtime": 1795188056.5849617,
+    "seen": 1795188089.0595794,
+    "ast_hash": "95c46a5652868bb48422946b340bd428",
     "semantic_hash": ""
   },
   "e2e/kamera.cjs": {
@@ -954,9 +954,9 @@
     "semantic_hash": ""
   },
   "e2e/setup.sh": {
-    "mtime": 1795187217.5155413,
-    "seen": 1795187259.3227994,
-    "ast_hash": "8e4533f859fa8853ec89867c133742f8",
+    "mtime": 1795187846.0057294,
+    "seen": 1795188089.0596375,
+    "ast_hash": "7db4e5ec691263f9d6a02cdea523949b",
     "semantic_hash": ""
   },
   "e2e/skenario.cjs": {
@@ -1596,9 +1596,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/calon-mitra/page.tsx": {
-    "mtime": 1795110433.873698,
-    "seen": 1795111729.0189703,
-    "ast_hash": "6088ddcfb4da5cc8af94b92b5df93cc0",
+    "mtime": 1795187929.526717,
+    "seen": 1795188089.0552416,
+    "ast_hash": "ac812dc2642deabb5d477ac2103e8dfe",
     "semantic_hash": ""
   },
   "apps/web/src/app/auth/callback/route.ts": {
@@ -1608,9 +1608,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/CalonMitraKartu.tsx": {
-    "mtime": 1795108029.9374917,
-    "seen": 1795108723.899379,
-    "ast_hash": "3ff755ac3c83bc2ea4c7f8205e958e8b",
+    "mtime": 1795187929.5261502,
+    "seen": 1795188089.0574195,
+    "ast_hash": "91d07358acb93b790a902e63583c71ef",
     "semantic_hash": ""
   },
   "apps/web/src/components/MitraForm.tsx": {
@@ -1812,9 +1812,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/jemput/page.tsx": {
-    "mtime": 1795186256.3834562,
-    "seen": 1795186434.332564,
-    "ast_hash": "edd292fde47fb8d89604f18cb8ec9a07",
+    "mtime": 1795187929.5262651,
+    "seen": 1795188089.0553694,
+    "ast_hash": "5d73135f318d4dc283e470656976766b",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/klaim/actions.ts": {
@@ -1824,9 +1824,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/klaim/page.tsx": {
-    "mtime": 1795186256.3846695,
-    "seen": 1795186434.3326173,
-    "ast_hash": "b177f2db90d21c2eeb96cade8ab69ff5",
+    "mtime": 1795187929.5263708,
+    "seen": 1795188089.0554526,
+    "ast_hash": "ff211264ad86b363e344756331d00947",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/laporan/page.tsx": {
@@ -1854,9 +1854,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/JemputKartu.tsx": {
-    "mtime": 1795186256.3810763,
-    "seen": 1795186434.3339837,
-    "ast_hash": "e3464d86b0aac49f736482ac101fd0e5",
+    "mtime": 1795187929.5257978,
+    "seen": 1795188089.0576985,
+    "ast_hash": "7fa813bd7120aa6008c4945758128503",
     "semantic_hash": ""
   },
   "apps/web/src/components/KlaimForm.tsx": {
@@ -1866,9 +1866,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/KlaimKartu.tsx": {
-    "mtime": 1795186256.3822634,
-    "seen": 1795186434.3340032,
-    "ast_hash": "14bde67d8e628d99a19aac74e0c879cd",
+    "mtime": 1795187929.5259912,
+    "seen": 1795188089.0577343,
+    "ast_hash": "b5fb3735e61ee37379ec0551cc82963f",
     "semantic_hash": ""
   },
   "apps/web/src/components/LaporanCharts.tsx": {
@@ -1917,6 +1917,12 @@
     "mtime": 1795186163.988255,
     "seen": 1795187259.3227725,
     "ast_hash": "a4fb216b2ec60fb0bb07c9f6dc7187d5",
+    "semantic_hash": ""
+  },
+  "apps/web/src/components/HubDashboard.tsx": {
+    "mtime": 1795188041.1925416,
+    "seen": 1795188089.057603,
+    "ast_hash": "248bb750791010f96f756e4d3f0f11fd",
     "semantic_hash": ""
   },
   "package-lock.json": {

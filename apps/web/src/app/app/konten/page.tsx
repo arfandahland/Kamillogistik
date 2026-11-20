@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { KontenDash, type KontenData } from "@/components/PeranDashboard";
 import KontenForm, { type Item } from "@/components/KontenForm";
 import KontenBaris from "@/components/KontenBaris";
 import MuatBawaan from "@/components/MuatBawaan";
@@ -9,12 +10,13 @@ export const metadata: Metadata = { title: "Konten Website" };
 
 export default async function Konten() {
   await requireRole(["SUPER_ADMIN", "KONTEN"]);
-  const q = await staffRpc<Item[]>("staff_testimonials");
+  const [q, ds] = await Promise.all([staffRpc<Item[]>("staff_testimonials"), staffRpc<KontenData>("konten_dashboard")]);
   const items = q.data ?? [];
   return (
     <main className="wrap narrow stack" style={{ paddingTop: 8 }}>
       <h1>Konten website</h1>
       <p className="muted" style={{ marginTop: -6 }}>Foto dokumentasi dan testimoni yang tampil di slider beranda. Urutan dari atas ke bawah sama dengan urutan di slider. Perubahan tampil di beranda dalam beberapa menit.</p>
+      {ds.data && <KontenDash d={ds.data} />}
       {q.error && <div className="err">{q.error}</div>}
       <details className="card admnew" open={items.length === 0}>
         <summary>+ Tambah foto baru</summary>

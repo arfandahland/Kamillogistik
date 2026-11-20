@@ -1058,6 +1058,32 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await ks.ctx.close();
   }
 
+  console.log("\n[Z] Dashboard khusus tiap peran: Pemilik, Kasir, Kurir, Staf gudang, Sopir, Admin konten");
+  {
+    const cek = async (email, pass, label, jumlah, kata) => {
+      const a = await login(browser, email, pass, { width: 390, height: 844 });
+      if (!a.loggedIn) { ok(`Z ${label}: masuk`, false); return null; }
+      await a.page.goto(`${BASE}${label === "konten" ? "/app/konten" : "/app"}`, { waitUntil: "networkidle" }); await a.page.waitForTimeout(700);
+      const n = await a.page.locator(".hubcard").count(); const teks = await a.page.locator("main, .appmain").first().innerText();
+      ok(`Z ${label}: dashboard khusus tampil dengan ${jumlah}+ kartu`, n >= jumlah, String(n));
+      ok(`Z ${label}: memuat bagian penting (${kata.join(", ")})`, kata.every((k) => teks.includes(k)), teks.slice(0, 120));
+      ok(`Z ${label}: satu judul utama dan tanpa geser samping`, (await a.page.locator("h1").count()) >= 1 && !(await a.page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1)));
+      return a;
+    };
+    const kas = await cek("kasir@uji.id", PASS, "kasir", 6, ["Kas hari ini", "Piutang cabang", "Kirim setoran ke Pemilik"]); if (kas) await kas.ctx.close();
+    const kur = await cek("kurir@uji.id", PASS, "kurir", 5, ["Barang yang saya bawa", "Menunggu diterima", "7 hari terakhir"]); if (kur) await kur.ctx.close();
+    const gud = await cek("gudang@uji.id", PASS, "gudang", 5, ["Isi gudang", "Antrean timbang", "Hasil kerja saya hari ini"]); if (gud) await gud.ctx.close();
+    const sop = await cek("sopir@uji.id", PASS, "sopir", 4, ["Muatan saya", "Riwayat perjalanan"]); if (sop) await sop.ctx.close();
+    const kn = await cek("konten.uji@uji.id", "Sandi2026a", "konten", 2, ["Slider beranda", "Ulasan bagus"]); if (kn) await kn.ctx.close();
+    const ow = await cek("owner@uji.id", "Pemilik2026x", "owner", 6, ["Pusat peringatan", "Proyeksi omzet bulan ini", "Perbandingan cabang", "Kesehatan sistem"]);
+    if (ow) {
+      await ow.page.click("button:has-text('Atur target bulanan')"); await ow.page.fill("#target", "75000000"); await ow.page.click("form button.btn.sm:has-text('Simpan')");
+      await ow.page.waitForSelector("text=75.000.000", { timeout: 10000 }).catch(() => {});
+      ok("Z owner: target bulanan tersimpan dan muncul di kartu proyeksi", /75\.000\.000/.test(await ow.page.locator("main, .appmain").first().innerText()));
+      await ow.ctx.close();
+    }
+  }
+
   await browser.close();
   const fail = results.filter((r) => !r.ok);
   console.log(`\n==== HASIL: ${results.length - fail.length}/${results.length} lolos ====`);
