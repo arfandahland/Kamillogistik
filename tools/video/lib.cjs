@@ -40,20 +40,22 @@ const tunggu = (ms) => new Promise((r) => setTimeout(r, ms));
 const BASE = process.env.BASE || "http://localhost:3100";
 
 /** Membuat satu video. skenario = { id, judul, peran, ringkas, langkah: async (t) => {...} } */
-async function rekam(skenario, { keluar, mobile = true, masuk } = {}) {
+async function rekam(skenario, { keluar, mobile = true, masuk, narasi } = {}) {
   const tmp = path.join(keluar, ".tmp-" + skenario.id); fs.rmSync(tmp, { recursive: true, force: true }); fs.mkdirSync(tmp, { recursive: true });
   const vp = mobile ? { width: 390, height: 844 } : { width: 1280, height: 720 };
   const browser = await chromium.launch();
   const ctx = await browser.newContext({ ...(mobile ? devices["Pixel 5"] : {}), viewport: vp, deviceScaleFactor: 1, recordVideo: { dir: tmp, size: mobile ? { width: 780, height: 1688 } : { width: 1280, height: 720 } } });
   await ctx.addInitScript(OVERLAY);
-  const page = await ctx.newPage();
+  const page = await ctx.newPage(); t0 = Date.now();
   if (masuk) { await page.goto(BASE + "/masuk"); await page.fill("#email", masuk[0]); await page.fill("#password", masuk[1]); await page.click("button.shine"); await page.waitForURL(/\/app/, { timeout: 25000 }); }
   let n = 0; const total = skenario.jumlahLangkah;
+  const peta = new Map((narasi || []).map((k) => [k.teks, k])); const suara = []; let t0 = Date.now();
+  const catat = (teks, ms) => { const k = peta.get(teks); if (!k) return ms; suara.push({ file: path.resolve(__dirname, k.file), detik: (Date.now() - t0) / 1000 }); return Math.max(ms, Math.round(k.dur * 1000) + 600); };
   const t = {
     page, BASE,
     async buka(url, awalan) { await page.goto(BASE + url, { waitUntil: "networkidle" }); await tunggu(awalan ?? 700); await page.evaluate(() => window.__tut && window.__tut.uncard()).catch(() => {}); await tunggu(300); },
-    async kartu(k, judul, sub, ms = 2600, b) { await page.evaluate(([a, c, d, e]) => window.__tut.card(a, c, d, e), [k, judul, sub, b]); await tunggu(ms); },
-    async kata(teks, ms = 1700) { n++; await page.evaluate(([a, b, c]) => window.__tut.cap(a, b, c), [n, total, teks]); await tunggu(ms); },
+    async kartu(k, judul, sub, ms = 2600, b) { await page.evaluate(([a, c, d, e]) => window.__tut.card(a, c, d, e), [k, judul, sub, b]); ms = catat(/[.?!]$/.test(judul) ? `${judul} ${sub}` : `${judul}. ${sub}`, ms); await tunggu(ms); },
+    async kata(teks, ms = 1700) { n++; await page.evaluate(([a, b, c]) => window.__tut.cap(a, b, c), [n, total, teks]); ms = catat(teks, ms); await tunggu(ms); },
     async titik(loc) { await loc.evaluate((e) => e.scrollIntoView({ block: "center", behavior: "smooth" })).catch(() => {}); await tunggu(700); const b = await loc.boundingBox(); if (!b) return null; await page.evaluate(([x, y, r]) => { window.__tut.ptr(x, y); window.__tut.hl(r); }, [b.x + b.width / 2, b.y + b.height / 2, { x: b.x, y: b.y, w: b.width, h: b.height }]); await tunggu(900); return b; },
     async klik(loc, teks, opt = {}) { if (teks) await t.kata(teks, 900); await t.titik(loc); await page.evaluate(() => window.__tut.tap()).catch(() => {}); await tunggu(220); await loc.click(opt); await page.evaluate(() => window.__tut.hl(null)).catch(() => {}); await tunggu(opt.tungguSetelah ?? 1100); },
     async isi(loc, nilai, teks) { if (teks) await t.kata(teks, 700); await t.titik(loc); await loc.click(); await page.keyboard.type(nilai, { delay: 55 }); await page.evaluate(() => window.__tut.hl(null)); await tunggu(450); },
@@ -67,10 +69,18 @@ async function rekam(skenario, { keluar, mobile = true, masuk } = {}) {
   await tunggu(400);
   const vid = page.video(); await ctx.close(); const sumber = await vid.path(); await browser.close();
   const mp4 = path.join(keluar, skenario.id + ".mp4"), jpg = path.join(keluar, skenario.id + ".jpg");
-  cp.execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-i", sumber, "-vf", mobile ? "fps=20,scale=468:-2" : "fps=20,scale=960:-2", "-c:v", "libx264", "-preset", "slow", "-crf", "30", "-pix_fmt", "yuv420p", "-movflags", "+faststart", "-an", mp4]);
+  const vf = mobile ? "fps=20,scale=468:-2" : "fps=20,scale=960:-2";
+  const args = ["-y", "-loglevel", "error", "-i", sumber];
+  if (suara.length) {
+    suara.forEach((a) => args.push("-i", a.file));
+    const grafik = suara.map((a, i) => `[${i + 1}:a]adelay=${Math.round((a.detik + 0.15) * 1000)}|${Math.round((a.detik + 0.15) * 1000)}[s${i}]`).join(";") + ";" + suara.map((_, i) => `[s${i}]`).join("") + `amix=inputs=${suara.length}:normalize=0:dropout_transition=0,volume=1.6[aout]`;
+    args.push("-filter_complex", `[0:v]${vf}[v];${grafik}`, "-map", "[v]", "-map", "[aout]", "-c:a", "aac", "-b:a", "56k", "-ac", "1");
+  } else args.push("-vf", vf, "-an");
+  args.push("-c:v", "libx264", "-preset", "slow", "-crf", "30", "-pix_fmt", "yuv420p", "-movflags", "+faststart", mp4);
+  cp.execFileSync("ffmpeg", args);
   cp.execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-ss", "3", "-i", mp4, "-frames:v", "1", "-q:v", "5", jpg]);
   fs.rmSync(tmp, { recursive: true, force: true });
   const kb = Math.round(fs.statSync(mp4).size / 1024);
-  return { id: skenario.id, kb };
+  return { id: skenario.id, kb, bersuara: suara.length };
 }
 module.exports = { rekam, tunggu, BASE };

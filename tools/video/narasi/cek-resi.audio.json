@@ -1,0 +1,35 @@
+{
+ "lengkap": false,
+ "klip": [
+  {
+   "teks": "Melacak barang. Nomor resi ada di struk atau pesan WhatsApp dari kami.",
+   "file": "suara/008.mp3",
+   "dur": 6.4
+  },
+  {
+   "teks": "Buka halaman Cek resi",
+   "file": "suara/009.mp3",
+   "dur": 2.17
+  },
+  {
+   "teks": "Ketik nomor resi Anda",
+   "file": "suara/010.mp3",
+   "dur": 1.99
+  },
+  {
+   "teks": "Tekan Cek posisi barang",
+   "file": "suara/011.mp3",
+   "dur": 2.09
+  },
+  {
+   "teks": "Lihat tahap perjalanan: dari dijemput sampai diterima",
+   "file": "suara/012.mp3",
+   "dur": 5.2
+  },
+  {
+   "teks": "Ada masalah? Tekan Laporkan masalah barang ini",
+   "file": "suara/013.mp3",
+   "dur": 4.49
+  }
+ ]
+}

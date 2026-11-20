@@ -1,0 +1,45 @@
+{
+ "lengkap": true,
+ "klip": [
+  {
+   "teks": "Menghitung ongkir. Tanpa daftar, tanpa login. Hanya 1 menit.",
+   "file": "suara/000.mp3",
+   "dur": 6.69
+  },
+  {
+   "teks": "Buka halaman Hitung ongkir",
+   "file": "suara/001.mp3",
+   "dur": 2.27
+  },
+  {
+   "teks": "Pilih kota asal barang",
+   "file": "suara/002.mp3",
+   "dur": 2.04
+  },
+  {
+   "teks": "Pilih kota tujuan",
+   "file": "suara/003.mp3",
+   "dur": 1.91
+  },
+  {
+   "teks": "Isi berat barang dalam kilogram",
+   "file": "suara/004.mp3",
+   "dur": 2.74
+  },
+  {
+   "teks": "Tekan tombol Hitung ongkir",
+   "file": "suara/005.mp3",
+   "dur": 2.35
+  },
+  {
+   "teks": "Ongkir dan perkiraan lama kirim tampil di sini",
+   "file": "suara/006.mp3",
+   "dur": 3.76
+  },
+  {
+   "teks": "Mudah, bukan? Mau dijemput? Buka menu Pesan jemput.",
+   "file": "suara/007.mp3",
+   "dur": 6.22
+  }
+ ]
+}
