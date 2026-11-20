@@ -2,7 +2,7 @@ import type { Faq, RoutePair } from "@kamil/core";
 import { optionName } from "@kamil/core";
 import { abs, SITE_URL } from "./site";
 import { BRAND } from "./brand";
-import { PERUSAHAAN, alamatLengkap, petaUrl } from "./perusahaan";
+import { PERUSAHAAN, SOSMED, alamatLengkap, petaUrl } from "./perusahaan";
 import { LAYANAN } from "./layanan";
 
 export const orgId = `${SITE_URL}/#organisasi`;
@@ -17,7 +17,7 @@ export const organizationLd = () => ({
   location: PERUSAHAAN.kantor.map((k) => ({ "@type": "Place", name: k.nama, address: { "@type": "PostalAddress", streetAddress: k.jalan, addressLocality: k.wilayah, addressRegion: k.provinsi, postalCode: k.pos, addressCountry: "ID" }, hasMap: petaUrl(k) })),
   areaServed: PERUSAHAAN.jangkauan.map((n) => ({ "@type": "AdministrativeArea", name: n })),
   knowsAbout: ["ekspedisi", "cargo laut", "cargo udara", "cargo darat", "kirim kendaraan", "kirim alat berat", "sewa kontainer", "pindahan", "pergudangan", "konsultasi logistik"],
-  sameAs: [`https://instagram.com/${BRAND.instagram}`, PERUSAHAAN.facebook],
+  sameAs: SOSMED.map((x) => x.url),
   contactPoint: PERUSAHAAN.wa.map((w) => ({ "@type": "ContactPoint", telephone: `+${w.nomor}`, contactType: "customer service", areaServed: "ID", availableLanguage: ["Indonesian"] })),
   hasOfferCatalog: { "@type": "OfferCatalog", name: "Layanan Kamil Logistik", itemListElement: LAYANAN.map((l) => ({ "@type": "Offer", itemOffered: { "@type": "Service", name: l.judul, url: abs(`/layanan/${l.slug}`) } })) },
 });

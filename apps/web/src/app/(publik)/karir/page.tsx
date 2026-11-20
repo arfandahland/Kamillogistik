@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/karir" },
 };
 
-export default async function Karir({ searchParams }: { searchParams: Promise<{ posisi?: string }> }) {
+export default async function Karir({ searchParams }: { searchParams: Promise<{ posisi?: string; lamar?: string }> }) {
   const sp = await searchParams;
   const ditutup = (await publicRpcCached<string[]>("public_closed_positions", {}, 120, "posisi")) ?? [];
   const lowongan = POSISI.map((p) => ({
@@ -24,7 +24,7 @@ export default async function Karir({ searchParams }: { searchParams: Promise<{ 
     jobLocation: { "@type": "Place", address: { "@type": "PostalAddress", streetAddress: BRAND.alamat.jalan, addressLocality: BRAND.alamat.kota, addressRegion: BRAND.alamat.provinsi, postalCode: BRAND.alamat.pos, addressCountry: "ID" } },
   }));
   return (
-    <LamarProvider awal={sp.posisi} ditutup={ditutup}>
+    <LamarProvider awal={sp.posisi} bukaAwal={sp.lamar === "1"} ditutup={ditutup}>
     <main className="wrap section stack">
       <JsonLd data={[organizationLd(), breadcrumbLd([{ name: "Beranda", path: "/" }, { name: "Karir", path: "/karir" }]), ...lowongan]} />
       <nav aria-label="Jejak halaman" className="crumbs"><Link href="/">Beranda</Link> › <span>Karir</span></nav>

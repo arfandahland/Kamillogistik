@@ -91,6 +91,7 @@ export default async function Track({ params }: P) {
         <p className="muted">Ada yang kurang jelas soal barang ini?</p>
         <a className="btn" href={waLink(`Halo, saya mau tanya soal resi ${t.resi}`)}><Icon name="chat" size={22} /> Tanya soal resi ini</a>
         <Link href="/lacak" className="btn ghost" style={{ marginTop: 10 }}>Cek resi lain</Link>
+        <Link href={`/klaim?resi=${encodeURIComponent(t.resi)}`} className="btn ghost" style={{ marginTop: 10 }}><Icon name="shield" size={20} /> Laporkan masalah barang ini</Link>
       </div>
       {nilai?.canRate && <NilaiForm resi={t.resi} ulasanUrl={process.env.GOOGLE_REVIEW_URL} />}
       {nilai?.rated && <div className="card nilai done"><b>Terima kasih sudah menilai{nilai.stars ? `: ${"★".repeat(nilai.stars)}` : ""}</b></div>}

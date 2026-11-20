@@ -3,6 +3,7 @@ import Sidebar from "./Sidebar";
 import StaffHeader from "./StaffHeader";
 import TabBar from "./TabBar";
 import Icon from "./Icon";
+import Gerak from "./Gerak";
 import { keluar } from "@/app/app/actions";
 import { initials, sapaan } from "@/lib/ui";
 
@@ -21,7 +22,7 @@ export default function StaffShell({ me, pending, children, forceFull }: { me: M
         { href: "/app", label: "Pantauan", icon: "chart" },
         { href: "/app/semua", label: "Resi", icon: "list" },
         { href: "/app/keuangan", label: "Keuangan", icon: "cash", also: ["/app/tagihan"] },
-        { href: "/app/kelola", label: "Kelola", icon: "grid", also: ["/app/peta", "/app/ringkasan", "/app/tarif", "/app/keuangan/komisi", "/app/tindak-lanjut", "/app/cari", "/app/mitra", "/app/korporat", "/app/petugas", "/app/tarif", "/app/pengaturan"] },
+        { href: "/app/kelola", label: "Kelola", icon: "grid", also: ["/app/laporan", "/app/jemput", "/app/klaim", "/app/peta", "/app/ringkasan", "/app/tarif", "/app/keuangan/komisi", "/app/tindak-lanjut", "/app/cari", "/app/mitra", "/app/korporat", "/app/petugas", "/app/tarif", "/app/pengaturan"] },
         { href: "/app/akun", label: "Akun", icon: "user" },
       ]
     : [
@@ -68,6 +69,7 @@ export default function StaffShell({ me, pending, children, forceFull }: { me: M
           <span className="rolechip dk"><Icon name="shield" size={14} /> {role}{me.branchName ? ` · ${me.branchName}` : " · Semua cabang"}</span>
         </div>
         {children}
+        <Gerak />
       </div>
       <TabBar tabs={tabs} />
     </div>

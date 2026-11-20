@@ -6,7 +6,7 @@ export const BRAND = {
   // Bantuan masuk aplikasi petugas langsung ke Pemilik
   bantuanLoginNumber: "6282198606806",
   bantuanLoginDisplay: "0821-9860-6806",
-  instagram: "kamillogistik.id",
+  instagram: "kamil_logistik_express",
   alamat: { jalan: "Gudang Sarinah 2, Jl. Pancoran Timur II No. 4, RT 12/RW 8", kelurahan: "Cikoko", kecamatan: "Pancoran", kota: "Jakarta Selatan", provinsi: "DKI Jakarta", pos: "12770" },
   jam: "Buka 24 jam, setiap hari",
 };

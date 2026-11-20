@@ -870,10 +870,10 @@ footer.pub .footwil { display: flex; flex-wrap: wrap; justify-content: center; g
 
 /* Tampilan menyesuaikan layar secara otomatis: HP diperkecil sedikit supaya rapi dan tidak terlalu besar.
    Tablet dan desktop tidak diubah. Mode gelap, gerak, dan area aman (poni) sudah mengikuti pengaturan perangkat. */
-@media (max-width: 767px) { :root { --z: .95; zoom: .95; } }
-@media (max-width: 429px) { :root { --z: .92; zoom: .92; } }
-@media (max-width: 389px) { :root { --z: .9; zoom: .9; } }
-@media (max-width: 359px) { :root { --z: .86; zoom: .86; } }
+@media (max-width: 767px) { :root { --z: .91; zoom: .91; } }
+@media (max-width: 429px) { :root { --z: .88; zoom: .88; } }
+@media (max-width: 389px) { :root { --z: .86; zoom: .86; } }
+@media (max-width: 359px) { :root { --z: .82; zoom: .82; } }
 @media (max-width: 767px) and (orientation: landscape) and (max-height: 480px) { :root { --z: .85; zoom: .85; } }
 html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 /* Kartu yang berupa tautan: tanpa garis bawah */
@@ -1120,3 +1120,96 @@ footer.pub .footwil { gap: 2px 4px; } footer.pub .footwil b { opacity: .8; font-
 .tblink { display: inline-flex; align-items: center; gap: 6px; font-weight: 800; color: var(--teal-dark); text-decoration: none; min-height: 40px; }
 .footco { margin: 8px 0; font-size: 13.5px; line-height: 1.5; } .footco b { display: block; font-size: 15px; } .footco p { margin: 2px 0; } .footco a { color: #fff; font-weight: 700; text-decoration: none; }
 @media (prefers-color-scheme: dark) { .trustbar { background: linear-gradient(150deg, #0b2e28, #0a2822); } .tbpills li { background: rgba(255, 255, 255, .06); } }
+
+/* ----- media sosial ----- */
+.sosmed { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
+.sosmed a { display: inline-flex; align-items: center; gap: 8px; min-width: 44px; min-height: 44px; justify-content: center; padding: 0 12px; border-radius: 14px; background: rgba(255,255,255,.12); color: #fff; text-decoration: none; font-weight: 700; transition: transform .25s var(--ease), background .25s; }
+.sosmed a:hover { transform: translateY(-3px); background: rgba(255,255,255,.22); }
+.sosmed.big a { background: var(--teal-soft); color: var(--teal); } .sosmed.big a:hover { background: var(--teal); color: #fff; }
+
+/* =========================================================
+   Gerak dan kartu elegan (ringan: hanya transform + opacity)
+   ========================================================= */
+@keyframes enter { from { opacity: 0; transform: translateY(14px); } }
+@keyframes pop { from { opacity: 0; transform: scale(.94); } }
+@keyframes floaty { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@keyframes spin360 { to { transform: rotate(360deg); } }
+@keyframes dash { to { stroke-dashoffset: -52; } }
+@keyframes pulsering { 0% { transform: scale(.6); opacity: .9; } 100% { transform: scale(2.4); opacity: 0; } }
+@keyframes marquee { to { transform: translateX(-50%); } }
+@keyframes drift { to { background-position: 200% 0; } }
+
+/* halaman masuk bertahap */
+main > .wrap > *, main.wrap > *, main.stack > * { animation: enter .5s var(--ease) backwards; }
+main.wrap > :nth-child(2), main > .wrap > :nth-child(2) { animation-delay: 60ms; } main.wrap > :nth-child(3), main > .wrap > :nth-child(3) { animation-delay: 110ms; }
+main.wrap > :nth-child(4), main > .wrap > :nth-child(4) { animation-delay: 160ms; } main.wrap > :nth-child(n+5), main > .wrap > :nth-child(n+5) { animation-delay: 200ms; }
+
+/* muncul saat digulir (dipasang oleh <Gerak/>) */
+.rv { opacity: 0; transform: translateY(22px) scale(.985); }
+.rv.rv-in { opacity: 1; transform: none; transition: opacity .55s var(--ease) var(--rvd, 0ms), transform .55s var(--ease) var(--rvd, 0ms); }
+
+/* kartu lebih elegan: sorot kaca di tepi atas dan bayangan berlapis */
+.card, .tile, .fact { position: relative; }
+.card::before, .tile::before { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: linear-gradient(180deg, rgba(255,255,255,.55), transparent 38%); opacity: .5; }
+a.card, .card.lift, .tile, .fact { transition: transform .3s var(--ease), box-shadow .3s var(--ease), border-color .3s; }
+a.card:hover, .card.lift:hover, .tile:hover, .fact:hover { transform: translateY(-4px); box-shadow: 0 22px 44px rgba(7, 47, 41, .16); border-color: rgba(15, 106, 91, .28); }
+a.card:active, .tile:active { transform: scale(.985); }
+@media (hover: none) { a.card:hover, .card.lift:hover, .tile:hover, .fact:hover { transform: none; box-shadow: var(--shadow-md); } }
+
+/* ----- navbar: kaca yang mengecil saat digulir, garis menyala, menu bertahap ----- */
+.topbar { transition: box-shadow .3s var(--ease), background .3s; } .topbar .wrap { transition: height .3s var(--ease); }
+.topbar.turun { box-shadow: 0 10px 34px rgba(7, 47, 41, .16); } .topbar.turun .wrap { height: 56px; }
+.topbar .brand img { transition: transform .35s var(--ease); } .topbar .brand:hover img { transform: scale(1.06) rotate(-2deg); }
+.topbar .navlinks > a, .ddbtn { position: relative; }
+.topbar .navlinks > a::after, .ddbtn::after { content: ""; position: absolute; left: 50%; bottom: 3px; width: 0; height: 3px; border-radius: 3px; background: var(--grad-cta); translate: -50% 0; transition: width .3s var(--ease); }
+.topbar .navlinks > a:hover::after, .ddbtn:hover::after, .topbar .navlinks > a[aria-current="page"]::after, .ddbtn.cur::after { width: 22px; }
+.topbar .navlinks > * { animation: enter .5s var(--ease) backwards; } .topbar .navlinks > :nth-child(2) { animation-delay: 50ms; } .topbar .navlinks > :nth-child(3) { animation-delay: 100ms; } .topbar .navlinks > :nth-child(4) { animation-delay: 150ms; } .topbar .navlinks > :nth-child(5) { animation-delay: 200ms; } .topbar .navlinks > :nth-child(6) { animation-delay: 250ms; }
+.ddgrid a, .ddrow { animation: enter .32s var(--ease) backwards; } .ddgrid a:nth-child(2), .ddrow:nth-child(2) { animation-delay: 30ms; } .ddgrid a:nth-child(3), .ddrow:nth-child(3) { animation-delay: 60ms; } .ddgrid a:nth-child(4), .ddrow:nth-child(4) { animation-delay: 90ms; } .ddgrid a:nth-child(n+5), .ddrow:nth-child(n+5) { animation-delay: 120ms; }
+.ddgrid a, .ddrow, .ddall { transition: transform .2s var(--ease), background .2s; } .ddgrid a:hover, .ddrow:hover { transform: translateX(4px); }
+.topbar .nav.masukbtn { position: relative; overflow: hidden; } .topbar .nav.masukbtn::after { content: ""; position: absolute; top: 0; bottom: 0; width: 40px; left: -60px; background: linear-gradient(100deg, transparent, rgba(255,255,255,.6), transparent); animation: shine 3.6s ease-in-out infinite; }
+.topbar .nav.mitrabtn { transition: transform .25s var(--ease), background .2s; } .topbar .nav.mitrabtn:hover { transform: translateY(-2px); }
+.burger .bars { display: grid; gap: 5px; width: 22px; } .burger .bars i { display: block; height: 2.5px; border-radius: 2px; background: currentColor; transition: transform .35s var(--ease), opacity .2s; transform-origin: center; }
+.burger.buka .bars i:nth-child(1) { transform: translateY(7.5px) rotate(45deg); } .burger.buka .bars i:nth-child(2) { opacity: 0; transform: scaleX(.2); } .burger.buka .bars i:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+.mpanel { animation: sheetup .38s var(--ease) both; } .mpanel > * { animation: enter .45s var(--ease) backwards; } .mpanel > :nth-child(2) { animation-delay: 60ms; } .mpanel > :nth-child(3) { animation-delay: 100ms; } .mpanel > :nth-child(4) { animation-delay: 140ms; } .mpanel > :nth-child(n+5) { animation-delay: 180ms; }
+.mgrid a, .mchips a { transition: transform .2s var(--ease), background .2s; } .mgrid a:active, .mchips a:active { transform: scale(.95); }
+
+/* ----- animasi memuat ----- */
+.memuat { display: grid; justify-items: center; gap: 4px; padding: 36px 0 12px; color: var(--teal-900, #0f6a5b); }
+.mtruk .mroad path:last-child { stroke-dashoffset: 0; animation: dash .6s linear infinite; } .mtruk .mbody { animation: truckbump .5s ease-in-out infinite; transform-origin: 100px 70px; }
+.mtruk .mwheel { animation: spin360 .6s linear infinite; transform-box: fill-box; transform-origin: center; } .mtruk .msmoke circle { animation: smoke 1.1s ease-out infinite; transform-box: fill-box; transform-origin: center; } .mtruk .msmoke circle:nth-child(2) { animation-delay: .25s; } .mtruk .msmoke circle:nth-child(3) { animation-delay: .5s; }
+@keyframes truckbump { 50% { transform: translateY(-1.5px); } } @keyframes smoke { from { opacity: .55; transform: translate(0, 0) scale(.6); } to { opacity: 0; transform: translate(-14px, -10px) scale(1.6); } }
+.mteks { margin: 0; font-weight: 800; letter-spacing: .3px; } .mdot { animation: dotp 1.2s infinite; display: inline-block; } .mdot:nth-child(2) { animation-delay: .2s; } .mdot:nth-child(3) { animation-delay: .4s; } @keyframes dotp { 0%, 60%, 100% { opacity: .2; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-3px); } }
+
+/* ----- halaman Tentang interaktif ----- */
+.abhero { position: relative; overflow: hidden; border-radius: 28px; padding: 26px 20px 20px; color: #fff; background: radial-gradient(120% 90% at 85% 0%, rgba(255, 179, 71, .35), transparent 55%), linear-gradient(150deg, #06322b, #0b5a4c 60%, #0f6a5b); box-shadow: var(--shadow-lg); display: grid; gap: 12px; }
+.abhero h1 { margin: 0; font-size: clamp(26px, 7vw, 42px); line-height: 1.12; } .abhero p { margin: 0; color: #d6f4ec; font-size: 16.5px; }
+.abhero .chip-badge { background: rgba(255, 255, 255, .14); color: #fff; border: 1px solid rgba(255, 255, 255, .25); width: fit-content; }
+.abhero .orb { position: absolute; border-radius: 50%; filter: blur(2px); opacity: .5; animation: floaty 7s ease-in-out infinite; pointer-events: none; } .abhero .orb.o1 { width: 140px; height: 140px; right: -40px; top: -30px; background: radial-gradient(circle at 30% 30%, #ffd27a, transparent 70%); } .abhero .orb.o2 { width: 90px; height: 90px; left: -20px; bottom: 30px; background: radial-gradient(circle at 30% 30%, #7ff0d0, transparent 70%); animation-delay: -3s; }
+.abhero .kata { display: inline-block; background: linear-gradient(90deg, #fff, #ffd27a, #7ff0d0, #fff); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: drift 6s linear infinite; }
+.abmap { position: relative; border-radius: 24px; background: linear-gradient(180deg, #082e27, #0b4a3f); border: 1px solid rgba(127, 240, 208, .2); padding: 12px; box-shadow: var(--shadow-md); overflow: hidden; } .abmap svg { display: block; width: 100%; height: auto; }
+.abmap .pulse { transform-box: fill-box; transform-origin: center; animation: pulsering 2.4s ease-out infinite; } .abmap .land { fill: #14806a; fill-opacity: .55; stroke: #7ff0d0; stroke-opacity: .55; stroke-width: 1; transition: fill-opacity .3s; } .abmap .land:hover { fill-opacity: .8; }
+.abmap .rute { fill: none; stroke: #ffcf6b; stroke-width: 1.6; stroke-dasharray: 5 6; animation: dash 1.2s linear infinite; opacity: .9; }
+.abmap .kota { cursor: pointer; } .abmap .kota circle.t { fill: #ffb347; stroke: #fff; stroke-width: 2; transition: r .25s var(--ease); } .abmap .kota.on circle.t, .abmap .kota:hover circle.t { r: 9; } .abmap .kota text { fill: #fff; font: 800 13px system-ui, sans-serif; paint-order: stroke; stroke: #06231e; stroke-width: 3px; }
+.abtabs { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0 0; } .abtabs button { font: inherit; font-weight: 800; border: 1px solid rgba(127, 240, 208, .35); background: rgba(255, 255, 255, .08); color: #d6f4ec; border-radius: 99px; padding: 10px 16px; cursor: pointer; min-height: 44px; transition: background .25s, transform .2s var(--ease); } .abtabs button[aria-pressed="true"] { background: var(--grad-cta); color: #2b1600; border-color: transparent; transform: translateY(-2px); }
+.abinfo { margin-top: 10px; padding: 14px 16px; border-radius: 18px; background: rgba(255, 255, 255, .08); color: #e8f8f4; display: grid; gap: 4px; animation: pop .35s var(--ease) both; } .abinfo b { font-size: 18px; color: #fff; } .abinfo a { color: #ffd27a; font-weight: 800; }
+.tl { position: relative; display: grid; gap: 16px; padding-left: 26px; } .tl::before { content: ""; position: absolute; left: 8px; top: 6px; bottom: 6px; width: 3px; border-radius: 3px; background: linear-gradient(180deg, var(--amber), var(--teal)); }
+.tl > div { position: relative; padding: 14px 16px; border-radius: 18px; background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow-sm); } .tl > div::before { content: ""; position: absolute; left: -26px; top: 18px; width: 15px; height: 15px; border-radius: 50%; background: var(--amber); border: 3px solid var(--bg); box-shadow: 0 0 0 2px var(--teal); } .tl b { color: var(--teal-dark, #0f6a5b); } .tl p { margin: 2px 0 0; }
+.strip { overflow: hidden; border-radius: 18px; padding: 10px 0; background: var(--teal-soft); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); } .strip .belt { display: flex; gap: 10px; width: max-content; animation: marquee 32s linear infinite; } .strip:hover .belt { animation-play-state: paused; } .strip .tag { white-space: nowrap; }
+.hitung { font-variant-numeric: tabular-nums; }
+.vmgrid { display: grid; gap: 12px; } @media (min-width: 820px) { .vmgrid { grid-template-columns: 1fr 1.4fr; } }
+.vmgrid .card.vis { background: linear-gradient(150deg, #0b5a4c, #0f6a5b); color: #fff; } .vmgrid .card.vis p { color: #e8f8f4; font-size: 17px; line-height: 1.5; } .vmgrid .card.vis h2 { color: #fff; margin-top: 0; }
+.misi { counter-reset: m; display: grid; gap: 8px; list-style: none; padding: 0; margin: 0; } .misi li { counter-increment: m; display: flex; gap: 12px; align-items: center; padding: 10px 12px; border-radius: 16px; background: var(--teal-soft); } .misi li::before { content: counter(m); flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--grad-teal); color: #fff; font-weight: 800; }
+@media (prefers-color-scheme: dark) { .abinfo { background: rgba(255, 255, 255, .06); } .tl > div { background: var(--card); } }
+
+/* perbaikan tata letak navbar desktop */
+.topbar .navlinks { align-items: center; } .topbar .navlinks a, .ddbtn, .topbar .nav { white-space: nowrap; }
+.ddpanel { background: rgba(255, 255, 255, .97); }
+@media (prefers-color-scheme: dark) { .ddpanel { background: rgba(8, 40, 34, .97); } }
+.row2 { display: grid; gap: 12px; } @media (min-width: 520px) { .row2 { grid-template-columns: 1fr 1fr; } }
+.ctapair { display: grid; gap: 10px; } @media (min-width: 640px) { .ctapair { grid-template-columns: 1fr 1fr; } }
+.stepline { display: grid; gap: 10px; counter-reset: sl; list-style: none; padding: 0; margin: 0; } .stepline li { counter-increment: sl; display: flex; gap: 12px; align-items: flex-start; } .stepline li::before { content: counter(sl); flex: none; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; background: var(--grad-teal); color: #fff; }
+.topbar .nav.jemputbtn { display: none; background: rgba(242, 140, 40, .14); border-color: rgba(242, 140, 40, .45); color: #7a3f00; }
+@media (min-width: 1100px) { .topbar .nav.jemputbtn { display: inline-flex; } }
+@media (prefers-color-scheme: dark) { .topbar .nav.jemputbtn { color: #ffd9a8; } }
+.twocol { display: grid; gap: 12px; } @media (min-width: 760px) { .twocol { grid-template-columns: 1fr 1fr; } }
+@media print { .topbar, .tabbar, .sidebar, .wa-fab, .fchips, .kfilter, .appfab { display: none !important; } main .card { box-shadow: none !important; break-inside: avoid; } .rv { opacity: 1 !important; transform: none !important; } }

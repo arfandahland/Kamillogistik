@@ -13,6 +13,8 @@ const LANGSUNG: { href: string; label: string; exact?: boolean }[] = [
   { href: "/ongkir", label: "Hitung ongkir" },
 ];
 const PERUSAHAAN = [
+  { href: "/jemput", label: "Pesan jemput", ket: "Barang dijemput ke alamat Anda", icon: "truck", baru: true },
+  { href: "/klaim", label: "Klaim dan keluhan", ket: "Lapor barang rusak atau hilang", icon: "shield" },
   { href: "/kontak", label: "Kontak dan alamat", ket: "Jakarta, Makassar, Surabaya", icon: "phone" },
   { href: "/karir", label: "Karir", ket: "Lowongan sedang dibuka", icon: "users", baru: true },
   { href: "/jadwal", label: "Jadwal keberangkatan", ket: "Estimasi lama kirim per rute", icon: "clock" },
@@ -28,6 +30,8 @@ export default function SiteNav({ wilayah }: { wilayah: WilNav[] }) {
   const [menu, setMenu] = useState<Menu>(null);
   const [sheet, setSheet] = useState(false);
   const bar = useRef<HTMLElement>(null);
+  const [turun, setTurun] = useState(false);
+  useEffect(() => { const f = () => setTurun(window.scrollY > 12); f(); window.addEventListener("scroll", f, { passive: true }); return () => window.removeEventListener("scroll", f); }, []);
   const on = (href: string, exact?: boolean) => (exact ? path === href : path === href || path.startsWith(href + "/"));
   useEffect(() => { setMenu(null); setSheet(false); }, [path]);
   useEffect(() => {
@@ -41,7 +45,7 @@ export default function SiteNav({ wilayah }: { wilayah: WilNav[] }) {
   const perusahaanAktif = PERUSAHAAN.some((p) => on(p.href));
   return (
     <>
-      <header className="topbar" ref={bar}>
+      <header className={`topbar ${turun ? "turun" : ""}`} ref={bar}>
         <div className="wrap">
           <Link href="/" className="brand" aria-label="Kamil Logistik — beranda"><img src="/logo-sm.webp" width="220" height="175" alt="Kamil Logistik" /></Link>
           <nav className="navlinks" aria-label="Menu">
@@ -80,9 +84,10 @@ export default function SiteNav({ wilayah }: { wilayah: WilNav[] }) {
             </div>
           </nav>
           <div className="navact">
+            <Link href="/jemput" className="nav jemputbtn"><Icon name="truck" size={18} /> <span>Pesan jemput</span></Link>
             <Link href="/mitra" className="nav mitrabtn"><Icon name="store" size={18} /> <span>Jadi mitra</span></Link>
             <Link href="/masuk" className="nav masukbtn"><Icon name="lock" size={18} /> Masuk</Link>
-            <button type="button" className="burger" aria-label={sheet ? "Tutup menu" : "Buka menu"} aria-expanded={sheet} onClick={() => setSheet((v) => !v)}><Icon name={sheet ? "close" : "menu"} size={24} /></button>
+            <button type="button" className={`burger ${sheet ? "buka" : ""}`} aria-label={sheet ? "Tutup menu" : "Buka menu"} aria-expanded={sheet} onClick={() => setSheet((v) => !v)}><span className="bars" aria-hidden="true"><i /><i /><i /></span></button>
           </div>
         </div>
       </header>
@@ -95,6 +100,7 @@ export default function SiteNav({ wilayah }: { wilayah: WilNav[] }) {
             <div className="mgrid">
               <Link href="/lacak"><Icon name="search" size={22} />Cek resi</Link>
               <Link href="/ongkir"><Icon name="calc" size={22} />Hitung ongkir</Link>
+              <Link href="/jemput"><Icon name="truck" size={22} />Pesan jemput</Link>
               <Link href="/ekspedisi"><Icon name="tag" size={22} />Rute dan tarif</Link>
               <Link href="/tentang"><Icon name="building" size={22} />Tentang kami</Link>
             </div>
@@ -106,7 +112,7 @@ export default function SiteNav({ wilayah }: { wilayah: WilNav[] }) {
             <div className="mchips">{wilayah.map((w) => <Link key={w.slug} href={`/ekspedisi-ke-${w.slug}`}>{w.nama}</Link>)}</div>
             <p className="mh">Lainnya</p>
             <div className="mlist">
-              {PERUSAHAAN.slice(0, 2).map((p) => <Link key={p.href} href={p.href}><span className="ddic"><Icon name={p.icon} size={18} /></span><span><b>{p.label}{p.baru && <em>Dibuka</em>}</b><small>{p.ket}</small></span></Link>)}
+              {PERUSAHAAN.slice(0, 4).map((p) => <Link key={p.href} href={p.href}><span className="ddic"><Icon name={p.icon} size={18} /></span><span><b>{p.label}{p.baru && <em>Dibuka</em>}</b><small>{p.ket}</small></span></Link>)}
             </div>
             <div className="mfoot"><Link href="/syarat">Syarat</Link><Link href="/kebijakan-privasi">Privasi</Link><Link href="/masuk">Masuk petugas</Link></div>
           </div>

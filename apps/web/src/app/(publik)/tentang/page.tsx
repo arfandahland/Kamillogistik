@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
 import Icon from "@/components/Icon";
+import Sosmed from "@/components/Sosmed";
+import TentangPeta from "@/components/TentangPeta";
+import AngkaHitung from "@/components/AngkaHitung";
 import { breadcrumbLd, kantorCabangLd, localBusinessLd, organizationLd } from "@/lib/seo";
 import { waLink } from "@/lib/brand";
 import { LAYANAN } from "@/lib/layanan";
@@ -31,21 +34,29 @@ export default function Tentang() {
       <JsonLd data={[organizationLd(), localBusinessLd(), ...kantorCabangLd(), { "@context": "https://schema.org", "@type": "AboutPage", url: `${SITE_URL}/tentang`, name: "Tentang Kamil Logistik", about: { "@id": `${SITE_URL}/#organisasi` } }, breadcrumbLd([{ name: "Beranda", path: "/" }, { name: "Tentang", path: "/tentang" }])]} />
       <nav aria-label="Jejak halaman" className="crumbs"><Link href="/">Beranda</Link> › <span>Tentang</span></nav>
 
-      <header className="card abouthero">
+      <header className="abhero">
+        <i className="orb o1" aria-hidden="true" /><i className="orb o2" aria-hidden="true" />
         <span className="chip-badge"><Icon name="shield" size={16} /> Perusahaan resmi</span>
-        <h1>Mitra logistik tepercaya dari Jakarta sampai Papua</h1>
+        <h1>Mitra logistik tepercaya dari <span className="kata">Jakarta sampai Papua</span></h1>
         <p>{p.profil}</p>
         <div className="herocta">
           <a className="btn" href={waLink("Halo Kamil Logistik, saya ingin tahu lebih jauh tentang perusahaan dan layanan Anda.")}><Icon name="chat" size={20} /> Hubungi kami</a>
-          <Link className="btn ghost" href="/layanan">Lihat layanan</Link>
+          <Link className="btn ghostlight" href="/layanan">Lihat layanan</Link>
         </div>
+        <Sosmed />
       </header>
 
       <section className="factgrid" aria-label="Fakta singkat">
-        <div className="fact"><b>Sejak {p.tahunBerdiri}</b><small>berbadan hukum CV</small></div>
-        <div className="fact"><b>{p.kantor.length} kota</b><small>gudang dan kantor</small></div>
-        <div className="fact"><b>{p.jangkauan.length} wilayah</b><small>jangkauan layanan</small></div>
-        <div className="fact"><b>Darat, laut, udara</b><small>tiga moda pengiriman</small></div>
+        <div className="fact"><b><AngkaHitung ke={new Date().getFullYear() - p.tahunBerdiri} akhiran="+ tahun" /></b><small>berbadan hukum sejak {p.tahunBerdiri}</small></div>
+        <div className="fact"><b><AngkaHitung ke={p.kantor.length} akhiran=" kota" /></b><small>gudang dan kantor</small></div>
+        <div className="fact"><b><AngkaHitung ke={p.jangkauan.length} akhiran=" wilayah" /></b><small>jangkauan layanan</small></div>
+        <div className="fact"><b><AngkaHitung ke={3} akhiran=" moda" /></b><small>darat, laut, udara</small></div>
+      </section>
+
+      <section aria-labelledby="peta">
+        <h2 id="peta" className="sech">Jaringan kami di Nusantara</h2>
+        <TentangPeta />
+        <div className="strip" style={{ marginTop: 12 }} aria-label="Jangkauan layanan"><div className="belt">{[...p.jangkauan, ...p.jangkauan].map((j, i) => <span key={i} className="tag" aria-hidden={i >= p.jangkauan.length}>{j}</span>)}</div></div>
       </section>
 
       <section aria-labelledby="legal" className="card">
@@ -59,10 +70,19 @@ export default function Tentang() {
         <p style={{ margin: "8px 0 0" }}><a className="btn ghost" href={waLink("Halo Kamil Logistik, saya ingin meminta salinan dokumen legalitas perusahaan.")}>Minta salinan dokumen legalitas</a></p>
       </section>
 
-      <section aria-labelledby="visi" className="card">
-        <h2 id="visi" style={{ marginTop: 0 }}>Visi dan misi</h2>
-        <h3>Visi</h3><p style={{ marginTop: 0 }}>{p.visi}</p>
-        <h3>Misi</h3><ul className="checklist">{p.misi.map((m) => <li key={m}><Icon name="check" size={18} /> <span>{m}</span></li>)}</ul>
+      <section aria-labelledby="visi" className="vmgrid">
+        <div className="card vis"><h2 id="visi">Visi</h2><p>{p.visi}</p></div>
+        <div className="card"><h2 style={{ marginTop: 0 }}>Misi</h2><ol className="misi">{p.misi.map((m) => <li key={m}>{m}</li>)}</ol></div>
+      </section>
+
+      <section aria-labelledby="jejak">
+        <h2 id="jejak" className="sech">Perjalanan kami</h2>
+        <div className="tl">
+          <div><b>3 Agustus {p.tahunBerdiri}</b><p>Akta pendirian {p.namaHukum} ditandatangani di hadapan notaris.</p></div>
+          <div><b>Gudang di tiga kota</b><p>Gudang dan kantor beroperasi di Jakarta, Makassar, dan Surabaya, menghubungkan Jawa, Sulawesi, hingga Papua.</p></div>
+          <div><b>Cargo darat, laut, udara</b><p>Layanan berkembang ke kirim kendaraan, alat berat, sewa kontainer, pindahan, dan pergudangan.</p></div>
+          <div><b>2026 · Resi digital</b><p>Kode resi yang bisa dibaca, bukti foto, tanda tangan penerima, dan dashboard pemantauan pemilik.</p></div>
+        </div>
       </section>
 
       <section aria-labelledby="lay">

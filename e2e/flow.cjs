@@ -937,7 +937,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     const orgLd = (tt.body.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/) || [])[1] || "";
     ok("W4 data terstruktur Organization memuat legalName, foundingDate, founder, dan 3 lokasi", /"legalName":"CV Kamil Logistik Express Sulawesi"/.test(orgLd) && /"foundingDate":"2020-08-03"/.test(orgLd) && /"founder"/.test(orgLd) && (orgLd.match(/"@type":"Place"/g) || []).length === 3);
     ok("W5 Tentang menyediakan tombol minta salinan dokumen legalitas (tanpa menampilkan nomor)", /Minta salinan dokumen legalitas/.test(tt.body) && !/95\.717\.714/.test(tt.body));
-    const kk = await get("/kontak"); ok("W6 Kontak memuat 2 nomor WhatsApp, email resmi, dan 3 alamat kantor", /0853-4223-8748/.test(kk.body) && /0821-2305-7322/.test(kk.body) && /cvkamillogistikexpresssulawesi@gmail\.com/.test(kk.body) && /Tamalanrea/.test(kk.body) && /Perak Utara/.test(kk.body) && /Pancoran/.test(kk.body));
+    const kk = await get("/kontak"); ok("W6 Kontak memuat 2 nomor WhatsApp, email resmi, dan 3 alamat kantor", /0853-4223-8748/.test(kk.body) && /0821-2305-7322/.test(kk.body) && /owner@kamillogistik\.com/.test(kk.body) && /Tamalanrea/.test(kk.body) && /Perak Utara/.test(kk.body) && /Pancoran/.test(kk.body));
     const jd = await get("/jadwal"); ok("W7 halaman jadwal terbuka dengan tabel rute", jd.status === 200 && /<table/.test(jd.body) && /Jadwal keberangkatan/.test(jd.body));
     const ps = await get("/peta-situs"); ok("W8 peta situs HTML memuat layanan, wilayah, panduan, dan perusahaan", ps.status === 200 && /\/layanan\/cargo-laut/.test(ps.body) && /ekspedisi-ke-sulawesi/.test(ps.body) && /\/panduan\//.test(ps.body) && /\/tentang/.test(ps.body));
     const lf = await get("/llms-full.txt"); ok("W9 llms-full.txt memuat profil, legalitas, layanan, kantor, dan jangkauan", lf.status === 200 && /CV Kamil Logistik Express Sulawesi/.test(lf.body) && /Visi/.test(lf.body) && /Cargo|cargo/.test(lf.body) && /Surabaya/.test(lf.body));
@@ -952,6 +952,76 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await pg.screenshot({ path: `${OUT}/e2e-tentang.png`, fullPage: true });
     await pg.goto(`${BASE}/layanan/kirim-kendaraan`, { waitUntil: "networkidle" }); await noOverflow(pg, "halaman layanan (HP)");
     await pc.close();
+  }
+
+  console.log("\n[X] Pesan jemput, klaim, laporan Pemilik, ekspor, kontak dan sosmed");
+  {
+    const get = async (u) => { const r = await fetch(`${BASE}${u}`); return { status: r.status, body: (await r.text()).replace(/<!-- -->/g, "") }; };
+    const pc = await browser.newContext({ viewport: { width: 390, height: 844 } }); const pg = await pc.newPage();
+    const isiJemput = async (layanan, tujuan, barang, berat) => {
+      await pg.goto(`${BASE}/jemput`, { waitUntil: "networkidle" });
+      await pg.selectOption("#layanan", layanan); await pg.fill("#nama", "Rina Jemput Uji"); await pg.fill("#hp", "0812 5555 0101"); await pg.fill("#kota", "Palu");
+      await pg.fill("#alamat", "Jl. Sudirman No 12, dekat apotek"); await pg.fill("#tujuan", tujuan); await pg.fill("#barang", barang); if (berat) await pg.fill("#berat", berat);
+      await pg.click("form button.btn"); await pg.waitForSelector(".nilai.done, .err", { timeout: 15000 }).catch(() => {});
+    };
+    await pg.goto(`${BASE}/jemput`, { waitUntil: "networkidle" });
+    ok("X1 halaman Pesan jemput memuat formulir lengkap", (await pg.locator("#layanan, #nama, #hp, #kota, #alamat, #tujuan, #barang").count()) === 7);
+    await isiJemput("DARAT", "Jayapura", "2 kardus pakaian", "18,5");
+    const tj = await pg.locator(".nilai.done").innerText().catch(() => "");
+    const wj = await pg.locator(".nilai.done a.btn").getAttribute("href").catch(() => "");
+    ok("X2 pesanan jemput terkirim: kode JMP muncul dan tombol WhatsApp terisi pesan", /JMP-\d{6}-[A-Z0-9]{4}/.test(tj) && /wa\.me\/6285342238748/.test(wj || "") && /JMP-/.test(decodeURIComponent(wj || "")), tj.slice(0, 120));
+    await isiJemput("LAUT", "Ambon", "kardus kedua", ""); await isiJemput("UDARA", "Manado", "kardus ketiga", "");
+    await isiJemput("LAUT", "Ternate", "kardus keempat", "");
+    ok("X3 pesanan jemput dibatasi 3 per nomor per hari (pesanan ke-4 ditolak dengan pesan jelas)", /sudah kami terima/.test(await pg.locator(".err").first().innerText().catch(() => "")));
+    await pg.goto(`${BASE}/jemput`, { waitUntil: "networkidle" }); await noOverflow(pg, "Pesan jemput (HP)");
+    await pg.goto(`${BASE}/klaim?resi=KLX-JKT-MKS-LJ-261112-0830-0001-RH`, { waitUntil: "networkidle" });
+    ok("X4 halaman Klaim membawa nomor resi dari tautan", (await pg.inputValue("#resi")) === "KLX-JKT-MKS-LJ-261112-0830-0001-RH");
+    await pg.selectOption("#jenis", "RUSAK"); await pg.fill("#nama", "Siti Klaim Uji"); await pg.fill("#hp", "0813 6666 0202"); await pg.fill("#cerita", "Kardus basah dan isinya pecah saat tiba di Jayapura.");
+    await pg.click("form button.btn"); await pg.waitForSelector(".nilai.done", { timeout: 15000 }).catch(() => {});
+    const tk = await pg.locator(".nilai.done").innerText().catch(() => ""); const wk = await pg.locator(".nilai.done a.btn").getAttribute("href").catch(() => "");
+    ok("X5 klaim terkirim: kode KLM muncul dan tombol mengarah ke WhatsApp after sales 0821-2305-7322", /KLM-\d{6}-[A-Z0-9]{4}/.test(tk) && /wa\.me\/6282123057322/.test(wk || ""), tk.slice(0, 120));
+    await pg.goto(`${BASE}/klaim`, { waitUntil: "networkidle" }); await noOverflow(pg, "Klaim (HP)");
+    await pg.goto(`${BASE}/kontak`, { waitUntil: "networkidle" });
+    const sos = await pg.$$eval("ul.sosmed a", (as) => as.map((a) => a.href));
+    ok("X6 Kontak memuat 4 media sosial resmi (Instagram, TikTok, Facebook, YouTube)", sos.some((h) => /instagram\.com\/kamil_logistik_express/.test(h)) && sos.some((h) => /tiktok\.com\/@kamillogistikexpress\.id/.test(h)) && sos.some((h) => /facebook\.com\/share\/1Da8zfWVVZ/.test(h)) && sos.some((h) => /youtube\.com\/@kamillogistik_express/.test(h)), sos.join(" "));
+    const kt = await get("/kontak"); ok("X7 email resmi owner@kamillogistik.com tampil dan email lama tidak lagi dipakai", /owner@kamillogistik\.com/.test(kt.body) && !/cvkamillogistikexpresssulawesi@gmail/.test(kt.body));
+    await pg.goto(`${BASE}/karir`, { waitUntil: "networkidle" });
+    const sums = await pg.$$(".jobrow summary"); await sums[3].click();
+    const tombol = pg.locator(".jobrow[open] a.btn").first(); const slugBtn = ((await tombol.getAttribute("href")) || "").split("posisi=")[1];
+    await tombol.click(); await pg.waitForSelector(".mdlbox select", { timeout: 8000 }).catch(() => {});
+    ok("X8 tombol Lamar posisi ini membuka formulir dengan posisi yang benar", !!slugBtn && (await pg.locator(".mdlbox select").first().inputValue().catch(() => "")) === slugBtn, slugBtn);
+    const nojs = await get("/karir"); ok("X9 tombol Lamar berupa tautan nyata (tetap berfungsi sebelum JavaScript siap)", (nojs.body.match(/href="\/karir\?posisi=[a-z-]+"/g) || []).length >= 10);
+    await pg.goto(`${BASE}/tentang`, { waitUntil: "networkidle" }); await pg.click(".abtabs button:has-text('Jakarta')");
+    ok("X10 peta Tentang interaktif: pilih Jakarta menampilkan Gudang Sarinah", /Gudang Sarinah/.test(await pg.locator(".abinfo").innerText()));
+    const sm = await get("/sitemap/0.xml"); const sm2 = await get("/sitemap/1.xml"); ok("X11 sitemap memuat /jemput dan /klaim", /\/jemput</.test(sm.body + sm2.body) && /\/klaim</.test(sm.body + sm2.body));
+    await pc.close();
+    const ow = await login(browser, "owner@uji.id", PASS, { width: 1366, height: 900 });
+    await ow.page.goto(`${BASE}/app/jemput`, { waitUntil: "networkidle" });
+    const tj2 = await ow.page.locator("main").innerText();
+    ok("X12 Pemilik melihat pesanan jemput dengan alamat, barang, dan tombol chat", /Rina Jemput Uji/.test(tj2) && /2 kardus pakaian/.test(tj2) && (await ow.page.locator("a.btn:has-text('Chat pelanggan')").count()) >= 1);
+    await ow.page.selectOption("main select >> nth=0", "DIJADWALKAN").catch(() => {}); await ow.page.waitForSelector("text=Tersimpan", { timeout: 8000 }).catch(() => {});
+    await ow.page.goto(`${BASE}/app/jemput?s=DIJADWALKAN`, { waitUntil: "networkidle" });
+    ok("X13 mengubah status pesanan jemput tersimpan", /Rina Jemput Uji/.test(await ow.page.locator("main").innerText()));
+    await ow.page.goto(`${BASE}/app/klaim`, { waitUntil: "networkidle" });
+    const tk2 = await ow.page.locator("main").innerText(); ok("X14 Pemilik melihat klaim, resi yang tidak dikenal ditandai", /Siti Klaim Uji/.test(tk2) && /Barang rusak/.test(tk2) && /tidak ditemukan di sistem/.test(tk2));
+    await ow.page.goto(`${BASE}/app/laporan`, { waitUntil: "networkidle" });
+    const lp = await ow.page.locator("main").innerText();
+    ok("X15 laporan Pemilik memuat ringkasan keuangan, operasional, grafik, dan periode cepat", /Laporan lengkap/.test(lp) && /Ringkasan keuangan/.test(lp) && /Operasional dan layanan pelanggan/.test(lp) && /Rute terlaris/.test(lp) && /Bulan lalu/.test(lp) && /Pesanan jemput dari website/.test(lp), lp.slice(0, 160));
+    await noOverflow(ow.page, "Laporan Pemilik (desktop)");
+    const hari = 24 * 3600 * 1000; const dr = new Date(Date.now() - 6 * hari).toISOString().slice(0, 10), sk = new Date().toISOString().slice(0, 10);
+    for (const j of ["resi", "tagihan", "pembayaran", "komisi", "jemput", "klaim"]) {
+      const c = await ow.ctx.request.get(`${BASE}/app/ekspor/${j}?dari=${dr}&sampai=${sk}`); const b = await c.text();
+      ok(`X16 ekspor CSV ${j}: tipe berkas, BOM Excel, dan baris judul`, c.status() === 200 && /text\/csv/.test(c.headers()["content-type"] || "") && b.charCodeAt(0) === 0xfeff && b.split("\n")[0].length > 10, String(c.status()));
+    }
+    const cj = await (await ow.ctx.request.get(`${BASE}/app/ekspor/jemput`)).text(); ok("X17 CSV jemput memuat pesanan uji", /Rina Jemput Uji/.test(cj) && /Palu/.test(cj));
+    const ck = await (await ow.ctx.request.get(`${BASE}/app/ekspor/klaim`)).text(); ok("X18 CSV klaim memuat laporan uji", /Siti Klaim Uji/.test(ck));
+    await ow.ctx.close();
+    const ks = await login(browser, "kasir@uji.id");
+    await ks.page.goto(`${BASE}/app/jemput`, { waitUntil: "networkidle" });
+    ok("X19 kasir bisa membuka antrean pesanan jemput", /\/app\/jemput/.test(ks.page.url()) && /Pesanan jemput/.test(await ks.page.locator("main").innerText()));
+    for (const u of ["/app/klaim", "/app/laporan"]) { await ks.page.goto(`${BASE}${u}`, { waitUntil: "networkidle" }); ok(`X20 kasir tidak bisa membuka ${u} (dialihkan)`, new URL(ks.page.url()).pathname === "/app"); }
+    const xc = await ks.ctx.request.get(`${BASE}/app/ekspor/resi`); ok("X21 kasir tidak bisa mengunduh ekspor Pemilik", xc.status() === 403);
+    await ks.ctx.close();
   }
 
   await browser.close();

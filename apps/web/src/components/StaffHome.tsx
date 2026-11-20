@@ -45,6 +45,7 @@ export default function StaffHome({ rows, stats, pending, tab, q, canCreate, err
       <div className={`homegrid ${hasSide ? "" : "solo"}`}>
         {hasSide && <aside className="sidecol stack">
           {canCreate && <Link href="/app/baru" className="btn shine"><Icon name="plus" size={22} strokeWidth={2.8} /> Buat resi baru</Link>}
+          {canCreate && <Link href="/app/jemput" className="btn ghost"><Icon name="truck" size={20} /> Pesanan jemput dari website</Link>}
           {pending.length > 0 && (
             <div className="banner">
               <b style={{ display: "flex", gap: 8, alignItems: "center" }}><Icon name="swap" size={20} /> {pending.length} barang menunggu Anda terima</b>

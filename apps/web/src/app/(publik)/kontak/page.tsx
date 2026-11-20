@@ -1,3 +1,4 @@
+import Sosmed from "@/components/Sosmed";
 import type { Metadata } from "next";
 import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
@@ -26,9 +27,10 @@ export default function Kontak() {
         </div>
         <ul className="checklist">
           <li><Icon name="mail" size={18} /> <span><b>Email:</b> <a href={`mailto:${p.email}`}>{p.email}</a></span></li>
-          <li><Icon name="chat" size={18} /> <span><b>Instagram:</b> <a href={`https://instagram.com/${BRAND.instagram}`} target="_blank" rel="noopener noreferrer">@{BRAND.instagram}</a> · <b>Facebook:</b> <a href={p.facebook} target="_blank" rel="noopener noreferrer">Kamil Logistik Ekspress</a></span></li>
+          <li><Icon name="chat" size={18} /> <span><b>Media sosial:</b></span></li>
           <li><Icon name="clock" size={18} /> <span><b>Jam layanan Jakarta:</b> {BRAND.jam}.</span></li>
         </ul>
+        <Sosmed className="sosmed big" label />
       </section>
       <section aria-labelledby="kantor"><h2 id="kantor" className="sech">Gudang dan kantor</h2>
         <div className="svcgrid">{p.kantor.map((k) => (

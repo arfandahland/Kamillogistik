@@ -11,9 +11,14 @@ export const PERUSAHAAN = {
   aktaTeks: "Akta Pendirian Nomor 01 tanggal 3 Agustus 2020, notaris Andi Mallombasi AT, S.H., M.Kn.",
   slogan: "Best Price, Best Service",
   tagline: "Pengiriman barang seluruh Nusantara",
-  email: "cvkamillogistikexpresssulawesi@gmail.com",
+  email: "owner@kamillogistik.com",
   wa: [{ nomor: "6285342238748", tampil: "0853-4223-8748" }, { nomor: "6282123057322", tampil: "0821-2305-7322" }],
-  facebook: "https://facebook.com/kamillogistikekspress.id",
+  facebook: "https://www.facebook.com/share/1Da8zfWVVZ/",
+  instagram: "https://www.instagram.com/kamil_logistik_express",
+  tiktok: "https://www.tiktok.com/@kamillogistikexpress.id",
+  youtube: "https://www.youtube.com/@kamillogistik_express",
+  /** Pengaduan, klaim, dan layanan purna jual (after sales) */
+  waPurnaJual: { nomor: "6282123057322", tampil: "0821-2305-7322" },
   direksi: [
     { nama: "Andi Khusnul Khatimah, S.K.M.", jabatan: "Direktur Utama" },
     { nama: "Prasetya Adimakayasa, S.H.", jabatan: "Founder" },
@@ -31,3 +36,11 @@ export const PERUSAHAAN = {
 
 export const alamatLengkap = (k: (typeof PERUSAHAAN.kantor)[number]) => `${k.jalan}, ${k.wilayah} ${k.pos}, ${k.provinsi}`;
 export const petaUrl = (k: (typeof PERUSAHAAN.kantor)[number]) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${k.nama}, ${alamatLengkap(k)}`)}`;
+
+/** Daftar media sosial resmi, urutan tampil di footer, Kontak, dan Tentang. */
+export const SOSMED = [
+  { kunci: "instagram", nama: "Instagram", url: PERUSAHAAN.instagram, akun: "@kamil_logistik_express" },
+  { kunci: "tiktok", nama: "TikTok", url: PERUSAHAAN.tiktok, akun: "@kamillogistikexpress.id" },
+  { kunci: "facebook", nama: "Facebook", url: PERUSAHAAN.facebook, akun: "Kamil Logistik Express" },
+  { kunci: "youtube", nama: "YouTube", url: PERUSAHAAN.youtube, akun: "@kamillogistik_express" },
+] as const;
