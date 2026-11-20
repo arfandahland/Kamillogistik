@@ -6,7 +6,6 @@ import { requireOwner } from "@/lib/auth";
 export const metadata: Metadata = { title: "Kelola" };
 
 const ITEMS = [
-  { href: "/app/video", icon: "play", t: "Video panduan", d: "Video pendek cara memakai aplikasi untuk Pemilik, kasir, gudang, kurir, sopir, dan HRD." },
   { href: "/app/laporan", icon: "chart", t: "Laporan lengkap", d: "Omzet, piutang, rute, kinerja mitra, jemput dan klaim per periode. Unduh Excel untuk pembukuan." },
   { href: "/app/jemput", icon: "truck", t: "Pesanan jemput", d: "Pesanan penjemputan dari website: hubungi pelanggan dan atur jadwalnya." },
   { href: "/app/klaim", icon: "shield", t: "Klaim dan keluhan", d: "Laporan barang rusak, hilang, atau keluhan layanan, lengkap dengan status penyelesaian." },

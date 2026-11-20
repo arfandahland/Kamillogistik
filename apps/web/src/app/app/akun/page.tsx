@@ -19,7 +19,6 @@ export default async function Akun() {
           <dt>Cabang</dt><dd>{me?.branchName ?? "Semua cabang"}</dd>
         </dl>
       </div>
-      <Link href="/app/video" className="btn ghost"><Icon name="play" size={20} /> Video panduan untuk peran Anda</Link>
       <Link href="/app/sandi" className="btn ghost"><Icon name="key" size={20} /> Ganti kata sandi</Link>
       <form action={keluar}><button className="btn ghost" style={{ borderColor: "var(--danger)", color: "var(--danger)" }}><Icon name="out" size={20} /> Keluar</button></form>
     </main>

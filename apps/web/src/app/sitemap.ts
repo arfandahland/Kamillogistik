@@ -18,7 +18,7 @@ export default async function sitemap(props: { id: number | string | Promise<num
   const now = new Date();
   if (id === 0) return [
     u("/", 1, "weekly", now), u("/tentang", 0.8, "monthly", now), u("/kontak", 0.7, "monthly", now), u("/mitra", 0.7, "monthly", now), u("/karir", 0.6, "weekly", now),
-    u("/ongkir", 0.8, "monthly", now), u("/lacak", 0.5, "monthly", now), u("/jadwal", 0.7, "weekly", now), u("/jemput", 0.8, "monthly", now), u("/video", 0.6, "monthly", now), u("/klaim", 0.5, "monthly", now), u("/peta-situs", 0.3, "monthly", now), u("/syarat", 0.3, "yearly", now), u("/kebijakan-privasi", 0.3, "yearly", now),
+    u("/ongkir", 0.8, "monthly", now), u("/lacak", 0.5, "monthly", now), u("/jadwal", 0.7, "weekly", now), u("/jemput", 0.8, "monthly", now), u("/klaim", 0.5, "monthly", now), u("/peta-situs", 0.3, "monthly", now), u("/syarat", 0.3, "yearly", now), u("/kebijakan-privasi", 0.3, "yearly", now),
   ];
   if (id === 1) return [u("/layanan", 0.9, "monthly", now), ...LAYANAN.map((l) => u(`/layanan/${l.slug}`, 0.85, "monthly", now)), u("/alat/berat-volumetrik", 0.7, "yearly", now)];
   if (id === 2) {

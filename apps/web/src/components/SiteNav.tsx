@@ -13,7 +13,6 @@ const LANGSUNG: { href: string; label: string; exact?: boolean }[] = [
   { href: "/ongkir", label: "Hitung ongkir" },
 ];
 const PERUSAHAAN = [
-  { href: "/video", label: "Video tutorial", ket: "Cara pakai, lengkap dengan gambar bergerak", icon: "play", baru: true },
   { href: "/jemput", label: "Pesan jemput", ket: "Barang dijemput ke alamat Anda", icon: "truck", baru: true },
   { href: "/klaim", label: "Klaim dan keluhan", ket: "Lapor barang rusak atau hilang", icon: "shield" },
   { href: "/kontak", label: "Kontak dan alamat", ket: "Jakarta, Makassar, Surabaya", icon: "phone" },
@@ -113,7 +112,7 @@ export default function SiteNav({ wilayah }: { wilayah: WilNav[] }) {
             <div className="mchips">{wilayah.map((w) => <Link key={w.slug} href={`/ekspedisi-ke-${w.slug}`}>{w.nama}</Link>)}</div>
             <p className="mh">Lainnya</p>
             <div className="mlist">
-              {PERUSAHAAN.slice(0, 5).map((p) => <Link key={p.href} href={p.href}><span className="ddic"><Icon name={p.icon} size={18} /></span><span><b>{p.label}{p.baru && <em>Dibuka</em>}</b><small>{p.ket}</small></span></Link>)}
+              {PERUSAHAAN.slice(0, 4).map((p) => <Link key={p.href} href={p.href}><span className="ddic"><Icon name={p.icon} size={18} /></span><span><b>{p.label}{p.baru && <em>Dibuka</em>}</b><small>{p.ket}</small></span></Link>)}
             </div>
             <div className="mfoot"><Link href="/syarat">Syarat</Link><Link href="/kebijakan-privasi">Privasi</Link><Link href="/masuk">Masuk petugas</Link></div>
           </div>

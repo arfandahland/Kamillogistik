@@ -1084,27 +1084,6 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     }
   }
 
-  console.log("\n[V] Video tutorial");
-  {
-    const get = async (u, init) => { const r = await fetch(`${BASE}${u}`, init); return { status: r.status, ct: r.headers.get("content-type") || "", cc: r.headers.get("cache-control") || "", body: init?.method === "HEAD" ? "" : (await r.text()).replace(/<!-- -->/g, "") }; };
-    const vp = await get("/video");
-    const n = (vp.body.match(/<video /g) || []).length;
-    ok("V1 halaman Video tutorial memuat 6 video pelanggan dengan pemuatan malas (preload none) dan poster", vp.status === 200 && n === 6 && (vp.body.match(/preload="none"/g) || []).length === 6 && /poster="\/video\/hitung-ongkir\.jpg"/.test(vp.body), String(n));
-    const mp = await get("/video/hitung-ongkir.mp4", { method: "HEAD" });
-    ok("V2 berkas video terbuka sebagai video/mp4 dengan cache", mp.status === 200 && /video\/mp4/.test(mp.ct) && /max-age=86400/.test(mp.cc), `${mp.status} ${mp.ct} ${mp.cc}`);
-    ok("V3 data terstruktur VideoObject tersedia untuk SEO video", /"@type":"VideoObject"/.test(vp.body));
-    const sm = await get("/sitemap/0.xml"); ok("V4 sitemap memuat /video dan menu memuat tautan Video", /\/video</.test(sm.body) && /href="\/video"/.test(vp.body));
-    const kk = await login(browser, "kasir@uji.id", PASS, { width: 390, height: 844 });
-    await kk.page.goto(`${BASE}/app/video`, { waitUntil: "networkidle" });
-    const judul = await kk.page.$$eval("main h2", (h) => h.map((x) => x.textContent));
-    ok("V5 petugas melihat video panduan, video perannya (Kasir) di urutan pertama", (await kk.page.locator("video").count()) >= 8 && judul[0] === "Kasir", judul.join(","));
-    await noOverflow(kk.page, "Video panduan (HP)");
-    await kk.ctx.close();
-    const pg = await (await browser.newContext({ viewport: { width: 390, height: 844 } })).newPage();
-    await pg.goto(`${BASE}/video`, { waitUntil: "networkidle" }); await noOverflow(pg, "Video tutorial publik (HP)");
-    await pg.close();
-  }
-
   await browser.close();
   const fail = results.filter((r) => !r.ok);
   console.log(`\n==== HASIL: ${results.length - fail.length}/${results.length} lolos ====`);
