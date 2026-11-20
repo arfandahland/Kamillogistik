@@ -66,9 +66,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/lacak/[resi]/loading.tsx": {
-    "mtime": 1794966520.7958355,
-    "seen": 1795104170.4403458,
-    "ast_hash": "bfa1ef97961f04321b04dce16dc73ded",
+    "mtime": 1795187205.3393753,
+    "seen": 1795187259.3225484,
+    "ast_hash": "fd1b135711e8cb6cb978db1ab63eeb15",
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/lacak/[resi]/opengraph-image.tsx": {
@@ -102,9 +102,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/ongkir/loading.tsx": {
-    "mtime": 1794966520.7972465,
-    "seen": 1795104170.4403515,
-    "ast_hash": "bfa1ef97961f04321b04dce16dc73ded",
+    "mtime": 1795187205.3377843,
+    "seen": 1795187259.3225641,
+    "ast_hash": "fd1b135711e8cb6cb978db1ab63eeb15",
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/ongkir/page.tsx": {
@@ -372,9 +372,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/resi/[id]/loading.tsx": {
-    "mtime": 1794966520.7987587,
-    "seen": 1795104170.440399,
-    "ast_hash": "bfa1ef97961f04321b04dce16dc73ded",
+    "mtime": 1795187205.3410041,
+    "seen": 1795187259.3226275,
+    "ast_hash": "fd1b135711e8cb6cb978db1ab63eeb15",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/resi/[id]/page.tsx": {
@@ -924,9 +924,9 @@
     "semantic_hash": ""
   },
   "e2e/flow.cjs": {
-    "mtime": 1795186374.067118,
-    "seen": 1795186434.3356547,
-    "ast_hash": "306c3adbfd0b635f8a49733134138d51",
+    "mtime": 1795187198.659002,
+    "seen": 1795187259.3227947,
+    "ast_hash": "0c7a87f5cd051d9755bd90f845e221d9",
     "semantic_hash": ""
   },
   "e2e/kamera.cjs": {
@@ -954,9 +954,9 @@
     "semantic_hash": ""
   },
   "e2e/setup.sh": {
-    "mtime": 1795110328.7087967,
-    "seen": 1795111729.022985,
-    "ast_hash": "96c55e3175718ba4da5cff07fbe03db2",
+    "mtime": 1795187217.5155413,
+    "seen": 1795187259.3227994,
+    "ast_hash": "8e4533f859fa8853ec89867c133742f8",
     "semantic_hash": ""
   },
   "e2e/skenario.cjs": {
@@ -1782,9 +1782,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/jemput/aksi.ts": {
-    "mtime": 1795186194.0796273,
-    "seen": 1795186434.331793,
-    "ast_hash": "d5c5002e86dd4cf13c9f76d5cd9b8644",
+    "mtime": 1795187198.6602323,
+    "seen": 1795187259.3225331,
+    "ast_hash": "4ad37094318040ee48bf03ac3d5be26f",
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/jemput/page.tsx": {
@@ -1794,21 +1794,15 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/klaim/aksi.ts": {
-    "mtime": 1795186194.0809104,
-    "seen": 1795186434.3318768,
-    "ast_hash": "85bb11ce6187379617423d9b2af79ba6",
+    "mtime": 1795187198.6614175,
+    "seen": 1795187259.322543,
+    "ast_hash": "4c20f5aa14b8a7f74f19447c1138e629",
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/klaim/page.tsx": {
     "mtime": 1795186210.4670355,
     "seen": 1795186434.3318784,
     "ast_hash": "1ce84a580ca427ce8bb1c5697b33b5e1",
-    "semantic_hash": ""
-  },
-  "apps/web/src/app/(publik)/loading.tsx": {
-    "mtime": 1795185863.197533,
-    "seen": 1795186434.33202,
-    "ast_hash": "3b86c05ce6880a9af4c813ef208a34ae",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/jemput/actions.ts": {
@@ -1854,9 +1848,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/JemputForm.tsx": {
-    "mtime": 1795186210.4608085,
-    "seen": 1795186434.333982,
-    "ast_hash": "07ed007857fee851fd764a0fbe283084",
+    "mtime": 1795187198.661908,
+    "seen": 1795187259.3226745,
+    "ast_hash": "16fec263e242410ea1ff670ae53d15ea",
     "semantic_hash": ""
   },
   "apps/web/src/components/JemputKartu.tsx": {
@@ -1866,9 +1860,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/KlaimForm.tsx": {
-    "mtime": 1795186194.0834885,
-    "seen": 1795186434.3340018,
-    "ast_hash": "960b52a7042fc1f055dc4a4f31f37f5b",
+    "mtime": 1795187198.662235,
+    "seen": 1795187259.3226776,
+    "ast_hash": "fc5fabec70f09c62bc8ee6f8d9e1267f",
     "semantic_hash": ""
   },
   "apps/web/src/components/KlaimKartu.tsx": {
@@ -1899,6 +1893,30 @@
     "mtime": 1795185930.0713763,
     "seen": 1795186434.334554,
     "ast_hash": "316e21729dfc6fcf9eb429d8a881f90d",
+    "semantic_hash": ""
+  },
+  "apps/web/src/lib/jenisKlaim.ts": {
+    "mtime": 1795187198.661531,
+    "seen": 1795187259.3227272,
+    "ast_hash": "1bbfffab0d91b9996f2b1ff896ad162a",
+    "semantic_hash": ""
+  },
+  "apps/web/src/lib/layananJemput.ts": {
+    "mtime": 1795187198.6608312,
+    "seen": 1795187259.3227308,
+    "ast_hash": "43286d36ea1a1678fd4116bc65b6312c",
+    "semantic_hash": ""
+  },
+  "db/migrations/024_jemput_klaim_laporan.sql": {
+    "mtime": 1795186153.5108547,
+    "seen": 1795187259.322767,
+    "ast_hash": "1748850f603488b43deb5ca829c56872",
+    "semantic_hash": ""
+  },
+  "db/test/jemput_klaim.sql": {
+    "mtime": 1795186163.988255,
+    "seen": 1795187259.3227725,
+    "ast_hash": "a4fb216b2ec60fb0bb07c9f6dc7187d5",
     "semantic_hash": ""
   },
   "package-lock.json": {
