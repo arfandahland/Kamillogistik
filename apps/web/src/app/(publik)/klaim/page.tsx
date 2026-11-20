@@ -7,7 +7,7 @@ import { breadcrumbLd } from "@/lib/seo";
 import { PERUSAHAAN } from "@/lib/perusahaan";
 
 export const metadata: Metadata = {
-  title: "Klaim dan Keluhan Pengiriman | Kamil Logistik",
+  title: "Klaim dan Keluhan Pengiriman",
   description: "Barang rusak, hilang, terlambat, atau ada keluhan layanan? Laporkan lewat formulir ini. Tim after sales Kamil Logistik menindaklanjuti lewat WhatsApp.",
   alternates: { canonical: "/klaim" },
 };

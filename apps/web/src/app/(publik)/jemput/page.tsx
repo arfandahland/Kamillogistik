@@ -7,7 +7,7 @@ import { breadcrumbLd } from "@/lib/seo";
 import { waLink } from "@/lib/brand";
 
 export const metadata: Metadata = {
-  title: "Pesan Jemput Barang Online | Kamil Logistik",
+  title: "Pesan Jemput Barang Online",
   description: "Pesan penjemputan barang ke rumah atau kantor lewat website. Isi formulir singkat, tim Kamil Logistik menghubungi lewat WhatsApp untuk jadwal dan ongkir.",
   alternates: { canonical: "/jemput" },
 };
