@@ -1,10 +1,10 @@
 "use server";
+import { LAYANAN_JEMPUT } from "@/lib/layananJemput";
 import { publicRpcResult } from "@/lib/publicRpc";
 import { BRAND } from "@/lib/brand";
 
 export type JemputHasil = { ok: boolean; error?: string; kode?: string; wa?: string };
 const s = (fd: FormData, k: string, n: number) => String(fd.get(k) ?? "").slice(0, n);
-export const LAYANAN_JEMPUT: Record<string, string> = { DARAT: "Cargo darat", LAUT: "Cargo laut", UDARA: "Cargo udara", KENDARAAN: "Kirim kendaraan", ALAT_BERAT: "Kirim alat berat", PINDAHAN: "Pindahan rumah/kantor", LAINNYA: "Lainnya / belum tahu" };
 
 /** Pesan jemput dari website: masuk ke antrean petugas, pelanggan boleh langsung memberi tahu tim lewat WhatsApp. */
 export async function kirimJemput(fd: FormData): Promise<JemputHasil> {

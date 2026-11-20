@@ -1,10 +1,10 @@
 "use server";
+import { JENIS_KLAIM } from "@/lib/jenisKlaim";
 import { publicRpcResult } from "@/lib/publicRpc";
 import { PERUSAHAAN } from "@/lib/perusahaan";
 
 export type KlaimHasil = { ok: boolean; error?: string; kode?: string; wa?: string };
 const s = (fd: FormData, k: string, n: number) => String(fd.get(k) ?? "").slice(0, n);
-export const JENIS_KLAIM: Record<string, string> = { RUSAK: "Barang rusak", HILANG: "Barang hilang", TERLAMBAT: "Terlambat sampai", SALAH_ALAMAT: "Salah alamat / salah penerima", LAYANAN: "Keluhan layanan atau petugas", LAINNYA: "Lainnya" };
 
 /** Klaim dan keluhan dari website. Kasusnya masuk ke antrean Pemilik; pelanggan diarahkan ke WhatsApp after sales. */
 export async function kirimKlaim(fd: FormData): Promise<KlaimHasil> {

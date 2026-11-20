@@ -1,0 +1,1 @@
+export const JENIS_KLAIM: Record<string, string> = { RUSAK: "Barang rusak", HILANG: "Barang hilang", TERLAMBAT: "Terlambat sampai", SALAH_ALAMAT: "Salah alamat / salah penerima", LAYANAN: "Keluhan layanan atau petugas", LAINNYA: "Lainnya" };

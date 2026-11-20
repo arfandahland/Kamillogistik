@@ -1,6 +1,7 @@
 "use client";
 import { useState, useTransition } from "react";
-import { kirimJemput, LAYANAN_JEMPUT, type JemputHasil } from "@/app/(publik)/jemput/aksi";
+import { LAYANAN_JEMPUT } from "@/lib/layananJemput";
+import { kirimJemput, type JemputHasil } from "@/app/(publik)/jemput/aksi";
 import { useToast } from "./Toast";
 
 export default function JemputForm({ layananAwal = "" }: { layananAwal?: string }) {

@@ -1,6 +1,7 @@
 "use client";
 import { useState, useTransition } from "react";
-import { kirimKlaim, JENIS_KLAIM, type KlaimHasil } from "@/app/(publik)/klaim/aksi";
+import { JENIS_KLAIM } from "@/lib/jenisKlaim";
+import { kirimKlaim, type KlaimHasil } from "@/app/(publik)/klaim/aksi";
 import { useToast } from "./Toast";
 
 export default function KlaimForm({ resiAwal = "" }: { resiAwal?: string }) {

@@ -1,0 +1,1 @@
+export const LAYANAN_JEMPUT: Record<string, string> = { DARAT: "Cargo darat", LAUT: "Cargo laut", UDARA: "Cargo udara", KENDARAAN: "Kirim kendaraan", ALAT_BERAT: "Kirim alat berat", PINDAHAN: "Pindahan rumah/kantor", LAINNYA: "Lainnya / belum tahu" };
