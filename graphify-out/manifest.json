@@ -12,9 +12,9 @@
     "semantic_hash": ""
   },
   "apps/web/next.config.mjs": {
-    "mtime": 1794976014.6024616,
-    "seen": 1795104170.4403348,
-    "ast_hash": "9023dcba0990754ff16cfdb71a6c5210",
+    "mtime": 1795211110.279257,
+    "seen": 1795211162.6499293,
+    "ast_hash": "6569da27c47d1a4735b3894395aa6e42",
     "semantic_hash": ""
   },
   "apps/web/package.json": {
@@ -96,9 +96,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/layout.tsx": {
-    "mtime": 1795186217.6803195,
-    "seen": 1795186434.3320184,
-    "ast_hash": "ae3d3c0815b823b47fc1949743ced4c4",
+    "mtime": 1795211110.278194,
+    "seen": 1795211162.6499581,
+    "ast_hash": "242a2e15a4377a500bd4934720e7368b",
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/ongkir/loading.tsx": {
@@ -186,9 +186,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/akun/page.tsx": {
-    "mtime": 1794974421.1908407,
-    "seen": 1795104170.4403658,
-    "ast_hash": "13b2bb70ef3276d614afbc90d980815f",
+    "mtime": 1795211110.278957,
+    "seen": 1795211162.6499789,
+    "ast_hash": "4d0bb8825f05e4e783ded3eb4c70570a",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/baru/page.tsx": {
@@ -222,9 +222,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/kelola/page.tsx": {
-    "mtime": 1795186304.2680845,
-    "seen": 1795186434.3325663,
-    "ast_hash": "c97b5783ba6f65074ffe69446f88ea56",
+    "mtime": 1795211110.2790823,
+    "seen": 1795211162.6499894,
+    "ast_hash": "358f8816018b44f78ffb0aadd0292d7d",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/keuangan/komisi/page.tsx": {
@@ -510,9 +510,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/sitemap.ts": {
-    "mtime": 1795186220.8022792,
-    "seen": 1795186434.3336587,
-    "ast_hash": "26f4f8695d09c1a89a86f2e776112651",
+    "mtime": 1795211110.27877,
+    "seen": 1795211162.650046,
+    "ast_hash": "27c219360e3180f60cdbc3e1feccd600",
     "semantic_hash": ""
   },
   "apps/web/src/app/template.tsx": {
@@ -564,9 +564,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/Icon.tsx": {
-    "mtime": 1795107892.1303473,
-    "seen": 1795108723.899484,
-    "ast_hash": "64d4d10bdfd999294a85f71ddc4d5d41",
+    "mtime": 1795211114.2580678,
+    "seen": 1795211162.6500626,
+    "ast_hash": "b9a8e3255dc2daaf740d6ef923370fb7",
     "semantic_hash": ""
   },
   "apps/web/src/components/Ilustrasi.tsx": {
@@ -924,9 +924,9 @@
     "semantic_hash": ""
   },
   "e2e/flow.cjs": {
-    "mtime": 1795208879.0195022,
-    "seen": 1795208910.297417,
-    "ast_hash": "f78522cf4404eaf409332950c62e417d",
+    "mtime": 1795211138.8787067,
+    "seen": 1795211162.6501834,
+    "ast_hash": "5f47441e83de151a77c5bb359cea322f",
     "semantic_hash": ""
   },
   "e2e/kamera.cjs": {
@@ -1620,9 +1620,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/SiteNav.tsx": {
-    "mtime": 1795186217.6801627,
-    "seen": 1795186434.3344977,
-    "ast_hash": "6e77cbfa76aa1ee5ac449b3792835604",
+    "mtime": 1795211110.2780702,
+    "seen": 1795211162.6501,
+    "ast_hash": "11e18e4d3438901b27b6c549b3874e0b",
     "semantic_hash": ""
   },
   "docs/LOGIN-GOOGLE.md": {
@@ -1746,9 +1746,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/peta-situs/page.tsx": {
-    "mtime": 1795186220.8025348,
-    "seen": 1795186434.3322074,
-    "ast_hash": "b37b07d89276d3f06bc017bcec8b0720",
+    "mtime": 1795211110.2786417,
+    "seen": 1795211162.6499672,
+    "ast_hash": "e96e63552d3ba6071d17d98f263fa418",
     "semantic_hash": ""
   },
   "apps/web/src/app/llms-full.txt/route.ts": {
@@ -1998,9 +1998,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/lib/videoDaftar.json": {
-    "mtime": 1795210513.5441399,
-    "seen": 1795210559.1228747,
-    "ast_hash": "b994ff90c2f0cbc2c6c86cac7d4af40b",
+    "mtime": 1795211093.2601607,
+    "seen": 1795211162.6501288,
+    "ast_hash": "06829e7e75cd78cef37ca7eba8375c37",
     "semantic_hash": ""
   },
   "db/migrations/027_indeks_performa.sql": {
@@ -2022,15 +2022,15 @@
     "semantic_hash": ""
   },
   "tools/video/skenario.cjs": {
-    "mtime": 1795210541.1561804,
-    "seen": 1795210559.1245399,
-    "ast_hash": "935f92dd3e2b723027d18739de958333",
+    "mtime": 1795211043.4731698,
+    "seen": 1795211162.6502268,
+    "ast_hash": "309f511f6db007fc4d4f8c6f66b8c84f",
     "semantic_hash": ""
   },
   "apps/web/public/video/daftar.json": {
-    "mtime": 1795210513.5441399,
-    "seen": 1795210559.1188838,
-    "ast_hash": "b994ff90c2f0cbc2c6c86cac7d4af40b",
+    "mtime": 1795211093.2601607,
+    "seen": 1795211162.6499326,
+    "ast_hash": "06829e7e75cd78cef37ca7eba8375c37",
     "semantic_hash": ""
   },
   "tools/video/seed-demo.sql": {
@@ -2087,12 +2087,6 @@
     "ast_hash": "daa6e3eb0285ca43afae2f5f6a24d5e5",
     "semantic_hash": ""
   },
-  "apps/web/public/video/.tmp-lamar-kerja/page@4923ac2bdf5d1614a2fd984eaafdce90.webm": {
-    "mtime": 1795210700.7441466,
-    "seen": 1795210702.2869954,
-    "ast_hash": "ec976ae1fd54791bd2cb4d98a8fdd07f",
-    "semantic_hash": ""
-  },
   "apps/web/public/video/klaim-keluhan.mp4": {
     "mtime": 1795210685.268146,
     "seen": 1795210702.286998,
@@ -2103,6 +2097,138 @@
     "mtime": 1795210645.9604874,
     "seen": 1795210702.2869992,
     "ast_hash": "8a222fee86143356dc83275b6cbed776",
+    "semantic_hash": ""
+  },
+  "apps/web/public/video/dashboard-kasir.jpg": {
+    "mtime": 1795210807.3305876,
+    "seen": 1795211162.6502516,
+    "ast_hash": "95236482e6cafe72209f04fa07230714",
+    "semantic_hash": ""
+  },
+  "apps/web/public/video/dashboard-kurir.jpg": {
+    "mtime": 1795210907.956896,
+    "seen": 1795211162.6502528,
+    "ast_hash": "a36c8ca15d330ff771c847ac98940526",
+    "semantic_hash": ""
+  },
+  "apps/web/public/video/dashboard-manajer-gudang.jpg": {
+    "mtime": 1795210847.2818694,
+    "seen": 1795211162.6502535,
+    "ast_hash": "1bb4475712401fa8a248d8ca86ad2dc1",
+    "semantic_hash": ""
+  },
+  "apps/web/public/video/dashboard-pemilik.jpg": {
+    "mtime": 1795210973.7930393,
+    "seen": 1795211162.6502542,
+    "ast_hash": "8304fc6a1b93f6593bfa457acb8b0c77",
+    "semantic_hash": ""
+  },
+  "apps/web/public/video/dashboard-sopir.jpg": {
+    "mtime": 1795210933.0871036,
+    "seen": 1795211162.6502552,
+    "ast_hash": "35aad8fca77e8c3d91054122fb37f321",
+    "semantic_hash": ""
+  },
+  "apps/web/public/video/dashboard-staf-gudang.jpg": {
+    "mtime": 1795210877.606455,
+    "seen": 1795211162.6502562,
+    "ast_hash": "bcd0d212c30d349e2020d1acf675a3f6",
+    "semantic_hash": ""
+  },
+  "apps/web/public/video/hrd-lamaran.jpg": {
+    "mtime": 1795211030.0181746,
+    "seen": 1795211162.650258,
+    "ast_hash": "967a94f6609b9f823cb9423ffb2ced1d",
+    "semantic_hash": ""
+  },
+  "apps/web/public/video/jadi-mitra.jpg": {
+    "mtime": 1795210733.9718473,
+    "seen": 1795211162.650259,
+    "ast_hash": "b9a355a0fd8febf0c0b50017c02b2529",
+    "semantic_hash": ""
+  },
+  "apps/web/public/video/kasir-buat-resi.jpg": {
+    "mtime": 1795211093.2495642,
+    "seen": 1795211162.6502597,
+    "ast_hash": "08ec6c45a7026ac2931712564f87c9b7",
+    "semantic_hash": ""
+  },
+  "apps/web/public/video/lamar-kerja.jpg": {
+    "mtime": 1795210710.2514787,
+    "seen": 1795211162.6502614,
+    "ast_hash": "cce0f71c974dba4be9fa926b5bc1b2f1",
+    "semantic_hash": ""
+  },
+  "apps/web/public/video/laporan-ekspor.jpg": {
+    "mtime": 1795211001.6223145,
+    "seen": 1795211162.650262,
+    "ast_hash": "5dc47d4aad794e0879459a7f8135ea93",
+    "semantic_hash": ""
+  },
+  "apps/web/public/video/dashboard-kasir.mp4": {
+    "mtime": 1795210807.2526348,
+    "seen": 1795211162.650267,
+    "ast_hash": "41ea9c3952ef90b1b1b23ebd9dfc03f1",
+    "semantic_hash": ""
+  },
+  "apps/web/public/video/dashboard-kurir.mp4": {
+    "mtime": 1795210907.8717177,
+    "seen": 1795211162.6502678,
+    "ast_hash": "9c4ef97c168bbef5df33977d198f809a",
+    "semantic_hash": ""
+  },
+  "apps/web/public/video/dashboard-manajer-gudang.mp4": {
+    "mtime": 1795210847.1970158,
+    "seen": 1795211162.6502686,
+    "ast_hash": "82ad952f5e75d0d03bdacd4a3359a263",
+    "semantic_hash": ""
+  },
+  "apps/web/public/video/dashboard-pemilik.mp4": {
+    "mtime": 1795210973.7062938,
+    "seen": 1795211162.6502695,
+    "ast_hash": "7c962bf8f58570b7b32d189ba6102a1e",
+    "semantic_hash": ""
+  },
+  "apps/web/public/video/dashboard-sopir.mp4": {
+    "mtime": 1795210933.0058901,
+    "seen": 1795211162.6502702,
+    "ast_hash": "c8395bd732a9abad80e7b713c8a8cd5d",
+    "semantic_hash": ""
+  },
+  "apps/web/public/video/dashboard-staf-gudang.mp4": {
+    "mtime": 1795210877.5203125,
+    "seen": 1795211162.650271,
+    "ast_hash": "67708b8e0ab551c1f02e2fe41e89d0d9",
+    "semantic_hash": ""
+  },
+  "apps/web/public/video/hrd-lamaran.mp4": {
+    "mtime": 1795211029.9347737,
+    "seen": 1795211162.6502728,
+    "ast_hash": "d36128169b20e41619db2b22c4b7c913",
+    "semantic_hash": ""
+  },
+  "apps/web/public/video/jadi-mitra.mp4": {
+    "mtime": 1795210733.8838606,
+    "seen": 1795211162.6502736,
+    "ast_hash": "ac405d93f04adc53fa9bbd5fb1ec015c",
+    "semantic_hash": ""
+  },
+  "apps/web/public/video/kasir-buat-resi.mp4": {
+    "mtime": 1795211093.165089,
+    "seen": 1795211162.6502743,
+    "ast_hash": "5f20d5bc2465093c8d8778efff085be9",
+    "semantic_hash": ""
+  },
+  "apps/web/public/video/lamar-kerja.mp4": {
+    "mtime": 1795210710.1785223,
+    "seen": 1795211162.6502762,
+    "ast_hash": "f466cae5b939382f5be091706d934eef",
+    "semantic_hash": ""
+  },
+  "apps/web/public/video/laporan-ekspor.mp4": {
+    "mtime": 1795211001.5411913,
+    "seen": 1795211162.650277,
+    "ast_hash": "fb7850638ccdcbb1c4ea4b41447985a9",
     "semantic_hash": ""
   },
   "package-lock.json": {
