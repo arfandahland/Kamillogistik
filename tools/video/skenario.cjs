@@ -94,7 +94,7 @@ module.exports = [
     langkah: async (t) => {
       await t.kartu("Tutorial kasir", "Membuat resi baru", "Dari terima barang sampai resi siap dicetak.", 2500);
       await t.buka("/app", 900);
-      await t.klik(t.page.locator("a[href='/app/baru']").first(), "Tekan Buat resi baru", { tungguSetelah: 1400 });
+      await t.klik(t.page.locator(".hubquick a[href='/app/baru']").first(), "Tekan Resi baru", { tungguSetelah: 1400 });
       const v = await pilihTeks(t.page, "#rute", "Jakarta → Makassar · Diantar sampai alamat"); if (v) await t.pilih(t.page.locator("#rute"), v, "Pilih rute pengiriman");
       await t.isi(t.page.locator("#pengirim"), "Toko Bangunan Sumber Rejeki", "Isi nama pengirim");
       await t.isi(t.page.locator("#hp_pengirim"), "081234567890", "Isi nomor HP pengirim");

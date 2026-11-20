@@ -4,13 +4,104 @@
   "peran": "publik",
   "judul": "Cara menghitung ongkir",
   "ringkas": "Pilih kota asal dan tujuan, isi berat barang, ongkir langsung tampil.",
-  "kb": 170
+  "kb": 160
  },
  {
   "id": "cek-resi",
   "peran": "publik",
   "judul": "Cara melacak barang dengan nomor resi",
   "ringkas": "Ketik nomor resi, lihat posisi barang dan riwayat perjalanannya.",
+  "kb": 132
+ },
+ {
+  "id": "pesan-jemput",
+  "peran": "publik",
+  "judul": "Cara memesan jemput barang",
+  "ringkas": "Isi formulir singkat, kurir menjemput ke alamat Anda.",
+  "kb": 218
+ },
+ {
+  "id": "klaim-keluhan",
+  "peran": "publik",
+  "judul": "Cara melaporkan barang rusak atau hilang",
+  "ringkas": "Laporkan masalah kiriman, tim after sales menghubungi lewat WhatsApp.",
+  "kb": 185
+ },
+ {
+  "id": "lamar-kerja",
+  "peran": "publik",
+  "judul": "Cara melamar kerja di Kamil Logistik",
+  "ringkas": "Pilih posisi, isi data, unggah CV dari HP.",
+  "kb": 111
+ },
+ {
+  "id": "jadi-mitra",
+  "peran": "publik",
+  "judul": "Cara mendaftar jadi mitra",
+  "ringkas": "Punya gerai atau gudang? Daftar jadi mitra dan dapat komisi per resi.",
+  "kb": 146
+ },
+ {
+  "id": "dashboard-kasir",
+  "peran": "kasir",
+  "judul": "Kasir: membaca dashboard",
+  "ringkas": "Kas hari ini, piutang, resi perlu ditimbang, dan pelanggan langganan.",
+  "kb": 172
+ },
+ {
+  "id": "dashboard-manajer-gudang",
+  "peran": "manajer",
+  "judul": "Manajer gudang: membaca dashboard",
+  "ringkas": "Papan gudang, barang mengendap, agenda manifest, kinerja tim, dan laporan shift.",
+  "kb": 200
+ },
+ {
+  "id": "dashboard-staf-gudang",
+  "peran": "gudang",
+  "judul": "Staf gudang: membaca dashboard",
+  "ringkas": "Isi gudang, antrean timbang, manifest yang disiapkan, dan hasil kerja hari ini.",
+  "kb": 151
+ },
+ {
+  "id": "dashboard-kurir",
+  "peran": "kurir",
+  "judul": "Kurir: membaca dashboard dan mengantar barang",
+  "ringkas": "Barang yang dibawa, tombol peta dan chat penerima, serta hitungan hari ini.",
+  "kb": 145
+ },
+ {
+  "id": "dashboard-sopir",
+  "peran": "sopir",
+  "judul": "Sopir kontainer: muatan dan manifest",
+  "ringkas": "Muatan yang dibawa, segel, jadwal berangkat dan tiba.",
+  "kb": 136
+ },
+ {
+  "id": "dashboard-pemilik",
+  "peran": "owner",
+  "judul": "Pemilik: memantau bisnis dari HP",
+  "ringkas": "Pusat peringatan, proyeksi omzet, perbandingan cabang, dan pelanggan teratas.",
+  "kb": 216
+ },
+ {
+  "id": "laporan-ekspor",
+  "peran": "owner",
+  "judul": "Pemilik: laporan lengkap dan unduh Excel",
+  "ringkas": "Pilih periode, baca laporan, unduh CSV untuk pembukuan.",
   "kb": 186
+ },
+ {
+  "id": "hrd-lamaran",
+  "peran": "hrd",
+  "judul": "HRD: mengelola pelamar kerja",
+  "ringkas": "Dashboard rekrutmen, baca CV, hubungi pelamar, dan atur status seleksi.",
+  "kb": 176
+ },
+ {
+  "id": "kasir-buat-resi",
+  "peran": "kasir",
+  "judul": "Kasir: membuat resi baru",
+  "ringkas": "Pilih rute, isi pengirim dan penerima, resi langsung jadi.",
+  "kb": 256
  }
 ]

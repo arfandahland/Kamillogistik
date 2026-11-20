@@ -14,7 +14,7 @@ export default async function PetaSitus() {
   const pairs = await getRoutePairs(); const wil = kelompokWilayah(pairs);
   const grup: { judul: string; tautan: { href: string; label: string }[] }[] = [
     { judul: "Layanan", tautan: [{ href: "/layanan", label: "Semua layanan" }, ...LAYANAN.map((l) => ({ href: `/layanan/${l.slug}`, label: l.judul }))] },
-    { judul: "Tarif dan pelacakan", tautan: [{ href: "/ongkir", label: "Hitung ongkir" }, { href: "/lacak", label: "Cek resi" }, { href: "/ekspedisi", label: "Semua rute dan tarif" }, { href: "/jemput", label: "Pesan jemput barang" }, { href: "/klaim", label: "Klaim dan keluhan" }, { href: "/jadwal", label: "Jadwal keberangkatan" }, { href: "/alat/berat-volumetrik", label: "Kalkulator berat volumetrik" }] },
+    { judul: "Tarif dan pelacakan", tautan: [{ href: "/ongkir", label: "Hitung ongkir" }, { href: "/lacak", label: "Cek resi" }, { href: "/ekspedisi", label: "Semua rute dan tarif" }, { href: "/video", label: "Video tutorial" }, { href: "/jemput", label: "Pesan jemput barang" }, { href: "/klaim", label: "Klaim dan keluhan" }, { href: "/jadwal", label: "Jadwal keberangkatan" }, { href: "/alat/berat-volumetrik", label: "Kalkulator berat volumetrik" }] },
     { judul: "Ekspedisi per wilayah", tautan: wil.map((k) => ({ href: `/ekspedisi-ke-${k.wilayah.slug}`, label: `Ekspedisi ke ${k.wilayah.nama}` })) },
     { judul: "Ekspedisi per rute", tautan: pairs.map((p) => ({ href: `/${p.slug}`, label: `Ekspedisi ${p.originCity} ke ${p.destCity}` })) },
     { judul: "Panduan", tautan: [{ href: "/panduan", label: "Semua panduan" }, ...ARTIKEL.map((a) => ({ href: `/panduan/${a.slug}`, label: a.heading }))] },
