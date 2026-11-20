@@ -1992,15 +1992,15 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/VideoDaftar.tsx": {
-    "mtime": 1795208857.1667528,
-    "seen": 1795208910.2961748,
-    "ast_hash": "8687546feaa590acbdbbdf8cc0ffa5a9",
+    "mtime": 1795214142.4316115,
+    "seen": 1795214146.072085,
+    "ast_hash": "8a05f1e5f934f1a76e5f3321780b16a4",
     "semantic_hash": ""
   },
   "apps/web/src/lib/videoDaftar.json": {
-    "mtime": 1795213123.6882334,
-    "seen": 1795213443.3215673,
-    "ast_hash": "06829e7e75cd78cef37ca7eba8375c37",
+    "mtime": 1795214113.1482687,
+    "seen": 1795214146.0721073,
+    "ast_hash": "c4ca0858d894ba6295b6942d53614b18",
     "semantic_hash": ""
   },
   "db/migrations/027_indeks_performa.sql": {
@@ -2016,9 +2016,9 @@
     "semantic_hash": ""
   },
   "tools/video/lib.cjs": {
-    "mtime": 1795213115.4295812,
-    "seen": 1795213443.3217719,
-    "ast_hash": "c027657bd1f6ff55ed4b30b1d47926b9",
+    "mtime": 1795214060.1500518,
+    "seen": 1795214146.0722156,
+    "ast_hash": "e5a0b428806ecbce731081cb6bea1e6a",
     "semantic_hash": ""
   },
   "tools/video/skenario.cjs": {
@@ -2028,9 +2028,9 @@
     "semantic_hash": ""
   },
   "apps/web/public/video/daftar.json": {
-    "mtime": 1795213123.6842334,
-    "seen": 1795213443.3210773,
-    "ast_hash": "06829e7e75cd78cef37ca7eba8375c37",
+    "mtime": 1795214113.1482687,
+    "seen": 1795214146.071889,
+    "ast_hash": "c4ca0858d894ba6295b6942d53614b18",
     "semantic_hash": ""
   },
   "tools/video/seed-demo.sql": {
@@ -2052,9 +2052,9 @@
     "semantic_hash": ""
   },
   "apps/web/public/video/hitung-ongkir.jpg": {
-    "mtime": 1795210574.1044006,
-    "seen": 1795210702.286991,
-    "ast_hash": "67261ab21fb3d64657448f4fbff09ab6",
+    "mtime": 1795214113.1309173,
+    "seen": 1795214146.0723307,
+    "ast_hash": "a8369f2890ac698c607c1f1df92dcd81",
     "semantic_hash": ""
   },
   "apps/web/public/video/cek-resi.mp4": {
@@ -2064,9 +2064,9 @@
     "semantic_hash": ""
   },
   "apps/web/public/video/hitung-ongkir.mp4": {
-    "mtime": 1795210574.0162313,
-    "seen": 1795210702.2869973,
-    "ast_hash": "67add424199041c3986bb9825a26066f",
+    "mtime": 1795214113.024506,
+    "seen": 1795214146.07235,
+    "ast_hash": "e937fc676f712c6cd52b1c821a69ad9e",
     "semantic_hash": ""
   },
   "tools/video/seed-demo2.sql": {
@@ -2427,12 +2427,6 @@
     "mtime": 1795213019.6882296,
     "seen": 1795213443.3218033,
     "ast_hash": "242628b58cf1646aa69121430a879c30",
-    "semantic_hash": ""
-  },
-  "apps/web/public/video/.tmp-hitung-ongkir/page@31861d6b0e941724c170b0864bf4ecfc.webm": {
-    "mtime": 1795213123.7122333,
-    "seen": 1795213443.3218603,
-    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
     "semantic_hash": ""
   },
   "tools/video/suara/000.mp3": {
