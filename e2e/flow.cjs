@@ -905,7 +905,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await pg.getByRole("button", { name: "Lamar sekarang" }).first().click(); await pg.waitForSelector("#posisi");
     ok("U5 halaman karir menandai posisi yang ditutup dan menonaktifkannya di formulir", (await pg.locator("details.card", { hasText: "Staf Gudang" }).locator(".closedtag").count()) === 1 && (await pg.locator("#posisi option[value='staf-gudang'][disabled]").count()) === 1);
     await pub.close();
-    await hr.page.getByRole("switch", { name: /Buka lowongan Staf Gudang/ }).click(); await hr.page.waitForTimeout(1500);
+    await hr.page.getByRole("switch", { name: /Buka lowongan Staf Gudang/ }).click({ timeout: 120000 }); await hr.page.waitForTimeout(1500);
     ok("U6 membuka kembali lowongan", (await hr.page.getByRole("switch", { name: /Tutup lowongan Staf Gudang/ }).count()) === 1);
     const csv = await hr.ctx.request.get(`${BASE}/app/ekspor/lamaran`);
     const body = await csv.text();

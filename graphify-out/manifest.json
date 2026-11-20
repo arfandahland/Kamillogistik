@@ -228,9 +228,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/keuangan/komisi/page.tsx": {
-    "mtime": 1794997221.6444254,
-    "seen": 1795104170.440373,
-    "ast_hash": "63e078db503691595c4064e582edd5a1",
+    "mtime": 1795208408.9195673,
+    "seen": 1795208494.227807,
+    "ast_hash": "7aea5ef39e38157baca20affaccc0176",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/keuangan/page.tsx": {
@@ -282,9 +282,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/layout.tsx": {
-    "mtime": 1794974421.1924608,
-    "seen": 1795104170.4403832,
-    "ast_hash": "f8e7cae6282a4163f7dfef9cab254b3d",
+    "mtime": 1795208336.5256107,
+    "seen": 1795208494.2280254,
+    "ast_hash": "8a7e75db5f6cce6358c65beeebd9733f",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/loading.tsx": {
@@ -330,9 +330,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/page.tsx": {
-    "mtime": 1795188475.3567839,
-    "seen": 1795188527.0438054,
-    "ast_hash": "7f48ae7b6f6e7bd8499222c91bfa22b5",
+    "mtime": 1795208346.1278038,
+    "seen": 1795208494.2281759,
+    "ast_hash": "4589519c1052b0a268d673b549c444cb",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/pengaturan/page.tsx": {
@@ -804,9 +804,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/lib/brand.ts": {
-    "mtime": 1795187929.5043182,
-    "seen": 1795188089.0584652,
-    "ast_hash": "2b266a099112d56f0b6dbe1c1fa5652a",
+    "mtime": 1795208408.9040647,
+    "seen": 1795208494.2303784,
+    "ast_hash": "77f68865955cba661c681e43d06d8b7e",
     "semantic_hash": ""
   },
   "apps/web/src/lib/lacakGuard.ts": {
@@ -858,9 +858,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/lib/supabase/server.ts": {
-    "mtime": 1794976014.6020875,
-    "seen": 1795104170.4404716,
-    "ast_hash": "9e5b3a6bcd4f39cad76ec1395349297e",
+    "mtime": 1795208336.5234036,
+    "seen": 1795208494.230644,
+    "ast_hash": "45f596248adfb12621f6b7738ce55366",
     "semantic_hash": ""
   },
   "apps/web/src/lib/testimoni.ts": {
@@ -900,9 +900,9 @@
     "semantic_hash": ""
   },
   "db/test/run.sh": {
-    "mtime": 1795188405.2113364,
-    "seen": 1795188527.0468988,
-    "ast_hash": "7a9a75a9b37f9db0df4d89ad7ea8e215",
+    "mtime": 1795208361.3974419,
+    "seen": 1795208494.2314804,
+    "ast_hash": "da433d852aca6eae8917fc5bdfeb9685",
     "semantic_hash": ""
   },
   "db/test/tariff-cases.json": {
@@ -954,9 +954,9 @@
     "semantic_hash": ""
   },
   "e2e/setup.sh": {
-    "mtime": 1795188405.2115216,
-    "seen": 1795188527.0470433,
-    "ast_hash": "12cc2752a2bcb95d9e2b811124ca0d86",
+    "mtime": 1795208361.3976574,
+    "seen": 1795208494.231683,
+    "ast_hash": "a47a75f9519ebb88b2227d74615ae5ae",
     "semantic_hash": ""
   },
   "e2e/skenario.cjs": {
@@ -1830,9 +1830,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/laporan/page.tsx": {
-    "mtime": 1795186290.9820094,
-    "seen": 1795186434.332762,
-    "ast_hash": "672bf8054ddc5d6e1485a849beade380",
+    "mtime": 1795208408.9193745,
+    "seen": 1795208494.2280233,
+    "ast_hash": "c20863c9b84649a820fe55ef5b4cddfb",
     "semantic_hash": ""
   },
   "apps/web/src/components/AngkaHitung.tsx": {
@@ -1916,7 +1916,7 @@
   "db/test/jemput_klaim.sql": {
     "mtime": 1795186163.988255,
     "seen": 1795187259.3227725,
-    "ast_hash": "a4fb216b2ec60fb0bb07c9f6dc7187d5",
+    "ast_hash": "",
     "semantic_hash": ""
   },
   "apps/web/src/components/HubDashboard.tsx": {
@@ -1965,6 +1965,18 @@
     "mtime": 1795188540.7283401,
     "seen": 1795188552.050589,
     "ast_hash": "fd8708ab1be699b40581f4f90fec501c",
+    "semantic_hash": ""
+  },
+  "apps/web/vercel.json": {
+    "mtime": 1795208336.531027,
+    "seen": 1795208494.2307177,
+    "ast_hash": "def95e5519e9c9509b1cffc4522bba23",
+    "semantic_hash": ""
+  },
+  "vercel.json": {
+    "mtime": 1795208336.528896,
+    "seen": 1795208494.2323775,
+    "ast_hash": "def95e5519e9c9509b1cffc4522bba23",
     "semantic_hash": ""
   },
   "package-lock.json": {
