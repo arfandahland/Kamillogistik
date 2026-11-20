@@ -16,7 +16,7 @@ export default async function JemputAntrean({ searchParams }: { searchParams: Pr
       <h1>Pesanan jemput</h1>
       <p className="muted" style={{ marginTop: -6 }}>Pesanan dari halaman <Link href="/jemput">/jemput</Link>. Ketuk Chat untuk konfirmasi, pesan sudah terisi.</p>
       {q.error && <div className="err">{q.error}</div>}
-      <p style={{ margin: 0 }}><a href="/app/ekspor/jemput">Unduh Excel (CSV)</a></p>
+      <p style={{ margin: 0 }}><a className="btn ghost sm link" href="/app/ekspor/jemput">Unduh Excel (CSV)</a></p>
       <div className="fchips" role="tablist" aria-label="Status">
         <Link href="/app/jemput" className={`fchip ${!status ? "on" : ""}`}>Semua <b>{total}</b></Link>
         {Object.entries(STATUS_JEMPUT).map(([k, v]) => <Link key={k} href={`/app/jemput?s=${k}`} className={`fchip ${status === k ? "on" : ""}`}>{v}{q.data?.counts?.[k] ? <b>{q.data.counts[k]}</b> : null}</Link>)}

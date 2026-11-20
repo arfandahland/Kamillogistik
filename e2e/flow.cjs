@@ -995,7 +995,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("X10 peta Tentang interaktif: pilih Jakarta menampilkan Gudang Sarinah", /Gudang Sarinah/.test(await pg.locator(".abinfo").innerText()));
     const sm = await get("/sitemap/0.xml"); const sm2 = await get("/sitemap/1.xml"); ok("X11 sitemap memuat /jemput dan /klaim", /\/jemput</.test(sm.body + sm2.body) && /\/klaim</.test(sm.body + sm2.body));
     await pc.close();
-    const ow = await login(browser, "owner@uji.id", PASS, { width: 1366, height: 900 });
+    const ow = await login(browser, "owner@uji.id", "Pemilik2026x", { width: 1366, height: 900 });
     await ow.page.goto(`${BASE}/app/jemput`, { waitUntil: "networkidle" });
     const tj2 = await ow.page.locator("main").innerText();
     ok("X12 Pemilik melihat pesanan jemput dengan alamat, barang, dan tombol chat", /Rina Jemput Uji/.test(tj2) && /2 kardus pakaian/.test(tj2) && (await ow.page.locator("a.btn:has-text('Chat pelanggan')").count()) >= 1);
@@ -1021,6 +1021,40 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("X19 kasir bisa membuka antrean pesanan jemput", /\/app\/jemput/.test(ks.page.url()) && /Pesanan jemput/.test(await ks.page.locator("main").innerText()));
     for (const u of ["/app/klaim", "/app/laporan"]) { await ks.page.goto(`${BASE}${u}`, { waitUntil: "networkidle" }); ok(`X20 kasir tidak bisa membuka ${u} (dialihkan)`, new URL(ks.page.url()).pathname === "/app"); }
     const xc = await ks.ctx.request.get(`${BASE}/app/ekspor/resi`); ok("X21 kasir tidak bisa mengunduh ekspor Pemilik", xc.status() === 403);
+    await ks.ctx.close();
+  }
+
+  console.log("\n[Y] Dashboard Manajer Gudang Jakarta");
+  {
+    const mg = await login(browser, "manajer@uji.id", PASS, { width: 390, height: 844 });
+    ok("Y1 Manajer Gudang bisa masuk", mg.loggedIn);
+    const p = mg.page; await p.goto(`${BASE}/app`, { waitUntil: "networkidle" }); await p.waitForTimeout(700);
+    ok("Y2 beranda menampilkan 10 kartu dashboard dan satu judul utama", (await p.locator(".hubcard").count()) === 10 && (await p.locator("h1").count()) === 1);
+    const kepala = await p.locator(".hubhead").innerText();
+    ok("Y3 dashboard terkunci ke Gudang Jakarta dan menampilkan status perhatian", /Gudang Jakarta/.test(kepala) && /(terkendali|perlu perhatian)/.test(kepala), kepala.replace(/\n/g, " "));
+    const aksi = await p.$$eval(".hubquick a", (as) => as.map((a) => a.getAttribute("href")));
+    ok("Y4 aksi cepat: resi baru, pindai, manifest baru, serah terima", ["/app/baru", "/app/pindai", "/app/manifest/baru", "/app/serah"].every((h) => aksi.includes(h)), aksi.join(","));
+    const wa = await p.locator(".shift a.btn").getAttribute("href"); const pesan = decodeURIComponent(wa || "");
+    ok("Y5 laporan akhir shift: pesan WhatsApp berisi ringkasan cabang dan angka hari ini", /Ringkasan shift Gudang Jakarta/.test(pesan) && /Resi baru: \d+/.test(pesan) && /Piutang cabang: Rp/.test(pesan), pesan.slice(0, 80));
+    await noOverflow(p, "Dashboard Manajer Gudang (HP)");
+    const taut = await p.locator(".hubcard .btn.ghost[href='/app/jemput']").count(); ok("Y6 kartu pesanan jemput menautkan ke antrean jemput", taut === 1);
+    await p.goto(`${BASE}/app/jemput`, { waitUntil: "networkidle" });
+    const nomor = await p.locator("main").innerText(); ok("Y7 nomor WhatsApp di antrean jemput tampil rapi (0812-...) bukan 62...", !/\b628\d{8,}\b/.test(nomor));
+    const bx = await p.locator("a:has-text('Unduh Excel')").boundingBox(); ok("Y8 tombol unduh CSV cukup besar untuk jari (tinggi minimal 40)", !!bx && bx.height >= 38, JSON.stringify(bx));
+    for (const u of ["/app/pindai", "/app/manifest", "/app/tagihan", "/app/serah", "/app/tindak-lanjut", "/app/akun", "/app/baru"]) { await p.goto(`${BASE}${u}`, { waitUntil: "networkidle" }); await noOverflow(p, `Manajer ${u} (HP)`); }
+    await mg.ctx.close();
+    const md = await login(browser, "manajer@uji.id", PASS, { width: 1366, height: 900 });
+    await md.page.goto(`${BASE}/app`, { waitUntil: "networkidle" }); await md.page.waitForTimeout(700);
+    await noOverflow(md.page, "Dashboard Manajer Gudang (desktop)");
+    const kolom = await md.page.$$eval(".dtable th", (t) => t.filter((x) => x.offsetParent !== null).length);
+    const tabel = await md.page.locator(".dtable").boundingBox(); const kartu = await md.page.locator(".dtable table").boundingBox();
+    ok("Y9 tabel resi di desktop memuat kolom status tanpa terpotong", kolom >= 4 && (!tabel || !kartu || kartu.width <= tabel.width + 2), `${kolom} kolom, tabel ${kartu && kartu.width} / kartu ${tabel && tabel.width}`);
+    await md.ctx.close();
+    const ks = await login(browser, "kasir@uji.id", PASS, { width: 390, height: 844 });
+    await ks.page.goto(`${BASE}/app`, { waitUntil: "networkidle" });
+    ok("Y10 kasir tidak melihat dashboard manajer gudang", (await ks.page.locator(".hubcard").count()) === 0);
+    const lencana = await ks.page.locator(".homebadge").first().boundingBox().catch(() => null); const stat = await ks.page.locator(".stats").first().boundingBox().catch(() => null);
+    ok("Y11 lencana tindak lanjut tidak tertutup kartu angka di HP", !lencana || !stat || lencana.y + lencana.height <= stat.y + 2, JSON.stringify({ lencana, stat }));
     await ks.ctx.close();
   }
 

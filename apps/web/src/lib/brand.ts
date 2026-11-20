@@ -26,3 +26,10 @@ export function tanggal(iso: string) {
   return new Date(iso).toLocaleDateString("id-ID", { timeZone: "Asia/Makassar", day: "numeric", month: "long", year: "numeric" });
 }
 export const waLinkBantuanLogin = (text: string) => `https://wa.me/${BRAND.bantuanLoginNumber}?text=${encodeURIComponent(text)}`;
+
+/** "6281255550101" -> "0812-5555-0101" untuk ditampilkan. */
+export const hpTampil = (p?: string | null) => {
+  const d = (p ?? "").replace(/\D/g, ""); if (d.length < 9) return p ?? "";
+  const lokal = d.startsWith("62") ? "0" + d.slice(2) : d;
+  return lokal.replace(/^(\d{4})(\d{4})(\d+)$/, "$1-$2-$3");
+};

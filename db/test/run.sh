@@ -6,7 +6,7 @@ cd "$(dirname "$0")/.."
 DB=${TEST_DB:-kamil_test}
 psql_run() { if [ "$(id -u)" = 0 ]; then su postgres -c "psql -v ON_ERROR_STOP=1 -q -X $*"; else psql -v ON_ERROR_STOP=1 -q -X "$@"; fi; }
 psql_run "-c 'DROP DATABASE IF EXISTS $DB' -c 'CREATE DATABASE $DB'"
-for f in test/00_stub_auth.sql migrations/001_init.sql migrations/002_security.sql migrations/003_public_api.sql migrations/004_seed_network.sql migrations/005_staff_app.sql migrations/006_owner_dashboard.sql migrations/007_admin_finance.sql migrations/008_pod.sql migrations/009_speed.sql migrations/010_security.sql migrations/011_kode_resi.sql migrations/012_manifest.sql migrations/013_korporat.sql migrations/014_tindak_lanjut.sql migrations/015_pemeriksaan_fisik.sql migrations/016_riwayat_harga_komisi.sql migrations/017_pantauan_pemilik.sql migrations/018_pelanggan.sql migrations/019_lamaran.sql migrations/020_konten_peran_keamanan.sql migrations/021_lamaran_batas.sql migrations/022_calon_mitra.sql migrations/023_dashboard_hrd.sql migrations/024_jemput_klaim_laporan.sql; do
+for f in test/00_stub_auth.sql migrations/001_init.sql migrations/002_security.sql migrations/003_public_api.sql migrations/004_seed_network.sql migrations/005_staff_app.sql migrations/006_owner_dashboard.sql migrations/007_admin_finance.sql migrations/008_pod.sql migrations/009_speed.sql migrations/010_security.sql migrations/011_kode_resi.sql migrations/012_manifest.sql migrations/013_korporat.sql migrations/014_tindak_lanjut.sql migrations/015_pemeriksaan_fisik.sql migrations/016_riwayat_harga_komisi.sql migrations/017_pantauan_pemilik.sql migrations/018_pelanggan.sql migrations/019_lamaran.sql migrations/020_konten_peran_keamanan.sql migrations/021_lamaran_batas.sql migrations/022_calon_mitra.sql migrations/023_dashboard_hrd.sql migrations/024_jemput_klaim_laporan.sql migrations/025_dashboard_manajer_gudang.sql; do
   psql_run "-d $DB" < "$f"
 done
 psql_run "-d $DB" < test/staff_flow.sql
@@ -46,3 +46,4 @@ o+="END $$;\n\\echo \x27KESAMAAN HURUF PEMERIKSA SQL LOLOS (\x27"+c.length+"\x27
 console.log(o);' > /tmp/kamil_resi_parity.sql
 psql_run "-d $DB" < /tmp/kamil_resi_parity.sql
 psql_run "-d $DB" < test/jemput_klaim.sql
+psql_run "-d $DB" < test/hub.sql

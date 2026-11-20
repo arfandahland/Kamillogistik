@@ -2,6 +2,7 @@
 import { useState, useTransition } from "react";
 import { ubahJemput } from "@/app/app/jemput/actions";
 import { waNumber } from "@/lib/publicRpc";
+import { hpTampil } from "@/lib/brand";
 
 export const STATUS_JEMPUT: Record<string, string> = { BARU: "Baru", DIHUBUNGI: "Sudah dihubungi", DIJADWALKAN: "Dijadwalkan", SELESAI: "Selesai dijemput", BATAL: "Batal" };
 const LAYANAN: Record<string, string> = { DARAT: "Cargo darat", LAUT: "Cargo laut", UDARA: "Cargo udara", KENDARAAN: "Kirim kendaraan", ALAT_BERAT: "Alat berat", PINDAHAN: "Pindahan", LAINNYA: "Lainnya" };
@@ -20,7 +21,7 @@ export default function JemputKartu({ a }: { a: Jemput }) {
       <div className="muted">{a.address}</div>
       {a.pickupDate && <div><b>Diminta dijemput:</b> {new Date(a.pickupDate).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}</div>}
       {a.note && <div>{a.note}</div>}
-      <div className="muted">{a.phone}</div>
+      <div className="muted">{hpTampil(a.phone)}</div>
       {wa && <a className="btn" href={`https://wa.me/${wa}?text=${encodeURIComponent(pesan)}`} target="_blank" rel="noopener noreferrer" onClick={() => st === "BARU" && simpan("DIHUBUNGI")}>Chat pelanggan</a>}
       <label className="f" htmlFor={`s-${a.id}`}>Status</label>
       <select id={`s-${a.id}`} value={st} disabled={pending} onChange={(e) => simpan(e.target.value)}>{Object.entries(STATUS_JEMPUT).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select>

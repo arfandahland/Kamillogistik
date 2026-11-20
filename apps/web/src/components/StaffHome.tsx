@@ -22,12 +22,13 @@ function Stat({ icon, n, label, warm, dx }: { icon: string; n: number; label: st
   );
 }
 
-export default function StaffHome({ rows, stats, pending, tab, q, canCreate, error, hideStats, basePath = "/app", title = "Tugas hari ini", more, followup }: {
-  rows: Row[]; stats: Stats; pending: Pending[]; tab: string; q: string; canCreate: boolean; error?: string | null; hideStats?: boolean; basePath?: string; title?: string; more?: string | null; followup?: number | null;
+export default function StaffHome({ rows, stats, pending, tab, q, canCreate, error, hideStats, basePath = "/app", title = "Tugas hari ini", more, followup, hubMode }: {
+  rows: Row[]; stats: Stats; pending: Pending[]; tab: string; q: string; canCreate: boolean; error?: string | null; hideStats?: boolean; basePath?: string; title?: string; more?: string | null; followup?: number | null; hubMode?: boolean;
 }) {
   const hasSide = canCreate || pending.length > 0;
   return (
     <main className="wrap stack home">
+      {!hubMode && <h1 className="sr-only">Beranda petugas</h1>}
       {followup != null && (
         <Link href="/app/tindak-lanjut" className={`homebadge ${followup === 0 ? "zero" : ""}`}>
           <span className="n">{followup === 0 ? <Icon name="check" size={24} /> : followup}</span>

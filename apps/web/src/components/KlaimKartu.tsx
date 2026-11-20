@@ -3,6 +3,7 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { ubahKlaim } from "@/app/app/klaim/actions";
 import { waNumber } from "@/lib/publicRpc";
+import { hpTampil } from "@/lib/brand";
 
 export const STATUS_KLAIM: Record<string, string> = { BARU: "Baru", DIPROSES: "Diproses", MENUNGGU_BUKTI: "Menunggu bukti", SELESAI: "Selesai", DITOLAK: "Ditolak" };
 const JENIS: Record<string, string> = { RUSAK: "Barang rusak", HILANG: "Barang hilang", TERLAMBAT: "Terlambat", SALAH_ALAMAT: "Salah alamat", LAYANAN: "Keluhan layanan", LAINNYA: "Lainnya" };
@@ -17,7 +18,7 @@ export default function KlaimKartu({ a }: { a: Klaim }) {
   return (
     <article className="card stack" style={{ gap: 6 }}>
       <div style={{ display: "flex", justifyContent: "space-between", gap: 8, flexWrap: "wrap" }}><b>{JENIS[a.kind] ?? a.kind}</b><span className="muted">{new Date(a.createdAt).toLocaleString("id-ID", { timeZone: "Asia/Makassar", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</span></div>
-      <div>{a.name} · <span className="muted">{a.phone}</span> · <span className="muted">{a.code}</span></div>
+      <div>{a.name} · <span className="muted">{hpTampil(a.phone)}</span> · <span className="muted">{a.code}</span></div>
       {a.resiNo && <div><b>Resi:</b> {a.resiDikenal && a.shipmentId ? <Link href={`/app/resi/${a.shipmentId}`}>{a.resiNo}</Link> : <>{a.resiNo} <span className="muted">(tidak ditemukan di sistem)</span></>}</div>}
       <p style={{ margin: "2px 0" }}>{a.description}</p>
       {wa && <a className="btn" href={`https://wa.me/${wa}?text=${encodeURIComponent(pesan)}`} target="_blank" rel="noopener noreferrer" onClick={() => st === "BARU" && simpan("DIPROSES")}>Chat pelapor</a>}

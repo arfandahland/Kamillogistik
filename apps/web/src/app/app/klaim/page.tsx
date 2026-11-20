@@ -16,7 +16,7 @@ export default async function KlaimAntrean({ searchParams }: { searchParams: Pro
       <h1>Klaim dan keluhan</h1>
       <p className="muted" style={{ marginTop: -6 }}>Laporan dari halaman <Link href="/klaim">/klaim</Link> dan tombol Laporkan masalah di halaman lacak. Pelapor juga diarahkan ke WhatsApp after sales.</p>
       {q.error && <div className="err">{q.error}</div>}
-      <p style={{ margin: 0 }}><a href="/app/ekspor/klaim">Unduh Excel (CSV)</a></p>
+      <p style={{ margin: 0 }}><a className="btn ghost sm link" href="/app/ekspor/klaim">Unduh Excel (CSV)</a></p>
       <div className="fchips" role="tablist" aria-label="Status">
         <Link href="/app/klaim" className={`fchip ${!status ? "on" : ""}`}>Semua <b>{total}</b></Link>
         {Object.entries(STATUS_KLAIM).map(([k, v]) => <Link key={k} href={`/app/klaim?s=${k}`} className={`fchip ${status === k ? "on" : ""}`}>{v}{q.data?.counts?.[k] ? <b>{q.data.counts[k]}</b> : null}</Link>)}

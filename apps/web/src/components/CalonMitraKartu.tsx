@@ -2,6 +2,7 @@
 import { useState, useTransition } from "react";
 import { ubahCalonMitra } from "@/app/app/calon-mitra/actions";
 import { waNumber } from "@/lib/publicRpc";
+import { hpTampil } from "@/lib/brand";
 
 export const STATUS_MITRA: Record<string, string> = { BARU: "Baru", DIHUBUNGI: "Sudah dihubungi", SURVEI: "Survei", AKTIF: "Aktif jadi mitra", DITOLAK: "Tidak lanjut" };
 const JENIS: Record<string, string> = { GERAI: "Gerai / agen", GUDANG: "Gudang", REKANAN: "Rekanan" };
@@ -16,7 +17,7 @@ export default function CalonMitraKartu({ a }: { a: CalonMitra }) {
     <article className="card stack" style={{ gap: 6 }}>
       <div style={{ display: "flex", justifyContent: "space-between", gap: 8, flexWrap: "wrap" }}><b>{a.business}</b><span className="muted">{new Date(a.createdAt).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}</span></div>
       <div>{JENIS[a.kind] ?? a.kind} · {a.city} · <span className="muted">{a.code}</span></div>
-      <div>{a.ownerName} · <span className="muted">{a.phone}</span></div>
+      <div>{a.ownerName} · <span className="muted">{hpTampil(a.phone)}</span></div>
       {a.address && <div className="muted">{a.address}</div>}{a.note && <div>{a.note}</div>}
       {wa && <a className="btn" href={`https://wa.me/${wa}?text=${encodeURIComponent(pesan)}`} target="_blank" rel="noopener noreferrer" onClick={() => st === "BARU" && simpan("DIHUBUNGI")}>Chat calon mitra</a>}
       <label className="f" htmlFor={`s-${a.id}`}>Status</label>
