@@ -1,6 +1,6 @@
 import daftar from "@/lib/videoDaftar.json";
 
-export type VideoItem = { id: string; peran: string; judul: string; ringkas: string; kb: number };
+export type VideoItem = { id: string; peran: string; judul: string; ringkas: string; kb: number; suara?: boolean };
 export const LABEL_PERAN: Record<string, string> = { publik: "Untuk pelanggan", kasir: "Kasir", manajer: "Manajer gudang", gudang: "Staf gudang", kurir: "Kurir", sopir: "Sopir kontainer", owner: "Pemilik", hrd: "HRD", konten: "Admin konten" };
 export const URUTAN = ["publik", "kasir", "manajer", "gudang", "kurir", "sopir", "owner", "hrd", "konten"];
 export const semuaVideo = daftar as VideoItem[];
@@ -21,7 +21,7 @@ export default function VideoDaftar({ peran, awal }: { peran?: string[]; awal?: 
                 <video controls preload="none" playsInline poster={`/video/${x.id}.jpg`} width="234" height="506" aria-label={x.judul}>
                   <source src={`/video/${x.id}.mp4`} type="video/mp4" />
                 </video>
-                <h3>{x.judul}</h3>
+                <h3>{x.judul}{x.suara && <span className="tag suaratag">Bersuara</span>}</h3>
                 <p className="muted">{x.ringkas}</p>
               </article>
             ))}

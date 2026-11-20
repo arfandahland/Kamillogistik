@@ -4,7 +4,8 @@
   "peran": "publik",
   "judul": "Cara menghitung ongkir",
   "ringkas": "Pilih kota asal dan tujuan, isi berat barang, ongkir langsung tampil.",
-  "kb": 160
+  "kb": 445,
+  "suara": true
  },
  {
   "id": "cek-resi",

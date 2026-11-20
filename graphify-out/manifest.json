@@ -1998,8 +1998,8 @@
     "semantic_hash": ""
   },
   "apps/web/src/lib/videoDaftar.json": {
-    "mtime": 1795211093.2601607,
-    "seen": 1795211162.6501288,
+    "mtime": 1795213123.6882334,
+    "seen": 1795213443.3215673,
     "ast_hash": "06829e7e75cd78cef37ca7eba8375c37",
     "semantic_hash": ""
   },
@@ -2010,15 +2010,15 @@
     "semantic_hash": ""
   },
   "tools/video/jalankan.cjs": {
-    "mtime": 1795208861.496842,
-    "seen": 1795208910.2981787,
-    "ast_hash": "d01c26835b6048413dcd9b60dcba9cd3",
+    "mtime": 1795213115.4299078,
+    "seen": 1795213443.32177,
+    "ast_hash": "f715e8ff2e4d495c9de9380bbcee7aed",
     "semantic_hash": ""
   },
   "tools/video/lib.cjs": {
-    "mtime": 1795210541.1557145,
-    "seen": 1795210559.1245363,
-    "ast_hash": "5a976145c1ac6eb33cb480687428d15e",
+    "mtime": 1795213115.4295812,
+    "seen": 1795213443.3217719,
+    "ast_hash": "c027657bd1f6ff55ed4b30b1d47926b9",
     "semantic_hash": ""
   },
   "tools/video/skenario.cjs": {
@@ -2028,8 +2028,8 @@
     "semantic_hash": ""
   },
   "apps/web/public/video/daftar.json": {
-    "mtime": 1795211093.2601607,
-    "seen": 1795211162.6499326,
+    "mtime": 1795213123.6842334,
+    "seen": 1795213443.3210773,
     "ast_hash": "06829e7e75cd78cef37ca7eba8375c37",
     "semantic_hash": ""
   },
@@ -2229,6 +2229,300 @@
     "mtime": 1795211001.5411913,
     "seen": 1795211162.650277,
     "ast_hash": "fb7850638ccdcbb1c4ea4b41447985a9",
+    "semantic_hash": ""
+  },
+  "tools/video/buat-manifest.cjs": {
+    "mtime": 1795213115.4157264,
+    "seen": 1795213443.3217673,
+    "ast_hash": "b0a19659c04c1318a555014010849101",
+    "semantic_hash": ""
+  },
+  "tools/video/narasi-teks.cjs": {
+    "mtime": 1795213019.6659412,
+    "seen": 1795213443.3217728,
+    "ast_hash": "b0c4fa6ddc84ab060b3d391e84dc5baa",
+    "semantic_hash": ""
+  },
+  "tools/video/narasi/_semua.json": {
+    "mtime": 1795213019.7153819,
+    "seen": 1795213443.3217742,
+    "ast_hash": "1bc35e8c34953fb08983a8d7b7ae3ead",
+    "semantic_hash": ""
+  },
+  "tools/video/narasi/cek-resi.audio.json": {
+    "mtime": 1795213116.148233,
+    "seen": 1795213443.3217754,
+    "ast_hash": "be94defeed10d2f11da230f3cecbebdf",
+    "semantic_hash": ""
+  },
+  "tools/video/narasi/cek-resi.teks.json": {
+    "mtime": 1795213019.6882296,
+    "seen": 1795213443.3217762,
+    "ast_hash": "24c01ef336c44a641f76583418366644",
+    "semantic_hash": ""
+  },
+  "tools/video/narasi/dashboard-kasir.audio.json": {
+    "mtime": 1795213116.148233,
+    "seen": 1795213443.321777,
+    "ast_hash": "498fc0be15f2301c0f2ea0fdbba5926c",
+    "semantic_hash": ""
+  },
+  "tools/video/narasi/dashboard-kasir.teks.json": {
+    "mtime": 1795213019.6882296,
+    "seen": 1795213443.3217778,
+    "ast_hash": "988db13ffba11a2cf5cab8f87f50a4cc",
+    "semantic_hash": ""
+  },
+  "tools/video/narasi/dashboard-kurir.audio.json": {
+    "mtime": 1795213116.148233,
+    "seen": 1795213443.321779,
+    "ast_hash": "498fc0be15f2301c0f2ea0fdbba5926c",
+    "semantic_hash": ""
+  },
+  "tools/video/narasi/dashboard-kurir.teks.json": {
+    "mtime": 1795213019.6922295,
+    "seen": 1795213443.32178,
+    "ast_hash": "6fdb4d7a3fe82074c518f1d6844c3418",
+    "semantic_hash": ""
+  },
+  "tools/video/narasi/dashboard-manajer-gudang.audio.json": {
+    "mtime": 1795213116.148233,
+    "seen": 1795213443.3217807,
+    "ast_hash": "498fc0be15f2301c0f2ea0fdbba5926c",
+    "semantic_hash": ""
+  },
+  "tools/video/narasi/dashboard-manajer-gudang.teks.json": {
+    "mtime": 1795213019.6882296,
+    "seen": 1795213443.321782,
+    "ast_hash": "2b22b00d7aac01045fa3aef028f227e3",
+    "semantic_hash": ""
+  },
+  "tools/video/narasi/dashboard-pemilik.audio.json": {
+    "mtime": 1795213116.148233,
+    "seen": 1795213443.3217828,
+    "ast_hash": "498fc0be15f2301c0f2ea0fdbba5926c",
+    "semantic_hash": ""
+  },
+  "tools/video/narasi/dashboard-pemilik.teks.json": {
+    "mtime": 1795213019.6922295,
+    "seen": 1795213443.3217843,
+    "ast_hash": "0b2b3e61786a44294b6811b32c1d0e64",
+    "semantic_hash": ""
+  },
+  "tools/video/narasi/dashboard-sopir.audio.json": {
+    "mtime": 1795213116.148233,
+    "seen": 1795213443.3217854,
+    "ast_hash": "498fc0be15f2301c0f2ea0fdbba5926c",
+    "semantic_hash": ""
+  },
+  "tools/video/narasi/dashboard-sopir.teks.json": {
+    "mtime": 1795213019.6922295,
+    "seen": 1795213443.3217862,
+    "ast_hash": "c17e2cc6690f4e12660cd9cc03f9f4d2",
+    "semantic_hash": ""
+  },
+  "tools/video/narasi/dashboard-staf-gudang.audio.json": {
+    "mtime": 1795213116.148233,
+    "seen": 1795213443.321787,
+    "ast_hash": "498fc0be15f2301c0f2ea0fdbba5926c",
+    "semantic_hash": ""
+  },
+  "tools/video/narasi/dashboard-staf-gudang.teks.json": {
+    "mtime": 1795213019.6922295,
+    "seen": 1795213443.3217878,
+    "ast_hash": "420ba976afd0e5bc4fcb99d95b4bcda8",
+    "semantic_hash": ""
+  },
+  "tools/video/narasi/hitung-ongkir.audio.json": {
+    "mtime": 1795213116.148233,
+    "seen": 1795213443.3217888,
+    "ast_hash": "0c2fbe15ffafd92126fcbdc92a6a9f04",
+    "semantic_hash": ""
+  },
+  "tools/video/narasi/hitung-ongkir.teks.json": {
+    "mtime": 1795213019.6842296,
+    "seen": 1795213443.3217897,
+    "ast_hash": "02a36dac2adc3084bab0ca66ba8fbd9c",
+    "semantic_hash": ""
+  },
+  "tools/video/narasi/hrd-lamaran.audio.json": {
+    "mtime": 1795213116.148233,
+    "seen": 1795213443.3217905,
+    "ast_hash": "498fc0be15f2301c0f2ea0fdbba5926c",
+    "semantic_hash": ""
+  },
+  "tools/video/narasi/hrd-lamaran.teks.json": {
+    "mtime": 1795213019.6922295,
+    "seen": 1795213443.3217916,
+    "ast_hash": "78ede2729387e89fdcb65a02d038294f",
+    "semantic_hash": ""
+  },
+  "tools/video/narasi/jadi-mitra.audio.json": {
+    "mtime": 1795213116.148233,
+    "seen": 1795213443.3217926,
+    "ast_hash": "498fc0be15f2301c0f2ea0fdbba5926c",
+    "semantic_hash": ""
+  },
+  "tools/video/narasi/jadi-mitra.teks.json": {
+    "mtime": 1795213019.6882296,
+    "seen": 1795213443.3217936,
+    "ast_hash": "5e99dbf74792507db41072b92dc015b3",
+    "semantic_hash": ""
+  },
+  "tools/video/narasi/kasir-buat-resi.audio.json": {
+    "mtime": 1795213116.148233,
+    "seen": 1795213443.3217943,
+    "ast_hash": "498fc0be15f2301c0f2ea0fdbba5926c",
+    "semantic_hash": ""
+  },
+  "tools/video/narasi/kasir-buat-resi.teks.json": {
+    "mtime": 1795213019.6882296,
+    "seen": 1795213443.321795,
+    "ast_hash": "76f2009ef98e8cab7ccbef8ad00a090f",
+    "semantic_hash": ""
+  },
+  "tools/video/narasi/klaim-keluhan.audio.json": {
+    "mtime": 1795213116.148233,
+    "seen": 1795213443.321796,
+    "ast_hash": "498fc0be15f2301c0f2ea0fdbba5926c",
+    "semantic_hash": ""
+  },
+  "tools/video/narasi/klaim-keluhan.teks.json": {
+    "mtime": 1795213019.6882296,
+    "seen": 1795213443.3217971,
+    "ast_hash": "01e0897004a2439201291137ddb1c774",
+    "semantic_hash": ""
+  },
+  "tools/video/narasi/lamar-kerja.audio.json": {
+    "mtime": 1795213116.148233,
+    "seen": 1795213443.3217978,
+    "ast_hash": "498fc0be15f2301c0f2ea0fdbba5926c",
+    "semantic_hash": ""
+  },
+  "tools/video/narasi/lamar-kerja.teks.json": {
+    "mtime": 1795213019.6882296,
+    "seen": 1795213443.3217993,
+    "ast_hash": "39ef9f1ba83f2e972b7d5cc17f5e7713",
+    "semantic_hash": ""
+  },
+  "tools/video/narasi/laporan-ekspor.audio.json": {
+    "mtime": 1795213116.148233,
+    "seen": 1795213443.3218005,
+    "ast_hash": "498fc0be15f2301c0f2ea0fdbba5926c",
+    "semantic_hash": ""
+  },
+  "tools/video/narasi/laporan-ekspor.teks.json": {
+    "mtime": 1795213019.6922295,
+    "seen": 1795213443.3218012,
+    "ast_hash": "0c2ad35811b2ce43d8818f2c521b69a5",
+    "semantic_hash": ""
+  },
+  "tools/video/narasi/pesan-jemput.audio.json": {
+    "mtime": 1795213116.148233,
+    "seen": 1795213443.321802,
+    "ast_hash": "8eb19adb633ec080bba6333e1f2e1a7f",
+    "semantic_hash": ""
+  },
+  "tools/video/narasi/pesan-jemput.teks.json": {
+    "mtime": 1795213019.6882296,
+    "seen": 1795213443.3218033,
+    "ast_hash": "242628b58cf1646aa69121430a879c30",
+    "semantic_hash": ""
+  },
+  "apps/web/public/video/.tmp-hitung-ongkir/page@31861d6b0e941724c170b0864bf4ecfc.webm": {
+    "mtime": 1795213123.7122333,
+    "seen": 1795213443.3218603,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": ""
+  },
+  "tools/video/suara/000.mp3": {
+    "mtime": 1795213088.0708637,
+    "seen": 1795213443.3218777,
+    "ast_hash": "b9aa5de0019081ad29b42991b6d6c9bc",
+    "semantic_hash": ""
+  },
+  "tools/video/suara/001.mp3": {
+    "mtime": 1795213087.7161703,
+    "seen": 1795213443.3218787,
+    "ast_hash": "c9a6b2398881905dfba2837edefcc88c",
+    "semantic_hash": ""
+  },
+  "tools/video/suara/002.mp3": {
+    "mtime": 1795213088.2353323,
+    "seen": 1795213443.3218796,
+    "ast_hash": "d4df170b57767566bb9b2a6395228b55",
+    "semantic_hash": ""
+  },
+  "tools/video/suara/003.mp3": {
+    "mtime": 1795213088.4176435,
+    "seen": 1795213443.3218806,
+    "ast_hash": "6ee6821c90bb55bcb4e0a78a4b5fe4c9",
+    "semantic_hash": ""
+  },
+  "tools/video/suara/004.mp3": {
+    "mtime": 1795213088.6120934,
+    "seen": 1795213443.3218813,
+    "ast_hash": "b79921039fbc4dc9d7a978c11abd26d3",
+    "semantic_hash": ""
+  },
+  "tools/video/suara/005.mp3": {
+    "mtime": 1795213088.7474902,
+    "seen": 1795213443.3218825,
+    "ast_hash": "44b3615962c6e910bbc677afd9e41187",
+    "semantic_hash": ""
+  },
+  "tools/video/suara/006.mp3": {
+    "mtime": 1795213088.890784,
+    "seen": 1795213443.3218832,
+    "ast_hash": "cf96e93520b2c2708bfb19a0478af32c",
+    "semantic_hash": ""
+  },
+  "tools/video/suara/007.mp3": {
+    "mtime": 1795213089.0447161,
+    "seen": 1795213443.3218842,
+    "ast_hash": "2c98138501a79b2e5c75346c84ef2a36",
+    "semantic_hash": ""
+  },
+  "tools/video/suara/008.mp3": {
+    "mtime": 1795213089.1976726,
+    "seen": 1795213443.3218849,
+    "ast_hash": "45823340a80d15a568803b086a840ae8",
+    "semantic_hash": ""
+  },
+  "tools/video/suara/009.mp3": {
+    "mtime": 1795213089.3408144,
+    "seen": 1795213443.3218856,
+    "ast_hash": "b5436aefd93f2d34aeb0e3b0da47f077",
+    "semantic_hash": ""
+  },
+  "tools/video/suara/010.mp3": {
+    "mtime": 1795213089.50826,
+    "seen": 1795213443.3218865,
+    "ast_hash": "81d0b0af109818425a86caa14c714399",
+    "semantic_hash": ""
+  },
+  "tools/video/suara/011.mp3": {
+    "mtime": 1795213089.6546957,
+    "seen": 1795213443.3218873,
+    "ast_hash": "92177bbf4eb34fdad4c44c50254c759a",
+    "semantic_hash": ""
+  },
+  "tools/video/suara/012.mp3": {
+    "mtime": 1795213089.8110118,
+    "seen": 1795213443.321888,
+    "ast_hash": "5d2c758fe411a0f22db65add7a766593",
+    "semantic_hash": ""
+  },
+  "tools/video/suara/013.mp3": {
+    "mtime": 1795213089.9512382,
+    "seen": 1795213443.321889,
+    "ast_hash": "d266ed2b218913671e3e58655a228285",
+    "semantic_hash": ""
+  },
+  "tools/video/suara/017.mp3": {
+    "mtime": 1795213090.0755405,
+    "seen": 1795213443.3218899,
+    "ast_hash": "1b35090ffa22e570cf6b170705b84a73",
     "semantic_hash": ""
   },
   "package-lock.json": {

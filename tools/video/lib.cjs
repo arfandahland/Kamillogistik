@@ -46,10 +46,10 @@ async function rekam(skenario, { keluar, mobile = true, masuk, narasi } = {}) {
   const browser = await chromium.launch();
   const ctx = await browser.newContext({ ...(mobile ? devices["Pixel 5"] : {}), viewport: vp, deviceScaleFactor: 1, recordVideo: { dir: tmp, size: mobile ? { width: 780, height: 1688 } : { width: 1280, height: 720 } } });
   await ctx.addInitScript(OVERLAY);
-  const page = await ctx.newPage(); t0 = Date.now();
+  let t0 = Date.now(); const page = await ctx.newPage(); t0 = Date.now();
   if (masuk) { await page.goto(BASE + "/masuk"); await page.fill("#email", masuk[0]); await page.fill("#password", masuk[1]); await page.click("button.shine"); await page.waitForURL(/\/app/, { timeout: 25000 }); }
   let n = 0; const total = skenario.jumlahLangkah;
-  const peta = new Map((narasi || []).map((k) => [k.teks, k])); const suara = []; let t0 = Date.now();
+  const peta = new Map((narasi || []).map((k) => [k.teks, k])); const suara = [];
   const catat = (teks, ms) => { const k = peta.get(teks); if (!k) return ms; suara.push({ file: path.resolve(__dirname, k.file), detik: (Date.now() - t0) / 1000 }); return Math.max(ms, Math.round(k.dur * 1000) + 600); };
   const t = {
     page, BASE,
@@ -65,7 +65,7 @@ async function rekam(skenario, { keluar, mobile = true, masuk, narasi } = {}) {
     tunggu,
   };
   await page.goto(BASE + "/video/mulai.html").catch(() => {});
-  await skenario.langkah(t);
+  try { await skenario.langkah(t); } catch (e) { await ctx.close().catch(() => {}); await browser.close().catch(() => {}); throw e; }
   await tunggu(400);
   const vid = page.video(); await ctx.close(); const sumber = await vid.path(); await browser.close();
   const mp4 = path.join(keluar, skenario.id + ".mp4"), jpg = path.join(keluar, skenario.id + ".jpg");
