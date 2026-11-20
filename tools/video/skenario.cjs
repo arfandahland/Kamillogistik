@@ -1,6 +1,6 @@
 /** Daftar video tutorial. Tiap skenario merekam aplikasi asli dengan keterangan bahasa Indonesia. */
 const RESI = process.env.RESI_DEMO || "";
-const AKUN = { kasir: ["kasir@uji.id", "Test1234"], kurir: ["kurir@uji.id", "Test1234"], gudang: ["gudang@uji.id", "Test1234"], manajer: ["manajer@uji.id", "Test1234"], sopir: ["sopir@uji.id", "Test1234"], owner: ["owner@uji.id", "Test1234"] };
+const AKUN = { kasir: ["kasir@uji.id", "Test1234"], kurir: ["kurir@uji.id", "Test1234"], gudang: ["gudang@uji.id", "Test1234"], manajer: ["manajer@uji.id", "Test1234"], sopir: ["sopir@uji.id", "Test1234"], hrd: ["hrd@uji.id", "Test1234"], owner: ["owner@uji.id", "Test1234"] };
 const pilihTeks = async (page, sel, teks) => { const v = await page.evaluate(([s, t]) => { const o = [...document.querySelector(s).options].find((x) => x.textContent.includes(t)); return o ? o.value : null; }, [sel, teks]); return v; };
 
 /** Tur dashboard: menyorot kartu satu per satu. */
@@ -9,6 +9,10 @@ const tur = (judulKartu) => async (t) => {
   const kartu = t.page.locator(".hubcard");
   const n = await kartu.count();
   for (let i = 0; i < Math.min(n, judulKartu.length); i++) await t.sorot(kartu.nth(i), judulKartu[i], 2600);
+};
+
+const tur2 = (pasang, teks) => async (t) => {
+  for (let i = 0; i < teks.length; i++) { const el = t.page.locator(pasang).nth(i); if (await el.count()) await t.sorot(el, teks[i], 2500); }
 };
 
 module.exports = [
@@ -149,5 +153,16 @@ module.exports = [
       await t.gulir(1500, "Gulir ke bawah untuk Unduh Excel (CSV)", 2600);
       await t.kartu("Selesai", "Satu ketukan, satu berkas", "Setiap unduhan tercatat di catatan aktivitas.", 2400);
     } },
+  { id: "hrd-lamaran", peran: "hrd", judul: "HRD: mengelola pelamar kerja", ringkas: "Dashboard rekrutmen, baca CV, hubungi pelamar, dan atur status seleksi.", jumlahLangkah: 5, masuk: AKUN.hrd,
+    langkah: async (t) => {
+      await t.kartu("Tutorial HRD", "Mengelola pelamar", "Dari lamaran masuk sampai diterima.", 2500);
+      await t.buka("/app/rekrutmen", 1200);
+      await t.kata("Dashboard rekrutmen: ringkasan pelamar dan alur seleksi", 2600);
+      await t.gulir(520, "Pelamar yang perlu segera dihubungi tampil di sini", 2400);
+      await t.gulir(900, "Buka atau tutup lowongan dengan satu ketukan", 2400);
+      await t.buka("/app/lamaran", 1200);
+      await t.kata("Menu Lamaran: ketuk pelamar, baca CV, lalu tekan Chat", 2800);
+      await t.kata("Ubah status: Dihubungi, Wawancara, Diterima, atau Tidak lolos", 2600);
+      await t.kartu("Selesai", "Unduh Excel kapan saja", "Tombol Unduh Excel ada di atas daftar lamaran.", 2400);
+    } },
 ];
-module.exports.AKUN = AKUN;

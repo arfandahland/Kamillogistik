@@ -924,9 +924,9 @@
     "semantic_hash": ""
   },
   "e2e/flow.cjs": {
-    "mtime": 1795189048.9487479,
-    "seen": 1795190317.4831011,
-    "ast_hash": "c0b4344a07667e027873d2ee9a1abda6",
+    "mtime": 1795208879.0195022,
+    "seen": 1795208910.297417,
+    "ast_hash": "f78522cf4404eaf409332950c62e417d",
     "semantic_hash": ""
   },
   "e2e/kamera.cjs": {
@@ -1914,9 +1914,9 @@
     "semantic_hash": ""
   },
   "db/test/jemput_klaim.sql": {
-    "mtime": 1795186163.988255,
-    "seen": 1795187259.3227725,
-    "ast_hash": "",
+    "mtime": 1795208396.8200467,
+    "seen": 1795208910.297108,
+    "ast_hash": "db0a67de1dae2d9a900a080494b8c2e5",
     "semantic_hash": ""
   },
   "apps/web/src/components/HubDashboard.tsx": {
@@ -1977,6 +1977,54 @@
     "mtime": 1795208336.528896,
     "seen": 1795208494.2323775,
     "ast_hash": "def95e5519e9c9509b1cffc4522bba23",
+    "semantic_hash": ""
+  },
+  "apps/web/src/app/(publik)/video/page.tsx": {
+    "mtime": 1795208857.1680093,
+    "seen": 1795208910.2932675,
+    "ast_hash": "2684cafe322e5b4a0bccc9f183333b05",
+    "semantic_hash": ""
+  },
+  "apps/web/src/app/app/video/page.tsx": {
+    "mtime": 1795208857.1692085,
+    "seen": 1795208910.294637,
+    "ast_hash": "61f5e7e0d5ca7fb4fd57b1fb0ead2b3f",
+    "semantic_hash": ""
+  },
+  "apps/web/src/components/VideoDaftar.tsx": {
+    "mtime": 1795208857.1667528,
+    "seen": 1795208910.2961748,
+    "ast_hash": "8687546feaa590acbdbbdf8cc0ffa5a9",
+    "semantic_hash": ""
+  },
+  "apps/web/src/lib/videoDaftar.json": {
+    "mtime": 1795208857.1692085,
+    "seen": 1795208910.2965372,
+    "ast_hash": "58e0494c51d30eb3494f7c9198986bb9",
+    "semantic_hash": ""
+  },
+  "db/migrations/027_indeks_performa.sql": {
+    "mtime": 1795208361.3875492,
+    "seen": 1795208910.2970166,
+    "ast_hash": "d3bdee96ffff29cd66173f6f5679ba95",
+    "semantic_hash": ""
+  },
+  "tools/video/jalankan.cjs": {
+    "mtime": 1795208861.496842,
+    "seen": 1795208910.2981787,
+    "ast_hash": "d01c26835b6048413dcd9b60dcba9cd3",
+    "semantic_hash": ""
+  },
+  "tools/video/lib.cjs": {
+    "mtime": 1795208755.1305768,
+    "seen": 1795208910.2981803,
+    "ast_hash": "0a70b38ddf11436fb5933d905e1ed896",
+    "semantic_hash": ""
+  },
+  "tools/video/skenario.cjs": {
+    "mtime": 1795208837.1820865,
+    "seen": 1795208910.2981813,
+    "ast_hash": "382df3c33313a509486405cb0ff13c97",
     "semantic_hash": ""
   },
   "package-lock.json": {

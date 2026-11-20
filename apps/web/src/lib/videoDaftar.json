@@ -1,1 +1,16 @@
-[]
+[
+ {
+  "id": "hitung-ongkir",
+  "peran": "publik",
+  "judul": "Cara menghitung ongkir",
+  "ringkas": "Pilih kota asal dan tujuan, isi berat barang, ongkir langsung tampil.",
+  "kb": 170
+ },
+ {
+  "id": "cek-resi",
+  "peran": "publik",
+  "judul": "Cara melacak barang dengan nomor resi",
+  "ringkas": "Ketik nomor resi, lihat posisi barang dan riwayat perjalanannya.",
+  "kb": 186
+ }
+]

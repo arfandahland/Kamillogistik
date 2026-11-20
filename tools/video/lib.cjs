@@ -23,17 +23,17 @@ const OVERLAY = String.raw`
   #tut-card .b{width:74px;height:74px;margin:0 auto;border-radius:22px;display:grid;place-items:center;background:linear-gradient(180deg,#ffcf6b,#f28c28);color:#2b1600;font:900 34px Inter,system-ui,sans-serif;box-shadow:0 14px 34px rgba(242,140,40,.45);animation:tutfloat 2.4s ease-in-out infinite}
   @keyframes tutin{from{opacity:0;transform:translateY(14px)}}
   @keyframes tutfloat{50%{transform:translateY(-8px)}}` + "`" + String.raw`;
-  const mount = () => { document.head.appendChild(css); const s = sessionStorage.getItem("tut"); if (s) { try { const o = JSON.parse(s); if (o.cap) cap(o.cap.n, o.cap.t, o.cap.x, true); if (o.p) ptr(o.p.x, o.p.y, true); } catch {} } };
+  const mount = () => { if (!document.documentElement) { new MutationObserver((r, o) => { if (document.documentElement) { o.disconnect(); mount(); } }).observe(document, { childList: true }); return; } document.documentElement.appendChild(css); const s = sessionStorage.getItem("tut"); if (s) { try { const o = JSON.parse(s); if (o.cap) cap(o.cap.n, o.cap.t, o.cap.x, true); if (o.card) card(o.card.k, o.card.t, o.card.s, o.card.b, true); if (o.p) ptr(o.p.x, o.p.y, true); } catch {} } };
   const z = () => parseFloat(getComputedStyle(document.documentElement).zoom) || 1;
-  function get(id, mk) { let e = document.getElementById(id); if (!e) { e = mk(); e.id = id; document.body.appendChild(e); } return e; }
+  function get(id, mk) { let e = document.getElementById(id); if (!e) { e = mk(); e.id = id; (document.body || document.documentElement).appendChild(e); } return e; }
   function cap(n, t, x, quiet) { const e = get("tut-cap", () => document.createElement("div")); e.innerHTML = '<b>' + n + '</b><div><small>Langkah ' + n + ' dari ' + t + '</small>' + x + '</div>'; if (quiet) e.style.animation = "none"; const st = JSON.parse(sessionStorage.getItem("tut") || "{}"); st.cap = { n, t, x }; sessionStorage.setItem("tut", JSON.stringify(st)); }
   function ptr(x, y, quiet) { const e = get("tut-ptr", () => document.createElement("div")); if (quiet) e.style.transition = "none"; e.style.left = x / z() + "px"; e.style.top = y / z() + "px"; if (quiet) requestAnimationFrame(() => (e.style.transition = "")); const st = JSON.parse(sessionStorage.getItem("tut") || "{}"); st.p = { x, y }; sessionStorage.setItem("tut", JSON.stringify(st)); }
   function tap() { const e = document.getElementById("tut-ptr"); if (!e) return; e.classList.add("tap"); setTimeout(() => e.classList.remove("tap"), 220); }
   function hl(r) { const e = get("tut-hl", () => document.createElement("div")); if (!r) { e.style.opacity = 0; return; } const k = z(); e.style.cssText += ";opacity:1;left:" + (r.x - 4) / k + "px;top:" + (r.y - 4) / k + "px;width:" + (r.w + 8) / k + "px;height:" + (r.h + 8) / k + "px"; }
-  function card(k, t, s, b) { let e = document.getElementById("tut-card"); if (!e) { e = document.createElement("div"); e.id = "tut-card"; document.body.appendChild(e); } e.innerHTML = '<div class="b">' + (b || "K") + '</div><div class="k">' + k + '</div><div class="t">' + t + '</div><div class="s">' + s + '</div>'; }
-  function uncard() { const e = document.getElementById("tut-card"); if (e) e.remove(); }
+  function card(k, t, s, b, quiet) { let e = document.getElementById("tut-card"); if (!e) { e = document.createElement("div"); e.id = "tut-card"; (document.body || document.documentElement).appendChild(e); } if (quiet) e.style.animation = "none"; e.innerHTML = '<div class="b">' + (b || "K") + '</div><div class="k">' + k + '</div><div class="t">' + t + '</div><div class="s">' + s + '</div>'; const st = JSON.parse(sessionStorage.getItem("tut") || "{}"); st.card = { k, t, s, b }; sessionStorage.setItem("tut", JSON.stringify(st)); }
+  function uncard() { const e = document.getElementById("tut-card"); if (e) e.remove(); const st = JSON.parse(sessionStorage.getItem("tut") || "{}"); delete st.card; sessionStorage.setItem("tut", JSON.stringify(st)); }
   window.__tut = { cap, ptr, tap, hl, card, uncard };
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mount); else mount();
+  mount(); if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => { const e = document.getElementById("tut-card"); if (e && e.parentNode !== document.body && document.body) document.body.appendChild(e); });
 })();`;
 
 const tunggu = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -51,10 +51,10 @@ async function rekam(skenario, { keluar, mobile = true, masuk } = {}) {
   let n = 0; const total = skenario.jumlahLangkah;
   const t = {
     page, BASE,
-    async buka(url, awalan) { await page.goto(BASE + url, { waitUntil: "networkidle" }); await tunggu(awalan ?? 700); },
-    async kartu(k, judul, sub, ms = 2600, b) { await page.evaluate(([a, c, d, e]) => window.__tut.card(a, c, d, e), [k, judul, sub, b]); await tunggu(ms); await page.evaluate(() => window.__tut.uncard()); await tunggu(250); },
+    async buka(url, awalan) { await page.goto(BASE + url, { waitUntil: "networkidle" }); await tunggu(awalan ?? 700); await page.evaluate(() => window.__tut && window.__tut.uncard()).catch(() => {}); await tunggu(300); },
+    async kartu(k, judul, sub, ms = 2600, b) { await page.evaluate(([a, c, d, e]) => window.__tut.card(a, c, d, e), [k, judul, sub, b]); await tunggu(ms); },
     async kata(teks, ms = 1700) { n++; await page.evaluate(([a, b, c]) => window.__tut.cap(a, b, c), [n, total, teks]); await tunggu(ms); },
-    async titik(loc) { await loc.scrollIntoViewIfNeeded().catch(() => {}); await tunggu(250); const b = await loc.boundingBox(); if (!b) return null; await page.evaluate(([x, y, r]) => { window.__tut.ptr(x, y); window.__tut.hl(r); }, [b.x + b.width / 2, b.y + b.height / 2, { x: b.x, y: b.y, w: b.width, h: b.height }]); await tunggu(900); return b; },
+    async titik(loc) { await loc.evaluate((e) => e.scrollIntoView({ block: "center", behavior: "smooth" })).catch(() => {}); await tunggu(700); const b = await loc.boundingBox(); if (!b) return null; await page.evaluate(([x, y, r]) => { window.__tut.ptr(x, y); window.__tut.hl(r); }, [b.x + b.width / 2, b.y + b.height / 2, { x: b.x, y: b.y, w: b.width, h: b.height }]); await tunggu(900); return b; },
     async klik(loc, teks, opt = {}) { if (teks) await t.kata(teks, 900); await t.titik(loc); await page.evaluate(() => window.__tut.tap()).catch(() => {}); await tunggu(220); await loc.click(opt); await page.evaluate(() => window.__tut.hl(null)).catch(() => {}); await tunggu(opt.tungguSetelah ?? 1100); },
     async isi(loc, nilai, teks) { if (teks) await t.kata(teks, 700); await t.titik(loc); await loc.click(); await page.keyboard.type(nilai, { delay: 55 }); await page.evaluate(() => window.__tut.hl(null)); await tunggu(450); },
     async pilih(loc, nilai, teks) { if (teks) await t.kata(teks, 700); await t.titik(loc); await loc.selectOption(nilai); await page.evaluate(() => window.__tut.hl(null)); await tunggu(650); },
@@ -62,7 +62,7 @@ async function rekam(skenario, { keluar, mobile = true, masuk } = {}) {
     async sorot(loc, teks, ms = 2200) { await t.kata(teks, 500); const b = await t.titik(loc); await tunggu(ms); await page.evaluate(() => window.__tut.hl(null)); return b; },
     tunggu,
   };
-  await t.buka("/", 100).catch(() => {});
+  await page.goto(BASE + "/video/mulai.html").catch(() => {});
   await skenario.langkah(t);
   await tunggu(400);
   const vid = page.video(); await ctx.close(); const sumber = await vid.path(); await browser.close();
