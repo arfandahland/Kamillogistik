@@ -51,7 +51,7 @@ export default async function LaporanPemilik({ searchParams }: { searchParams: P
       </form>
       {r.error && <div className="err">{r.error}</div>}
       {k && r.data && <>
-        <div className="stats">
+        <div className="stats" style={{ marginTop: 12 }}>
           <div className="stat"><b>{k.resiBaru}</b><span>Resi dibuat</span></div>
           <div className="stat dx"><b>{k.terkirim}</b><span>Barang sampai</span></div>
           <div className="stat warm"><b>{rupiah(k.omzet)}</b><span>Omzet ({k.tagihan} tagihan)</span></div>

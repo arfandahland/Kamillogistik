@@ -10,7 +10,7 @@ function niceMax(v: number) {
   const p = 10 ** Math.floor(Math.log10(v)), f = v / p;
   return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * p;
 }
-const W = 640, H = 230, PL = 64, PR = 10, PT = 14, PB = 30;
+const W = 640, H = 230, PL = 84, PR = 10, PT = 14, PB = 30;
 
 /** Angka yang berhitung naik saat muncul / berubah (mati bila "kurangi animasi"). */
 export function CountUp({ value, format = (n: number) => Math.round(n).toLocaleString("id-ID") }: { value: number; format?: (n: number) => string }) {

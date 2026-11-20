@@ -26,11 +26,11 @@ export default async function Lamaran({ searchParams }: { searchParams: Promise<
       <p style={{ margin: 0 }}><Link href="/app/rekrutmen">Dashboard rekrutmen</Link> · <a href="/app/ekspor/lamaran">Unduh Excel (CSV)</a></p>
       <form method="get" action="/app/lamaran" className="card" style={{ display: "flex", gap: 8 }}>
         {status && <input type="hidden" name="s" value={status} />}
-        <select name="p" defaultValue={posisi ?? ""} aria-label="Posisi" style={{ flex: 1 }}>
+        <select name="p" defaultValue={posisi ?? ""} aria-label="Posisi" style={{ flex: 1, minWidth: 0 }}>
           <option value="">Semua posisi</option>
           {POSISI.map((x) => <option key={x.slug} value={x.slug}>{x.judul}</option>)}
         </select>
-        <button className="btn ghost">Tampilkan</button>
+        <button className="btn ghost" style={{ width: "auto", flex: "none", paddingInline: 18 }}>Tampilkan</button>
       </form>
       <div className="stagger fstack">
         {(q.data?.items ?? []).map((a) => <LamaranKartu key={a.id} a={a} posisi={posisiDari(a.position)?.judul ?? a.position} pesan={pesanKePelamar(a.name, posisiDari(a.position)?.judul ?? a.position, a.code)} />)}

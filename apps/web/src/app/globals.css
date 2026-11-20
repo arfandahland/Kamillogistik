@@ -268,7 +268,9 @@ footer.pub small { display: block; margin-top: 12px; opacity: .8; font-size: 12.
 .wa-fab:hover { transform: scale(1.08); }
 .tabbar.pub { left: 12px; right: 12px; }
 
-.searchcard { position: relative; padding: 6px; }
+.searchcard { position: relative; padding: 6px; display: flex; align-items: center; gap: 6px; }
+.searchcard input { flex: 1; min-width: 0; margin: 0; }
+.searchcard .btn { width: auto; flex: none; margin: 0; }
 .searchcard .sicon { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
 .searchcard input { border: 0; box-shadow: none; padding-left: 48px; background: transparent; }
 .stat.dx { display: none; }
@@ -1244,7 +1246,7 @@ a.card:active, .tile:active { transform: scale(.985); }
 .agenda { display: grid; gap: 12px; } @media (min-width: 720px) { .agenda { grid-template-columns: 1fr 1fr; } } .agenda h3 { margin: 0 0 6px; font-size: 14px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
 .shiftnums { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; text-align: center; } .shiftnums div { padding: 10px 4px; border-radius: 14px; background: var(--teal-soft); } .shiftnums b { display: block; font-size: 22px; color: var(--teal-dark); } .shiftnums small { color: var(--muted); font-size: 12.5px; }
 .hubquick { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; } .hubquick a { display: grid; justify-items: center; gap: 4px; padding: 12px 4px; border-radius: 18px; background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow-sm); text-decoration: none; color: var(--teal-dark); font-weight: 800; font-size: 13px; text-align: center; transition: transform .2s var(--ease), background .2s; } .hubquick a:first-child { background: var(--grad-cta); color: #2b1600; border: 0; } .hubquick a:active { transform: scale(.95); } .hubquick a:hover { transform: translateY(-3px); }
-.shiftnums.three { grid-template-columns: repeat(3, 1fr); } .shiftnums b { overflow-wrap: anywhere; }
+.shiftnums.three { grid-template-columns: repeat(3, 1fr); } .shiftnums b { white-space: nowrap; } .shiftnums:not(.three) b { font-size: clamp(14px, 4.1vw, 22px); } .shiftnums:not(.three) div { padding-inline: 2px; min-width: 0; }
 .rows li > a:first-child small + small { margin-top: 1px; }
 .hub.wrap { padding-top: 0; }
 
@@ -1258,3 +1260,7 @@ a.card:active, .tile:active { transform: scale(.985); }
 @media (min-width: 900px) and (max-width: 1099px) { .topbar .navlinks { display: none !important; } .burger { display: grid !important; } .msheet { display: block !important; } .topbar .nav.mitrabtn span { display: none; } }
 @media (min-width: 1100px) { .topbar .wrap { max-width: 1240px; gap: 8px; } .topbar .navlinks a, .ddbtn { padding: 10px 11px; font-size: 14.5px; } .topbar .nav { padding: 10px 13px; font-size: 14.5px; } .topbar .navact { display: flex; gap: 8px; align-items: center; flex: none; } .topbar .navlinks { flex: 1 1 auto; min-width: 0; justify-content: center; } }
 @media (min-width: 1100px) and (max-width: 1499px) { .topbar .nav.jemputbtn { display: none; } }
+
+/* angka besar pada kartu ringkas tidak boleh meluber di layar sempit */
+.stat b { font-size: clamp(19px, 5.8vw, 30px); overflow-wrap: anywhere; }
+.stats > * { min-width: 0; }
