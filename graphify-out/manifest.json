@@ -246,9 +246,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/konten/page.tsx": {
-    "mtime": 1795094165.7870746,
-    "seen": 1795104170.4403758,
-    "ast_hash": "a688952aecd98f83ebb9bce2e6aa38af",
+    "mtime": 1795188480.028747,
+    "seen": 1795188527.0434873,
+    "ast_hash": "f7ab34e889ba965582de7ed22abeea47",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/korporat/[id]/page.tsx": {
@@ -330,9 +330,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/page.tsx": {
-    "mtime": 1795187903.9645011,
-    "seen": 1795188089.0557976,
-    "ast_hash": "6dc09587c06f1678fa0411a4ae0f8982",
+    "mtime": 1795188475.3567839,
+    "seen": 1795188527.0438054,
+    "ast_hash": "7f48ae7b6f6e7bd8499222c91bfa22b5",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/pengaturan/page.tsx": {
@@ -900,9 +900,9 @@
     "semantic_hash": ""
   },
   "db/test/run.sh": {
-    "mtime": 1795187846.0055778,
-    "seen": 1795188089.0594637,
-    "ast_hash": "ada7d80759745fe946b0f6c48ae3ceb4",
+    "mtime": 1795188405.2113364,
+    "seen": 1795188527.0468988,
+    "ast_hash": "7a9a75a9b37f9db0df4d89ad7ea8e215",
     "semantic_hash": ""
   },
   "db/test/tariff-cases.json": {
@@ -924,9 +924,9 @@
     "semantic_hash": ""
   },
   "e2e/flow.cjs": {
-    "mtime": 1795188056.5849617,
-    "seen": 1795188089.0595794,
-    "ast_hash": "95c46a5652868bb48422946b340bd428",
+    "mtime": 1795188503.2140062,
+    "seen": 1795188527.046988,
+    "ast_hash": "28463ef3160d5c4e50a3e4be4fd762c6",
     "semantic_hash": ""
   },
   "e2e/kamera.cjs": {
@@ -954,9 +954,9 @@
     "semantic_hash": ""
   },
   "e2e/setup.sh": {
-    "mtime": 1795187846.0057294,
-    "seen": 1795188089.0596375,
-    "ast_hash": "7db4e5ec691263f9d6a02cdea523949b",
+    "mtime": 1795188405.2115216,
+    "seen": 1795188527.0470433,
+    "ast_hash": "12cc2752a2bcb95d9e2b811124ca0d86",
     "semantic_hash": ""
   },
   "e2e/skenario.cjs": {
@@ -1923,6 +1923,30 @@
     "mtime": 1795188041.1925416,
     "seen": 1795188089.057603,
     "ast_hash": "248bb750791010f96f756e4d3f0f11fd",
+    "semantic_hash": ""
+  },
+  "apps/web/src/components/PeranDashboard.tsx": {
+    "mtime": 1795188475.3465252,
+    "seen": 1795188527.045454,
+    "ast_hash": "ab033e403c8d7ecac9fa2d7a28d84768",
+    "semantic_hash": ""
+  },
+  "apps/web/src/components/TargetForm.tsx": {
+    "mtime": 1795188475.3452346,
+    "seen": 1795188527.0457382,
+    "ast_hash": "eeb0fb6f249feb51ef200b9e02e77cd0",
+    "semantic_hash": ""
+  },
+  "db/migrations/025_dashboard_manajer_gudang.sql": {
+    "mtime": 1795187846.0053623,
+    "seen": 1795188527.0465746,
+    "ast_hash": "58635b916f21ca17d4c3640053fc6d27",
+    "semantic_hash": ""
+  },
+  "db/test/hub.sql": {
+    "mtime": 1795187858.8925254,
+    "seen": 1795188527.046656,
+    "ast_hash": "10353c495a7ca601b5d1bdd497d94389",
     "semantic_hash": ""
   },
   "package-lock.json": {
