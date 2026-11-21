@@ -9,7 +9,7 @@ export const STATUS_JEMPUT: Record<string, string> = { BARU: "Baru", DIHUBUNGI: 
 const LAYANAN: Record<string, string> = { DARAT: "Cargo darat", LAUT: "Cargo laut", UDARA: "Cargo udara", KENDARAAN: "Kirim kendaraan", ALAT_BERAT: "Alat berat", PINDAHAN: "Pindahan", LAINNYA: "Lainnya" };
 export type Jemput = { id: string; code: string; name: string; phone: string; city: string; address: string; destination: string; service: string; itemDesc: string; intake?: "JEMPUT" | "ANTAR"; weightKg: number | null; pickupDate: string | null; note: string | null; status: string; adminNote: string | null; createdAt: string };
 
-export default function JemputKartu({ a }: { a: Jemput }) {
+export default function JemputKartu({ a, bisaResi = false }: { a: Jemput; bisaResi?: boolean }) {
   const [st, setSt] = useState(a.status); const [cat, setCat] = useState(a.adminNote ?? ""); const [err, setErr] = useState(""); const [ok, setOk] = useState(false); const [pending, start] = useTransition();
   const wa = waNumber(a.phone);
   const pesan = `Halo ${a.name.split(" ")[0]}, kami dari Kamil Logistik. ${a.intake === "ANTAR" ? `Pesanan antar sendiri Anda (kode ${a.code}) sudah kami terima. Barang bisa dibawa ke gudang kami di ${a.city}. Mau datang kapan?` : `Pesanan jemput Anda (kode ${a.code}) sudah kami terima. Boleh kami konfirmasi alamat dan waktu penjemputannya?`}`;
@@ -29,8 +29,8 @@ export default function JemputKartu({ a }: { a: Jemput }) {
       <label className="f" htmlFor={`c-${a.id}`}>Catatan</label>
       <textarea id={`c-${a.id}`} rows={2} maxLength={500} value={cat} onChange={(e) => setCat(e.target.value)} onBlur={() => cat !== (a.adminNote ?? "") && simpan(st)} placeholder="Contoh: kurir Andi jemput besok 09.00" />
       {err && <div className="err">{err}</div>}{ok && <span className="hint">Tersimpan.</span>}
-      {a.intake !== "ANTAR" && st !== "SELESAI" && st !== "BATAL" && <Link href={`/app/baru?jemput=${a.id}`} className="btn ghost">Barang sudah tiba, buat resi</Link>}
-      {a.intake !== "ANTAR" && st !== "SELESAI" && st !== "BATAL" && <p className="hint" style={{ margin: 0 }}>Resi dibuat Kasir setelah barang dijemput kurir dan tiba di gudang.</p>}
+      {bisaResi && a.intake !== "ANTAR" && st !== "SELESAI" && st !== "BATAL" && <Link href={`/app/baru?jemput=${a.id}`} className="btn ghost">Barang sudah tiba, buat resi</Link>}
+      {bisaResi && a.intake !== "ANTAR" && st !== "SELESAI" && st !== "BATAL" && <p className="hint" style={{ margin: 0 }}>Resi dibuat Kasir setelah barang dijemput kurir dan tiba di gudang.</p>}
     </article>
   );
 }

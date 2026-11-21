@@ -3,12 +3,14 @@ import Link from "next/link";
 import { MODA_LABEL, statusLabel, type AnyStatus } from "@kamil/core";
 import Icon from "@/components/Icon";
 import { staffRpc } from "@/lib/supabase/server";
+import { requireRole } from "@/lib/auth";
 
 export const metadata: Metadata = { title: "Cari Resi atau Pelanggan" };
 type Hit = { id: string; resiNo: string; status: AnyStatus; origin: string; dest: string; senderName: string; receiverName: string; mode: "LAUT" | "DARAT" | "UDARA"; match: string };
 type Man = { id: string; code: string; status: string; origin: string; dest: string };
 
 export default async function Cari({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
+  await requireRole(["SUPER_ADMIN", "OWNER", "HUB_MANAGER", "MITRA_POS", "WAREHOUSE", "DRIVER", "CONTAINER_DRIVER", "FINANCE", "CS_SALES"]);
   const q = ((await searchParams).q ?? "").trim().slice(0, 60);
   const r = q.length >= 2 ? await staffRpc<{ shipments: Hit[]; manifests: Man[] }>("staff_search", { p_q: q, p_limit: 30 }) : null;
   const ships = r?.data?.shipments ?? [], mans = r?.data?.manifests ?? [];

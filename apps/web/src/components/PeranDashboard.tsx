@@ -104,7 +104,7 @@ export function KasirDash({ d }: { d: KasirData }) {
           <p style={{ margin: 0 }}><b className="big">{rupiah(d.piutang.total)}</b><small className="muted"> {d.piutang.lembar} tagihan</small></p>
           <p className={d.piutang.lewat ? "down" : "muted"} style={{ margin: 0, fontWeight: 700 }}>{d.piutang.lewat ? `${d.piutang.lewat} tagihan lewat jatuh tempo` : "Tidak ada yang lewat tempo."}</p>
         </Kartu>
-        <Kartu ikon="box" judul="Perlu ditimbang atau diproses" span flag={d.perluTimbang.length > 0}>
+        <Kartu ikon="box" judul="Menunggu ditimbang atau dibuatkan invoice" span flag={d.perluTimbang.length > 0}>
           {d.perluTimbang.length === 0 ? <Kosong t="Semua resi sudah diproses." /> : <ul className="rows">{d.perluTimbang.map((r) => <li key={r.id}><Link href={`/app/resi/${r.id}`}><b>{r.resiNo}</b><small>{STATUS_LABEL[r.status] ?? r.status} · {r.pengirim}</small></Link></li>)}</ul>}
         </Kartu>
         <Kartu ikon="users" judul="Pelanggan langganan" span>

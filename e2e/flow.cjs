@@ -1077,7 +1077,8 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     const taut = await p.locator(".hubcard .btn.ghost[href='/app/jemput']").count(); ok("Y6 kartu pesanan jemput menautkan ke antrean jemput", taut === 1);
     await p.goto(`${BASE}/app/jemput`, { waitUntil: "networkidle" });
     const nomor = await p.locator("main").innerText(); ok("Y7 nomor WhatsApp di antrean jemput tampil rapi (0812-...) bukan 62...", !/\b628\d{8,}\b/.test(nomor));
-    const bx = await p.locator("a:has-text('Unduh Excel')").boundingBox(); ok("Y8 tombol unduh CSV cukup besar untuk jari (tinggi minimal 40)", !!bx && bx.height >= 38, JSON.stringify(bx));
+    ok("Y8 Kepala gudang tidak melihat tombol unduh CSV yang akan ditolak (hanya Super Admin)", (await p.locator("a:has-text('Unduh Excel')").count()) === 0);
+    ok("Y9 Kepala gudang tidak ditawari membuat resi dari pesanan jemput (hanya Kasir)", (await p.locator("a[href^='/app/baru?jemput=']").count()) === 0);
     for (const u of ["/app/pindai", "/app/manifest", "/app/tagihan", "/app/serah", "/app/tindak-lanjut", "/app/akun"]) { await p.goto(`${BASE}${u}`, { waitUntil: "networkidle" }); await noOverflow(p, `Manajer ${u} (HP)`); }
     await mg.ctx.close();
     const md = await login(browser, "manajer@uji.id", PASS, { width: 1366, height: 900 });

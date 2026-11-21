@@ -23,7 +23,7 @@ export default async function Akun({ searchParams }: { searchParams: Promise<{ e
           <dt>Cabang</dt><dd>{me?.branchName ?? "Semua cabang"}</dd>
         </dl>
       </div>
-      <AbsenKartu />
+      {me && !["SUPER_ADMIN", "OWNER"].includes(me.role) && <AbsenKartu />}
       <Link href="/app/sandi" className="btn ghost"><Icon name="key" size={20} /> Ganti kata sandi</Link>
       <form action={keluar}><button className="btn ghost" style={{ borderColor: "var(--danger)", color: "var(--danger)" }}><Icon name="out" size={20} /> Keluar</button></form>
     </main>
