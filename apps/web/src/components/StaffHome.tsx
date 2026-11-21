@@ -22,8 +22,8 @@ function Stat({ icon, n, label, warm, dx }: { icon: string; n: number; label: st
   );
 }
 
-export default function StaffHome({ rows, stats, pending, tab, q, canCreate, error, hideStats, basePath = "/app", title = "Tugas hari ini", more, followup, hubMode }: {
-  rows: Row[]; stats: Stats; pending: Pending[]; tab: string; q: string; canCreate: boolean; error?: string | null; hideStats?: boolean; basePath?: string; title?: string; more?: string | null; followup?: number | null; hubMode?: boolean;
+export default function StaffHome({ rows, stats, pending, tab, q, canCreate, error, hideStats, basePath = "/app", title = "Tugas hari ini", more, followup, hubMode, hideList }: {
+  rows: Row[]; stats: Stats; pending: Pending[]; tab: string; q: string; canCreate: boolean; error?: string | null; hideStats?: boolean; basePath?: string; title?: string; more?: string | null; followup?: number | null; hubMode?: boolean; hideList?: boolean;
 }) {
   const buatDiSini = canCreate && !hubMode; // di dashboard cabang, tombol ini sudah ada di menu
   const hasSide = buatDiSini || pending.length > 0;
@@ -62,7 +62,7 @@ export default function StaffHome({ rows, stats, pending, tab, q, canCreate, err
           )}
         </aside>}
 
-        <section className="listcol stack">
+        {!hideList && <section className="listcol stack">
           <h2 style={{ margin: "6px 2px -4px" }}>{title}</h2>
           <form className="card searchcard">
             <Icon name="search" size={20} className="ico sicon" />
@@ -123,7 +123,7 @@ export default function StaffHome({ rows, stats, pending, tab, q, canCreate, err
             </p></div>
           )}
           {more && <Link href={more} className="btn ghost" scroll={false}>Tampilkan lebih banyak</Link>}
-        </section>
+        </section>}
       </div>
     </main>
   );

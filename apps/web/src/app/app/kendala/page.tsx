@@ -3,11 +3,13 @@ import Link from "next/link";
 import Icon from "@/components/Icon";
 import { staffRpc } from "@/lib/supabase/server";
 import { tanggalWaktu } from "@/lib/brand";
+import { requireRole } from "@/lib/auth";
 
 export const metadata: Metadata = { title: "Kendala Pengiriman" };
 type Row = { id: string; shipmentId: string; resiNo: string; status: string; kind: string; label: string; issueStatus: "OPEN" | "RESOLVED"; note: string; openedBy: string | null; openedAt: string; resolutionNote: string | null; origin: string; dest: string; jam: number };
 
 export default async function Kendala({ searchParams }: { searchParams: Promise<{ s?: string }> }) {
+  await requireRole(["SUPER_ADMIN","OWNER","HUB_MANAGER","WAREHOUSE"]);
   const tab = (await searchParams).s === "selesai" ? "RESOLVED" : "OPEN";
   const r = await staffRpc<Row[]>("issue_list", { p_status: tab });
   const rows = r.data ?? [];

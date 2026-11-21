@@ -5,6 +5,7 @@ import Icon from "@/components/Icon";
 import SubmitButton from "@/components/SubmitButton";
 import { staffRpc } from "@/lib/supabase/server";
 import { aturShift, hapusDokumen, putusCuti, simpanDokumen } from "./actions";
+import { requireRole } from "@/lib/auth";
 
 export const metadata: Metadata = { title: "Kepegawaian" };
 const TABS = [["daftar", "Pegawai"], ["dokumen", "Dokumen"], ["shift", "Shift"], ["cuti", "Cuti dan izin"], ["rekap", "Rekap"]] as const;
@@ -20,6 +21,7 @@ const wita = () => new Date(Date.now() + 8 * 3600_000).toISOString().slice(0, 10
 const tambahHari = (iso: string, n: number) => new Date(new Date(iso + "T00:00:00Z").getTime() + n * 86400_000).toISOString().slice(0, 10);
 
 export default async function Pegawai({ searchParams }: { searchParams: Promise<{ t?: string; e?: string; ok?: string; dari?: string; sampai?: string }> }) {
+  await requireRole(["SUPER_ADMIN","OWNER","HRD"]);
   const sp = await searchParams;
   const tab = TABS.find(([k]) => k === sp.t)?.[0] ?? "daftar";
   const hariIni = wita();

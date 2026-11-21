@@ -5,11 +5,13 @@ import Icon from "@/components/Icon";
 import FollowupCard from "@/components/FollowupCard";
 import { getMe, staffRpc } from "@/lib/supabase/server";
 import { SITE_URL } from "@/lib/site";
+import { requireRole } from "@/lib/auth";
 
 export const metadata: Metadata = { title: "Perlu Dihubungi" };
 const KINDS = Object.keys(FOLLOWUP_LABEL) as FollowupKind[];
 
 export default async function TindakLanjut({ searchParams }: { searchParams: Promise<{ k?: string }> }) {
+  await requireRole(["SUPER_ADMIN","OWNER","HUB_MANAGER","MITRA_POS","WAREHOUSE","CS_SALES"]);
   const sp = await searchParams;
   const [me, q] = await Promise.all([getMe(), staffRpc<{ count: number; items: FollowupItem[] }>("followup_queue")]);
   const kind = KINDS.find((k) => k === sp.k);

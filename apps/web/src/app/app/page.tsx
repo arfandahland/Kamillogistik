@@ -54,7 +54,7 @@ export default async function Beranda({ searchParams }: { searchParams: Promise<
     <StaffHome rows={rows.slice(0, n)} more={rows.length > n ? `/app?${new URLSearchParams({ ...(tab !== "aktif" ? { s: tab } : {}), ...(q ? { q } : {}), n: String(n + 30) })}` : null} pending={pend.data ?? []}
       stats={{ aktif: all.filter((r) => aktif.includes(r.status)).length, menunggu: (pend.data ?? []).length,
         selesai: all.filter((r) => r.status === "DELIVERED").length, dipegang: all.filter((r) => r.mine).length }}
-      followup={fq?.data ? fq.data.count : null} tab={tab} q={q} canCreate={!!me.data && CAN_CREATE_ORDER.includes(me.data.role)} error={list.error} hubMode={punyaDash} />
+      followup={fq?.data ? fq.data.count : null} tab={tab} q={q} canCreate={!!me.data && CAN_CREATE_ORDER.includes(me.data.role)} error={list.error} hubMode={punyaDash} hideStats={punyaDash || peran === "CS_SALES"} title={peran === "CS_SALES" ? "Resi cabang" : punyaDash ? "Daftar resi" : "Tugas hari ini"} hideList={peran === "CONTAINER_DRIVER"} />
     </>
   );
 }

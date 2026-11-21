@@ -3,6 +3,7 @@ import Link from "next/link";
 import Icon from "@/components/Icon";
 import { staffRpc } from "@/lib/supabase/server";
 import { rupiah, tanggal } from "@/lib/brand";
+import { requireRole } from "@/lib/auth";
 
 export const metadata: Metadata = { title: "Daftar Tagihan" };
 
@@ -15,6 +16,7 @@ const LABEL: Record<string, { t: string; cls: string }> = {
 };
 
 export default async function Tagihan({ searchParams }: { searchParams: Promise<{ s?: string; q?: string; n?: string }> }) {
+  await requireRole(["SUPER_ADMIN","OWNER","HUB_MANAGER","MITRA_POS","FINANCE"]);
   const sp = await searchParams;
   const tab = TABS.find((t) => t.k === sp.s)?.k ?? "belum", q = (sp.q ?? "").trim();
   const n = Math.min(200, Math.max(30, Number(sp.n) || 30));

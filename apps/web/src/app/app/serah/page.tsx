@@ -3,10 +3,12 @@ import Link from "next/link";
 import Icon from "@/components/Icon";
 import { staffRpc } from "@/lib/supabase/server";
 import { tanggalWaktu } from "@/lib/brand";
+import { requireRole } from "@/lib/auth";
 
 export const metadata: Metadata = { title: "Serah Terima" };
 
 export default async function Serah() {
+  await requireRole(["HUB_MANAGER","WAREHOUSE","DRIVER","CONTAINER_DRIVER","MITRA_POS"]);
   const p = await staffRpc<{ id: string; shipmentId: string; resiNo: string; fromName: string; createdAt: string }[]>("my_pending_handovers");
   const list = p.data ?? [];
   return (

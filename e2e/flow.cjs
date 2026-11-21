@@ -1405,7 +1405,22 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("AJ7 pesanan jemput menawarkan tombol buat resi setelah barang tiba", (await kj.page.locator("a[href^='/app/baru?jemput=']").count()) >= 1, (await text(kj.page)).slice(0, 160));
     await kj.page.locator("a[href^='/app/baru?jemput=']").first().click(); await kj.page.waitForURL(/baru\?jemput=/, { timeout: 15000 }); await kj.page.waitForSelector("#pengirim", { timeout: 15000 });
     ok("AJ8 form resi dari pesanan jemput terisi data pengirim dan tanpa pilihan cara masuk", /Dari pesanan jemput/.test(await text(kj.page)) && (await kj.page.inputValue("#pengirim")).length > 1 && (await kj.page.getByText("Diantar sendiri").count()) === 0);
+    ok("AK1 menu kasir memuat Pesanan jemput (untuk jemput opsi B)", (await kj.page.locator("a[href='/app/jemput']").count()) >= 1);
+    for (const u of ["/app/serah", "/app/pindai", "/app/pegawai"]) {
+      await kj.page.goto(`${BASE}${u}`, { waitUntil: "networkidle" });
+      ok(`AK2 kasir ${u}: ${u === "/app/pegawai" ? "dialihkan ke beranda" : "boleh dibuka"}`, u === "/app/pegawai" ? !/\/app\/pegawai/.test(kj.page.url()) : /\/app\/(serah|pindai)/.test(kj.page.url()));
+    }
     await kj.ctx.close();
+    const sa2 = await login(browser, "owner@uji.id", "Pemilik2026x");
+    for (const u of ["/app/serah", "/app/pindai", "/app/baru"]) {
+      await sa2.page.goto(`${BASE}${u}`, { waitUntil: "networkidle" });
+      ok(`AK3 Super Admin tidak punya halaman operasional ${u}`, !new RegExp(u).test(sa2.page.url()), sa2.page.url());
+    }
+    await sa2.ctx.close();
+    const gd = await login(browser, "gudang@uji.id");
+    await gd.page.goto(`${BASE}/app/tagihan`, { waitUntil: "networkidle" });
+    ok("AK4 staf gudang tidak bisa membuka tagihan (dialihkan, bukan pesan galat)", !/\/app\/tagihan/.test(gd.page.url()) && !/tidak punya izin/.test(await text(gd.page)));
+    await gd.ctx.close();
   }
 
   await browser.close();

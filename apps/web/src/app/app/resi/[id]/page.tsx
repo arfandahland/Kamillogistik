@@ -26,6 +26,7 @@ type Detail = {
   events: { status: AnyStatus; at: string; location: string | null; by: string | null }[];
   handovers: { id: string; state: string; fromName: string; toName: string; toMe: boolean; at: string }[];
   legs?: { seq: number; from: string; to: string; mode: string; note: string | null; at: string }[];
+  at?: string | null;
   closed?: { at: string; byName: string | null; note: string | null; proofUrl: string | null; senderPhone: string | null } | null;
   invoice: { invoiceNo: string; total: number; status: string; dueDate: string; calc: any } | null;
 };
@@ -44,7 +45,11 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
   const invId = s.invoice && SEES_MONEY.includes(role) ? (await staffRpc<{ id: string }[]>("staff_list_invoices", { p_q: s.resiNo, p_limit: 1 })).data?.[0]?.id : undefined;
   const pod = s.status === "DELIVERED" ? (await staffRpc<Pod>("get_pod", { p_id: id })).data : null;
   const viewOnly = (role as string) === "OWNER" || role === OWNER_ROLE; // Pemilik hanya memantau (Super Admin mengoreksi lewat konsol)
-  const action = viewOnly ? null : nextAction(role, s.status, s.pickupType);
+  const here = me.data.branchName ?? null;
+  // Langkah hanya muncul bagi petugas cabang tempat resi SEDANG berada (atau pemegang barang). Sopir kontainer bekerja lewat manifest.
+  const atMine = !viewOnly && (role === "CONTAINER_DRIVER" || s.iAmHolder || (here !== null && here === (s.at ?? s.origin.name)));
+  const isOrigin = here !== null && here === s.origin.name;
+  const action = atMine ? nextAction(role, s.status, s.pickupType) : null;
   const pendingToMe = viewOnly ? undefined : s.handovers.find((h) => h.state === "PENDING_ACK" && h.toMe);
   const pending = s.handovers.find((h) => h.state === "PENDING_ACK");
   const directory = !viewOnly && s.iAmHolder && !pending ? (await staffRpc<{ id: string; name: string; role: string; branchName: string | null }[]>("staff_directory")).data ?? [] : [];
@@ -86,7 +91,7 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
             );
           })}
         </div>
-        {CAN_PRINT_LABEL.includes(role) && (
+        {CAN_PRINT_LABEL.includes(role) && (isOrigin || (here !== null && here === s.at)) && (
         <div className="resiact">
           <Link className="btn" href={`/app/resi/${s.id}/cetak`}><Icon name="print" size={20} /> Cetak label</Link>
         </div>
@@ -121,7 +126,7 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
         )
       )}
 
-      {(action?.kind === "measure" || (!viewOnly && ["WAREHOUSE", "HUB_MANAGER"].includes(role) && s.status === "SORTED_INVOICED" && !s.manifest)) && (
+      {(action?.kind === "measure" || (atMine && ["WAREHOUSE", "HUB_MANAGER"].includes(role) && s.status === "SORTED_INVOICED" && !s.manifest)) && (
         <form action={timbang} className="card">
           <h2>{s.status === "SORTED_INVOICED" ? "Perbaiki data timbang" : "Timbang dan ukur barang"}</h2>
           <p className="muted">Isi berat tiap barang. Ukuran boleh dikosongkan kalau barang kecil dan padat. Data ini diteruskan ke Kasir yang membuat invoice.</p>
@@ -143,7 +148,7 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
         </form>
       )}
 
-      {role === "MITRA_POS" && !["CREATED", "PICKED_UP", "AT_ORIGIN_HUB", "CANCELLED", "EXCEPTION"].includes(s.status) && (!s.invoice || s.invoice.status !== "PAID") && (() => {
+      {role === "MITRA_POS" && isOrigin && !["CREATED", "PICKED_UP", "AT_ORIGIN_HUB", "CANCELLED", "EXCEPTION"].includes(s.status) && (!s.invoice || s.invoice.status !== "PAID") && (() => {
         const aktual = s.items.reduce((a, x) => a + Number(x.weightKg ?? 0), 0), cm3 = s.items.reduce((a, x) => a + Number(x.lCm ?? 0) * Number(x.wCm ?? 0) * Number(x.hCm ?? 0), 0);
         const div = s.mode === "UDARA" ? 6000 : 4000;
         return <InvoiceForm id={s.id} aktualKg={aktual} volumeKg={Math.round((cm3 / div) * 100) / 100} volumeM3={Math.round((cm3 / 1e6) * 10000) / 10000} ada={!!s.invoice} judul={s.invoice ? "Ubah invoice" : "Buat invoice"} />;
@@ -163,7 +168,7 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
       )}
       {action?.kind === "pod" && <PodForm id={s.id} action={catatTerima} defaultName={s.receiverName} />}
 
-      {["ARRIVED_DEST_PORT", "AT_DEST_HUB", "OUT_FOR_DELIVERY"].includes(s.status) && ["WAREHOUSE", "HUB_MANAGER", "DRIVER"].includes(role ?? "") && !s.inspections.some((i) => i.stage === "DEST_HUB") && (
+      {atMine && ["ARRIVED_DEST_PORT", "AT_DEST_HUB", "OUT_FOR_DELIVERY"].includes(s.status) && ["WAREHOUSE", "HUB_MANAGER", "DRIVER"].includes(role ?? "") && !s.inspections.some((i) => i.stage === "DEST_HUB") && (
         <details className="card destlapor"><summary><Icon name="camera" size={20} /> Laporkan kondisi barang di sini</summary>
           <KondisiForm id={s.id} stage="DEST_HUB" action={periksa} pieces={s.items.length} title="Kondisi barang di kota tujuan" hint="Isi bila ada kerusakan, atau sebagai bukti barang tiba dengan baik. Foto boleh kosong kalau kondisinya baik." button="Simpan laporan kondisi" />
         </details>
@@ -239,11 +244,11 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
         </div>
       )}
 
-      <KendalaPanel shipmentId={s.id} role={role} status={s.status} />
+      <KendalaPanel shipmentId={s.id} role={atMine ? role : "VIEW"} status={s.status} />
       <TeruskanPanel id={s.id} status={s.status} role={role} branchName={me.data.branchName ?? null} destName={s.dest.name} legs={s.legs ?? []}
         hubs={["MITRA_POS", "HUB_MANAGER"].includes(role) && s.status === "AT_DEST_HUB" ? (await staffRpc<{ id: string; name: string; city: string }[]>("staff_dest_hubs")).data ?? [] : []} />
       <TutupResiPanel s={s} role={role} branchName={me.data.branchName ?? null} />
-      <RevisiPanel s={s} role={role} />
+      <RevisiPanel s={s} role={isOrigin ? role : "VIEW"} />
 
       <div className="card">
         <h2>Riwayat</h2>

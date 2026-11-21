@@ -155,3 +155,12 @@ DO $$ BEGIN PERFORM public.owner_create_staff('owner-baru@uji.id','Pemilik Baru'
 RESET ROLE;
 DO $$ BEGIN ASSERT (SELECT role FROM employee_profiles ep JOIN users u ON u.id = ep.user_id WHERE u.email = 'owner-baru@uji.id') = 'OWNER', 'akun Owner terbuat tanpa cabang'; END $$;
 SELECT 'owner_superadmin OK' AS hasil;
+
+-- ================= 046: penjagaan lokasi resi =================
+RESET ROLE;
+UPDATE shipments SET status = 'AT_DEST_HUB', manifest_id = NULL, leg_from_id = NULL, current_holder_user_id = NULL WHERE id = current_setting('t.ra')::uuid;
+SELECT t.as_user('00000000-0000-0000-0000-00000000000c');   -- Kepala gudang Jakarta, resi sedang di tujuan (Makassar)
+SELECT t.fails($$select public.advance_shipment(current_setting('t.ra')::uuid, 'OUT_FOR_DELIVERY')$$, 'gudang lain');
+SELECT t.fails($$select public.issue_open(current_setting('t.ra')::uuid, 'HOLD', 'uji lokasi resi cabang lain')$$, 'gudang lain');
+DO $$ BEGIN ASSERT public.staff_get_shipment(current_setting('t.ra')::uuid)->>'at' IS NOT NULL, 'detail memuat lokasi resi'; END $$;
+SELECT 'penjagaan_lokasi OK' AS hasil;

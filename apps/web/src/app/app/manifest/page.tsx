@@ -3,12 +3,14 @@ import Link from "next/link";
 import { MANIFEST_STATUS_LABEL, OWNER_VIEW } from "@kamil/core";
 import Icon from "@/components/Icon";
 import { getMe, staffRpc } from "@/lib/supabase/server";
+import { requireRole } from "@/lib/auth";
 
 export const metadata: Metadata = { title: "Manifest" };
 type Row = { id: string; code: string; status: string; mode: string; origin: string; dest: string; carrier: string | null; container: string | null; eta: string | null; resi: number; items: number; pendingToMe: boolean; iAmHolder: boolean; openCase: boolean };
 const TABS = [{ k: "", t: "Semua" }, { k: "OPEN", t: "Sedang diisi" }, { k: "SEALED", t: "Siap berangkat" }, { k: "IN_TRANSIT", t: "Di perjalanan" }, { k: "ARRIVED", t: "Sudah tiba" }, { k: "UNLOADED", t: "Selesai" }];
 
 export default async function Manifest({ searchParams }: { searchParams: Promise<{ s?: string }> }) {
+  await requireRole(["SUPER_ADMIN","OWNER","HUB_MANAGER","WAREHOUSE","CONTAINER_DRIVER"]);
   const sp = await searchParams;
   const tab = TABS.find((t) => t.k === sp.s)?.k ?? "";
   const [me, r] = await Promise.all([getMe(), staffRpc<Row[]>("manifest_list", { p_status: tab || null, p_limit: 60 })]);

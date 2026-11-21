@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { STATUS_LABEL, type AnyStatus } from "@kamil/core";
+import { STATUS_LABEL, type AnyStatus, ROLE_LABEL } from "@kamil/core";
 import Icon from "./Icon";
 import { Spark } from "./Charts";
 import { rupiah, waLink } from "@/lib/brand";
@@ -20,7 +20,7 @@ export type HubData = {
 };
 type Agenda = { id: string; code: string; kota: string; status: string; mode: string; waktu: string | null };
 
-const PERAN: Record<string, string> = { WAREHOUSE: "Staf gudang", DRIVER: "Kurir", MITRA_POS: "Kasir", CONTAINER_DRIVER: "Sopir kontainer", HUB_MANAGER: "Kepala gudang" };
+const PERAN: Record<string, string> = { ...ROLE_LABEL, MITRA_POS: "Kasir", DRIVER: "Kurir", WAREHOUSE: "Staf gudang" };
 const jam = (n: number) => (n >= 48 ? `${Math.floor(n / 24)} hari` : `${n} jam`);
 const wkt = (iso: string | null) => (iso ? new Date(iso).toLocaleString("id-ID", { timeZone: "Asia/Makassar", weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }).replace(/\./g, ":") : "jadwal belum diisi");
 const STMAN: Record<string, string> = { OPEN: "Sedang diisi", SEALED: "Siap berangkat", IN_TRANSIT: "Di perjalanan", ARRIVED: "Sudah tiba" };

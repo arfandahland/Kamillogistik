@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { STATUS_LABEL, type AnyStatus } from "@kamil/core";
+import { STATUS_LABEL, type AnyStatus, ROLE_LABEL } from "@kamil/core";
 import Icon from "./Icon";
 import { Spark } from "./Charts";
 import TargetForm from "./TargetForm";
@@ -25,7 +25,7 @@ export type OwnerInsight = {
   rating: { rata: number | null; jumlah: number; bintang1_2: number };
   sistem: { akunAktif: number; perPeran: Record<string, number>; langkah24Jam: number; resiTotal: number; aktivitasTerakhir: string | null };
 };
-const PERAN: Record<string, string> = { SUPER_ADMIN: "Pemilik/Admin", HUB_MANAGER: "Kepala gudang", MITRA_POS: "Kasir", DRIVER: "Kurir", WAREHOUSE: "Staf gudang", CONTAINER_DRIVER: "Sopir kontainer", HRD: "HRD", KONTEN: "Admin konten" };
+const PERAN: Record<string, string> = { ...ROLE_LABEL, MITRA_POS: "Kasir", DRIVER: "Kurir", WAREHOUSE: "Staf gudang" };
 
 export function OwnerInsights({ d }: { d: OwnerInsight }) {
   const p = d.peringatan, pr = d.proyeksi;
