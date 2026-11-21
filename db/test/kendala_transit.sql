@@ -218,3 +218,23 @@ SELECT t.fails($$select public.issue_photo_get(current_setting('t.ik')::uuid, 1)
 SELECT t.as_anon();
 SELECT t.fails($$select public.issue_photo_get(current_setting('t.ik')::uuid, 1)$$, 'permission denied');
 SELECT 'foto_kendala OK' AS hasil;
+
+-- ================= VOYAGE (034) =================
+SELECT t.as_user('00000000-0000-0000-0000-000000000002');
+RESET ROLE;
+SELECT set_config('t.mv', (SELECT id::text FROM manifests WHERE status = 'UNLOADED' ORDER BY created_at LIMIT 1), false),
+       set_config('t.mo', (SELECT id::text FROM manifests WHERE status = 'OPEN' LIMIT 1), false);
+UPDATE manifests SET status = 'SEALED', holder_user_id = '00000000-0000-0000-0000-00000000000c', pending_to_user = NULL
+  WHERE id = (SELECT id FROM manifests WHERE origin_id = (SELECT id FROM branches_partners WHERE code='JKT') AND status = 'UNLOADED' ORDER BY created_at LIMIT 1);
+SELECT set_config('t.mv', (SELECT id::text FROM manifests WHERE origin_id = (SELECT id FROM branches_partners WHERE code='JKT') AND status = 'SEALED' ORDER BY created_at LIMIT 1), false);
+SELECT t.as_user('00000000-0000-0000-0000-000000000002');
+SELECT t.fails($$select public.manifest_voyage_set(current_setting('t.mv')::uuid, 'V-12', 'Tanjung Priok', 'Soekarno-Hatta Makassar')$$, 'izin');
+SELECT t.as_user('00000000-0000-0000-0000-00000000000b');
+SELECT t.fails($$select public.manifest_voyage_set(current_setting('t.mv')::uuid, 'V-12', 'Tanjung Priok', 'Makassar')$$, 'gudang asal');
+SELECT t.as_user('00000000-0000-0000-0000-00000000000c');
+DO $$ BEGIN
+  PERFORM public.manifest_voyage_set(current_setting('t.mv')::uuid, 'VY-2611', 'Tanjung Priok', 'Pelabuhan Soekarno Makassar');
+  ASSERT public.manifest_get(current_setting('t.mv')::uuid)->>'voyage' = 'VY-2611' AND public.manifest_get(current_setting('t.mv')::uuid)->>'portUnload' = 'Pelabuhan Soekarno Makassar', 'voyage dan pelabuhan tampil di manifest';
+END $$;
+SELECT t.fails($$select public.manifest_voyage_set(current_setting('t.mv')::uuid, repeat('x', 50), NULL, NULL)$$, 'terlalu panjang');
+SELECT 'voyage OK' AS hasil;

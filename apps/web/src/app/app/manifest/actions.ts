@@ -81,3 +81,7 @@ export async function revisiEta(fd: FormData) {
   const id = str(fd, "id");
   await hasil(id, "manifest_revise_eta", { p_id: id, p_eta: waktu(fd, "tiba"), p_reason: str(fd, "alasan") }, "Perkiraan tiba diperbarui untuk semua resi di manifest ini.");
 }
+export async function isiVoyage(fd: FormData) {
+  const id = str(fd, "id");
+  await hasil(id, "manifest_voyage_set", { p_id: id, p_voyage: str(fd, "voyage") || null, p_load: str(fd, "muat") || null, p_unload: str(fd, "bongkar") || null }, "Data voyage dan pelabuhan disimpan.");
+}

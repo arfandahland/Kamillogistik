@@ -900,9 +900,9 @@
     "semantic_hash": ""
   },
   "db/test/run.sh": {
-    "mtime": 1795226220.0175939,
-    "seen": 1795227166.2445214,
-    "ast_hash": "0fa126ec7963a5ce6d8b15e35340bc7a",
+    "mtime": 1795227167.2297688,
+    "seen": 1795229740.7812812,
+    "ast_hash": "dcfffa3ba15336b5fc177531c4051877",
     "semantic_hash": ""
   },
   "db/test/tariff-cases.json": {
@@ -924,9 +924,9 @@
     "semantic_hash": ""
   },
   "e2e/flow.cjs": {
-    "mtime": 1795226253.7302847,
-    "seen": 1795227166.2446146,
-    "ast_hash": "45291c22973c3e362ab67e1a7b288d32",
+    "mtime": 1795228176.6119523,
+    "seen": 1795229740.781368,
+    "ast_hash": "81485cf97c82f3628fe5fbc71fdfc41f",
     "semantic_hash": ""
   },
   "e2e/kamera.cjs": {
@@ -954,9 +954,9 @@
     "semantic_hash": ""
   },
   "e2e/setup.sh": {
-    "mtime": 1795226220.0192666,
-    "seen": 1795227166.2446742,
-    "ast_hash": "77532a368a93704559660b56575c9912",
+    "mtime": 1795227167.231949,
+    "seen": 1795229740.781423,
+    "ast_hash": "90ff3c893c74f16d8e3d1f032198119f",
     "semantic_hash": ""
   },
   "e2e/skenario.cjs": {
@@ -1782,9 +1782,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/jemput/aksi.ts": {
-    "mtime": 1795187198.6602323,
-    "seen": 1795187259.3225331,
-    "ast_hash": "4ad37094318040ee48bf03ac3d5be26f",
+    "mtime": 1795227182.5805578,
+    "seen": 1795229740.7763608,
+    "ast_hash": "f2c2e2f62f0b3721f20d677c7b873e7d",
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/jemput/page.tsx": {
@@ -1848,15 +1848,15 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/JemputForm.tsx": {
-    "mtime": 1795187198.661908,
-    "seen": 1795187259.3226745,
-    "ast_hash": "16fec263e242410ea1ff670ae53d15ea",
+    "mtime": 1795228176.6099613,
+    "seen": 1795229740.7790546,
+    "ast_hash": "1bc544a40991cbe56cc0d0e2d4fe1fb5",
     "semantic_hash": ""
   },
   "apps/web/src/components/JemputKartu.tsx": {
-    "mtime": 1795187929.5257978,
-    "seen": 1795188089.0576985,
-    "ast_hash": "7fa813bd7120aa6008c4945758128503",
+    "mtime": 1795227182.5812087,
+    "seen": 1795229740.7790565,
+    "ast_hash": "ba885da19991708e5a1509b85dd5de31",
     "semantic_hash": ""
   },
   "apps/web/src/components/KlaimForm.tsx": {
@@ -1916,7 +1916,7 @@
   "db/test/jemput_klaim.sql": {
     "mtime": 1795208396.8200467,
     "seen": 1795208910.297108,
-    "ast_hash": "db0a67de1dae2d9a900a080494b8c2e5",
+    "ast_hash": "",
     "semantic_hash": ""
   },
   "apps/web/src/components/HubDashboard.tsx": {
@@ -2109,6 +2109,30 @@
     "mtime": 1795221536.5893207,
     "seen": 1795227166.2444727,
     "ast_hash": "8f0ec8fe4adc4399f3646fcc51413514",
+    "semantic_hash": ""
+  },
+  "db/migrations/031_biaya_manifest.sql": {
+    "mtime": 1795226180.4429667,
+    "seen": 1795229740.7808964,
+    "ast_hash": "4489b715e69d6674025b2d7bfe96c549",
+    "semantic_hash": ""
+  },
+  "db/migrations/032_foto_kendala.sql": {
+    "mtime": 1795226220.0125132,
+    "seen": 1795229740.7808979,
+    "ast_hash": "8c5c1e8e82cfe21b61a305ea54a2bae3",
+    "semantic_hash": ""
+  },
+  "db/test/biaya_manifest.sql": {
+    "mtime": 1795226126.4169831,
+    "seen": 1795229740.7809722,
+    "ast_hash": "7fcb909ee879da0873d679d99ee8c2c3",
+    "semantic_hash": ""
+  },
+  "db/test/kendala_transit.sql": {
+    "mtime": 1795226220.0192666,
+    "seen": 1795229740.781026,
+    "ast_hash": "e7baf400658b64aaca20f15a5482e992",
     "semantic_hash": ""
   },
   "package-lock.json": {

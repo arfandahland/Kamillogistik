@@ -7,12 +7,12 @@ import SubmitButton from "@/components/SubmitButton";
 import ManifestPindai from "@/components/ManifestPindai";
 import { tanggalWaktu } from "@/lib/brand";
 import { getMe, staffRpc } from "@/lib/supabase/server";
-import { berangkatManifest, keluarkanResi, segelManifest, selesaiBongkar, selesaikanSelisih, revisiEta, serahkanManifest, tambahResiForm, terimaManifest, tibaManifest, ubahManifest } from "../actions";
+import { berangkatManifest, isiVoyage, keluarkanResi, segelManifest, selesaiBongkar, selesaikanSelisih, revisiEta, serahkanManifest, tambahResiForm, terimaManifest, tibaManifest, ubahManifest } from "../actions";
 
 export const metadata: Metadata = { title: "Manifest" };
 type Place = { code: string; city: string; name: string };
 type M = {
-  id: string; code: string; status: "OPEN" | "SEALED" | "IN_TRANSIT" | "ARRIVED" | "UNLOADED"; mode: "LAUT" | "DARAT" | "UDARA"; seal: string | null; container: string | null; carrier: string | null;
+  id: string; code: string; status: "OPEN" | "SEALED" | "IN_TRANSIT" | "ARRIVED" | "UNLOADED"; mode: "LAUT" | "DARAT" | "UDARA"; seal: string | null; container: string | null; carrier: string | null; voyage?: string | null; portLoad?: string | null; portUnload?: string | null;
   departureAt: string | null; eta: string | null; note: string | null; createdAt: string; origin: Place; dest: Place; holder: string | null; iAmHolder: boolean; pendingTo: string | null; pendingToMe: boolean;
   shipments: { id: string; resiNo: string; status: string; receiver: string; items: { barcode: string; kg: number | null; scanned: boolean }[] }[];
   totals: { resi: number; items: number; scanned: number; kg: number };
@@ -61,13 +61,16 @@ export default async function ManifestDetail({ params, searchParams }: { params:
         <dl className="kv">
           {m.container && (<><dt>Kontainer / AWB</dt><dd>{m.container}</dd></>)}
           {m.carrier && (<><dt>{m.mode === "UDARA" ? "Penerbangan" : m.mode === "DARAT" ? "Truk" : "Kapal"}</dt><dd>{m.carrier}</dd></>)}
+          {m.voyage && (<><dt>Nomor voyage</dt><dd>{m.voyage}</dd></>)}
+          {m.portLoad && (<><dt>Pelabuhan muat</dt><dd>{m.portLoad}</dd></>)}
+          {m.portUnload && (<><dt>Pelabuhan bongkar</dt><dd>{m.portUnload}</dd></>)}
           {m.seal && (<><dt>Nomor segel</dt><dd>{m.seal}</dd></>)}
           {m.departureAt && (<><dt>Berangkat</dt><dd>{tanggalWaktu(m.departureAt)}</dd></>)}
           {m.eta && (<><dt>Perkiraan tiba</dt><dd>{tanggalWaktu(m.eta)}</dd></>)}
           <dt>Dipegang</dt><dd>{m.iAmHolder ? "Anda" : m.holder ?? "-"}{m.pendingTo ? ` (menunggu ${m.pendingTo} menerima)` : ""}</dd>
           {m.note && (<><dt>Catatan</dt><dd>{m.note}</dd></>)}
         </dl>
-        <div className="resiact"><Link className="btn" href={`/app/manifest/${m.id}/cetak`}><Icon name="print" size={20} /> Cetak manifest</Link></div>
+        <div className="resiact"><Link className="btn" href={`/app/manifest/${m.id}/cetak`}><Icon name="print" size={20} /> Cetak manifest</Link>{m.status !== "OPEN" && <Link className="btn ghost" href={`/app/manifest/${m.id}/surat-jalan`}><Icon name="file" size={20} /> Surat jalan pelabuhan</Link>}</div>
       </div>
 
       {m.pendingToMe && (
@@ -144,6 +147,16 @@ export default async function ManifestDetail({ params, searchParams }: { params:
       )}
 
       {role === "HUB_MANAGER" && atOrigin && <BiayaManifest manifestId={m.id} kembali={`/app/manifest/${m.id}`} />}
+
+      {(((role === "HUB_MANAGER" || role === "WAREHOUSE") && atOrigin && (m.status === "OPEN" || m.status === "SEALED")) || (role === "CONTAINER_DRIVER" && m.iAmHolder && (m.status === "SEALED" || m.status === "IN_TRANSIT"))) && (
+        <form action={isiVoyage} className="card">
+          <h2>Voyage dan pelabuhan</h2><input type="hidden" name="id" value={m.id} />
+          <label className="f" htmlFor="voyage">Nomor voyage / penerbangan</label><input id="voyage" name="voyage" defaultValue={m.voyage ?? ""} maxLength={40} autoComplete="off" />
+          <label className="f" htmlFor="pmuat">Pelabuhan atau bandara muat</label><input id="pmuat" name="muat" defaultValue={m.portLoad ?? ""} maxLength={80} autoComplete="off" />
+          <label className="f" htmlFor="pbongkar">Pelabuhan atau bandara bongkar</label><input id="pbongkar" name="bongkar" defaultValue={m.portUnload ?? ""} maxLength={80} autoComplete="off" />
+          <SubmitButton className="btn ghost" style={{ marginTop: 12 }} steps={["Menyimpan…"]}>Simpan voyage dan pelabuhan</SubmitButton>
+        </form>
+      )}
 
       {(m.status === "SEALED" || m.status === "IN_TRANSIT") && sopir && (role === "HUB_MANAGER" || m.iAmHolder) && (
         <form action={revisiEta} className="card">

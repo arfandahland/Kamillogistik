@@ -1227,6 +1227,19 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await noOverflow(cs.page, "CS (HP)");
     await cs.ctx.close();
 
+    // Voyage dan surat jalan pelabuhan
+    const mj = sqlq(`UPDATE manifests SET status = 'SEALED', holder_user_id = NULL, pending_to_user = NULL WHERE id = (SELECT id FROM manifests WHERE origin_id = (SELECT id FROM branches_partners WHERE code='JKT') ORDER BY created_at LIMIT 1) RETURNING id;`).split("\n")[0];
+    const mg2 = await login(browser, "manajer@uji.id", PASS, { width: 390, height: 844 });
+    await mg2.page.goto(`${BASE}/app/manifest/${mj}`, { waitUntil: "networkidle" });
+    await mg2.page.fill("#voyage", "VY-2611-UJI"); await mg2.page.fill("#pmuat", "Tanjung Priok"); await mg2.page.fill("#pbongkar", "Pelabuhan Soekarno-Hatta Makassar");
+    await act(mg2.page, mg2.page.getByRole("button", { name: "Simpan voyage dan pelabuhan" }));
+    const mt = await mg2.page.locator("main").innerText();
+    ok("AG1 voyage dan pelabuhan tersimpan dan tampil di manifest", /Data voyage dan pelabuhan disimpan/.test(mt) && /VY-2611-UJI/.test(mt) && /Tanjung Priok/.test(mt), mt.slice(0, 120));
+    await mg2.page.goto(`${BASE}/app/manifest/${mj}/surat-jalan`, { waitUntil: "networkidle" });
+    const sj = await mg2.page.locator("main").innerText();
+    ok("AG2 surat jalan pelabuhan memuat voyage, pelabuhan, segel, dan kolom tanda tangan", /SURAT JALAN PELABUHAN/.test(sj) && /VY-2611-UJI/.test(sj) && /Pelabuhan Soekarno-Hatta Makassar/.test(sj) && /Petugas pelabuhan/.test(sj));
+    await noOverflow(mg2.page, "Surat jalan pelabuhan (HP)"); await mg2.ctx.close();
+
     // Pre-booking antar sendiri dari website
     const pb = await (await browser.newContext({ viewport: { width: 390, height: 844 } })).newPage();
     await pb.goto(`${BASE}/jemput`, { waitUntil: "networkidle" });
