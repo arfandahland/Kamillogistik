@@ -124,3 +124,6 @@ GRANT EXECUTE ON FUNCTION public.item_for_weighing(text) TO authenticated;
 -- Kepala gudang bertanggung jawab atas semua barang di gudangnya: boleh memulai serah terima (mis. lewat manifest) walau barang masih dipegang staf gudangnya.
 SELECT pg_temp.patch_fn('start_handover', 'IF s.current_holder_user_id IS DISTINCT FROM auth.uid() THEN',
   'IF s.current_holder_user_id IS DISTINCT FROM auth.uid() AND NOT (public.my_role() = ''HUB_MANAGER'' AND public._lokasi_resi(s) IS NOT DISTINCT FROM public.my_branch()) THEN');
+-- ...dan saat itu Kepala gudang mengambil alih sebagai pemegang barang (tercatat), supaya penerima bisa mengonfirmasi serah terimanya.
+SELECT pg_temp.patch_fn('start_handover', 'IF p_to_user = auth.uid() THEN',
+  'IF s.current_holder_user_id IS DISTINCT FROM auth.uid() THEN UPDATE public.shipments SET current_holder_user_id = auth.uid() WHERE id = s.id; END IF; IF p_to_user = auth.uid() THEN');

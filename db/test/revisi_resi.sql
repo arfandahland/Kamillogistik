@@ -203,6 +203,13 @@ SELECT t.as_user('00000000-0000-0000-0000-00000000000b');   -- Kepala gudang Mak
 SELECT t.fails($$select public.start_handover(current_setting('t.tb')::uuid, '00000000-0000-0000-0000-000000000005')$$, 'pemegang');
 SELECT t.as_user('00000000-0000-0000-0000-00000000000c');   -- Kepala gudang Jakarta
 DO $$ BEGIN ASSERT (public.start_handover(current_setting('t.tb')::uuid, '00000000-0000-0000-0000-000000000005')->>'state') = 'PENDING_ACK', 'Kepala gudang memulai serah terima'; END $$;
+RESET ROLE;
+SELECT set_config('t.hid', (SELECT id::text FROM public.handover_events WHERE shipment_id = current_setting('t.tb')::uuid AND state = 'PENDING_ACK'), false);
+SELECT t.as_user('00000000-0000-0000-0000-000000000005');   -- sopir dapat menerima walau barang tadinya dipegang staf gudang
+DO $$ BEGIN
+  PERFORM public.accept_handover(current_setting('t.hid')::uuid);
+  ASSERT (SELECT (public.staff_get_shipment(current_setting('t.tb')::uuid)->>'iAmHolder')::boolean), 'sopir kini pemegang barang';
+END $$;
 -- Kasir tidak menimbang
 SELECT t.as_user('00000000-0000-0000-0000-000000000002');
 SELECT t.fails($$select public.measure_item(current_setting('t.tbno') || '-01', 5)$$, 'izin');
