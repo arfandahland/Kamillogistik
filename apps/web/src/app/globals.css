@@ -1376,3 +1376,31 @@ a.card:active, .tile:active { transform: scale(.985); }
 .rbf > input, .rbf > select, .rbf > textarea { min-width: 0; max-width: 100%; }
 .rbrow.satu { grid-template-columns: minmax(0, 1fr) !important; }
 @media (min-width: 900px) { .rbform.atas { align-items: start; } }
+
+/* ===== Putaran 2: daftar baris kartu (rlist), saringan rapi, kartu angka 2 atau 3 ===== */
+@media (min-width: 900px) { .stats.dash.tiga { grid-template-columns: repeat(3, minmax(0, 1fr)); } .stats.dash.dua { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.rlist { display: grid; gap: 10px; grid-template-columns: minmax(0, 1fr); align-items: stretch; }
+.rlist > .resi, .rlist > .resi + .resi { margin: 0; min-width: 0; }
+.rlist > :not(.resi) { grid-column: 1 / -1; }
+.rlist .resi b.no { white-space: normal; overflow-wrap: anywhere; }
+.rlist .resi .meta small { overflow-wrap: anywhere; }
+@media (min-width: 900px) { .rlist { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; } }
+.chips.wrapc { flex-wrap: wrap; overflow-x: visible; }
+.rtools { display: grid; gap: 10px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 900px) { .rtools { grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 16px; } .rtools .chips { padding: 0; } }
+.rtools .searchcard { margin: 0; }
+.kosong { text-align: center; display: grid; justify-items: center; gap: 4px; padding: 28px 18px; }
+.kosong .kic { width: 56px; height: 56px; border-radius: 18px; display: grid; place-items: center; background: var(--teal-soft); color: var(--teal); margin-bottom: 6px; }
+.kosong p { margin: 0; }
+.wrap > .stats.dash, .appmain .wrap > .stats.dash { margin-top: 10px; }
+@media (min-width: 720px) { .dkol .inv-actions { grid-template-columns: 1fr 1fr; margin-bottom: 0; } .dkol .inv-actions .btn { width: 100%; padding-inline: 14px; } .dkol .inv-actions .btn.wa { grid-column: 1 / -1; } }
+.dashhead .live { width: auto; height: auto; border-radius: 0; background: none; box-shadow: none; white-space: nowrap; }
+.dashhead > div:first-child { min-width: 0; }
+.pgact { display: flex; gap: 8px; flex-wrap: wrap; } .pgact .btn { width: auto; padding-inline: 20px; }
+@media (max-width: 479px) { .pgact { width: 100%; } .pgact .btn { flex: 1 1 100%; } }
+.konform .konaksi { grid-column: 1 / -1; display: grid; gap: 10px; } .konform .rbsek:first-child { grid-column: 1 / -1; }
+@media (min-width: 900px) { .konform .rbsek:first-child { grid-column: 1 / -1; } }
+.rbsekdalam { display: grid; gap: 14px; min-width: 0; border-top: 1px solid var(--line); padding-top: 14px; } .rbsekdalam > * { margin: 0; min-width: 0; } .rbsekdalam .rbf { display: grid; gap: 6px; align-content: start; } .rbsekdalam .hint { margin: 0; font-size: 13.5px; }
+details.admnew > .hint { padding: 0 18px 18px; margin: 0; }
+.fchips { flex-wrap: wrap; overflow-x: visible !important; }
+.rbrow.dua { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }

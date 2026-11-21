@@ -32,14 +32,15 @@ export default function KendalaLaporForm({ id, opsi }: { id: string; opsi: [stri
     if (file.current) file.current.value = "";
   }
   return (
-    <form action={laporKendala} className="card stack">
-      <h2>Laporkan kendala</h2>
+    <form action={laporKendala} className="card rbsek">
+      <h2 className="cardh">Laporkan kendala</h2>
       <input type="hidden" name="id" value={id} /><input type="hidden" name="foto" value={JSON.stringify(fotos)} />
-      <label className="f" htmlFor="jenis-kendala">Jenis kendala</label>
-      <select id="jenis-kendala" name="jenis" required defaultValue=""><option value="" disabled>Pilih jenis…</option>{opsi.map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select>
-      <label className="f" htmlFor="catatan-kendala">Apa yang terjadi</label>
-      <textarea id="catatan-kendala" name="catatan" required minLength={3} rows={3} placeholder="Tulis singkat dan jelas" />
-      <label className="f">Foto bukti (boleh kosong, maksimal 3)</label>
+      <div className="rbf"><label className="f" htmlFor="jenis-kendala">Jenis kendala</label>
+      <select id="jenis-kendala" name="jenis" required defaultValue=""><option value="" disabled>Pilih jenis…</option>{opsi.map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select></div>
+      <div className="rbf"><label className="f" htmlFor="catatan-kendala">Apa yang terjadi</label>
+      <textarea id="catatan-kendala" name="catatan" required minLength={3} rows={3} placeholder="Tulis singkat dan jelas" /></div>
+      <label className="f">Foto bukti</label>
+      <p className="hint">Boleh kosong, maksimal 3 foto.</p>
       <div className="kfotos">
         {fotos.map((f, i) => (
           <div className="kfoto" key={i}><img src={f} alt={`Foto ${i + 1}`} /><button type="button" aria-label={`Hapus foto ${i + 1}`} onClick={() => setFotos((x) => x.filter((_, j) => j !== i))}><Icon name="close" size={16} /></button></div>

@@ -13,8 +13,8 @@ export default async function BiayaManifest({ manifestId, kembali }: { manifestI
   if (!r.data) return r.error ? <div className="err">{r.error}</div> : null;
   const b = r.data;
   return (
-    <div className="card stack">
-      <h2>Biaya dan margin</h2>
+    <div className="card rbsek">
+      <h2 className="cardh">Biaya dan margin</h2>
       <div className="shiftnums three">
         <div><b>{rupiah(b.pendapatan).replace("Rp", "")}</b><small>pendapatan Rp</small></div>
         <div><b>{rupiah(b.biaya).replace("Rp", "")}</b><small>biaya Rp</small></div>
@@ -27,13 +27,18 @@ export default async function BiayaManifest({ manifestId, kembali }: { manifestI
             {b.bolehCatat && <form action={hapusBiaya}><input type="hidden" name="id" value={x.id} /><input type="hidden" name="kembali" value={kembali} /><button className="btn ghost sm" aria-label={`Hapus biaya ${JENIS_BIAYA[x.kind] ?? x.kind}`}>Hapus</button></form>}</li>))}</ul>
       )}
       {b.bolehCatat && (
-        <form action={tambahBiaya} className="stack">
+        <form action={tambahBiaya} className="rbsekdalam">
           <input type="hidden" name="manifest" value={manifestId} /><input type="hidden" name="kembali" value={kembali} />
-          <label className="f" htmlFor="bm-jenis">Jenis biaya</label>
-          <select id="bm-jenis" name="jenis" defaultValue="KAPAL">{Object.entries(JENIS_BIAYA).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select>
-          <label className="f" htmlFor="bm-jumlah">Jumlah (Rp)</label><input id="bm-jumlah" name="jumlah" inputMode="numeric" required placeholder="Contoh: 1500000" autoComplete="off" />
-          <label className="f" htmlFor="bm-vendor">Vendor (boleh kosong)</label><input id="bm-vendor" name="vendor" autoComplete="off" />
-          <label className="f" htmlFor="bm-catatan">Catatan (boleh kosong)</label><input id="bm-catatan" name="catatan" autoComplete="off" />
+          <div className="tbjudul"><span className="tbno">+</span> Catat biaya baru</div>
+          <div className="rbrow">
+            <div className="rbf"><label className="f" htmlFor="bm-jenis">Jenis biaya</label>
+            <select id="bm-jenis" name="jenis" defaultValue="KAPAL">{Object.entries(JENIS_BIAYA).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select></div>
+            <div className="rbf"><label className="f" htmlFor="bm-jumlah">Jumlah (Rp)</label><input id="bm-jumlah" name="jumlah" inputMode="numeric" required placeholder="Contoh: 1500000" autoComplete="off" /></div>
+          </div>
+          <div className="rbrow">
+            <div className="rbf"><label className="f" htmlFor="bm-vendor">Vendor</label><input id="bm-vendor" name="vendor" autoComplete="off" /><p className="hint">Boleh kosong.</p></div>
+            <div className="rbf"><label className="f" htmlFor="bm-catatan">Catatan</label><input id="bm-catatan" name="catatan" autoComplete="off" /><p className="hint">Boleh kosong.</p></div>
+          </div>
           <SubmitButton className="btn ghost" steps={["Mencatat biaya…"]}>Catat biaya</SubmitButton>
         </form>
       )}

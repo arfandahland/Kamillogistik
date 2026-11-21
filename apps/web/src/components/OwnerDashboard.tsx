@@ -20,7 +20,7 @@ function Delta({ now, prev }: { now: number; prev: number }) {
   return <span className={`delta ${p > 0 ? "up" : p < 0 ? "down" : "flat"}`}><Icon name={p >= 0 ? "up" : "down"} size={14} /> {Math.abs(p)}% vs periode lalu</span>;
 }
 
-export default function OwnerDashboard({ initial, initialError, preview }: { initial: Data | null; initialError?: string | null; preview?: boolean }) {
+export default function OwnerDashboard({ initial, initialError, preview, sisip }: { initial: Data | null; initialError?: string | null; preview?: boolean; sisip?: React.ReactNode }) {
   const [data, setData] = useState<Data | null>(initial);
   const [days, setDays] = useState(initial?.days ?? 30);
   const [err, setErr] = useState<string | null>(initialError ?? null);
@@ -97,6 +97,8 @@ export default function OwnerDashboard({ initial, initialError, preview }: { ini
           <div><b>Belum ada data</b><p className="muted" style={{ margin: "2px 0 0" }}>Grafik dan kesimpulan akan hidup sendiri begitu resi pertama dibuat oleh kasir mitra. Halaman ini menyegarkan diri tiap 20 detik.</p></div>
         </div>
       )}
+
+      {sisip}
 
       <div className="dgrid">
         {data.alerts.length > 0 && (

@@ -21,7 +21,7 @@ export default async function Beranda({ searchParams }: { searchParams: Promise<
   if (who?.role === "FINANCE") redirect("/app/keuangan");
   if (OWNER_VIEW.includes(who?.role ?? "")) {
     const [o, ins, kn] = await Promise.all([staffRpc<OwnerData>("owner_dashboard", { p_days: 30 }), staffRpc<OwnerInsight>("owner_insights"), staffRpc<number>("issue_count")]);
-    return <><KendalaBadge n={Number(kn.data ?? 0)} />{ins.data && <OwnerInsights d={ins.data} />}<OwnerDashboard initial={o.data} initialError={o.error} /></>;
+    return <><KendalaBadge n={Number(kn.data ?? 0)} /><OwnerDashboard initial={o.data} initialError={o.error} sisip={ins.data ? <OwnerInsights d={ins.data} /> : null} /></>;
   }
   const peran = who?.role;
   const tab = TABS.find((t) => t.k === sp.s)?.k ?? "aktif";

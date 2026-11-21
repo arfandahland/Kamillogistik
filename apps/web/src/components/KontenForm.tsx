@@ -33,7 +33,7 @@ export default function KontenForm({ item, onSaved }: { item?: Item; onSaved?: (
   }
   const idb = item?.id ?? "baru";
   return (
-    <form ref={ref} className="stack" onSubmit={(e) => {
+    <form ref={ref} className="rbform konform atas" onSubmit={(e) => {
       e.preventDefault(); setErr(""); setOk(false);
       const fd = new FormData(e.currentTarget);
       if (!item && !hasil) { setErr("Pilih foto dulu."); return; }
@@ -41,8 +41,10 @@ export default function KontenForm({ item, onSaved }: { item?: Item; onSaved?: (
       fd.set("judul", judul); fd.set("rute", asal.trim() && tujuan.trim() ? `${asal.trim()} → ${tujuan.trim()}` : "");
       start(async () => { const r = await simpanKonten(fd); if (r.ok) { setOk(true); setAsli(null); setHasil(null); if (!item) { ref.current?.reset(); setAsal(""); setTujuan(""); setJudul(""); setManual(false); } onSaved?.(); } else setErr(r.error ?? "Gagal."); });
     }}>
-      <label className="f" htmlFor={`b-${idb}`}>{item ? "Ganti foto (boleh kosong)" : "Foto bukti pengiriman"}</label>
-      <input id={`b-${idb}`} name="berkas" type="file" accept="image/*" onChange={(e) => pilih(e.target.files?.[0])} />
+      <section className="card rbsek">
+      <div className="tbjudul"><span className="tbno">1</span> Foto</div>
+      <div className="rbf"><label className="f" htmlFor={`b-${idb}`}>{item ? "Ganti foto (boleh kosong)" : "Foto bukti pengiriman"}</label>
+      <input id={`b-${idb}`} name="berkas" type="file" accept="image/*" onChange={(e) => pilih(e.target.files?.[0])} /></div>
       {asli && (
         <div className="card" style={{ background: "var(--teal-soft)" }}>
           <b>Pengolah foto otomatis</b>
@@ -59,23 +61,32 @@ export default function KontenForm({ item, onSaved }: { item?: Item; onSaved?: (
           {hasil && <ul className="hint" style={{ margin: "8px 0 0", paddingLeft: 18 }}>{hasil.catatan.map((c) => <li key={c}>{c}</li>)}<li>Ukuran akhir {hasil.lebar}×{hasil.tinggi}, {Math.round(hasil.dataUrl.length / 1024)} KB.</li></ul>}
         </div>
       )}
-      <label className="f" htmlFor={`j-${idb}`}>Jenis</label>
-      <select id={`j-${idb}`} value={jenis} onChange={(e) => setJenis(e.target.value)}>{JENIS.map((j) => <option key={j}>{j}</option>)}</select>
-      <div className="two">
-        <div><label className="f" htmlFor={`a-${idb}`}>Kota asal</label><input id={`a-${idb}`} list="kota-konten" value={asal} onChange={(e) => setAsal(e.target.value)} maxLength={30} placeholder="Jakarta" autoComplete="off" /></div>
-        <div><label className="f" htmlFor={`t-${idb}`}>Kota tujuan</label><input id={`t-${idb}`} list="kota-konten" value={tujuan} onChange={(e) => setTujuan(e.target.value)} maxLength={30} placeholder="Kendari" autoComplete="off" /></div>
+      </section>
+      <section className="card rbsek">
+      <div className="tbjudul"><span className="tbno">2</span> Keterangan foto</div>
+      <div className="rbf"><label className="f" htmlFor={`j-${idb}`}>Jenis</label>
+      <select id={`j-${idb}`} value={jenis} onChange={(e) => setJenis(e.target.value)}>{JENIS.map((j) => <option key={j}>{j}</option>)}</select></div>
+      <div className="rbrow">
+        <div className="rbf"><label className="f" htmlFor={`a-${idb}`}>Kota asal</label><input id={`a-${idb}`} list="kota-konten" value={asal} onChange={(e) => setAsal(e.target.value)} maxLength={30} placeholder="Jakarta" autoComplete="off" /></div>
+        <div className="rbf"><label className="f" htmlFor={`t-${idb}`}>Kota tujuan</label><input id={`t-${idb}`} list="kota-konten" value={tujuan} onChange={(e) => setTujuan(e.target.value)} maxLength={30} placeholder="Kendari" autoComplete="off" /></div>
       </div>
       <datalist id="kota-konten">{KOTA.map((k) => <option key={k} value={k} />)}</datalist>
-      <label className="f" htmlFor={`jd-${idb}`}>Judul (terisi otomatis dari jenis dan kota)</label>
+      <div className="rbf"><label className="f" htmlFor={`jd-${idb}`}>Judul (terisi otomatis dari jenis dan kota)</label>
       <input id={`jd-${idb}`} required minLength={3} maxLength={90} value={judul} onChange={(e) => { setJudul(e.target.value); setManual(true); }} placeholder="Contoh: Pengiriman Jakarta → Kendari" />
-      <p className="hint" style={{ margin: 0 }}>Di beranda, poin keunggulan (Barang aman, Dokumentasi lengkap, Tim profesional, Proses tepat waktu) tampil otomatis dengan animasi bersama foto ini.</p>
-      <label className="f">Nama pelanggan atau usaha (hanya bila seizin pelanggan)</label><input name="pelanggan" maxLength={80} defaultValue={item?.customer ?? ""} />
-      <label className="f">Kota pelanggan (boleh kosong)</label><input name="tempat" maxLength={80} defaultValue={item?.place ?? ""} />
-      <label className="f">Kalimat testimoni asli (boleh kosong)</label><textarea name="kutipan" rows={2} maxLength={300} defaultValue={item?.quote ?? ""} placeholder="Tulis hanya yang benar-benar dikatakan pelanggan" />
-      <label className="f">Tampil di beranda?</label>
-      <select name="aktif" defaultValue={item?.active === false ? "0" : "1"}><option value="1">Tampil</option><option value="0">Disembunyikan</option></select>
+      <p className="hint">Di beranda, poin keunggulan (Barang aman, Dokumentasi lengkap, Tim profesional, Proses tepat waktu) tampil otomatis dengan animasi bersama foto ini.</p></div>
+      </section>
+      <section className="card rbsek">
+      <div className="tbjudul"><span className="tbno">3</span> Pelanggan dan tampilan <small>boleh kosong</small></div>
+      <div className="rbf"><label className="f">Nama pelanggan atau usaha</label><input name="pelanggan" maxLength={80} defaultValue={item?.customer ?? ""} /><p className="hint">Isi hanya bila pelanggan sudah mengizinkan.</p></div>
+      <div className="rbf"><label className="f">Kota pelanggan</label><input name="tempat" maxLength={80} defaultValue={item?.place ?? ""} /></div>
+      <div className="rbf"><label className="f">Kalimat testimoni asli</label><textarea name="kutipan" rows={2} maxLength={300} defaultValue={item?.quote ?? ""} placeholder="Tulis hanya yang benar-benar dikatakan pelanggan" /></div>
+      <div className="rbf"><label className="f">Tampil di beranda?</label>
+      <select name="aktif" defaultValue={item?.active === false ? "0" : "1"}><option value="1">Tampil</option><option value="0">Disembunyikan</option></select></div>
+      </section>
+      <div className="konaksi">
       {err && <div className="err" role="alert">{err}</div>}{ok && <div className="ok" role="status">Tersimpan. Beranda diperbarui.</div>}
       <button className="btn" disabled={pending}>{pending ? "Menyimpan…" : item ? "Simpan perubahan" : "Tambahkan foto"}</button>
+      </div>
     </form>
   );
 }

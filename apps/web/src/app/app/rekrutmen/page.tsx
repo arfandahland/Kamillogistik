@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LABEL_STATUS_LAMARAN, POSISI, STATUS_LAMARAN, posisiDari, pesanKePelamar } from "@kamil/core";
+import StatRow from "@/components/StatRow";
 import PosisiBaris from "@/components/PosisiBaris";
 import { requireRole } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
@@ -26,22 +27,21 @@ export default async function Rekrutmen() {
   const posisiTampil = [...POSISI.map((p) => ({ p, row: d.perPosition.find((x) => x.position === p.slug) }))];
   return (
     <main className="wrap stack" style={{ paddingTop: 8 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-        <div><h1 style={{ margin: 0 }}>Dashboard rekrutmen</h1><p className="muted" style={{ margin: "2px 0 0" }}>Ringkasan lamaran dari halaman <Link href="/karir">/karir</Link>.</p></div>
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}><Link className="btn" href="/app/lamaran">Buka daftar lamaran</Link><a className="btn ghost" href="/app/ekspor/lamaran">Unduh Excel (CSV)</a></div>
+      <div className="pghead">
+        <div><h1>Dashboard rekrutmen</h1><p className="muted">Ringkasan lamaran dari halaman <Link href="/karir">/karir</Link>.</p></div>
+        <div className="pgact"><Link className="btn" href="/app/lamaran">Buka daftar lamaran</Link><a className="btn ghost" href="/app/ekspor/lamaran">Unduh Excel (CSV)</a></div>
       </div>
 
-      <section className="kpis" aria-label="Ringkasan">
-        <div className="kpi"><small>Pelamar 7 hari terakhir</small><b>{d.last7}</b><em className={delta >= 0 ? "up" : "down"}>{delta === 0 ? "sama dengan minggu lalu" : `${delta > 0 ? "+" : ""}${delta} dari minggu lalu`}</em></div>
-        <div className={`kpi ${d.needsAction.length ? "warn" : ""}`}><small>Menunggu respon</small><b>{baru}</b><em>{d.needsAction.length ? `${d.needsAction.length} lebih dari 24 jam` : "semua tertangani"}</em></div>
-        <div className="kpi"><small>Tahap wawancara</small><b>{d.counts.WAWANCARA ?? 0}</b><em>sedang diproses</em></div>
-        <div className="kpi"><small>Diterima bulan ini</small><b>{d.hiredMonth}</b><em>dari {d.total} total pelamar</em></div>
-        <div className="kpi"><small>Rata-rata waktu respon</small><b>{d.avgResponseHours == null ? "–" : d.avgResponseHours >= 48 ? `${Math.round(d.avgResponseHours / 24)} hari` : `${d.avgResponseHours} jam`}</b><em>60 hari terakhir</em></div>
-      </section>
+      <StatRow items={[
+        { ikon: "users", n: d.last7, label: "Pelamar 7 hari terakhir", sub: delta === 0 ? "sama dengan minggu lalu" : `${delta > 0 ? "+" : ""}${delta} dari minggu lalu` },
+        { ikon: "clock", n: baru, label: "Menunggu respon", sub: d.needsAction.length ? `${d.needsAction.length} lebih dari 24 jam` : "semua tertangani", warm: d.needsAction.length > 0, href: "/app/lamaran?s=BARU" },
+        { ikon: "chat", n: d.counts.WAWANCARA ?? 0, label: "Tahap wawancara", sub: "sedang diproses", href: "/app/lamaran?s=WAWANCARA" },
+        { ikon: "check", n: d.hiredMonth, label: "Diterima bulan ini", sub: `dari ${d.total} total pelamar${d.avgResponseHours == null ? "" : ` · balas rata-rata ${d.avgResponseHours >= 48 ? `${Math.round(d.avgResponseHours / 24)} hari` : `${d.avgResponseHours} jam`}`}` },
+      ]} />
 
       {d.needsAction.length > 0 && (
         <section className="card warnbox" aria-labelledby="perlu">
-          <h2 id="perlu" style={{ margin: "0 0 8px" }}>Perlu segera dihubungi</h2>
+          <h2 id="perlu" className="cardh">Perlu segera dihubungi</h2>
           <div className="stack" style={{ gap: 8 }}>
             {d.needsAction.map((a) => { const wa = waNumber(a.phone); const jd = posisiDari(a.position)?.judul ?? a.position; return (
               <div key={a.id} className="needrow"><div><b>{a.name}</b><small>{jd} · menunggu {lama(a.hours)}</small></div>
@@ -53,7 +53,7 @@ export default async function Rekrutmen() {
 
       <div className="dgrid">
         <section className="card" aria-labelledby="tren">
-          <h2 id="tren" style={{ marginTop: 0 }}>Pelamar masuk, 14 hari</h2>
+          <h2 id="tren" className="cardh">Pelamar masuk, 14 hari</h2>
           <svg viewBox="0 0 280 120" role="img" aria-label="Grafik pelamar per hari" className="trend">
             {d.daily.map((x, i) => { const h = (x.n / maks) * 80; return (
               <g key={x.d}><rect x={i * 20 + 3} y={95 - h} width="14" height={Math.max(h, x.n ? 2 : 0)} rx="4" fill="url(#gr)" />
@@ -63,7 +63,7 @@ export default async function Rekrutmen() {
           </svg>
         </section>
         <section className="card" aria-labelledby="corong">
-          <h2 id="corong" style={{ marginTop: 0 }}>Alur seleksi</h2>
+          <h2 id="corong" className="cardh">Alur seleksi</h2>
           <div className="stack" style={{ gap: 10 }}>
             {STATUS_LAMARAN.map((s) => { const n = d.counts[s] ?? 0; return (
               <Link key={s} href={`/app/lamaran?s=${s}`} className="frow"><span className="fl">{LABEL_STATUS_LAMARAN[s]}</span>
@@ -73,7 +73,7 @@ export default async function Rekrutmen() {
       </div>
 
       <section className="card" aria-labelledby="posisi">
-        <h2 id="posisi" style={{ marginTop: 0 }}>Lowongan per posisi</h2>
+        <h2 id="posisi" className="cardh">Lowongan per posisi</h2>
         <p className="hint" style={{ marginTop: -6 }}>Geser tombol untuk menutup atau membuka lowongan. Posisi yang ditutup tidak bisa dilamar di halaman karir.</p>
         <div className="stack" style={{ gap: 8 }}>
           {posisiTampil.map(({ p, row }) => <PosisiBaris key={p.slug} slug={p.slug} judul={p.judul} total={row?.total ?? 0} baru={row?.baru ?? 0} wawancara={row?.wawancara ?? 0} diterima={row?.diterima ?? 0} open={!tutup.has(p.slug)} />)}

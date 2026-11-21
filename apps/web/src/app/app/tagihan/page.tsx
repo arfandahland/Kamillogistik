@@ -3,6 +3,7 @@ import Link from "next/link";
 import Icon from "@/components/Icon";
 import { staffRpc } from "@/lib/supabase/server";
 import { rupiah, tanggal } from "@/lib/brand";
+import StatRow from "@/components/StatRow";
 import { requireRole } from "@/lib/auth";
 
 export const metadata: Metadata = { title: "Daftar Tagihan" };
@@ -23,15 +24,27 @@ export default async function Tagihan({ searchParams }: { searchParams: Promise<
   const r = await staffRpc<Row[]>("staff_list_invoices", { p_q: q || null, p_limit: 200 });
   const all = r.data ?? [];
   const rows = all.filter((x) => tab === "semua" ? true : tab === "lunas" ? x.status === "PAID" : tab === "telat" ? x.status === "OVERDUE" : x.status !== "PAID");
-  const open = rows.reduce((s, x) => s + x.outstanding, 0);
+  const open = rows.reduce((x, r2) => x + r2.outstanding, 0);
+  const telat = all.filter((x) => x.status === "OVERDUE").length;
+  const belumN = all.filter((x) => x.status !== "PAID").length;
+  const lunasN = all.filter((x) => x.status === "PAID").length;
+  const totalBelum = all.filter((x) => x.status !== "PAID").reduce((x, r2) => x + r2.outstanding, 0);
   return (
     <main className="wrap stack" style={{ paddingTop: 8 }}>
-      <h1>Tagihan</h1>
-      {tab !== "lunas" && <div className="card" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}><span className="muted">Total belum dibayar{tab === "telat" ? " (lewat tempo)" : ""}</span><b style={{ fontSize: 22 }}>{rupiah(open)}</b></div>}
-      <form className="card searchcard"><Icon name="search" size={20} className="ico sicon" /><input name="q" defaultValue={q} placeholder="Cari nomor invoice, resi, atau nama" aria-label="Cari" /><input type="hidden" name="s" value={tab} /></form>
-      <nav className="chips" aria-label="Saring">{TABS.map((t) => <Link key={t.k} className={`chip ${tab === t.k ? "on" : ""}`} href={`/app/tagihan?s=${t.k}${q ? `&q=${encodeURIComponent(q)}` : ""}`}>{t.t}</Link>)}</nav>
+      <div className="pghead"><div><h1>Tagihan</h1><p className="muted">Pantau siapa yang belum membayar. Ketuk satu tagihan untuk mencatat pembayaran.</p></div></div>
+      <StatRow items={[
+        { ikon: "cash", n: rupiah(totalBelum), label: "Total belum dibayar", warm: totalBelum > 0 },
+        { ikon: "file", n: belumN, label: "Tagihan terbuka", href: "/app/tagihan?s=belum" },
+        { ikon: "alert", n: telat, label: "Lewat tempo", warm: telat > 0, href: "/app/tagihan?s=telat" },
+        { ikon: "check", n: lunasN, label: "Sudah lunas", href: "/app/tagihan?s=lunas" },
+      ]} />
+      <div className="rtools">
+        <form className="card searchcard"><Icon name="search" size={20} className="ico sicon" /><input name="q" defaultValue={q} placeholder="Cari nomor invoice, resi, atau nama" aria-label="Cari" /><input type="hidden" name="s" value={tab} /></form>
+        <nav className="chips wrapc" aria-label="Saring">{TABS.map((t) => <Link key={t.k} className={`chip ${tab === t.k ? "on" : ""}`} href={`/app/tagihan?s=${t.k}${q ? `&q=${encodeURIComponent(q)}` : ""}`}>{t.t}</Link>)}</nav>
+      </div>
+      {tab !== "lunas" && rows.length > 0 && <p className="hint" style={{ margin: 0 }}>Menampilkan {rows.length} tagihan, sisa {rupiah(open)}.</p>}
       {r.error && <div className="err">{r.error}</div>}
-      <div className="stagger">
+      <div className="rlist stagger">
         {rows.slice(0, n).map((x) => {
           const l = LABEL[x.status] ?? LABEL.UNPAID!;
           return (
@@ -47,7 +60,7 @@ export default async function Tagihan({ searchParams }: { searchParams: Promise<
           );
         })}
         {rows.length > n && <Link className="btn ghost" scroll={false} href={`/app/tagihan?${new URLSearchParams({ s: tab, ...(q ? { q } : {}), n: String(n + 30) })}`}>Tampilkan lebih banyak</Link>}
-        {!r.error && rows.length === 0 && <div className="card"><p className="muted" style={{ margin: 0 }}>{q ? "Tidak ada tagihan yang cocok." : tab === "lunas" ? "Belum ada tagihan lunas." : "Tidak ada tagihan di sini."}</p></div>}
+        {!r.error && rows.length === 0 && <div className="card kosong"><span className="kic"><Icon name="check" size={28} /></span><b>{q ? "Tidak ada tagihan yang cocok." : tab === "lunas" ? "Belum ada tagihan lunas." : "Tidak ada tagihan di sini."}</b></div>}
       </div>
     </main>
   );

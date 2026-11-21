@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import StatRow from "@/components/StatRow";
 import { requireRole } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
 import { rupiah } from "@/lib/brand";
@@ -20,22 +21,22 @@ export default async function Margin({ searchParams }: { searchParams: Promise<{
   const warna = (n: number) => (n < 0 ? "down" : "up");
   return (
     <main className="wrap stack" style={{ paddingTop: 8 }}>
-      <h1>Margin manifest dan rute</h1>
-      <p className="muted" style={{ marginTop: -6 }}>Pendapatan dari tagihan resi dikurangi biaya operasional yang dicatat per manifest. Manifest yang masih terbuka tidak dihitung.</p>
-      <form className="card stack" method="get">
-        <div className="row"><div><label className="f" htmlFor="m-dari">Dari</label><input id="m-dari" name="dari" type="date" defaultValue={dari} /></div>
-          <div><label className="f" htmlFor="m-sampai">Sampai</label><input id="m-sampai" name="sampai" type="date" defaultValue={sampai} /></div></div>
+      <div className="pghead"><div><h1>Margin manifest dan rute</h1>
+      <p className="muted">Pendapatan dari tagihan resi dikurangi biaya operasional yang dicatat per manifest. Manifest yang masih terbuka tidak dihitung.</p></div></div>
+      <form className="card rbsek" method="get">
+        <div className="rbrow dua"><div className="rbf"><label className="f" htmlFor="m-dari">Dari</label><input id="m-dari" name="dari" type="date" defaultValue={dari} /></div>
+          <div className="rbf"><label className="f" htmlFor="m-sampai">Sampai</label><input id="m-sampai" name="sampai" type="date" defaultValue={sampai} /></div></div>
         <button className="btn ghost">Tampilkan</button>
       </form>
       {r.error && <div className="err">{r.error}</div>}
       {d && (
         <>
-          <div className="stats" style={{ marginTop: 12 }}>
-            <div className="stat"><b>{rupiah(d.total.pendapatan)}</b><span>Pendapatan</span></div>
-            <div className="stat warm"><b>{rupiah(d.total.biaya)}</b><span>Biaya tercatat</span></div>
-            <div className="stat"><b className={warna(d.total.margin)}>{rupiah(d.total.margin)}</b><span>Margin</span></div>
-            <div className="stat warm"><b>{d.total.tanpaBiaya}</b><span>Manifest belum ada biaya</span></div>
-          </div>
+          <StatRow items={[
+            { ikon: "cash", n: rupiah(d.total.pendapatan), label: "Pendapatan" },
+            { ikon: "file", n: rupiah(d.total.biaya), label: "Biaya tercatat", warm: true },
+            { ikon: "chart", n: rupiah(d.total.margin), label: "Margin", sub: d.total.margin < 0 ? "Rugi" : "Untung", warm: d.total.margin < 0 },
+            { ikon: "alert", n: d.total.tanpaBiaya, label: "Manifest belum ada biaya", warm: d.total.tanpaBiaya > 0 },
+          ]} />
           {d.total.tanpaBiaya > 0 && <p className="hint" style={{ margin: 0 }}>{d.total.tanpaBiaya} dari {d.total.manifest} manifest belum punya biaya, jadi margin totalnya masih terlalu tinggi. Lengkapi dulu agar akurat.</p>}
           <h2 style={{ margin: "6px 2px -4px" }}>Per rute</h2>
           <div className="card" style={{ overflowX: "auto" }}>

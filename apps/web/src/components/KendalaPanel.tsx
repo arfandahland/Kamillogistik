@@ -20,7 +20,7 @@ export default async function KendalaPanel({ shipmentId, role, status }: { shipm
     <>
       {list.length > 0 && (
         <div className={`card ${terbuka.length ? "banner" : ""}`} id="kendala">
-          <h2>Kendala pengiriman</h2>
+          <h2 className="cardh">Kendala pengiriman</h2>
           {terbuka.length > 0 && <p className="hint" style={{ margin: "0 0 8px" }}>Selama ada kendala terbuka, resi tidak bisa diantar atau diterima, dan tidak bisa masuk manifest baru.</p>}
           {list.map((i) => (
             <div key={i.id} className="stack" style={{ borderTop: "1px solid var(--line)", paddingTop: 10, marginTop: 10 }}>

@@ -44,8 +44,9 @@ export function OwnerInsights({ d }: { d: OwnerInsight }) {
   const naik = pr.omzetBulanLalu > 0 ? Math.round(((pr.perkiraan - pr.omzetBulanLalu) / pr.omzetBulanLalu) * 100) : null;
   const ratingTeks = d.rating.jumlah > 0 && d.rating.rata != null ? `${String(d.rating.rata).replace(".", ",")} dari 5` : "belum ada";
   return (
-    <section className="hub stack wrap" aria-label="Wawasan Pemilik">
-      <div className="hubgrid">
+    <section className="hub stack" aria-label="Wawasan Pemilik">
+      <div className="dcols">
+        <div className="dkol">
         <Kartu ikon="clock" judul="Pusat peringatan" warm flag={butir.length > 0} span aksi={<span className="pill">{butir.length}</span>}>
           {butir.length === 0 ? <Kosong t="Tidak ada yang perlu ditindaklanjuti. Semua terkendali." /> : <ul className="rows">{butir.map((b) => <li key={b.t}><Link href={b.href}><b>{b.n}</b><small>{b.t}</small></Link><Icon name={b.ikon} size={18} /></li>)}</ul>}
         </Kartu>
@@ -60,6 +61,8 @@ export function OwnerInsights({ d }: { d: OwnerInsight }) {
             <ul className="rows tim">{d.cabang.map((c, i) => <li key={c.name}><span><b>{i + 1}. {c.name}</b><small>{c.city} · {c.terkirim}/{c.resi} sudah sampai{c.bermasalah ? ` · ${c.bermasalah} bermasalah` : ""}</small></span><span className="num"><b>{c.resi}</b><small>resi</small></span><span className="num"><b>{rupiah(c.omzet).replace("Rp", "")}</b><small>omzet Rp</small></span></li>)}</ul>
           )}
         </Kartu>
+        </div>
+        <div className="dkol">
         <Kartu ikon="users" judul="Pelanggan teratas (90 hari)" span>
           {d.pelangganTeratas.length === 0 ? <Kosong t="Belum ada data pelanggan." /> : <ul className="rows">{d.pelangganTeratas.map((c) => <li key={c.nama}><span><b>{c.nama}{c.korporat ? " · korporat" : ""}</b><small>{c.resi} resi · terakhir {c.hariSejak === 0 ? "hari ini" : `${c.hariSejak} hari lalu`}</small></span>{c.hariSejak > 30 && <span className="age">Lama tidak kirim</span>}<span className="num"><b>{rupiah(c.omzet)}</b></span></li>)}</ul>}
         </Kartu>
@@ -72,6 +75,7 @@ export function OwnerInsights({ d }: { d: OwnerInsight }) {
           <p className="hint" style={{ margin: 0 }}>{d.sistem.langkah24Jam} langkah tercatat 24 jam terakhir · {d.sistem.resiTotal} resi seluruhnya{d.sistem.aktivitasTerakhir ? ` · aktivitas terakhir ${wkt(d.sistem.aktivitasTerakhir)}` : ""}</p>
           <p className="hint" style={{ margin: 0 }}>{Object.entries(d.sistem.perPeran).map(([k, v]) => `${PERAN[k] ?? k} ${v}`).join(" · ")}</p>
         </Kartu>
+        </div>
       </div>
     </section>
   );

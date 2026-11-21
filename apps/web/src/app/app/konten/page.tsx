@@ -13,9 +13,9 @@ export default async function Konten() {
   const [q, ds] = await Promise.all([staffRpc<Item[]>("staff_testimonials"), staffRpc<KontenData>("konten_dashboard")]);
   const items = q.data ?? [];
   return (
-    <main className="wrap narrow stack" style={{ paddingTop: 8 }}>
-      <h1>Konten website</h1>
-      <p className="muted" style={{ marginTop: -6 }}>Foto dokumentasi dan testimoni yang tampil di slider beranda. Urutan dari atas ke bawah sama dengan urutan di slider. Perubahan tampil di beranda dalam beberapa menit.</p>
+    <main className="wrap stack" style={{ paddingTop: 8 }}>
+      <div className="pghead"><div><h1>Konten website</h1>
+      <p className="muted">Foto dokumentasi dan testimoni yang tampil di slider beranda. Urutan dari atas ke bawah sama dengan urutan di slider. Perubahan tampil di beranda dalam beberapa menit.</p></div></div>
       {ds.data && <KontenDash d={ds.data} />}
       {q.error && <div className="err">{q.error}</div>}
       <details className="card admnew" open={items.length === 0}>
@@ -24,7 +24,7 @@ export default async function Konten() {
         <p className="hint">Foto dikecilkan otomatis. Pastikan tidak ada nomor telepon, alamat lengkap, atau data pribadi yang terlihat, dan pelanggan setuju fotonya ditayangkan.</p>
       </details>
       {items.length === 0 && !q.error && <MuatBawaan />}
-      <div className="stagger">{items.map((it, i) => <KontenBaris key={it.id} item={it} first={i === 0} last={i === items.length - 1} />)}</div>
+      <div className="stagger kolist">{items.map((it, i) => <KontenBaris key={it.id} item={it} first={i === 0} last={i === items.length - 1} />)}</div>
     </main>
   );
 }

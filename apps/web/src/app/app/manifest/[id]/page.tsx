@@ -87,7 +87,7 @@ export default async function ManifestDetail({ params, searchParams }: { params:
 
         {m.status === "OPEN" && atOrigin && (
           <>
-            <div className="card"><h2>Tambah resi ke manifest</h2>
+            <div className="card"><h2 className="cardh">Tambah resi ke manifest</h2>
               <p className="muted" style={{ marginTop: 0 }}>Hanya resi yang sudah ditimbang, tujuan {m.dest.city}, jalur {MODA_LABEL[m.mode].toLowerCase()}.</p>
               <ManifestPindai id={m.id} mode="tambah" />
               {cands.length > 0 && (<><h3 style={{ marginTop: 18 }}>Siap dimuat ({cands.length})</h3>
@@ -96,27 +96,27 @@ export default async function ManifestDetail({ params, searchParams }: { params:
                     <span><code style={{ fontSize: 12.5, wordBreak: "break-all" }}>{c.resiNo}</code><br /><small>{c.receiver} · {c.items} barang · {Number(c.kg).toLocaleString("id-ID")} kg</small></span>
                     <button className="btn ghost sm">Tambah</button></form>))}</div></>)}
             </div>
-  {kepala && (          <form action={ubahManifest} className="card">
-              <h2>Data pengangkutan</h2><input type="hidden" name="id" value={m.id} />
-              <label className="f" htmlFor="kontainer">Nomor kontainer / AWB / plat truk</label><input id="kontainer" name="kontainer" defaultValue={m.container ?? ""} autoComplete="off" />
-              <label className="f" htmlFor="pengangkut">Nama kapal / nomor penerbangan</label><input id="pengangkut" name="pengangkut" defaultValue={m.carrier ?? ""} autoComplete="off" />
-              <div className="row"><div><label className="f" htmlFor="berangkat">Perkiraan berangkat</label><input id="berangkat" name="berangkat" type="datetime-local" defaultValue={dtl(m.departureAt)} /></div>
-                <div><label className="f" htmlFor="tiba">Perkiraan tiba</label><input id="tiba" name="tiba" type="datetime-local" defaultValue={dtl(m.eta)} /></div></div>
-              <label className="f" htmlFor="catatan">Catatan</label><input id="catatan" name="catatan" defaultValue={m.note ?? ""} autoComplete="off" />
-              <SubmitButton className="btn ghost" style={{ marginTop: 14 }} steps={["Menyimpan…"]}>Simpan data pengangkutan</SubmitButton>
+  {kepala && (          <form action={ubahManifest} className="card rbsek">
+              <h2 className="cardh">Data pengangkutan</h2><input type="hidden" name="id" value={m.id} />
+              <div className="rbf"><label className="f" htmlFor="kontainer">Nomor kontainer / AWB / plat truk</label><input id="kontainer" name="kontainer" defaultValue={m.container ?? ""} autoComplete="off" /></div>
+              <div className="rbf"><label className="f" htmlFor="pengangkut">Nama kapal / nomor penerbangan</label><input id="pengangkut" name="pengangkut" defaultValue={m.carrier ?? ""} autoComplete="off" /></div>
+              <div className="rbrow"><div className="rbf"><label className="f" htmlFor="berangkat">Perkiraan berangkat</label><input id="berangkat" name="berangkat" type="datetime-local" defaultValue={dtl(m.departureAt)} /></div>
+                <div className="rbf"><label className="f" htmlFor="tiba">Perkiraan tiba</label><input id="tiba" name="tiba" type="datetime-local" defaultValue={dtl(m.eta)} /></div></div>
+              <div className="rbf"><label className="f" htmlFor="catatan">Catatan</label><input id="catatan" name="catatan" defaultValue={m.note ?? ""} autoComplete="off" /></div>
+              <SubmitButton className="btn ghost" steps={["Menyimpan…"]}>Simpan data pengangkutan</SubmitButton>
             </form>)}
-  {kepala && (          <form action={segelManifest} className="card">
-              <h2>Segel dan muat</h2><input type="hidden" name="id" value={m.id} />
-              <p className="muted" style={{ marginTop: 0 }}>Setelah disegel, resi tidak bisa ditambah atau dikeluarkan, dan semua resi tercatat <b>sudah dimuat</b>.</p>
-              <label className="f" htmlFor="segel">Nomor segel</label><input id="segel" name="segel" required minLength={3} autoComplete="off" placeholder="Contoh: SEG-001234" />
-              <SubmitButton style={{ marginTop: 14 }} steps={["Memeriksa muatan…", "Menyegel manifest…", "Mencatat semua resi sudah dimuat…"]} >Segel manifest ({m.totals.resi} resi)</SubmitButton>
+  {kepala && (          <form action={segelManifest} className="card rbsek">
+              <h2 className="cardh">Segel dan muat</h2><input type="hidden" name="id" value={m.id} />
+              <p className="hint">Setelah disegel, resi tidak bisa ditambah atau dikeluarkan, dan semua resi tercatat <b>sudah dimuat</b>.</p>
+              <div className="rbf"><label className="f" htmlFor="segel">Nomor segel</label><input id="segel" name="segel" required minLength={3} autoComplete="off" placeholder="Contoh: SEG-001234" /></div>
+              <SubmitButton steps={["Memeriksa muatan…", "Menyegel manifest…", "Mencatat semua resi sudah dimuat…"]} >Segel manifest ({m.totals.resi} resi)</SubmitButton>
             </form>)}
           </>
         )}
 
         {m.status === "SEALED" && atOrigin && kepala && m.iAmHolder && !m.pendingTo && (
-          <form action={serahkanManifest} className="card"><input type="hidden" name="id" value={m.id} />
-            <h2>Serahkan manifest ke sopir</h2>
+          <form action={serahkanManifest} className="card rbsek"><input type="hidden" name="id" value={m.id} />
+            <h2 className="cardh">Serahkan manifest ke sopir</h2>
             <label className="f" htmlFor="ke">Diserahkan kepada</label>
             <select id="ke" name="ke" required defaultValue=""><option value="" disabled>Pilih sopir…</option>{sopirList.map((u) => <option key={u.id} value={u.id}>{u.name}{u.branchName ? ` (${u.branchName})` : ""}</option>)}</select>
             <p className="hint">Semua {m.totals.resi} resi berpindah tanggung jawab sekaligus setelah sopir menekan terima.</p>
@@ -125,56 +125,56 @@ export default async function ManifestDetail({ params, searchParams }: { params:
         )}
 
         {m.status === "SEALED" && sopir && m.iAmHolder && !m.pendingTo && role === "CONTAINER_DRIVER" && (
-          <form action={berangkatManifest} className="card"><input type="hidden" name="id" value={m.id} />
-            <h2>Berangkat</h2>
-            <label className="f" htmlFor="pengangkut">{m.mode === "UDARA" ? "Nomor penerbangan" : m.mode === "DARAT" ? "Plat truk" : "Nama kapal"}</label><input id="pengangkut" name="pengangkut" defaultValue={m.carrier ?? ""} autoComplete="off" />
-            <div className="row"><div><label className="f" htmlFor="berangkat">Berangkat</label><input id="berangkat" name="berangkat" type="datetime-local" defaultValue={dtl(m.departureAt)} /></div>
-              <div><label className="f" htmlFor="tiba">Perkiraan tiba</label><input id="tiba" name="tiba" type="datetime-local" defaultValue={dtl(m.eta)} /></div></div>
-            <SubmitButton style={{ marginTop: 14 }} steps={["Memeriksa manifest…", "Mencatat keberangkatan semua resi…"]}>{m.mode === "UDARA" ? "Pesawat sudah berangkat" : m.mode === "DARAT" ? "Truk sudah berangkat" : "Kapal sudah berangkat"}</SubmitButton>
+          <form action={berangkatManifest} className="card rbsek"><input type="hidden" name="id" value={m.id} />
+            <h2 className="cardh">Berangkat</h2>
+            <div className="rbf"><label className="f" htmlFor="pengangkut">{m.mode === "UDARA" ? "Nomor penerbangan" : m.mode === "DARAT" ? "Plat truk" : "Nama kapal"}</label><input id="pengangkut" name="pengangkut" defaultValue={m.carrier ?? ""} autoComplete="off" /></div>
+            <div className="rbrow"><div className="rbf"><label className="f" htmlFor="berangkat">Berangkat</label><input id="berangkat" name="berangkat" type="datetime-local" defaultValue={dtl(m.departureAt)} /></div>
+              <div className="rbf"><label className="f" htmlFor="tiba">Perkiraan tiba</label><input id="tiba" name="tiba" type="datetime-local" defaultValue={dtl(m.eta)} /></div></div>
+            <SubmitButton steps={["Memeriksa manifest…", "Mencatat keberangkatan semua resi…"]}>{m.mode === "UDARA" ? "Pesawat sudah berangkat" : m.mode === "DARAT" ? "Truk sudah berangkat" : "Kapal sudah berangkat"}</SubmitButton>
           </form>
         )}
 
         {m.status === "IN_TRANSIT" && sopir && m.iAmHolder && (
-          <form action={tibaManifest} className="card"><input type="hidden" name="id" value={m.id} />
-            <h2>Sudah tiba?</h2><p className="muted" style={{ marginTop: 0 }}>Kedatangan dicatat untuk semua resi di manifest ini.</p>
+          <form action={tibaManifest} className="card rbsek"><input type="hidden" name="id" value={m.id} />
+            <h2 className="cardh">Sudah tiba?</h2><p className="muted" style={{ marginTop: 0 }}>Kedatangan dicatat untuk semua resi di manifest ini.</p>
             <SubmitButton steps={["Mencatat kedatangan semua resi…"]}>{m.mode === "UDARA" ? "Pesawat sudah mendarat" : m.mode === "DARAT" ? "Truk sudah tiba" : "Kapal sudah sandar"} di {m.dest.city}</SubmitButton>
           </form>
         )}
 
         {m.status === "ARRIVED" && sopir && m.iAmHolder && !m.pendingTo && (
-          <form action={serahkanManifest} className="card"><input type="hidden" name="id" value={m.id} />
-            <h2>Serahkan ke gudang {m.dest.city}</h2>
+          <form action={serahkanManifest} className="card rbsek"><input type="hidden" name="id" value={m.id} />
+            <h2 className="cardh">Serahkan ke gudang {m.dest.city}</h2>
             <label className="f" htmlFor="ke">Diserahkan kepada</label>
             <select id="ke" name="ke" required defaultValue=""><option value="" disabled>Pilih Kepala gudang…</option>{gudangTujuan.map((u) => <option key={u.id} value={u.id}>{u.name}</option>)}</select>
-            <SubmitButton className="btn ghost" style={{ marginTop: 12 }} steps={["Memeriksa penerima…", "Mengirim permintaan serah terima…"]}>Serahkan manifest</SubmitButton>
+            <SubmitButton className="btn ghost" steps={["Memeriksa penerima…", "Mengirim permintaan serah terima…"]}>Serahkan manifest</SubmitButton>
           </form>
         )}
 
         {role === "HUB_MANAGER" && atOrigin && <BiayaManifest manifestId={m.id} kembali={`/app/manifest/${m.id}`} />}
 
         {(((role === "HUB_MANAGER") && atOrigin && (m.status === "OPEN" || m.status === "SEALED")) || (role === "CONTAINER_DRIVER" && m.iAmHolder && (m.status === "SEALED" || m.status === "IN_TRANSIT"))) && (
-          <form action={isiVoyage} className="card">
-            <h2>Voyage dan pelabuhan</h2><input type="hidden" name="id" value={m.id} />
-            <label className="f" htmlFor="voyage">Nomor voyage / penerbangan</label><input id="voyage" name="voyage" defaultValue={m.voyage ?? ""} maxLength={40} autoComplete="off" />
-            <label className="f" htmlFor="pmuat">Pelabuhan atau bandara muat</label><input id="pmuat" name="muat" defaultValue={m.portLoad ?? ""} maxLength={80} autoComplete="off" />
-            <label className="f" htmlFor="pbongkar">Pelabuhan atau bandara bongkar</label><input id="pbongkar" name="bongkar" defaultValue={m.portUnload ?? ""} maxLength={80} autoComplete="off" />
-            <SubmitButton className="btn ghost" style={{ marginTop: 12 }} steps={["Menyimpan…"]}>Simpan voyage dan pelabuhan</SubmitButton>
+          <form action={isiVoyage} className="card rbsek">
+            <h2 className="cardh">Voyage dan pelabuhan</h2><input type="hidden" name="id" value={m.id} />
+            <div className="rbf"><label className="f" htmlFor="voyage">Nomor voyage / penerbangan</label><input id="voyage" name="voyage" defaultValue={m.voyage ?? ""} maxLength={40} autoComplete="off" /></div>
+            <div className="rbf"><label className="f" htmlFor="pmuat">Pelabuhan atau bandara muat</label><input id="pmuat" name="muat" defaultValue={m.portLoad ?? ""} maxLength={80} autoComplete="off" /></div>
+            <div className="rbf"><label className="f" htmlFor="pbongkar">Pelabuhan atau bandara bongkar</label><input id="pbongkar" name="bongkar" defaultValue={m.portUnload ?? ""} maxLength={80} autoComplete="off" /></div>
+            <SubmitButton className="btn ghost" steps={["Menyimpan…"]}>Simpan voyage dan pelabuhan</SubmitButton>
           </form>
         )}
 
         {(m.status === "SEALED" || m.status === "IN_TRANSIT") && sopir && (role === "HUB_MANAGER" || m.iAmHolder) && (
-          <form action={revisiEta} className="card">
-            <h2>Perkiraan tiba berubah?</h2><input type="hidden" name="id" value={m.id} />
-            <p className="muted" style={{ marginTop: 0 }}>Kalau kapal atau truk terlambat, isi perkiraan tiba yang baru. Semua resi di manifest ini ikut diperbarui dan tercatat di riwayatnya.</p>
-            <label className="f" htmlFor="eta-baru">Perkiraan tiba baru</label><input id="eta-baru" name="tiba" type="datetime-local" required defaultValue={dtl(m.eta)} />
-            <label className="f" htmlFor="eta-alasan">Alasan</label><input id="eta-alasan" name="alasan" required minLength={3} placeholder="Misalnya cuaca buruk atau antrean sandar" autoComplete="off" />
-            <SubmitButton className="btn ghost" style={{ marginTop: 12 }} steps={["Memeriksa manifest…", "Memperbarui semua resi…"]}>Perbarui perkiraan tiba</SubmitButton>
+          <form action={revisiEta} className="card rbsek">
+            <h2 className="cardh">Perkiraan tiba berubah?</h2><input type="hidden" name="id" value={m.id} />
+            <p className="hint">Kalau kapal atau truk terlambat, isi perkiraan tiba yang baru. Semua resi di manifest ini ikut diperbarui dan tercatat di riwayatnya.</p>
+            <div className="rbf"><label className="f" htmlFor="eta-baru">Perkiraan tiba baru</label><input id="eta-baru" name="tiba" type="datetime-local" required defaultValue={dtl(m.eta)} /></div>
+            <div className="rbf"><label className="f" htmlFor="eta-alasan">Alasan</label><input id="eta-alasan" name="alasan" required minLength={3} placeholder="Misalnya cuaca buruk atau antrean sandar" autoComplete="off" /></div>
+            <SubmitButton className="btn ghost" steps={["Memeriksa manifest…", "Memperbarui semua resi…"]}>Perbarui perkiraan tiba</SubmitButton>
           </form>
         )}
 
         {bongkar && (
           <div className="card">
-            <h2>Bongkar dan cocokkan</h2>
+            <h2 className="cardh">Bongkar dan cocokkan</h2>
             <p className="muted" style={{ marginTop: 0 }}>Pindai label tiap barang yang diturunkan. {kurang > 0 ? `Masih ${kurang} barang belum dipindai.` : "Semua barang sudah cocok."}</p>
             <div className="progbar" aria-label={`${m.totals.scanned} dari ${m.totals.items} barang`}><i style={{ width: `${m.totals.items ? Math.round((m.totals.scanned / m.totals.items) * 100) : 0}%` }} /></div>
             <b>{m.totals.scanned} dari {m.totals.items} barang</b>
@@ -186,7 +186,7 @@ export default async function ManifestDetail({ params, searchParams }: { params:
               </form>
             )}
             <form action={selesaiBongkar} style={{ marginTop: 16 }}><input type="hidden" name="id" value={m.id} />
-              {kurang > 0 && (<><label className="f" htmlFor="catatan">Catatan selisih (wajib bila jumlah kurang)</label><input id="catatan" name="catatan" required autoComplete="off" placeholder="Contoh: barang 2 dari resi … tidak ada di kontainer" /></>)}
+              {kurang > 0 && (<><div className="rbf"><label className="f" htmlFor="catatan">Catatan selisih (wajib bila jumlah kurang)</label><input id="catatan" name="catatan" required autoComplete="off" placeholder="Contoh: barang 2 dari resi … tidak ada di kontainer" /></div></>)}
               <SubmitButton className={kurang > 0 ? "btn ghost" : "btn"} style={{ marginTop: 12 }} steps={["Mencocokkan jumlah barang…", "Mencatat barang tiba di gudang…"]}>{kurang > 0 ? `Selesaikan dengan selisih (${kurang} barang kurang)` : "Selesai membongkar"}</SubmitButton>
             </form>
           </div>
@@ -203,7 +203,7 @@ export default async function ManifestDetail({ params, searchParams }: { params:
               <div key={c.id}><p>Seharusnya {c.expected} barang, yang diterima {c.found}. <i className="muted">{c.note}</i></p>
                 {role === "HUB_MANAGER" && atDest ? (
                   <form action={selesaikanSelisih}><input type="hidden" name="id" value={m.id} /><input type="hidden" name="kasus" value={c.id} />
-                    <label className="f" htmlFor="catatan2">Catatan penyelesaian</label><input id="catatan2" name="catatan" required autoComplete="off" placeholder="Contoh: barang ditemukan di kontainer sebelah" />
+                    <div className="rbf"><label className="f" htmlFor="catatan2">Catatan penyelesaian</label><input id="catatan2" name="catatan" required autoComplete="off" placeholder="Contoh: barang ditemukan di kontainer sebelah" /></div>
                     <div className="resiact"><button name="hasil" value="ditemukan" className="btn">Barang ditemukan</button><button name="hasil" value="hilang" className="btn ghost">Tidak ditemukan</button></div></form>
                 ) : <small className="muted">Menunggu kepala gudang {m.dest.city} menyelesaikan.</small>}
               </div>
@@ -212,7 +212,7 @@ export default async function ManifestDetail({ params, searchParams }: { params:
         )}
 
         <div className="card">
-          <h2>Isi manifest ({m.totals.resi})</h2>
+          <h2 className="cardh">Isi manifest ({m.totals.resi})</h2>
           {m.shipments.length === 0 ? <p className="muted" style={{ margin: 0 }}>Belum ada resi.</p> : (
             <ul className="shiplist">{m.shipments.map((s) => (
               <li key={s.id}>

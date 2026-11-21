@@ -939,9 +939,9 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     const hr = await login(browser, "hrd.uji@uji.id", "Sandi2026a", { width: 1366, height: 900 });
     await hr.page.waitForURL(/\/app\/rekrutmen/, { timeout: 10000 }).catch(() => {});
     ok("U1 HRD langsung masuk ke dashboard rekrutmen", /\/app\/rekrutmen/.test(hr.page.url()), hr.page.url());
-    await hr.page.waitForSelector(".kpi", { timeout: 20000 }).catch(() => {});
+    await hr.page.waitForSelector(".stats.dash .stat", { timeout: 20000 }).catch(() => {});
     const teks = await hr.page.locator("main").innerText();
-    ok("U2 dashboard memuat kartu ringkasan, alur seleksi, dan tren", (await hr.page.locator(".kpi").count()) === 5 && /Alur seleksi/.test(teks) && /Pelamar masuk, 14 hari/.test(teks) && (await hr.page.locator("svg.trend rect").count()) === 14);
+    ok("U2 dashboard memuat kartu ringkasan, alur seleksi, dan tren", (await hr.page.locator(".stats.dash .stat").count()) === 4 && /Alur seleksi/.test(teks) && /Pelamar masuk, 14 hari/.test(teks) && (await hr.page.locator("svg.trend rect").count()) === 14);
     ok("U3 dashboard memuat 12 posisi dengan tombol buka/tutup", (await hr.page.locator(".posrow").count()) === 12 && (await hr.page.locator(".switch").count()) === 12);
     await hr.page.screenshot({ path: `${OUT}/e2e-dashboard-hrd.png`, fullPage: true });
     await noOverflow(hr.page, "dashboard rekrutmen (desktop)");
