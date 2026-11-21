@@ -1242,7 +1242,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("AE19c halaman Margin memuat total, per rute, dan per manifest", /Per rute/.test(await fn.page.locator("main").innerText()) && /Per manifest/.test(await fn.page.locator("main").innerText()) && (await fn.page.locator("main .err").count()) === 0);
     await noOverflow(fn.page, "Margin (HP)");
     await fn.page.goto(`${BASE}/app/pegawai`, { waitUntil: "networkidle" });
-    ok("AE20 Finance tidak bisa membuka data kepegawaian", (await fn.page.locator(".err").count()) > 0);
+    ok("AE20 Finance tidak bisa membuka data kepegawaian", !/\/app\/pegawai/.test(fn.page.url()));
     await fn.page.goto(`${BASE}/app/klaim`, { waitUntil: "networkidle" });
     ok("AE21 Finance tidak bisa membuka klaim", !/\/app\/klaim/.test(fn.page.url()) || (await fn.page.locator(".err").count()) > 0);
     await noOverflow(fn.page, "Finance (HP)");
