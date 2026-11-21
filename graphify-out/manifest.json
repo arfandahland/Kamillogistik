@@ -2003,6 +2003,12 @@
     "ast_hash": "3b10f465a9cae661583e6560630fb094",
     "semantic_hash": ""
   },
+  "docs/AUDIT-SPESIFIKASI.md": {
+    "mtime": 1795219707.7251294,
+    "seen": 1795219709.3184898,
+    "ast_hash": "06faa2afb0e2d9f9c359360a777b9543",
+    "semantic_hash": ""
+  },
   "package-lock.json": {
     "mtime": 1794983214.1951408,
     "seen": 1795104170.4405415,
