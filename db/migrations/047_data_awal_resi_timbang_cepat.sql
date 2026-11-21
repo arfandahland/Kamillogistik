@@ -120,3 +120,7 @@ BEGIN
 END $$;
 REVOKE ALL ON FUNCTION public.item_for_weighing(text) FROM PUBLIC, anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.item_for_weighing(text) TO authenticated;
+
+-- Kepala gudang bertanggung jawab atas semua barang di gudangnya: boleh memulai serah terima (mis. lewat manifest) walau barang masih dipegang staf gudangnya.
+SELECT pg_temp.patch_fn('start_handover', 'IF s.current_holder_user_id IS DISTINCT FROM auth.uid() THEN',
+  'IF s.current_holder_user_id IS DISTINCT FROM auth.uid() AND NOT (public.my_role() = ''HUB_MANAGER'' AND public._lokasi_resi(s) IS NOT DISTINCT FROM public.my_branch()) THEN');

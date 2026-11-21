@@ -198,6 +198,11 @@ DO $$ DECLARE r jsonb; BEGIN
   ASSERT (r->>'remaining')::int = 0 AND (r->>'selesai')::boolean AND (r->>'totalKg')::numeric = 30.75, 'semua tertimbang: ' || r::text;
   ASSERT public.staff_get_shipment((r->>'resiId')::uuid)->>'status' = 'SORTED_INVOICED', 'resi otomatis Sudah ditimbang';
 END $$;
+-- Kepala gudang (bukan pemegang) boleh memulai serah terima barang di gudangnya; Kepala gudang cabang lain tidak
+SELECT t.as_user('00000000-0000-0000-0000-00000000000b');   -- Kepala gudang Makassar
+SELECT t.fails($$select public.start_handover(current_setting('t.tb')::uuid, '00000000-0000-0000-0000-000000000005')$$, 'pemegang');
+SELECT t.as_user('00000000-0000-0000-0000-00000000000c');   -- Kepala gudang Jakarta
+DO $$ BEGIN ASSERT (public.start_handover(current_setting('t.tb')::uuid, '00000000-0000-0000-0000-000000000005')->>'state') = 'PENDING_ACK', 'Kepala gudang memulai serah terima'; END $$;
 -- Kasir tidak menimbang
 SELECT t.as_user('00000000-0000-0000-0000-000000000002');
 SELECT t.fails($$select public.measure_item(current_setting('t.tbno') || '-01', 5)$$, 'izin');
