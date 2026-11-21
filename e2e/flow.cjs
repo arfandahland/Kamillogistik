@@ -55,6 +55,7 @@ async function act(page, locator) {
   const ok_ = await page.locator(".ok").count(), err = await page.locator(".err").count();
   return { ok: ok_ > 0 ? (await page.locator(".ok").first().innerText()) : null, err: err > 0 ? (await page.locator(".err").first().innerText()) : null };
 }
+const pilihTujuan = async (page, kota = "Makassar") => { await selectByText(page, "#tujuan", kota); await page.selectOption("#moda", "LAUT"); };
 const selectByText = (page, sel, sub) => page.evaluate(([s, t]) => { const el = document.querySelector(s); const o = [...el.options].find((x) => x.text.includes(t)); if (!o) return false; el.value = o.value; el.dispatchEvent(new Event("change", { bubbles: true })); return true; }, [sel, sub]);
 const periksaDulu = async (p, opts = {}) => {
   await p.fill("#isi", opts.isi || "Pakaian dan perlengkapan");
@@ -156,7 +157,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("kasir melihat tombol Buat resi baru", (await p.locator("a[href='/app/baru']").count()) > 0);
     for (const path of ["/app/keuangan", "/app/mitra", "/app/petugas", "/app/tarif"]) { await p.goto(`${BASE}${path}`, { waitUntil: "networkidle" }); ok(`kasir ditolak masuk ${path}`, !p.url().includes(path)); }
     await p.goto(`${BASE}/app/baru`, { waitUntil: "networkidle" });
-    await selectByText(p, "#rute", "Jakarta → Makassar · Laut");
+    await pilihTujuan(p);
     await p.fill("#pengirim", "PT Maju Jaya"); await p.fill("#hp_pengirim", "081234567890");
     await p.fill("#penerima", "Budi Santoso"); await p.fill("#hp_penerima", "082233445566"); await p.fill("#alamat", "Jl. Pettarani No. 5, Makassar"); await p.fill("#alamat_jemput", "Jl. Sudirman No. 1, Jakarta");
     await p.fill("#jumlah", "2");
@@ -497,7 +498,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     const k = kasir.page;
     await k.goto(`${BASE}/app/baru`, { waitUntil: "networkidle" });
     ok("form kasir memuat pilihan pelanggan korporat", (await k.getByText("Perusahaan langganan").count()) === 1);
-    await selectByText(k, "#rute", "Jakarta → Makassar · Laut");
+    await pilihTujuan(k);
     await k.getByText("Perusahaan langganan").click(); await k.selectOption("#company", { label: "PT Sinar Jaya (tempo 14 hari)" });
     await k.getByText("Diantar sendiri").click();
     await k.fill("#pengirim", "PT Sinar Jaya"); await k.fill("#hp_pengirim", "0811 2223 334"); await k.fill("#penerima", "Gudang Penerima"); await k.fill("#hp_penerima", "0812-9988-7766"); await k.fill("#alamat", "Jl. Tol Reformasi, Makassar"); await k.fill("#jumlah", "1");
@@ -518,7 +519,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     r = await invoiceKasir(browser, "kasir@uji.id", korId, 10, 2000);
     ok("harga manual kasir: 10 kg x Rp2.000 = Rp20.000", r.ok && /Rp20\.000/.test(r.ok), JSON.stringify(r));
     await k.goto(`${BASE}/app/baru`, { waitUntil: "networkidle" });
-    await selectByText(k, "#rute", "Jakarta → Makassar · Laut");
+    await pilihTujuan(k);
     await k.getByText("Perusahaan langganan").click(); await k.selectOption("#company", { label: "PT Sinar Jaya (tempo 14 hari)" });
     await k.getByText("Diantar sendiri").click();
     await k.fill("#pengirim", "PT Sinar Jaya"); await k.fill("#hp_pengirim", "081122233344"); await k.fill("#penerima", "X"); await k.fill("#hp_penerima", "081299887766"); await k.fill("#alamat", "Jl. Contoh No. 1"); await k.fill("#jumlah", "1");
@@ -543,7 +544,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("halaman 'Perlu dihubungi' terbuka tanpa galat", /Perlu dihubungi/.test(await text(k)) && (await k.locator(".err").count()) === 0);
     // buat resi dijemput, mundurkan waktu lewat DB uji, lalu cek antrean
     await k.goto(`${BASE}/app/baru`, { waitUntil: "networkidle" });
-    await selectByText(k, "#rute", "Jakarta → Makassar · Laut");
+    await pilihTujuan(k);
     await k.fill("#pengirim", "Bu Antrean"); await k.fill("#hp_pengirim", "0813 1111 2222"); await k.fill("#penerima", "Pak Tujuan"); await k.fill("#hp_penerima", "0813 3333 4444"); await k.fill("#alamat", "Makassar"); await k.fill("#alamat_jemput", "Jl. Antrean 1, Jakarta"); await k.fill("#jumlah", "1");
     await isiWilayah(k);
     await act(k, k.getByRole("button", { name: "Buat resi" }));
@@ -689,7 +690,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
   {
     const k = kasir.page;
     await k.goto(`${BASE}/app/baru`, { waitUntil: "networkidle" });
-    await selectByText(k, "#rute", "Jakarta → Makassar · Laut");
+    await pilihTujuan(k);
     await k.getByText("Diantar sendiri").click();
     await k.fill("#pengirim", "A"); await k.fill("#hp_pengirim", "0211234567"); await k.fill("#penerima", "B"); await k.fill("#hp_penerima", "081299887766"); await k.fill("#alamat", "Jl. Contoh No. 1"); await k.fill("#jumlah", "1");
     await isiWilayah(k);
@@ -1323,8 +1324,8 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     // Alamat tujuan lengkap (wilayah) dan data kendaraan opsional
     const kw = await login(browser, "kasir@uji.id", PASS, { width: 390, height: 844 });
     await kw.page.goto(`${BASE}/app/baru`, { waitUntil: "networkidle" });
-    ok("AI6 pilihan rute hanya satu per kota tujuan dan moda (tanpa varian tarif)", (await kw.page.locator("#rute option").allTextContents()).every((t) => !/per kilo|per ukuran/.test(t)));
-    await selectByText(kw.page, "#rute", "Jakarta → Makassar · Laut");
+    ok("AJ1 tujuan berupa daftar gudang (Surabaya ada, tanpa patokan master rute)", (await kw.page.locator("#tujuan option").allTextContents()).some((t) => /Surabaya/.test(t)) && await kw.page.locator("#rute").count() === 0);
+    await pilihTujuan(kw.page);
     await kw.page.getByText("Diantar sendiri").click();
     await kw.page.fill("#pengirim", "Budi Motor"); await kw.page.fill("#hp_pengirim", "081377778888"); await kw.page.fill("#penerima", "Siti Penerima"); await kw.page.fill("#hp_penerima", "081355556666");
     await kw.page.fill("#alamat", "Jl. Perintis Kemerdekaan No. 10, depan apotek");
@@ -1334,7 +1335,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     const sebelum = await act(kw.page, kw.page.getByRole("button", { name: "Buat resi" }));
     ok("AI7 alamat tujuan wajib lengkap: tanpa memilih kelurahan atau desa, resi tidak terbuat", !sebelum.ok && (/lengkap|Pilih|kelurahan/i.test(sebelum.err || "") || /\/app\/baru/.test(kw.page.url())), JSON.stringify(sebelum));
     await kw.page.goto(`${BASE}/app/baru`, { waitUntil: "networkidle" });
-    await selectByText(kw.page, "#rute", "Jakarta → Makassar · Laut");
+    await pilihTujuan(kw.page);
     await kw.page.getByText("Diantar sendiri").click();
     await kw.page.fill("#pengirim", "Budi Motor"); await kw.page.fill("#hp_pengirim", "081377778888"); await kw.page.fill("#penerima", "Siti Penerima"); await kw.page.fill("#hp_penerima", "081355556666");
     await kw.page.fill("#alamat", "Jl. Perintis Kemerdekaan No. 10, depan apotek"); await kw.page.fill("#jumlah", "1");

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { CAN_CREATE_ORDER, handleRoutes } from "@kamil/core";
-import { repo } from "@/lib/repo";
+import { CAN_CREATE_ORDER } from "@kamil/core";
 import { staffRpc, getMe, type Staff } from "@/lib/supabase/server";
 import SubmitButton from "@/components/SubmitButton";
 import CaraMasukField from "@/components/CaraMasukField";
@@ -17,11 +16,7 @@ export default async function Baru({ searchParams }: { searchParams: Promise<{ e
   const { e } = await searchParams;
   const me = (await getMe()).data;
   if (!me || !CAN_CREATE_ORDER.includes(me.role)) redirect("/app");
-  const rr = await handleRoutes(repo);
-  const all = (rr.status === 200 ? rr.body : []) as any[];
-  const semua = me.role === "SUPER_ADMIN" ? all : all.filter((r) => r.origin.name === me.branchName);
-  // Harga diisi manual oleh Kasir, jadi cukup satu pilihan per kota tujuan dan moda (bukan per varian tarif).
-  const routes = [...new Map(semua.map((r) => [`${r.origin.city}|${r.dest.city}|${r.mode ?? "LAUT"}`, r])).values()];
+  const tujuan = (await staffRpc<{ id: string; name: string; city: string }[]>("staff_dest_hubs")).data ?? [];
   const perusahaan = (await staffRpc<{ id: string; name: string; top: number }[]>("staff_list_customers")).data ?? [];
 
   return (
@@ -30,19 +25,22 @@ export default async function Baru({ searchParams }: { searchParams: Promise<{ e
         <input type="hidden" name="ref" value={randomUUID()} />
         <h1>Buat resi baru</h1>
         {e && <div className="err" role="alert">{e}</div>}
-        {routes.length === 0 ? <p className="muted">Belum ada rute dari cabang Anda. Hubungi pemilik.</p> : (
+        {tujuan.length === 0 ? <p className="muted">Belum ada gudang tujuan yang aktif. Hubungi pemilik.</p> : (
           <>
-            <label className="f" htmlFor="rute">Kirim ke mana?</label>
-            <select id="rute" name="rute" required>
-              {routes.map((r) => (
-                <option key={r.slug} value={r.slug}>
-                  {r.origin.city} → {r.dest.city} · {r.mode === "UDARA" ? "Udara" : r.mode === "DARAT" ? "Darat" : "Laut"}
-                </option>
-              ))}
+            <label className="f" htmlFor="tujuan">Gudang tujuan</label>
+            <select id="tujuan" name="tujuan" required defaultValue="">
+              <option value="" disabled>Pilih gudang tujuan</option>
+              {tujuan.map((t) => <option key={t.id} value={t.id}>{t.city} · {t.name}</option>)}
+            </select>
+            <label className="f" htmlFor="moda">Lewat apa?</label>
+            <select id="moda" name="moda" defaultValue="LAUT">
+              <option value="LAUT">Laut (kapal)</option>
+              <option value="UDARA">Udara (pesawat)</option>
+              <option value="DARAT">Darat (truk)</option>
             </select>
 
             <PelangganField perusahaan={perusahaan} />
-            <CaraMasukField kotaAsal={me.role === "SUPER_ADMIN" ? undefined : routes[0]?.origin.city} />
+            <CaraMasukField kotaAsal={me.branchName?.replace(/^Gudang /, "") ?? undefined} />
 
             <h3 style={{ marginTop: 20 }}>Pengirim</h3>
             <label className="f" htmlFor="pengirim">Nama pengirim</label>

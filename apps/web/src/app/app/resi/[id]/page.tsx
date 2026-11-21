@@ -12,6 +12,7 @@ import KondisiForm from "@/components/KondisiForm";
 import KendalaPanel from "@/components/KendalaPanel";
 import InvoiceForm from "@/components/InvoiceForm";
 import RevisiPanel from "@/components/RevisiPanel";
+import TutupResiPanel from "@/components/TutupResiPanel";
 import { catatTerima, lanjut, periksa, serahkan, terima, timbang } from "../../actions";
 
 type Detail = {
@@ -23,6 +24,7 @@ type Detail = {
   items: { barcode: string; weightKg: number | null; lCm: number | null; wCm: number | null; hCm: number | null; note: string | null }[];
   events: { status: AnyStatus; at: string; location: string | null; by: string | null }[];
   handovers: { id: string; state: string; fromName: string; toName: string; toMe: boolean; at: string }[];
+  closed?: { at: string; byName: string | null; note: string | null; proofUrl: string | null; senderPhone: string | null } | null;
   invoice: { invoiceNo: string; total: number; status: string; dueDate: string; calc: any } | null;
 };
 
@@ -236,6 +238,7 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
       )}
 
       <KendalaPanel shipmentId={s.id} role={role} status={s.status} />
+      <TutupResiPanel s={s} role={role} branchName={me.data.branchName ?? null} />
       <RevisiPanel s={s} role={role} />
 
       <div className="card">

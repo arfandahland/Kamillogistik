@@ -27,7 +27,8 @@ export async function buatResi(fd: FormData) {
   const kd = (k: string) => String(fd.get(`kd_${k}`) ?? "").trim().slice(0, 80);
   const kendaraan = Object.fromEntries(["jenis", "merek", "nopol", "rangka", "mesin", "stnk", "bpkb", "catatan"].map((k) => [k, kd(k)]).filter(([, v]) => v));
   const { data, error } = await staffRpc<{ id: string }>("create_shipment_full", {
-    p_route_slug: String(fd.get("rute") ?? ""),
+    p_dest_id: /^[0-9a-f-]{36}$/i.test(String(fd.get("tujuan") ?? "")) ? String(fd.get("tujuan")) : null,
+    p_mode: ["LAUT", "UDARA", "DARAT"].includes(String(fd.get("moda"))) ? String(fd.get("moda")) : "LAUT",
     p_sender_name: String(fd.get("pengirim") ?? ""),
     p_sender_phone: hpS.ok ? hpS.wa : "",
     p_receiver_name: String(fd.get("penerima") ?? ""),
@@ -133,4 +134,12 @@ export async function periksa(fd: FormData) {
   }
   revalidatePath("/app");
   back(id, "ok", "Pemeriksaan barang tersimpan.");
+}
+
+export async function tutupResi(fd: FormData) {
+  const id = String(fd.get("id"));
+  const { error } = await staffRpc("shipment_close", { p_id: id, p_note: String(fd.get("catatan") ?? "") || null, p_proof_url: String(fd.get("tautan") ?? "") || null });
+  revalidatePath("/app");
+  if (error) back(id, "e", error);
+  back(id, "ok", "Resi sudah ditutup. Kasir asal bisa melihat hasilnya dan mengabari pelanggan.");
 }
