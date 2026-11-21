@@ -7,7 +7,7 @@ export type LabelData = {
   resi: string; kode: string; jenis: "induk" | "barang"; item: number | null; total: number; berat: number | null;
   asal: string; tujuan: string; kotaAsal: string; kotaTujuan: string; moda: string; modaKode: "LAUT" | "DARAT" | "UDARA";
   masuk: "PICKUP" | "DROPOFF"; masukLabel: string; penerima: string; hpPenerima: string | null; alamat: string | null;
-  pengirim: string; hpPengirim: string | null; tanggal: string; korporat: string | null; lacak: string; bar: string; qr: string;
+  pengirim: string; hpPengirim: string | null; tanggal: string; korporat: string | null; lacak: string; bar: string; qr: string; isi?: string | null; rapuh?: boolean;
 };
 
 type Ukuran = "10x15" | "a6" | "a4";
@@ -36,6 +36,7 @@ function Label({ d }: { d: LabelData }) {
         <dl>
           <dt>Penerima</dt><dd><b>{d.penerima}</b>{d.hpPenerima ? ` · ${d.hpPenerima}` : ""}</dd>
           {d.alamat && (<><dt>Alamat</dt><dd className="lalamat">{d.alamat}</dd></>)}
+          {d.isi && (<><dt>Isi</dt><dd>{d.isi}{d.rapuh ? " · RAPUH" : ""}</dd></>)}
           <dt>Pengirim</dt><dd>{d.pengirim}{d.hpPengirim ? ` · ${d.hpPengirim}` : ""}</dd>
         </dl>
       </div>

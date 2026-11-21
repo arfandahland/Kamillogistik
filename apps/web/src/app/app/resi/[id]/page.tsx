@@ -27,6 +27,7 @@ type Detail = {
   handovers: { id: string; state: string; fromName: string; toName: string; toMe: boolean; at: string }[];
   legs?: { seq: number; from: string; to: string; mode: string; note: string | null; at: string }[];
   at?: string | null;
+  details?: { contents: string | null; declaredValue: number | null; estWeightKg: number | null; packaging: string | null; fragile: boolean } | null;
   closed?: { at: string; byName: string | null; note: string | null; proofUrl: string | null; senderPhone: string | null } | null;
   invoice: { invoiceNo: string; total: number; status: string; dueDate: string; calc: any } | null;
 };
@@ -126,27 +127,19 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
         )
       )}
 
-      {(action?.kind === "measure" || (atMine && ["WAREHOUSE", "HUB_MANAGER"].includes(role) && s.status === "SORTED_INVOICED" && !s.manifest)) && (
-        <form action={timbang} className="card">
-          <h2>{s.status === "SORTED_INVOICED" ? "Perbaiki data timbang" : "Timbang dan ukur barang"}</h2>
-          <p className="muted">Isi berat tiap barang. Ukuran boleh dikosongkan kalau barang kecil dan padat. Data ini diteruskan ke Kasir yang membuat invoice.</p>
-          <input type="hidden" name="id" value={s.id} /><input type="hidden" name="n" value={s.items.length} />
-          {s.items.map((it, i) => (
-            <div className="item" key={it.barcode}>
-              <b>Barang {i + 1} dari {s.items.length}</b> <span className="hint">({it.barcode})</span>
-              <label className="f" htmlFor={`w${i}`}>Berat (kg)</label>
-              <input id={`w${i}`} name={`w${i}`} inputMode="decimal" required placeholder="Contoh: 12,5" />
-              <label className="f">Ukuran (cm)</label>
-              <div className="row">
-                <input name={`l${i}`} inputMode="decimal" placeholder="Panjang" aria-label="Panjang" />
-                <input name={`wd${i}`} inputMode="decimal" placeholder="Lebar" aria-label="Lebar" />
-                <input name={`h${i}`} inputMode="decimal" placeholder="Tinggi" aria-label="Tinggi" />
-              </div>
-            </div>
-          ))}
-          <SubmitButton style={{ marginTop: 16 }} steps={["Memeriksa berat dan ukuran…", "Menyimpan data timbang…", "Mengirim ke Kasir…"]}>Simpan data timbang</SubmitButton>
-        </form>
-      )}
+      {atMine && ["AT_ORIGIN_HUB", "SORTED_INVOICED"].includes(s.status) && !s.manifest && ["WAREHOUSE", "HUB_MANAGER"].includes(role) && (() => {
+        const sudah = s.items.filter((x) => x.weightKg != null).length;
+        const belum = s.items.find((x) => x.weightKg == null) ?? s.items[0];
+        return (
+          <div className="card">
+            <h2>{s.status === "SORTED_INVOICED" ? "Perbaiki data timbang" : "Timbang barang"}</h2>
+            <p className="muted" style={{ marginTop: 0 }}>{sudah} dari {s.items.length} barang sudah ditimbang. Pindai barcode tiap barang, isi berat dan ukurannya. Resi otomatis Sudah ditimbang bila semua barang tercatat.</p>
+            {role === "WAREHOUSE" && belum
+              ? <Link className="btn" href={`/app/timbang?kode=${encodeURIComponent(belum.barcode)}`}><Icon name="scan" size={20} /> {sudah === 0 ? "Mulai menimbang" : s.status === "SORTED_INVOICED" ? "Perbaiki data timbang" : "Lanjut menimbang"}</Link>
+              : <p className="hint" style={{ margin: 0 }}>Penimbangan dilakukan staf gudang dengan memindai barcode barang.</p>}
+          </div>
+        );
+      })()}
 
       {role === "MITRA_POS" && isOrigin && !["CREATED", "PICKED_UP", "AT_ORIGIN_HUB", "CANCELLED", "EXCEPTION"].includes(s.status) && (!s.invoice || s.invoice.status !== "PAID") && (() => {
         const aktual = s.items.reduce((a, x) => a + Number(x.weightKg ?? 0), 0), cm3 = s.items.reduce((a, x) => a + Number(x.lCm ?? 0) * Number(x.wCm ?? 0) * Number(x.hCm ?? 0), 0);
@@ -221,6 +214,18 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
       )}
       {pending && !pendingToMe && (
         <div className="banner">Menunggu {pending.toName} menekan tombol terima.</div>
+      )}
+
+      {s.details && (s.details.contents || s.details.estWeightKg != null || s.details.declaredValue != null || s.details.packaging || s.details.fragile) && (
+        <div className="card">
+          <h2>Data awal dari Kasir</h2>
+          <dl className="kv" style={{ margin: 0 }}>
+            {s.details.contents && (<><dt>Isi barang</dt><dd>{s.details.contents}{s.details.fragile ? " · rapuh" : ""}</dd></>)}
+            {s.details.packaging && (<><dt>Kemasan</dt><dd>{s.details.packaging}</dd></>)}
+            {s.details.estWeightKg != null && (<><dt>Perkiraan berat total</dt><dd>{Number(s.details.estWeightKg).toLocaleString("id-ID")} kg</dd></>)}
+            {s.details.declaredValue != null && SEES_MONEY.includes(role) && (<><dt>Nilai barang</dt><dd>{rupiah(s.details.declaredValue)}</dd></>)}
+          </dl>
+        </div>
       )}
 
       <div className="card">

@@ -31,6 +31,7 @@ export default async function ManifestDetail({ params, searchParams }: { params:
   if (r.error || !r.data || !me.data) return <main className="wrap section stack"><div className="err">{r.error ?? "Manifest tidak ditemukan."}</div><Link className="btn ghost" href="/app/manifest">← Kembali</Link></main>;
   const m = r.data, role = me.data.role, bn = me.data.branchName;
   const wh = role === "WAREHOUSE" || role === "HUB_MANAGER";
+  const kepala = role === "HUB_MANAGER"; // data pengangkutan, segel, dan serah ke sopir adalah tugas Kepala gudang
   const atOrigin = wh && bn === m.origin.name, atDest = wh && bn === m.dest.name;
   const sopir = role === "CONTAINER_DRIVER" || role === "HUB_MANAGER";
   const cur = STEPS.indexOf(m.status);
@@ -92,7 +93,7 @@ export default async function ManifestDetail({ params, searchParams }: { params:
                   <span><code style={{ fontSize: 12.5, wordBreak: "break-all" }}>{c.resiNo}</code><br /><small>{c.receiver} · {c.items} barang · {Number(c.kg).toLocaleString("id-ID")} kg</small></span>
                   <button className="btn ghost sm">Tambah</button></form>))}</div></>)}
           </div>
-          <form action={ubahManifest} className="card">
+{kepala && (          <form action={ubahManifest} className="card">
             <h2>Data pengangkutan</h2><input type="hidden" name="id" value={m.id} />
             <label className="f" htmlFor="kontainer">Nomor kontainer / AWB / plat truk</label><input id="kontainer" name="kontainer" defaultValue={m.container ?? ""} autoComplete="off" />
             <label className="f" htmlFor="pengangkut">Nama kapal / nomor penerbangan</label><input id="pengangkut" name="pengangkut" defaultValue={m.carrier ?? ""} autoComplete="off" />
@@ -100,17 +101,17 @@ export default async function ManifestDetail({ params, searchParams }: { params:
               <div><label className="f" htmlFor="tiba">Perkiraan tiba</label><input id="tiba" name="tiba" type="datetime-local" defaultValue={dtl(m.eta)} /></div></div>
             <label className="f" htmlFor="catatan">Catatan</label><input id="catatan" name="catatan" defaultValue={m.note ?? ""} autoComplete="off" />
             <SubmitButton className="btn ghost" style={{ marginTop: 14 }} steps={["Menyimpan…"]}>Simpan data pengangkutan</SubmitButton>
-          </form>
-          <form action={segelManifest} className="card">
+          </form>)}
+{kepala && (          <form action={segelManifest} className="card">
             <h2>Segel dan muat</h2><input type="hidden" name="id" value={m.id} />
             <p className="muted" style={{ marginTop: 0 }}>Setelah disegel, resi tidak bisa ditambah atau dikeluarkan, dan semua resi tercatat <b>sudah dimuat</b>.</p>
             <label className="f" htmlFor="segel">Nomor segel</label><input id="segel" name="segel" required minLength={3} autoComplete="off" placeholder="Contoh: SEG-001234" />
             <SubmitButton style={{ marginTop: 14 }} steps={["Memeriksa muatan…", "Menyegel manifest…", "Mencatat semua resi sudah dimuat…"]} >Segel manifest ({m.totals.resi} resi)</SubmitButton>
-          </form>
+          </form>)}
         </>
       )}
 
-      {m.status === "SEALED" && atOrigin && m.iAmHolder && !m.pendingTo && (
+      {m.status === "SEALED" && atOrigin && kepala && m.iAmHolder && !m.pendingTo && (
         <form action={serahkanManifest} className="card"><input type="hidden" name="id" value={m.id} />
           <h2>Serahkan manifest ke sopir</h2>
           <label className="f" htmlFor="ke">Diserahkan kepada</label>
@@ -148,7 +149,7 @@ export default async function ManifestDetail({ params, searchParams }: { params:
 
       {role === "HUB_MANAGER" && atOrigin && <BiayaManifest manifestId={m.id} kembali={`/app/manifest/${m.id}`} />}
 
-      {(((role === "HUB_MANAGER" || role === "WAREHOUSE") && atOrigin && (m.status === "OPEN" || m.status === "SEALED")) || (role === "CONTAINER_DRIVER" && m.iAmHolder && (m.status === "SEALED" || m.status === "IN_TRANSIT"))) && (
+      {(((role === "HUB_MANAGER") && atOrigin && (m.status === "OPEN" || m.status === "SEALED")) || (role === "CONTAINER_DRIVER" && m.iAmHolder && (m.status === "SEALED" || m.status === "IN_TRANSIT"))) && (
         <form action={isiVoyage} className="card">
           <h2>Voyage dan pelabuhan</h2><input type="hidden" name="id" value={m.id} />
           <label className="f" htmlFor="voyage">Nomor voyage / penerbangan</label><input id="voyage" name="voyage" defaultValue={m.voyage ?? ""} maxLength={40} autoComplete="off" />

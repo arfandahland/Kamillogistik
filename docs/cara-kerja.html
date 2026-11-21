@@ -48,10 +48,10 @@ small,.muted{color:#51706a}
 <table><tr><th style="width:22%">Peran</th><th>Tugas utama</th><th style="width:26%">Menu bawah di HP</th></tr>
 <tr><td><b>Super Admin</b></td><td>Akun pengelola sistem: kendali penuh atas menu, mitra, petugas, tarif, keuangan, dan <b>konsol Koreksi data</b> (memperbaiki status resi yang salah, alasan wajib, tercatat di riwayat resi dan catatan aktivitas). Tidak menjalankan operasional harian.</td><td>Pantauan · Resi · Keuangan · Kelola · Akun</td></tr>
 <tr><td><b>Owner</b> (Pemilik)</td><td><b>Hanya memantau</b>: dashboard, semua resi, keuangan, laporan, margin, peta. Tidak bisa mengubah data apa pun. Akun dibuat Super Admin.</td><td>Pantauan · Resi · Keuangan · Kelola · Akun</td></tr>
-<tr><td><b>Kepala gudang</b> (Manajer)</td><td>Memimpin satu gudang: manifest, serah terima, kendala, tagihan cabang, pesanan jemput, tindak lanjut. Tidak membuat resi dan tidak mencetak label.</td><td>Beranda · Pindai · Manifest · Tagihan · Akun</td></tr>
+<tr><td><b>Kepala gudang</b> (Manajer)</td><td>Memimpin satu gudang: <b>membuat, menyegel, dan menyerahkan manifest</b> ke sopir, menerima manifest yang tiba, menyelesaikan kendala dan selisih, melihat tagihan cabang, pesanan jemput, tindak lanjut, dan kinerja tim. Tidak membuat resi, tidak mencetak label, dan tidak menimbang (itu tugas staf gudang).</td><td>Beranda · Pindai · Manifest · Tagihan · Akun</td></tr>
 <tr><td><b>Kasir</b> (mitra)</td><td><b>Satu-satunya pintu pembuatan resi dan pencetakan label</b> di tiap gudang atau gerai; juga melihat tagihan, mencatat pembayaran, setoran kas.</td><td>Beranda · Resi baru · Pindai · Tagihan · Akun</td></tr>
 <tr><td><b>Kurir</b></td><td>Menjemput dan mengantar barang, serah terima, bukti terima.</td><td>Beranda · Pindai · Serah terima · Akun</td></tr>
-<tr><td><b>Staf gudang</b></td><td>Menerima, menimbang, memuat dan membongkar barang.</td><td>Beranda · Pindai · Manifest · Serah terima · Akun</td></tr>
+<tr><td><b>Staf gudang</b></td><td>Pekerjaan fisik: menerima barang, <b>menimbang dengan memindai barcode tiap barang</b> (layar Timbang barang), menambah resi ke manifest dengan memindai, dan membongkar. Tidak membuat atau menyegel manifest.</td><td>Beranda · Pindai · Manifest · Serah terima · Akun</td></tr>
 <tr><td><b>Sopir kontainer</b></td><td>Membawa manifest antar kota: terima, berangkat, tiba, serahkan.</td><td>Beranda · Pindai · Manifest · Serah terima · Akun</td></tr>
 <tr><td><b>HRD</b></td><td>Kepegawaian (dokumen dan masa berlaku SIM/kontrak, shift, cuti dan izin, rekap kehadiran dan kerja) serta lamaran dan lowongan. Tidak melihat resi maupun keuangan.</td><td>Dashboard · Lamaran · Pegawai · Akun</td></tr>
 <tr><td><b>Finance</b></td><td>Tagihan, pencatatan pembayaran, komisi, dan laporan keuangan seluruh cabang. Boleh membaca resi untuk keperluan tagihan, tidak menjalankan langkah resi.</td><td>Keuangan · Tagihan · Laporan · Akun</td></tr>
@@ -72,6 +72,7 @@ small,.muted{color:#51706a}
 <li><b>Calon mitra dan pelamar kerja:</b> mengisi formulir di /mitra dan /karir; masuk ke Pemilik dan HRD.</li></ul>
 
 <h2>4. Alur satu resi (inti aplikasi)</h2>
+<div class="box"><b>Data awal selengkap mungkin:</b> saat membuat resi Kasir mengisi <b>isi barang</b> (wajib), jumlah, jenis kemasan, perkiraan berat, nilai barang, dan penanda rapuh. Data ini ikut terbaca semua petugas yang memproses resi sesudahnya dan tercetak di label (isi dan penanda RAPUH).</div>
 <div class="box"><b>Tanpa master rute:</b> Kasir memilih <b>gudang tujuan</b> dan <b>moda</b> (laut, udara, darat) sendiri, jadi kota seperti Surabaya atau Manado tidak perlu didaftar dulu. Alamat penerima wajib lengkap sampai kelurahan atau desa. <b>Harga diisi Kasir</b> saat membuat invoice (per kg, per m³, atau borongan, ditambah biaya bebas); gudang hanya menimbang.</div>
 <div class="box ok"><b>Satu pintu:</b> resi dibuat dan labelnya dicetak <b>hanya oleh Kasir</b> di tiap gudang atau gerai (barang diantar sendiri maupun dijemput). Kepala gudang, staf gudang, kurir, CS, Finance, dan Pemilik tidak bisa membuat resi atau mencetak label; mereka menimbang, memuat, mengantar, dan memantau. Pesanan jemput dari website diteruskan ke kasir untuk dibuatkan resinya.</div>
 <p>Resi adalah satu pengiriman. Nomornya bisa dibaca manusia, contoh <b>KML-JKT-MKS-LJ-261118-1432-0007-PK</b> (resi lama berawalan KLX tetap sah):</p>
@@ -105,7 +106,7 @@ small,.muted{color:#51706a}
 <table><tr><th style="width:26%">Tahap</th><th>Syarat yang harus dipenuhi</th></tr>
 <tr><td>Sudah dijemput</td><td>Kurir mengisi <b>pemeriksaan dan foto barang</b> dulu (isi, kemasan, kondisi).</td></tr>
 <tr><td>Di gudang asal</td><td>Petugas gudang mengisi pemeriksaan dan foto saat terima.</td></tr>
-<tr><td>Sudah ditimbang</td><td>Berat dan ukuran wajib diisi. Berat tertagih = yang lebih besar antara berat asli dan berat volume (P×L×T cm ÷ 4000 untuk laut dan darat, ÷ 6000 untuk udara).</td></tr>
+<tr><td>Sudah ditimbang</td><td>Staf gudang memindai barcode satu barang, layar menampilkan <b>data awal dari Kasir</b> (isi barang, kemasan, perkiraan berat, rapuh), lalu mengisi berat dan ukuran barang itu dan menyimpan. Resi otomatis <b>Sudah ditimbang</b> begitu semua barangnya tercatat. Berat tertagih = yang lebih besar antara berat asli dan berat volume (P×L×T cm ÷ 4000 untuk laut dan darat, ÷ 6000 untuk udara).</td></tr>
 <tr><td>Sedang diantar</td><td>Tidak boleh bila masih ada selisih jumlah barang yang belum selesai.</td></tr>
 <tr><td>Sudah diterima</td><td>Kurir mencatat bukti terima (foto, tanda tangan, nama) bila ada. <b>Penutupan resi</b> oleh Kasir atau Kepala gudang tujuan: catatan dan tautan bukti (https) boleh kosong; foto dari grup hanya referensi. Kasir asal melihat hasilnya dan bisa mengabari pengirim lewat WhatsApp.</td></tr></table>
 

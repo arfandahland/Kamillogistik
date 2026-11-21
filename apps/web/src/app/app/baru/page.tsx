@@ -63,11 +63,22 @@ export default async function Baru({ searchParams }: { searchParams: Promise<{ e
             <WilayahField />
 
             <h3 style={{ marginTop: 20 }}>Barang</h3>
+            <label className="f" htmlFor="isi">Isi barang</label>
+            <input id="isi" name="isi" required minLength={2} maxLength={200} placeholder="Contoh: pakaian, spare part motor, sepeda motor" autoComplete="off" />
             <label className="f" htmlFor="jumlah">Jumlah barang (koli/dus)</label>
             <input id="jumlah" name="jumlah" type="number" inputMode="numeric" min={1} max={100} defaultValue={1} required />
+            <label className="f" htmlFor="kemasan">Jenis kemasan (boleh kosong)</label>
+            <select id="kemasan" name="kemasan" defaultValue="">
+              <option value="">Pilih kemasan</option><option>Kardus</option><option>Karung</option><option>Peti kayu</option><option>Palet</option><option>Plastik</option><option>Tanpa kemasan</option><option>Lainnya</option>
+            </select>
+            <label className="f" htmlFor="estimasi">Perkiraan berat total, kg (boleh kosong)</label>
+            <input id="estimasi" name="estimasi" inputMode="decimal" placeholder="Contoh: 25" />
+            <label className="f" htmlFor="nilai">Nilai barang, Rp (boleh kosong)</label>
+            <input id="nilai" name="nilai" inputMode="numeric" placeholder="Contoh: 1500000" />
+            <label className="chk" style={{ display: "flex", gap: 10, alignItems: "center", margin: "10px 0" }}><input type="checkbox" name="rapuh" style={{ width: 22, height: 22 }} /> Barang mudah pecah atau rapuh</label>
             <label className="f" htmlFor="catatan">Catatan kondisi barang (boleh kosong)</label>
             <input id="catatan" name="catatan" placeholder="Contoh: dus sedikit penyok" />
-            <p className="hint">Berat dan ukuran dicatat nanti saat barang ditimbang di gudang. Harga diisi Kasir saat membuat invoice.</p>
+            <p className="hint">Berat dan ukuran sebenarnya dicatat petugas gudang dengan memindai barcode tiap barang. Harga diisi Kasir saat membuat invoice. Data ini ikut terbaca semua petugas yang memproses resi.</p>
             <DataKendaraan />
 
             <SubmitButton style={{ marginTop: 18 }} steps={["Memeriksa data…", "Membuat nomor resi…", "Menyiapkan barang…", "Menyimpan resi…"]}>Buat resi</SubmitButton>

@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: "Buat Manifest" };
 export default async function BaruManifest({ searchParams }: { searchParams: Promise<{ e?: string }> }) {
   const { e } = await searchParams;
   const me = (await getMe()).data;
-  if (!me || (me.role !== "WAREHOUSE" && me.role !== "HUB_MANAGER")) redirect("/app/manifest");
+  if (!me || me.role !== "HUB_MANAGER") redirect("/app/manifest");
   const tujuan = (await staffRpc<{ code: string; city: string }[]>("manifest_destinations")).data ?? [];
   return (
     <main className="wrap narrow section">

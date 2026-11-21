@@ -128,3 +128,9 @@ Fitur lintas peran yang dibangun putaran ini: pesan jemput online, klaim dan kel
 - 🆕 **Kasir**: membuat resi tanpa master rute (pilih gudang tujuan dan moda), menerbitkan invoice dengan harga manual, **menutup resi** di gudang tujuan (bukti opsional, tautan https), meneruskan resi ke gudang berikutnya, membuat resi dari **pesanan jemput** setelah barang tiba.
 - 🆕 **Kepala gudang**: menerima serah terima manifest yang tiba (hanya Kepala gudang tujuan), bongkar dengan pindai atau **Terima semua sesuai manifest**, cetak **Berita Acara Bongkar**, papan **Sortir tujuan akhir**, meneruskan resi (resi berantai), menutup resi.
 - ✅ Kode transit Surabaya dihapus; pengganti: resi berantai (satu nomor resi sepanjang perjalanan, riwayat leg).
+
+## Pembaruan: timbang cepat dan pembeda peran gudang
+
+- 🆕 **Timbang cepat (Staf gudang):** pindai barcode tiap barang, layar memuat data awal dari Kasir, isi berat dan ukuran barang itu, simpan, lalu pindai berikutnya. Resi otomatis "Sudah ditimbang" bila semua barang tercatat. Pindai barang di gudang asal langsung membuka layar timbang.
+- 🆕 **Data awal resi (Kasir):** isi barang (wajib), kemasan, perkiraan berat, nilai barang, rapuh. Terbaca semua peran terkait dan tercetak di label.
+- 🆕 **Pembeda gudang:** Kepala gudang membuat, menyegel, dan menyerahkan manifest serta menyelesaikan kendala dan selisih; Staf gudang menimbang, menambah barang ke manifest dengan pindai, dan membongkar.

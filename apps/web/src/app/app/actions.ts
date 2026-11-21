@@ -43,6 +43,13 @@ export async function buatResi(fd: FormData) {
     ...(jemput ? {} : { p_pickup_type: fd.get("masuk") === "DROPOFF" ? "DROPOFF" : "PICKUP", p_pickup_address: String(fd.get("alamat_jemput") ?? "").trim() || null }),
     p_company_id: fd.get("jenis") === "B2B" && /^[0-9a-f-]{36}$/i.test(String(fd.get("company") ?? "")) ? String(fd.get("company")) : null,
     p_vehicle: Object.keys(kendaraan).length ? kendaraan : null,
+    p_details: {
+      contents: String(fd.get("isi") ?? "").trim(),
+      declaredValue: String(fd.get("nilai") ?? "").replace(/\D/g, ""),
+      estWeightKg: String(fd.get("estimasi") ?? "").trim().replace(",", "."),
+      packaging: String(fd.get("kemasan") ?? "").trim(),
+      fragile: fd.get("rapuh") === "on",
+    },
   });
   if (error || !data) redirect(`/app/baru?e=${encodeURIComponent(error ?? "Gagal membuat resi")}`);
   revalidatePath("/app");

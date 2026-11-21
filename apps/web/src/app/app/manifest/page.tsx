@@ -16,7 +16,7 @@ export default async function Manifest({ searchParams }: { searchParams: Promise
   const [me, r] = await Promise.all([getMe(), staffRpc<Row[]>("manifest_list", { p_status: tab || null, p_limit: 60 })]);
   const rows = r.data ?? [];
   const role = me.data?.role;
-  const bisaBuat = role === "WAREHOUSE" || role === "HUB_MANAGER";
+  const bisaBuat = role === "HUB_MANAGER"; // Staf gudang menambah barang dengan pindai; Kepala gudang yang membuat dan menyegel manifest
   const menunggu = rows.filter((x) => x.pendingToMe);
   return (
     <main className="wrap stack" style={{ paddingTop: 8 }}>
