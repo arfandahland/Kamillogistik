@@ -61,7 +61,7 @@ export default function StaffShell({ me, pending, children, forceFull }: { me: M
         { href: "/app/pengaturan", label: "Pengaturan", icon: "sliders" },
         { href: "/app/akun", label: "Akun", icon: "user" },
       ]
-    : [...tabs.slice(0, -1), ...(["HUB_MANAGER", "MITRA_POS", "WAREHOUSE"].includes(me.role) ? [{ href: "/app/tindak-lanjut", label: "Perlu dihubungi", icon: "chat" }] : []), ...(["HUB_MANAGER", "WAREHOUSE"].includes(me.role) ? [{ href: "/app/kendala", label: "Kendala pengiriman", icon: "alert" }] : []), { href: "/app/cari", label: "Cari", icon: "search" }, { href: "/app/serah", label: "Serah terima", icon: "swap", badge: pending }, tabs[tabs.length - 1]!].filter((t, i, a) => a.findIndex((x) => x.href === t.href) === i);
+    : [...tabs.slice(0, -1), ...(["HUB_MANAGER", "MITRA_POS", "WAREHOUSE"].includes(me.role) ? [{ href: "/app/tindak-lanjut", label: "Perlu dihubungi", icon: "chat" }] : []), ...(["HUB_MANAGER", "WAREHOUSE"].includes(me.role) ? [{ href: "/app/kendala", label: "Kendala pengiriman", icon: "alert" }] : []), ...(["HUB_MANAGER", "WAREHOUSE", "MITRA_POS"].includes(me.role) ? [{ href: "/app/sortir", label: "Sortir tujuan akhir", icon: "layers" }] : []), { href: "/app/cari", label: "Cari", icon: "search" }, { href: "/app/serah", label: "Serah terima", icon: "swap", badge: pending }, tabs[tabs.length - 1]!].filter((t, i, a) => a.findIndex((x) => x.href === t.href) === i);
   const role = ROLE_LABEL[me.role] ?? me.role;
   const tanggal = new Intl.DateTimeFormat("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Makassar" }).format(new Date());
   return (

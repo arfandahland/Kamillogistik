@@ -13,6 +13,7 @@ import KendalaPanel from "@/components/KendalaPanel";
 import InvoiceForm from "@/components/InvoiceForm";
 import RevisiPanel from "@/components/RevisiPanel";
 import TutupResiPanel from "@/components/TutupResiPanel";
+import TeruskanPanel from "@/components/TeruskanPanel";
 import { catatTerima, lanjut, periksa, serahkan, terima, timbang } from "../../actions";
 
 type Detail = {
@@ -24,6 +25,7 @@ type Detail = {
   items: { barcode: string; weightKg: number | null; lCm: number | null; wCm: number | null; hCm: number | null; note: string | null }[];
   events: { status: AnyStatus; at: string; location: string | null; by: string | null }[];
   handovers: { id: string; state: string; fromName: string; toName: string; toMe: boolean; at: string }[];
+  legs?: { seq: number; from: string; to: string; mode: string; note: string | null; at: string }[];
   closed?: { at: string; byName: string | null; note: string | null; proofUrl: string | null; senderPhone: string | null } | null;
   invoice: { invoiceNo: string; total: number; status: string; dueDate: string; calc: any } | null;
 };
@@ -238,6 +240,8 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
       )}
 
       <KendalaPanel shipmentId={s.id} role={role} status={s.status} />
+      <TeruskanPanel id={s.id} status={s.status} role={role} branchName={me.data.branchName ?? null} destName={s.dest.name} legs={s.legs ?? []}
+        hubs={["MITRA_POS", "HUB_MANAGER"].includes(role) && s.status === "AT_DEST_HUB" ? (await staffRpc<{ id: string; name: string; city: string }[]>("staff_dest_hubs")).data ?? [] : []} />
       <TutupResiPanel s={s} role={role} branchName={me.data.branchName ?? null} />
       <RevisiPanel s={s} role={role} />
 

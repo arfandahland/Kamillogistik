@@ -85,3 +85,11 @@ export async function isiVoyage(fd: FormData) {
   const id = str(fd, "id");
   await hasil(id, "manifest_voyage_set", { p_id: id, p_voyage: str(fd, "voyage") || null, p_load: str(fd, "muat") || null, p_unload: str(fd, "bongkar") || null }, "Data voyage dan pelabuhan disimpan.");
 }
+
+export async function terimaSemuaManifest(fd: FormData) {
+  const id = str(fd, "id");
+  const r = await staffRpc<{ scanned: number }>("manifest_accept_all", { p_id: id });
+  revalidatePath(`/app/manifest/${id}`);
+  if (r.error) back(id, "e", r.error);
+  back(id, "ok", `Semua ${r.data?.scanned ?? ""} barang diterima sesuai manifest. Periksa lagi bila ada yang rusak, lalu tekan Selesai membongkar.`);
+}

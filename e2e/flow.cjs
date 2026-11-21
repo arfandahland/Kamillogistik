@@ -299,13 +299,14 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("kapal berangkat: resi tercatat Dalam pelayaran", r.ok && /sudah berangkat/i.test(r.ok), JSON.stringify(r));
     r = await act(p, p.getByRole("button", { name: /Kapal sudah sandar di Makassar/ }));
     ok("kapal sandar di pelabuhan tujuan", r.ok && /sudah tiba/.test(r.ok), JSON.stringify(r));
-    await selectByText(p, "select[name=ke]", "Gudang Makassar");
+    await selectByText(p, "select[name=ke]", "Kepala Gudang Makassar");
+    ok("AJ2 serah terima saat tiba hanya menawarkan Kepala gudang tujuan", !(await p.locator("select[name=ke] option").allTextContents()).some((t) => /^Gudang Makassar/.test(t)));
     r = await act(p, p.getByRole("button", { name: "Serahkan manifest" }));
     ok("sopir menyerahkan manifest ke gudang Makassar", r.ok && /Menunggu penerima/.test(r.ok), JSON.stringify(r));
   }
 
   console.log("\n[G] Gudang Makassar dan kurir Makassar (tahap akhir)");
-  const gmks = await login(browser, "gudang.mks@uji.id");
+  const gmks = await login(browser, "kepala.mks@uji.id");
   {
     const p = gmks.page;
     await p.goto(`${BASE}/app/manifest/${manifestId}`, { waitUntil: "networkidle" });
@@ -323,6 +324,11 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await p.screenshot({ path: `${OUT}/e2e-manifest-bongkar.png` });
     r = await act(p, p.getByRole("button", { name: "Selesai membongkar" }));
     ok("bongkar selesai: semua barang cocok, resi di gudang tujuan", r.ok && /Semua barang cocok/.test(r.ok), JSON.stringify(r));
+    await p.goto(`${BASE}/app/manifest/${manifestId}/berita-acara`, { waitUntil: "networkidle" });
+    const ba = await text(p);
+    ok("AJ1 Berita Acara Bongkar memuat kode manifest, hitungan cocok, dan resi", /BERITA ACARA BONGKAR/.test(ba) && /diterima 2 \(cocok\)/.test(ba) && ba.includes(resiNo), ba.slice(0, 200));
+    await p.goto(`${BASE}/app/sortir`, { waitUntil: "networkidle" });
+    ok("AJ3 papan sortir mengelompokkan resi menurut kabupaten/kota tujuan akhir", /Sortir tujuan akhir/.test(await text(p)) && /Kota Makassar/.test(await text(p)) && (await p.locator("a[href*='/app/resi/']").count()) >= 1);
     await p.goto(`${BASE}/app/resi/${resiId}`, { waitUntil: "networkidle" });
     ok("resi tercatat Di gudang tujuan", /Di gudang tujuan/.test(await text(p)));
     await selectByText(p, "select[name=ke]", "Kurir Makassar");

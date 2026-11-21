@@ -26,7 +26,9 @@ export async function buatResi(fd: FormData) {
   if (!area || typeof area !== "object") redirect(`/app/baru?e=${encodeURIComponent("Pilih alamat tujuan sampai kelurahan atau desa (provinsi, kabupaten atau kota, kecamatan, kelurahan atau desa).")}`);
   const kd = (k: string) => String(fd.get(`kd_${k}`) ?? "").trim().slice(0, 80);
   const kendaraan = Object.fromEntries(["jenis", "merek", "nopol", "rangka", "mesin", "stnk", "bpkb", "catatan"].map((k) => [k, kd(k)]).filter(([, v]) => v));
-  const { data, error } = await staffRpc<{ id: string }>("create_shipment_full", {
+  const jemput = /^[0-9a-f-]{36}$/i.test(String(fd.get("jemput") ?? "")) ? String(fd.get("jemput")) : null;
+  const { data, error } = await staffRpc<{ id: string }>(jemput ? "create_shipment_from_pickup" : "create_shipment_full", {
+    ...(jemput ? { p_request: jemput } : {}),
     p_dest_id: /^[0-9a-f-]{36}$/i.test(String(fd.get("tujuan") ?? "")) ? String(fd.get("tujuan")) : null,
     p_mode: ["LAUT", "UDARA", "DARAT"].includes(String(fd.get("moda"))) ? String(fd.get("moda")) : "LAUT",
     p_sender_name: String(fd.get("pengirim") ?? ""),
@@ -38,8 +40,7 @@ export async function buatResi(fd: FormData) {
     p_piece_count: Number(fd.get("jumlah") ?? 1) || 1,
     p_condition_note: String(fd.get("catatan") ?? "") || null,
     p_client_ref: /^[0-9a-f-]{36}$/i.test(String(fd.get("ref") ?? "")) ? String(fd.get("ref")) : null,
-    p_pickup_type: fd.get("masuk") === "DROPOFF" ? "DROPOFF" : "PICKUP",
-    p_pickup_address: String(fd.get("alamat_jemput") ?? "").trim() || null,
+    ...(jemput ? {} : { p_pickup_type: fd.get("masuk") === "DROPOFF" ? "DROPOFF" : "PICKUP", p_pickup_address: String(fd.get("alamat_jemput") ?? "").trim() || null }),
     p_company_id: fd.get("jenis") === "B2B" && /^[0-9a-f-]{36}$/i.test(String(fd.get("company") ?? "")) ? String(fd.get("company")) : null,
     p_vehicle: Object.keys(kendaraan).length ? kendaraan : null,
   });
@@ -142,4 +143,12 @@ export async function tutupResi(fd: FormData) {
   revalidatePath("/app");
   if (error) back(id, "e", error);
   back(id, "ok", "Resi sudah ditutup. Kasir asal bisa melihat hasilnya dan mengabari pelanggan.");
+}
+
+export async function teruskanResi(fd: FormData) {
+  const id = String(fd.get("id"));
+  const { error } = await staffRpc("shipment_forward", { p_id: id, p_next: String(fd.get("ke") ?? ""), p_mode: String(fd.get("moda") ?? ""), p_note: String(fd.get("catatan") ?? "") || null });
+  revalidatePath("/app"); revalidatePath("/app/sortir");
+  if (error) back(id, "e", error);
+  back(id, "ok", "Resi diteruskan ke gudang berikutnya. Nomor resi tetap sama dan siap dimuat ke manifest.");
 }

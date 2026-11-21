@@ -100,3 +100,27 @@ DO $$ DECLARE g jsonb; BEGIN
 END $$;
 SELECT t.fails($$select public.shipment_close(current_setting('t.ra')::uuid, NULL, NULL)$$, 'sudah ditutup');
 SELECT 'penutupan_resi OK' AS hasil;
+
+-- ================= 044: jemput opsi B (resi dibuat setelah barang tiba) =================
+RESET ROLE;
+SELECT t.as_anon();
+DO $$ DECLARE r jsonb; BEGIN
+  r := public.public_pickup_request('Rina Jemput B','081299990044','Jakarta','Jl. Melati No 9, Jakarta','Makassar','LAUT','Dus pakaian',20,NULL,NULL);
+  PERFORM set_config('t.pj', r->>'code', false);
+END $$;
+RESET ROLE;
+SELECT set_config('t.pjid', (SELECT id::text FROM public.pickup_requests WHERE code = current_setting('t.pj')), false);
+SELECT t.as_user('00000000-0000-0000-0000-00000000000c');
+SELECT t.fails($$select public.staff_pickup_get(current_setting('t.pjid')::uuid)$$, 'izin');
+SELECT t.as_user('00000000-0000-0000-0000-000000000002');
+DO $$ DECLARE r jsonb; g jsonb; BEGIN
+  ASSERT public.staff_pickup_get(current_setting('t.pjid')::uuid)->>'name' = 'Rina Jemput B', 'data pesanan terbaca kasir';
+  r := public.create_shipment_from_pickup(current_setting('t.pjid')::uuid, current_setting('t.b_mks')::uuid, 'LAUT', 'Rina Jemput B', '081299990044', 'Penerima B', '0822',
+    'Jl. Perintis No. 3, Makassar', '{"province":"Sulawesi Selatan","regency":"Kota Makassar","district":"Panakkukang","village":"Pandang","code":"73.71.07.1001"}'::jsonb, 2);
+  PERFORM set_config('t.pjs', r->>'id', false);
+  g := public.staff_get_shipment((r->>'id')::uuid);
+  ASSERT g->>'status' = 'AT_ORIGIN_HUB' AND g->>'pickupType' = 'PICKUP' AND (r->>'resiNo') LIKE '%-LJ-%', 'resi langsung di gudang asal, kode jemput: ' || (g->>'status') || ' ' || (r->>'resiNo');
+  ASSERT (public.staff_pickup_get(current_setting('t.pjid')::uuid)->>'status') = 'SELESAI', 'pesanan jemput selesai';
+END $$;
+SELECT t.fails($$select public.create_shipment_from_pickup(current_setting('t.pjid')::uuid, current_setting('t.b_mks')::uuid, 'LAUT', 'X', '0811', 'Y', '0822', 'Jl. Perintis No. 3', '{"province":"a1","regency":"b1","district":"c1","village":"d1","code":"73.71.07.1001"}'::jsonb)$$, 'sudah selesai');
+SELECT 'jemput_opsi_b OK' AS hasil;

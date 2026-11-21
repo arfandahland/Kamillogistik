@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useState, useTransition } from "react";
 import { ubahJemput } from "@/app/app/jemput/actions";
 import { waNumber } from "@/lib/publicRpc";
@@ -28,7 +29,8 @@ export default function JemputKartu({ a }: { a: Jemput }) {
       <label className="f" htmlFor={`c-${a.id}`}>Catatan</label>
       <textarea id={`c-${a.id}`} rows={2} maxLength={500} value={cat} onChange={(e) => setCat(e.target.value)} onBlur={() => cat !== (a.adminNote ?? "") && simpan(st)} placeholder="Contoh: kurir Andi jemput besok 09.00" />
       {err && <div className="err">{err}</div>}{ok && <span className="hint">Tersimpan.</span>}
-      {st === "DIJADWALKAN" && <p className="hint" style={{ margin: 0 }}>Saat barang diterima kurir, buat resinya lewat menu Buat resi baru.</p>}
+      {a.intake !== "ANTAR" && st !== "SELESAI" && st !== "BATAL" && <Link href={`/app/baru?jemput=${a.id}`} className="btn ghost">Barang sudah tiba, buat resi</Link>}
+      {a.intake !== "ANTAR" && st !== "SELESAI" && st !== "BATAL" && <p className="hint" style={{ margin: 0 }}>Resi dibuat Kasir setelah barang dijemput kurir dan tiba di gudang.</p>}
     </article>
   );
 }

@@ -20,7 +20,7 @@ export default async function BiayaManifest({ manifestId, kembali }: { manifestI
         <div><b>{rupiah(b.biaya).replace("Rp", "")}</b><small>biaya Rp</small></div>
         <div><b className={b.margin < 0 ? "down" : "up"}>{rupiah(b.margin).replace("Rp", "")}</b><small>margin Rp</small></div>
       </div>
-      <p className="hint" style={{ margin: 0 }}>Pendapatan dari tagihan resi di manifest ini (resi bertransit dibagi dua leg).{b.baris.length === 0 ? " Belum ada biaya tercatat, jadi margin belum bermakna." : ""}</p>
+      <p className="hint" style={{ margin: 0 }}>Pendapatan dari tagihan resi di manifest ini (resi yang diteruskan antar gudang dibagi rata per manifest).{b.baris.length === 0 ? " Belum ada biaya tercatat, jadi margin belum bermakna." : ""}</p>
       {b.baris.length > 0 && (
         <ul className="rows">{b.baris.map((x) => (
           <li key={x.id}><span><b>{JENIS_BIAYA[x.kind] ?? x.kind} · {rupiah(x.jumlah)}</b><small>{x.vendor ? `${x.vendor} · ` : ""}{x.catatan ? `${x.catatan} · ` : ""}{tanggalWaktu(x.waktu)}{x.oleh ? ` · ${x.oleh}` : ""}</small></span>

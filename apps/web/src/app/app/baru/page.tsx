@@ -12,11 +12,12 @@ import { buatResi } from "../actions";
 
 export const metadata: Metadata = { title: "Buat Resi Baru" };
 
-export default async function Baru({ searchParams }: { searchParams: Promise<{ e?: string }> }) {
-  const { e } = await searchParams;
+export default async function Baru({ searchParams }: { searchParams: Promise<{ e?: string; jemput?: string }> }) {
+  const { e, jemput } = await searchParams;
   const me = (await getMe()).data;
   if (!me || !CAN_CREATE_ORDER.includes(me.role)) redirect("/app");
   const tujuan = (await staffRpc<{ id: string; name: string; city: string }[]>("staff_dest_hubs")).data ?? [];
+  const pj = jemput && /^[0-9a-f-]{36}$/i.test(jemput) ? (await staffRpc<{ id: string; code: string; name: string; phone: string; address: string; itemDesc: string; status: string; shipmentId: string | null }>("staff_pickup_get", { p_id: jemput })).data : null;
   const perusahaan = (await staffRpc<{ id: string; name: string; top: number }[]>("staff_list_customers")).data ?? [];
 
   return (
@@ -24,6 +25,8 @@ export default async function Baru({ searchParams }: { searchParams: Promise<{ e
       <form className="card" action={buatResi}>
         <input type="hidden" name="ref" value={randomUUID()} />
         <h1>Buat resi baru</h1>
+        {pj && <input type="hidden" name="jemput" value={pj.id} />}
+        {pj && <div className="banner"><b>Dari pesanan jemput {pj.code}</b><p style={{ margin: "4px 0 0" }}>Barang sudah dijemput dan tiba di gudang. Resi dibuat sekarang dan langsung tercatat Di gudang asal. Alamat jemput: {pj.address}</p></div>}
         {e && <div className="err" role="alert">{e}</div>}
         {tujuan.length === 0 ? <p className="muted">Belum ada gudang tujuan yang aktif. Hubungi pemilik.</p> : (
           <>
@@ -40,13 +43,13 @@ export default async function Baru({ searchParams }: { searchParams: Promise<{ e
             </select>
 
             <PelangganField perusahaan={perusahaan} />
-            <CaraMasukField kotaAsal={me.branchName?.replace(/^Gudang /, "") ?? undefined} />
+            {!pj && <CaraMasukField kotaAsal={me.branchName?.replace(/^Gudang /, "") ?? undefined} />}
 
             <h3 style={{ marginTop: 20 }}>Pengirim</h3>
             <label className="f" htmlFor="pengirim">Nama pengirim</label>
-            <input id="pengirim" name="pengirim" required autoComplete="off" />
+            <input id="pengirim" name="pengirim" required autoComplete="off" defaultValue={pj?.name ?? ""} />
             <label className="f" htmlFor="hp_pengirim">Nomor WhatsApp pengirim</label>
-            <input id="hp_pengirim" name="hp_pengirim" inputMode="tel" placeholder="Contoh: 0812 3456 7890" required autoComplete="tel" />
+            <input id="hp_pengirim" name="hp_pengirim" inputMode="tel" placeholder="Contoh: 0812 3456 7890" required autoComplete="tel" defaultValue={pj?.phone ?? ""} />
             <p className="hint">Wajib diisi dan benar. Dipakai untuk kabar jemput dan tagihan lewat WhatsApp.</p>
 
             <h3 style={{ marginTop: 20 }}>Penerima</h3>

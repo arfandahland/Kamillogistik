@@ -23,10 +23,3 @@ export async function selesaikanKendala(fd: FormData) {
   if (r.error) back(id, "e", r.error);
   back(id, "ok", str(fd, "tindakan") === "RETUR_SELESAI" ? "Kendala selesai. Barang dikembalikan ke pengirim dan resi dibatalkan." : "Kendala selesai. Pengiriman bisa dilanjutkan.");
 }
-export async function aturTransit(fd: FormData) {
-  const id = str(fd, "id");
-  const r = await staffRpc("shipment_set_transit", { p_id: id, p_transit: str(fd, "transit") || null });
-  done(id);
-  if (r.error) back(id, "e", r.error);
-  back(id, "ok", str(fd, "transit") ? "Gudang transit disimpan. Resi dimuat dalam dua leg." : "Transit dihapus. Resi dikirim langsung.");
-}

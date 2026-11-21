@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { MANIFEST_STATUS_LABEL, MODA_LABEL } from "@kamil/core";
+import { MANIFEST_STATUS_LABEL, MODA_LABEL, OWNER_ROLE } from "@kamil/core";
 import Icon from "@/components/Icon";
 import BiayaManifest from "@/components/BiayaManifest";
 import SubmitButton from "@/components/SubmitButton";
 import ManifestPindai from "@/components/ManifestPindai";
 import { tanggalWaktu } from "@/lib/brand";
 import { getMe, staffRpc } from "@/lib/supabase/server";
-import { berangkatManifest, isiVoyage, keluarkanResi, segelManifest, selesaiBongkar, selesaikanSelisih, revisiEta, serahkanManifest, tambahResiForm, terimaManifest, tibaManifest, ubahManifest } from "../actions";
+import { terimaSemuaManifest, berangkatManifest, isiVoyage, keluarkanResi, segelManifest, selesaiBongkar, selesaikanSelisih, revisiEta, serahkanManifest, tambahResiForm, terimaManifest, tibaManifest, ubahManifest } from "../actions";
 
 export const metadata: Metadata = { title: "Manifest" };
 type Place = { code: string; city: string; name: string };
@@ -40,7 +40,7 @@ export default async function ManifestDetail({ params, searchParams }: { params:
     (m.status === "SEALED" && atOrigin && m.iAmHolder && !m.pendingTo) || (m.status === "ARRIVED" && sopir && m.iAmHolder && !m.pendingTo) ? staffRpc<Dir>("staff_directory").then((x) => x.data ?? []) : Promise.resolve([] as Dir),
   ]);
   const sopirList = dir.filter((u) => u.role === "CONTAINER_DRIVER");
-  const gudangTujuan = dir.filter((u) => (u.role === "WAREHOUSE" || u.role === "HUB_MANAGER") && u.branchName === m.dest.name);
+  const gudangTujuan = dir.filter((u) => u.role === "HUB_MANAGER" && u.branchName === m.dest.name);
   const bongkar = m.status === "ARRIVED" && atDest && m.iAmHolder && !m.pendingTo;
   const kurang = m.totals.items - m.totals.scanned;
   const bukaKasus = m.cases.filter((c) => c.status === "OPEN");
@@ -141,7 +141,7 @@ export default async function ManifestDetail({ params, searchParams }: { params:
         <form action={serahkanManifest} className="card"><input type="hidden" name="id" value={m.id} />
           <h2>Serahkan ke gudang {m.dest.city}</h2>
           <label className="f" htmlFor="ke">Diserahkan kepada</label>
-          <select id="ke" name="ke" required defaultValue=""><option value="" disabled>Pilih petugas gudang…</option>{gudangTujuan.map((u) => <option key={u.id} value={u.id}>{u.name}</option>)}</select>
+          <select id="ke" name="ke" required defaultValue=""><option value="" disabled>Pilih Kepala gudang…</option>{gudangTujuan.map((u) => <option key={u.id} value={u.id}>{u.name}</option>)}</select>
           <SubmitButton className="btn ghost" style={{ marginTop: 12 }} steps={["Memeriksa penerima…", "Mengirim permintaan serah terima…"]}>Serahkan manifest</SubmitButton>
         </form>
       )}
@@ -175,11 +175,21 @@ export default async function ManifestDetail({ params, searchParams }: { params:
           <div className="progbar" aria-label={`${m.totals.scanned} dari ${m.totals.items} barang`}><i style={{ width: `${m.totals.items ? Math.round((m.totals.scanned / m.totals.items) * 100) : 0}%` }} /></div>
           <b>{m.totals.scanned} dari {m.totals.items} barang</b>
           <ManifestPindai id={m.id} mode="bongkar" />
+          {kurang > 0 && (
+            <form action={terimaSemuaManifest} style={{ marginTop: 12 }}><input type="hidden" name="id" value={m.id} />
+              <SubmitButton className="btn ghost" steps={["Menandai semua barang…"]}>Terima semua sesuai manifest</SubmitButton>
+              <p className="hint" style={{ margin: "6px 0 0" }}>Untuk muatan curah atau banyak barang yang jumlahnya sudah cocok. Tanpa pindai satu per satu.</p>
+            </form>
+          )}
           <form action={selesaiBongkar} style={{ marginTop: 16 }}><input type="hidden" name="id" value={m.id} />
             {kurang > 0 && (<><label className="f" htmlFor="catatan">Catatan selisih (wajib bila jumlah kurang)</label><input id="catatan" name="catatan" required autoComplete="off" placeholder="Contoh: barang 2 dari resi … tidak ada di kontainer" /></>)}
             <SubmitButton className={kurang > 0 ? "btn ghost" : "btn"} style={{ marginTop: 12 }} steps={["Mencocokkan jumlah barang…", "Mencatat barang tiba di gudang…"]}>{kurang > 0 ? `Selesaikan dengan selisih (${kurang} barang kurang)` : "Selesai membongkar"}</SubmitButton>
           </form>
         </div>
+      )}
+
+      {m.status === "UNLOADED" && (role === "HUB_MANAGER" || role === "WAREHOUSE" || role === OWNER_ROLE || role === "FINANCE") && (
+        <Link href={`/app/manifest/${m.id}/berita-acara`} className="btn ghost">Berita Acara Bongkar (cetak)</Link>
       )}
 
       {m.status === "UNLOADED" && bukaKasus.length > 0 && (

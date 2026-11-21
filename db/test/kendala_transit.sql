@@ -7,7 +7,7 @@ INSERT INTO staff_invites(email, full_name, role, branch_id) VALUES
  ('kepala-sub@x.id','Kepala Gudang Surabaya','HUB_MANAGER',(SELECT id FROM branches_partners WHERE code='SUB'));
 INSERT INTO auth.users(id,email) VALUES ('00000000-0000-0000-0000-00000000000c','kepala-jkt@x.id'),('00000000-0000-0000-0000-00000000000d','gudang-sub@x.id'),('00000000-0000-0000-0000-00000000000e','kepala-sub@x.id');
 
-SELECT set_config('t.sub', (SELECT id::text FROM branches_partners WHERE code='SUB'), false), set_config('t.mks', (SELECT id::text FROM branches_partners WHERE code='MKS'), false), set_config('t.jkt', (SELECT id::text FROM branches_partners WHERE code='JKT'), false);
+SELECT set_config('t.mrw', (SELECT id::text FROM branches_partners WHERE code='MRW'), false), set_config('t.sub', (SELECT id::text FROM branches_partners WHERE code='SUB'), false), set_config('t.mks', (SELECT id::text FROM branches_partners WHERE code='MKS'), false), set_config('t.jkt', (SELECT id::text FROM branches_partners WHERE code='JKT'), false);
 -- Resi uji: dua resi Jakarta -> Makassar yang sudah ditimbang
 SELECT t.as_user('00000000-0000-0000-0000-000000000002');
 DO $$ DECLARE a jsonb; b jsonb; c jsonb; BEGIN
@@ -122,82 +122,55 @@ SELECT t.as_user('00000000-0000-0000-0000-000000000005');
 DO $$ BEGIN PERFORM public.manifest_arrive(current_setting('t.mk')::uuid); END $$;
 SELECT t.fails($$select public.manifest_revise_eta(current_setting('t.mk')::uuid, now() + interval '9 days', 'sudah tiba')$$, 'hanya bisa direvisi');
 
--- ================= TRANSIT: Jakarta -> Surabaya -> Makassar =================
-SELECT t.as_user('00000000-0000-0000-0000-000000000002');
-SELECT t.fails($$select public.shipment_set_transit(current_setting('t.k3')::uuid, current_setting('t.sub')::uuid)$$, 'izin');
-SELECT t.as_user('00000000-0000-0000-0000-00000000000b');
-SELECT t.fails($$select public.shipment_set_transit(current_setting('t.k3')::uuid, current_setting('t.sub')::uuid)$$, 'bukan dari gudang');
+-- ================= RESI BERANTAI: Jakarta -> Makassar -> Morowali (satu resi) =================
 SELECT t.as_user('00000000-0000-0000-0000-00000000000c');
-SELECT t.fails($$select public.shipment_set_transit(current_setting('t.k3')::uuid, current_setting('t.mks')::uuid)$$, 'berbeda dari kota asal dan tujuan');
-SELECT t.fails($$select public.shipment_set_transit(current_setting('t.k3')::uuid, current_setting('t.jkt')::uuid)$$, 'berbeda dari kota asal dan tujuan');
 DO $$ DECLARE r jsonb; BEGIN
-  ASSERT (public.shipment_transit_info(current_setting('t.k3')::uuid)->>'canSet')::boolean, 'transit boleh diatur';
-  PERFORM public.shipment_set_transit(current_setting('t.k3')::uuid, current_setting('t.sub')::uuid);
-  r := public.shipment_transit_info(current_setting('t.k3')::uuid);
-  ASSERT r->>'transitCity' = 'Surabaya' AND (r->>'leg')::int = 1, 'transit Surabaya tersimpan';
   r := public.manifest_create('MKS', 'LAUT', NULL, 'KM Lurus', now(), now() + interval '6 days');
-  PERFORM set_config('t.mlurus', r->>'id', false);
-  r := public.manifest_create('SUB', 'LAUT', NULL, 'KM Leg Satu', now(), now() + interval '2 days');
   PERFORM set_config('t.m1', r->>'id', false);
-END $$;
-SELECT t.fails($$select public.manifest_add(current_setting('t.mlurus')::uuid, current_setting('t.rk3'))$$, 'bertransit di Surabaya');
-DO $$ BEGIN
-  ASSERT public.manifest_candidates(current_setting('t.m1')::uuid)::text LIKE '%' || current_setting('t.rk3') || '%', 'resi transit jadi calon muatan leg 1';
   PERFORM public.manifest_add(current_setting('t.m1')::uuid, current_setting('t.rk3'));
   PERFORM public.manifest_seal(current_setting('t.m1')::uuid, 'SEG-L01');
   PERFORM public.manifest_handover_start(current_setting('t.m1')::uuid, '00000000-0000-0000-0000-000000000005');
 END $$;
-SELECT t.fails($$select public.shipment_set_transit(current_setting('t.k3')::uuid, NULL)$$, 'sebelum resi masuk manifest');
 SELECT t.as_user('00000000-0000-0000-0000-000000000005');
 DO $$ BEGIN
   PERFORM public.manifest_handover_accept(current_setting('t.m1')::uuid);
   PERFORM public.manifest_depart(current_setting('t.m1')::uuid);
   PERFORM public.manifest_arrive(current_setting('t.m1')::uuid);
-  PERFORM public.manifest_handover_start(current_setting('t.m1')::uuid, '00000000-0000-0000-0000-00000000000d');
 END $$;
-SELECT t.as_user('00000000-0000-0000-0000-00000000000d');   -- gudang Surabaya
+SELECT t.fails($$select public.manifest_handover_start(current_setting('t.m1')::uuid, '00000000-0000-0000-0000-00000000000a')$$, 'Kepala gudang');
+DO $$ BEGIN PERFORM public.manifest_handover_start(current_setting('t.m1')::uuid, '00000000-0000-0000-0000-00000000000b'); END $$;
+SELECT t.as_user('00000000-0000-0000-0000-00000000000b');   -- Kepala gudang Makassar
+SELECT t.fails($$select public.manifest_unload_report(current_setting('t.m1')::uuid)$$, 'setelah manifest selesai dibongkar');
 DO $$ BEGIN
   PERFORM public.manifest_handover_accept(current_setting('t.m1')::uuid);
   PERFORM public.manifest_scan_unload(current_setting('t.m1')::uuid, current_setting('t.rk3') || '-01');
-  ASSERT (public.manifest_finish_unload(current_setting('t.m1')::uuid)->>'resiSelesai')::int = 1, 'bongkar di Surabaya selesai';
+  ASSERT (public.manifest_finish_unload(current_setting('t.m1')::uuid)->>'resiSelesai')::int = 1, 'bongkar di Makassar selesai';
 END $$;
-RESET ROLE;
-DO $$ BEGIN
-  ASSERT (SELECT status FROM shipments WHERE id = current_setting('t.k3')::uuid) = 'SORTED_INVOICED'
-     AND (SELECT leg FROM shipments WHERE id = current_setting('t.k3')::uuid) = 2, 'singgah di Surabaya: siap dimuat leg 2';
-  ASSERT EXISTS (SELECT 1 FROM tracking_logs WHERE shipment_id = current_setting('t.k3')::uuid AND note LIKE 'Singgah di Gudang Surabaya%'), 'singgah tercatat';
+SELECT t.fails($$select public.manifest_accept_all(current_setting('t.m1')::uuid)$$, 'sudah selesai dibongkar');
+DO $$ DECLARE b jsonb; BEGIN
+  b := public.manifest_unload_report(current_setting('t.m1')::uuid);
+  ASSERT (b->>'expected')::int = 1 AND (b->>'scanned')::int = 1 AND b->>'method' = 'SCAN' AND b->>'dest' = 'Gudang Makassar', 'berita acara bongkar memuat hitungan: ' || b::text;
+  ASSERT jsonb_array_length(b->'rows') = 1 AND jsonb_array_length(public.hub_sort_board()) >= 1, 'papan sortir memuat resi yang dibongkar';
 END $$;
-SELECT t.as_user('00000000-0000-0000-0000-00000000000e');   -- kepala gudang Surabaya melihat resi transit
-DO $$ BEGIN ASSERT public.can_see(current_setting('t.k3')::uuid), 'gudang transit boleh melihat resi'; END $$;
-SELECT t.as_user('00000000-0000-0000-0000-00000000000d');   -- petugas gudang Surabaya yang membongkar memuat leg 2
-DO $$ DECLARE r jsonb; BEGIN
-  r := public.manifest_create('MKS', 'LAUT', NULL, 'KM Leg Dua', now(), now() + interval '4 days');
+-- Penerusan ke Morowali: tetap satu resi
+SELECT t.fails($$select public.shipment_forward(current_setting('t.k3')::uuid, current_setting('t.mks')::uuid, 'LAUT')$$, 'berbeda');
+SELECT t.fails($$select public.shipment_forward(current_setting('t.k3')::uuid, current_setting('t.mrw')::uuid, 'KERETA')$$, 'jalur');
+SELECT t.as_user('00000000-0000-0000-0000-00000000000c');
+SELECT t.fails($$select public.shipment_forward(current_setting('t.k3')::uuid, current_setting('t.mrw')::uuid, 'LAUT')$$, 'tempat barang berada');
+SELECT t.as_user('00000000-0000-0000-0000-00000000000b');
+DO $$ DECLARE g jsonb; r jsonb; BEGIN
+  PERFORM public.shipment_forward(current_setting('t.k3')::uuid, current_setting('t.mrw')::uuid, 'DARAT', 'Lanjut truk ke Morowali');
+  g := public.staff_get_shipment(current_setting('t.k3')::uuid);
+  ASSERT g->>'status' = 'SORTED_INVOICED' AND g->>'mode' = 'DARAT' AND g->'dest'->>'code' = 'MRW', 'resi diteruskan ke Morowali, siap dimuat: ' || (g->>'status');
+  ASSERT jsonb_array_length(g->'legs') = 1 AND g->'legs'->0->>'to' = 'Morowali', 'riwayat leg tercatat';
+  ASSERT public.can_see(current_setting('t.k3')::uuid), 'gudang Makassar tetap melihat resi';
+  r := public.manifest_create('MRW', 'DARAT', NULL, 'Truk Lanjut', now(), now() + interval '2 days');
   PERFORM set_config('t.m2', r->>'id', false);
-  ASSERT public.manifest_candidates(current_setting('t.m2')::uuid)::text LIKE '%' || current_setting('t.rk3') || '%', 'resi jadi calon muatan leg 2';
-END $$;
-SELECT t.fails($$select public.manifest_add(current_setting('t.m1')::uuid, current_setting('t.rk3'))$$, 'bukan dari gudang');
-DO $$ BEGIN
+  ASSERT public.manifest_candidates(current_setting('t.m2')::uuid)::text LIKE '%' || current_setting('t.rk3') || '%', 'resi jadi calon muatan leg berikutnya';
   PERFORM public.manifest_add(current_setting('t.m2')::uuid, current_setting('t.rk3'));
-  PERFORM public.manifest_seal(current_setting('t.m2')::uuid, 'SEG-L02');
-  PERFORM public.manifest_handover_start(current_setting('t.m2')::uuid, '00000000-0000-0000-0000-000000000005');
 END $$;
-SELECT t.as_user('00000000-0000-0000-0000-000000000005');
-DO $$ BEGIN
-  PERFORM public.manifest_handover_accept(current_setting('t.m2')::uuid);
-  PERFORM public.manifest_depart(current_setting('t.m2')::uuid);
-  PERFORM public.manifest_arrive(current_setting('t.m2')::uuid);
-  PERFORM public.manifest_handover_start(current_setting('t.m2')::uuid, '00000000-0000-0000-0000-00000000000a');
-END $$;
-SELECT t.as_user('00000000-0000-0000-0000-00000000000a');   -- gudang Makassar
-DO $$ BEGIN
-  PERFORM public.manifest_handover_accept(current_setting('t.m2')::uuid);
-  PERFORM public.manifest_scan_unload(current_setting('t.m2')::uuid, current_setting('t.rk3') || '-01');
-  PERFORM public.manifest_finish_unload(current_setting('t.m2')::uuid);
-END $$;
+SELECT t.fails($$select public.shipment_forward(current_setting('t.k3')::uuid, current_setting('t.mks')::uuid, 'DARAT')$$, 'tempat barang berada');
 RESET ROLE;
-DO $$ BEGIN
-  ASSERT (SELECT status FROM shipments WHERE id = current_setting('t.k3')::uuid) = 'AT_DEST_HUB', 'leg 2 selesai: tiba di gudang tujuan Makassar';
-END $$;
 SELECT 'kendala_transit OK' AS hasil;
 
 -- ================= FOTO KENDALA (032) =================
