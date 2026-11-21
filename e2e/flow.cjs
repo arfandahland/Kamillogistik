@@ -1286,6 +1286,26 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("AI2 kasir menerbitkan ulang invoice dengan harga manual dan baris biaya bebas", /Invoice INV-\d{4}-\d{6} sebesar Rp1\.050\.000 diterbitkan/.test(await pesan(ki.page)));
     await noOverflow(ki.page, "Form invoice manual (HP)"); await ki.ctx.close();
 
+    // Revisi dan pembatalan resi oleh Kasir
+    const ridR = sqlq(`SELECT s.id FROM shipments s WHERE s.origin_id = (SELECT id FROM branches_partners WHERE code='JKT') AND s.status IN ('CREATED','PICKED_UP','AT_ORIGIN_HUB','SORTED_INVOICED') AND s.manifest_id IS NULL AND NOT EXISTS (SELECT 1 FROM shipment_issues i WHERE i.shipment_id = s.id AND i.status='OPEN') AND NOT EXISTS (SELECT 1 FROM invoices v JOIN payment_allocations pa ON pa.invoice_id = v.id WHERE v.shipment_id = s.id) ORDER BY s.created_at DESC LIMIT 1;`);
+    const kr = await login(browser, "kasir@uji.id", PASS, { width: 390, height: 844 });
+    await kr.page.goto(`${BASE}/app/resi/${ridR}`, { waitUntil: "networkidle" });
+    await kr.page.locator("details.revisi summary").click();
+    await kr.page.fill("#rv-rn", "Penerima Direvisi Kasir"); await kr.page.fill("#rv-ra", "Jl. Alamat Baru No. 7, Makassar"); await kr.page.fill("#rv-al", "Pelanggan pindah alamat");
+    await act(kr.page, kr.page.getByRole("button", { name: "Simpan perubahan" }));
+    const rt = await kr.page.locator("main").innerText();
+    ok("AI3 Kasir merevisi nama dan alamat penerima; riwayat perubahan mencatat nilai sebelum dan sesudah", /Data resi diperbarui/.test(rt) && /Riwayat perubahan data/.test(rt) && /→ Penerima Direvisi Kasir/.test(rt) && /Pelanggan pindah alamat/.test(rt), rt.slice(0, 160));
+    await noOverflow(kr.page, "Revisi resi (HP)");
+    await kr.page.locator("details.revisi summary").click();
+    await kr.page.fill("#bt-al", "Salah rute, dibuat ulang");
+    await act(kr.page, kr.page.getByRole("button", { name: "Batalkan resi ini" }));
+    ok("AI4 Kasir membatalkan resi dengan alasan; status menjadi Dibatalkan", /Resi dibatalkan/.test(await pesan(kr.page)) && /Dibatalkan/.test(await kr.page.locator("main").innerText()));
+    await kr.ctx.close();
+    const mr = await login(browser, "manajer@uji.id", PASS, { width: 390, height: 844 });
+    await mr.page.goto(`${BASE}/app/resi/${ridR}`, { waitUntil: "networkidle" });
+    ok("AI5 Kepala gudang melihat riwayat perubahan tetapi tidak punya form revisi", (await mr.page.locator("details.revisi").count()) === 0 && /Riwayat perubahan data/.test(await mr.page.locator("main").innerText()));
+    await mr.ctx.close();
+
     // Pre-booking antar sendiri dari website
     const pb = await (await browser.newContext({ viewport: { width: 390, height: 844 } })).newPage();
     await pb.goto(`${BASE}/jemput`, { waitUntil: "networkidle" });

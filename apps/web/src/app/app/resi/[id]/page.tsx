@@ -11,6 +11,7 @@ import PodForm from "@/components/PodForm";
 import KondisiForm from "@/components/KondisiForm";
 import KendalaPanel from "@/components/KendalaPanel";
 import InvoiceForm from "@/components/InvoiceForm";
+import RevisiPanel from "@/components/RevisiPanel";
 import { catatTerima, lanjut, periksa, serahkan, terima, timbang } from "../../actions";
 
 type Detail = {
@@ -233,6 +234,7 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
       )}
 
       <KendalaPanel shipmentId={s.id} role={role} status={s.status} />
+      <RevisiPanel s={s} role={role} />
 
       <div className="card">
         <h2>Riwayat</h2>
