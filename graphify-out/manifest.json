@@ -174,9 +174,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/actions.ts": {
-    "mtime": 1795252207.611832,
-    "seen": 1795252319.0165744,
-    "ast_hash": "7c63dfbf9d7a3cb85dc4a6e7cec74a38",
+    "mtime": 1795266348.6766279,
+    "seen": 1795266524.531969,
+    "ast_hash": "2519db4f245344958cf2d75ddeabd1be",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/admin-actions.ts": {
@@ -192,9 +192,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/baru/page.tsx": {
-    "mtime": 1795252207.6114867,
-    "seen": 1795252319.01662,
-    "ast_hash": "0f644bb5dac20e67a36ec82352e76676",
+    "mtime": 1795266348.6768417,
+    "seen": 1795266524.5320387,
+    "ast_hash": "f303ba598495071b24be91967c9820c5",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/cari/page.tsx": {
@@ -300,9 +300,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/manifest/[id]/page.tsx": {
-    "mtime": 1795252905.5430446,
-    "seen": 1795253053.7418964,
-    "ast_hash": "65a223c89723f96e28016cc96fb366d3",
+    "mtime": 1795266452.138879,
+    "seen": 1795266524.5333195,
+    "ast_hash": "ae51c78d4f23cec42e28b3cc8225a095",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/manifest/actions.ts": {
@@ -312,15 +312,15 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/manifest/baru/page.tsx": {
-    "mtime": 1794984074.0243957,
-    "seen": 1795104170.4403877,
-    "ast_hash": "bd74205007b238af5b5d350977bbe85c",
+    "mtime": 1795266452.1383162,
+    "seen": 1795266524.5334346,
+    "ast_hash": "7461f61074af252fb75b1ea94be1cf48",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/manifest/page.tsx": {
-    "mtime": 1795258044.9239962,
-    "seen": 1795258185.7512913,
-    "ast_hash": "14472fefc5a971803e9b138bfcbc9ed4",
+    "mtime": 1795266452.1385293,
+    "seen": 1795266524.5334375,
+    "ast_hash": "07c0c5adbcf78802f86afcfbada50642",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/mitra/page.tsx": {
@@ -354,9 +354,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/pindai/actions.ts": {
-    "mtime": 1794984139.3325388,
-    "seen": 1795104170.4403954,
-    "ast_hash": "f07854f2ae32efcddc5ab602269c7c56",
+    "mtime": 1795266386.9324453,
+    "seen": 1795266524.5337992,
+    "ast_hash": "033062460c3b7e144036c75a4e65a60d",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/pindai/page.tsx": {
@@ -366,9 +366,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/resi/[id]/cetak/page.tsx": {
-    "mtime": 1795244029.3142204,
-    "seen": 1795245335.0387914,
-    "ast_hash": "7d8d17bec75a8ff51987e32703df07c8",
+    "mtime": 1795266426.477509,
+    "seen": 1795266524.5339007,
+    "ast_hash": "0dcfdeb20fd73e30e4962bdb99e28a77",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/resi/[id]/loading.tsx": {
@@ -378,9 +378,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/resi/[id]/page.tsx": {
-    "mtime": 1795258021.8674874,
-    "seen": 1795258185.7516656,
-    "ast_hash": "4f7bf4b82f87f6f87ed1c0104b91922c",
+    "mtime": 1795266386.932019,
+    "seen": 1795266524.5339406,
+    "ast_hash": "d2c784ecb488c2a9082db082635c985f",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/ringkasan/page.tsx": {
@@ -618,9 +618,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/LabelStudio.tsx": {
-    "mtime": 1794983199.6275744,
-    "seen": 1795104170.440437,
-    "ast_hash": "a35ed0c019860f0797ff307832f11fda",
+    "mtime": 1795266426.477171,
+    "seen": 1795266524.5360317,
+    "ast_hash": "5c182d8cab9708b74cc30e7f4640094a",
     "semantic_hash": ""
   },
   "apps/web/src/components/LamarForm.tsx": {
@@ -756,9 +756,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/StaffShell.tsx": {
-    "mtime": 1795258050.7322106,
-    "seen": 1795258185.7542393,
-    "ast_hash": "f27eb2dc078b0ab8ea71a84e2ea77e23",
+    "mtime": 1795266386.932628,
+    "seen": 1795266524.5371037,
+    "ast_hash": "81d7cadfc38e479be62827d79b10aceb",
     "semantic_hash": ""
   },
   "apps/web/src/components/SubmitButton.tsx": {
@@ -900,9 +900,9 @@
     "semantic_hash": ""
   },
   "db/test/run.sh": {
-    "mtime": 1795257984.375892,
-    "seen": 1795258185.7563403,
-    "ast_hash": "538a1db1a36df48cf3ec0d471680c172",
+    "mtime": 1795266282.6705456,
+    "seen": 1795266524.5399652,
+    "ast_hash": "0ce94c93f72eb4517fc20c365bb59204",
     "semantic_hash": ""
   },
   "db/test/tariff-cases.json": {
@@ -924,9 +924,9 @@
     "semantic_hash": ""
   },
   "e2e/flow.cjs": {
-    "mtime": 1795265929.2771842,
-    "seen": 1795265975.8456883,
-    "ast_hash": "49649921ccb257ec4dff471b627bba58",
+    "mtime": 1795266465.622609,
+    "seen": 1795266524.540109,
+    "ast_hash": "b4da05da770916a6f1846ab5240b3818",
     "semantic_hash": ""
   },
   "e2e/kamera.cjs": {
@@ -954,9 +954,9 @@
     "semantic_hash": ""
   },
   "e2e/setup.sh": {
-    "mtime": 1795257984.3803265,
-    "seen": 1795258185.7565591,
-    "ast_hash": "b9ef57a0724113196614f25463bb5940",
+    "mtime": 1795266282.6722429,
+    "seen": 1795266524.5402746,
+    "ast_hash": "a466b0e3f1c698a2c2f64208b9eb5788",
     "semantic_hash": ""
   },
   "e2e/skenario.cjs": {
@@ -1962,9 +1962,9 @@
     "semantic_hash": ""
   },
   "docs/FITUR-PER-PERAN.md": {
-    "mtime": 1795253007.379714,
-    "seen": 1795253053.7473826,
-    "ast_hash": "7ddfd89c790a833c46533a8eff800486",
+    "mtime": 1795266480.3769896,
+    "seen": 1795266524.541679,
+    "ast_hash": "40165658166f9157cd1768bc3e1d2bd1",
     "semantic_hash": ""
   },
   "apps/web/vercel.json": {
@@ -1992,9 +1992,9 @@
     "semantic_hash": ""
   },
   "docs/cara-kerja.html": {
-    "mtime": 1795253001.7950952,
-    "seen": 1795253053.747447,
-    "ast_hash": "98cf666920414eba2df9c8194f79ad58",
+    "mtime": 1795266480.3769896,
+    "seen": 1795266524.541777,
+    "ast_hash": "3316efcacd2e04b5fc7b56fc5fadf270",
     "semantic_hash": ""
   },
   "docs/CARA-KERJA-APLIKASI.pdf": {
@@ -8636,7 +8636,7 @@
   "db/test/revisi_resi.sql": {
     "mtime": 1795258005.8491936,
     "seen": 1795263379.758614,
-    "ast_hash": "24b4b6ec5e1b66b6b12d990e3ad83364",
+    "ast_hash": "",
     "semantic_hash": ""
   },
   "apps/web/src/components/TutupResiPanel.tsx": {
@@ -8727,6 +8727,18 @@
     "mtime": 1795257996.093974,
     "seen": 1795263379.7585845,
     "ast_hash": "a8e3cbe3229c37f6820ec89cdcc082c0",
+    "semantic_hash": ""
+  },
+  "apps/web/src/app/app/timbang/actions.ts": {
+    "mtime": 1795266368.9071848,
+    "seen": 1795266524.5343382,
+    "ast_hash": "beb233d291b40c86a9e60fe9bcc99090",
+    "semantic_hash": ""
+  },
+  "apps/web/src/app/app/timbang/page.tsx": {
+    "mtime": 1795266368.9108005,
+    "seen": 1795266524.5343413,
+    "ast_hash": "6e56ab653ab31522f57de74fc6d827c4",
     "semantic_hash": ""
   },
   "package-lock.json": {
