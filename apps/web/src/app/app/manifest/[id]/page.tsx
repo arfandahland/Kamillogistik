@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { MANIFEST_STATUS_LABEL, MODA_LABEL } from "@kamil/core";
 import Icon from "@/components/Icon";
+import BiayaManifest from "@/components/BiayaManifest";
 import SubmitButton from "@/components/SubmitButton";
 import ManifestPindai from "@/components/ManifestPindai";
 import { tanggalWaktu } from "@/lib/brand";
@@ -141,6 +142,8 @@ export default async function ManifestDetail({ params, searchParams }: { params:
           <SubmitButton className="btn ghost" style={{ marginTop: 12 }} steps={["Memeriksa penerima…", "Mengirim permintaan serah terima…"]}>Serahkan manifest</SubmitButton>
         </form>
       )}
+
+      {role === "HUB_MANAGER" && atOrigin && <BiayaManifest manifestId={m.id} kembali={`/app/manifest/${m.id}`} />}
 
       {(m.status === "SEALED" || m.status === "IN_TRANSIT") && sopir && (role === "HUB_MANAGER" || m.iAmHolder) && (
         <form action={revisiEta} className="card">

@@ -1,0 +1,60 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { requireRole } from "@/lib/auth";
+import { staffRpc } from "@/lib/supabase/server";
+import { rupiah } from "@/lib/brand";
+
+export const metadata: Metadata = { title: "Margin Manifest dan Rute" };
+type Lap = { total: { pendapatan: number; biaya: number; margin: number; manifest: number; tanpaBiaya: number };
+  manifest: { id: string; code: string; status: string; mode: string; asal: string; tujuan: string; resi: number; pendapatan: number; biaya: number; margin: number; adaBiaya: boolean }[];
+  rute: { asal: string; tujuan: string; manifest: number; pendapatan: number; biaya: number; margin: number }[] };
+const wita = () => new Date(Date.now() + 8 * 3600_000).toISOString().slice(0, 10);
+const tglOk = (v?: string) => (/^\d{4}-\d{2}-\d{2}$/.test(v ?? "") ? v! : null);
+
+export default async function Margin({ searchParams }: { searchParams: Promise<{ dari?: string; sampai?: string }> }) {
+  await requireRole(["SUPER_ADMIN", "FINANCE"]);
+  const sp = await searchParams, hariIni = wita();
+  const dari = tglOk(sp.dari) ?? hariIni.slice(0, 8) + "01", sampai = tglOk(sp.sampai) ?? hariIni;
+  const r = await staffRpc<Lap>("margin_report", { p_from: dari, p_to: sampai });
+  const d = r.data;
+  const warna = (n: number) => (n < 0 ? "down" : "up");
+  return (
+    <main className="wrap stack" style={{ paddingTop: 8 }}>
+      <h1>Margin manifest dan rute</h1>
+      <p className="muted" style={{ marginTop: -6 }}>Pendapatan dari tagihan resi dikurangi biaya operasional yang dicatat per manifest. Manifest yang masih terbuka tidak dihitung.</p>
+      <form className="card stack" method="get">
+        <div className="row"><div><label className="f" htmlFor="m-dari">Dari</label><input id="m-dari" name="dari" type="date" defaultValue={dari} /></div>
+          <div><label className="f" htmlFor="m-sampai">Sampai</label><input id="m-sampai" name="sampai" type="date" defaultValue={sampai} /></div></div>
+        <button className="btn ghost">Tampilkan</button>
+      </form>
+      {r.error && <div className="err">{r.error}</div>}
+      {d && (
+        <>
+          <div className="stats" style={{ marginTop: 12 }}>
+            <div className="stat"><b>{rupiah(d.total.pendapatan)}</b><span>Pendapatan</span></div>
+            <div className="stat warm"><b>{rupiah(d.total.biaya)}</b><span>Biaya tercatat</span></div>
+            <div className="stat"><b className={warna(d.total.margin)}>{rupiah(d.total.margin)}</b><span>Margin</span></div>
+            <div className="stat warm"><b>{d.total.tanpaBiaya}</b><span>Manifest belum ada biaya</span></div>
+          </div>
+          {d.total.tanpaBiaya > 0 && <p className="hint" style={{ margin: 0 }}>{d.total.tanpaBiaya} dari {d.total.manifest} manifest belum punya biaya, jadi margin totalnya masih terlalu tinggi. Lengkapi dulu agar akurat.</p>}
+          <h2 style={{ margin: "6px 2px -4px" }}>Per rute</h2>
+          <div className="card" style={{ overflowX: "auto" }}>
+            <table><thead><tr><th>Rute</th><th>Manifest</th><th>Pendapatan</th><th>Biaya</th><th>Margin</th></tr></thead>
+              <tbody>{d.rute.map((x) => <tr key={x.asal + x.tujuan}><td><b>{x.asal} → {x.tujuan}</b></td><td>{x.manifest}</td><td>{rupiah(x.pendapatan)}</td><td>{rupiah(x.biaya)}</td><td className={warna(x.margin)}><b>{rupiah(x.margin)}</b></td></tr>)}
+                {d.rute.length === 0 && <tr><td colSpan={5} className="muted">Belum ada manifest pada periode ini.</td></tr>}</tbody></table>
+          </div>
+          <h2 style={{ margin: "6px 2px -4px" }}>Per manifest</h2>
+          <div className="stagger">
+            {d.manifest.map((m) => (
+              <Link key={m.id} href={`/app/margin/${m.id}`} className="card resi lift">
+                <span className="meta"><span className="toprow"><b className="no">{m.code}</b><span className={`pill ${m.adaBiaya ? "" : "new"}`}>{m.adaBiaya ? "Ada biaya" : "Belum ada biaya"}</span></span>
+                  <small>{m.asal} → {m.tujuan} · {m.resi} resi</small>
+                  <small>Pendapatan {rupiah(m.pendapatan)} · biaya {rupiah(m.biaya)} · margin <b className={warna(m.margin)}>{rupiah(m.margin)}</b></small></span>
+              </Link>
+            ))}
+          </div>
+        </>
+      )}
+    </main>
+  );
+}

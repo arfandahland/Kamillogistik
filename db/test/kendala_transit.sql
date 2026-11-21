@@ -199,3 +199,22 @@ DO $$ BEGIN
   ASSERT (SELECT status FROM shipments WHERE id = current_setting('t.k3')::uuid) = 'AT_DEST_HUB', 'leg 2 selesai: tiba di gudang tujuan Makassar';
 END $$;
 SELECT 'kendala_transit OK' AS hasil;
+
+-- ================= FOTO KENDALA (032) =================
+RESET ROLE;
+UPDATE shipments SET status = 'SORTED_INVOICED', current_holder_user_id = '00000000-0000-0000-0000-00000000000c', manifest_id = NULL WHERE id = current_setting('t.k1')::uuid;
+SELECT t.as_user('00000000-0000-0000-0000-00000000000c');
+SELECT t.fails($$select public.issue_open(current_setting('t.k1')::uuid, 'RUSAK', 'kardus penyok', '["data:image/png;base64,AAAA"]'::jsonb)$$, 'JPEG');
+SELECT t.fails($$select public.issue_open(current_setting('t.k1')::uuid, 'RUSAK', 'kardus penyok', '["data:image/jpeg;base64,AA","data:image/jpeg;base64,AA","data:image/jpeg;base64,AA","data:image/jpeg;base64,AA"]'::jsonb)$$, 'paling banyak 3');
+DO $$ DECLARE r jsonb; BEGIN
+  r := public.issue_open(current_setting('t.k1')::uuid, 'RUSAK', 'Kardus penyok di sudut', '["data:image/jpeg;base64,/9j/AAAA","data:image/jpeg;base64,/9j/BBBB"]'::jsonb);
+  ASSERT (r->>'photos')::int = 2, 'dua foto tersimpan';
+  PERFORM set_config('t.ik', r->>'id', false);
+  ASSERT (public.issue_for_shipment(current_setting('t.k1')::uuid)->0->>'foto')::int = 2, 'jumlah foto tampil di resi';
+  ASSERT public.issue_photo_get(current_setting('t.ik')::uuid, 1) LIKE 'data:image/jpeg%', 'foto bisa dibaca petugas yang berhak';
+END $$;
+SELECT t.as_user('00000000-0000-0000-0000-00000000000e');   -- kepala gudang Surabaya, tidak terkait resi ini
+SELECT t.fails($$select public.issue_photo_get(current_setting('t.ik')::uuid, 1)$$, 'bukan tugas');
+SELECT t.as_anon();
+SELECT t.fails($$select public.issue_photo_get(current_setting('t.ik')::uuid, 1)$$, 'permission denied');
+SELECT 'foto_kendala OK' AS hasil;

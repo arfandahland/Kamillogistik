@@ -17,7 +17,7 @@ export default function StaffShell({ me, pending, children, forceFull }: { me: M
   const tabs = me.role === "HRD"
     ? [{ href: "/app/rekrutmen", label: "Dashboard", icon: "chart" }, { href: "/app/lamaran", label: "Lamaran", icon: "users" }, { href: "/app/pegawai", label: "Pegawai", icon: "user" }, { href: "/app/akun", label: "Akun", icon: "user" }]
     : me.role === "FINANCE"
-    ? [{ href: "/app/keuangan", label: "Keuangan", icon: "cash", also: ["/app/keuangan/komisi"] }, { href: "/app/tagihan", label: "Tagihan", icon: "file" }, { href: "/app/laporan", label: "Laporan", icon: "chart" }, { href: "/app/akun", label: "Akun", icon: "user" }]
+    ? [{ href: "/app/keuangan", label: "Keuangan", icon: "cash", also: ["/app/keuangan/komisi"] }, { href: "/app/tagihan", label: "Tagihan", icon: "file" }, { href: "/app/laporan", label: "Laporan", icon: "chart" }, { href: "/app/margin", label: "Margin", icon: "tag" }, { href: "/app/akun", label: "Akun", icon: "user" }]
     : me.role === "CS_SALES"
     ? [{ href: "/app", label: "Beranda", icon: "home" }, { href: "/app/baru", label: "Resi baru", icon: "plus" }, { href: "/app/jemput", label: "Jemput", icon: "truck" }, { href: "/app/klaim", label: "Klaim", icon: "shield" }, { href: "/app/akun", label: "Akun", icon: "user" }]
     : me.role === "KONTEN"
@@ -27,7 +27,7 @@ export default function StaffShell({ me, pending, children, forceFull }: { me: M
         { href: "/app", label: "Pantauan", icon: "chart" },
         { href: "/app/semua", label: "Resi", icon: "list" },
         { href: "/app/keuangan", label: "Keuangan", icon: "cash", also: ["/app/tagihan"] },
-        { href: "/app/kelola", label: "Kelola", icon: "grid", also: ["/app/laporan", "/app/jemput", "/app/klaim", "/app/peta", "/app/ringkasan", "/app/tarif", "/app/keuangan/komisi", "/app/tindak-lanjut", "/app/cari", "/app/mitra", "/app/korporat", "/app/petugas", "/app/tarif", "/app/pengaturan", "/app/kendala", "/app/pegawai"] },
+        { href: "/app/kelola", label: "Kelola", icon: "grid", also: ["/app/laporan", "/app/jemput", "/app/klaim", "/app/peta", "/app/ringkasan", "/app/tarif", "/app/keuangan/komisi", "/app/tindak-lanjut", "/app/cari", "/app/mitra", "/app/korporat", "/app/petugas", "/app/tarif", "/app/pengaturan", "/app/kendala", "/app/pegawai", "/app/margin"] },
         { href: "/app/akun", label: "Akun", icon: "user" },
       ]
     : [
@@ -52,6 +52,7 @@ export default function StaffShell({ me, pending, children, forceFull }: { me: M
         { href: "/app/manifest", label: "Manifest", icon: "layers" },
         { href: "/app/keuangan", label: "Keuangan", icon: "cash" },
         { href: "/app/tagihan", label: "Tagihan", icon: "file" },
+        { href: "/app/margin", label: "Margin manifest", icon: "tag" },
         { href: "/app/mitra", label: "Mitra dan cabang", icon: "store" },
         { href: "/app/korporat", label: "Pelanggan korporat", icon: "building" },
         { href: "/app/petugas", label: "Petugas", icon: "users" },

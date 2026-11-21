@@ -12,6 +12,7 @@ const ITEMS = [
   { href: "/app/peta", icon: "pin", t: "Peta pantauan", d: "Posisi muatan antar kota, muatan yang terlambat, dan kota yang tertahan." },
   { href: "/app/ringkasan", icon: "chart", t: "Ringkasan harian", d: "Resi baru, terkirim, uang masuk, masalah, dan kinerja tiap mitra. Bisa dibagikan ke WhatsApp." },
   { href: "/app/tindak-lanjut", icon: "chat", t: "Perlu dihubungi", d: "Pantau pelanggan yang menunggu kabar: belum dijemput, belum diantar, tagihan jatuh tempo." },
+  { href: "/app/margin", icon: "tag", t: "Margin manifest dan rute", d: "Pendapatan dikurangi biaya kapal, armada, dan pelabuhan per manifest dan per rute." },
   { href: "/app/pegawai", icon: "user", t: "Kepegawaian", d: "Dokumen dan masa berlakunya, shift, absensi, cuti dan izin, serta rekap kerja untuk penggajian." },
   { href: "/app/kendala", icon: "alert", t: "Kendala pengiriman", d: "Salah sortir, barang rusak, gagal kirim, retur, dan barang ditahan yang belum selesai." },
   { href: "/app/mitra", icon: "store", t: "Mitra dan cabang", d: "Daftarkan gerai mitra, gudang, rekanan, dan pelabuhan beserta komisinya." },

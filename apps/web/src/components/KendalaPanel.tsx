@@ -1,9 +1,10 @@
 import { staffRpc } from "@/lib/supabase/server";
 import { tanggalWaktu } from "@/lib/brand";
 import SubmitButton from "./SubmitButton";
-import { aturTransit, laporKendala, selesaikanKendala } from "@/app/app/kendala/actions";
+import KendalaLaporForm from "./KendalaLaporForm";
+import { aturTransit, selesaikanKendala } from "@/app/app/kendala/actions";
 
-type Issue = { id: string; kind: string; label: string; status: "OPEN" | "RESOLVED"; note: string; openedBy: string | null; openedAt: string; resolution: string | null; resolutionNote: string | null; resolvedAt: string | null };
+type Issue = { id: string; kind: string; label: string; status: "OPEN" | "RESOLVED"; note: string; openedBy: string | null; openedAt: string; resolution: string | null; resolutionNote: string | null; resolvedAt: string | null; foto?: number };
 type Transit = { transitId: string | null; transitCity: string | null; leg: number; canSet: boolean; options: { id: string; city: string; name: string }[] };
 const JENIS: [string, string][] = [["SALAH_SORTIR", "Salah sortir (masuk rak atau tujuan keliru)"], ["RUSAK", "Barang rusak atau kurang jumlah"], ["GAGAL_KIRIM", "Gagal kirim (penerima tidak ada atau menunda)"], ["RETUR", "Retur (barang dikembalikan)"], ["HOLD", "Ditahan (tunggu keputusan)"]];
 
@@ -29,6 +30,7 @@ export default async function KendalaPanel({ shipmentId, role, status }: { shipm
             <div key={i.id} className="stack" style={{ borderTop: "1px solid var(--line)", paddingTop: 10, marginTop: 10 }}>
               <p style={{ margin: 0 }}><span className={`pill ${i.status === "OPEN" ? "new" : "done"}`}>{i.status === "OPEN" ? "Terbuka" : "Selesai"}</span> <b>{i.label}</b></p>
               <p className="muted" style={{ margin: 0 }}>{i.note}<br /><small>Dilaporkan {tanggalWaktu(i.openedAt)}{i.openedBy ? ` oleh ${i.openedBy}` : ""}</small></p>
+              {(i.foto ?? 0) > 0 && <div className="kfotos">{Array.from({ length: i.foto! }, (_, k) => <a key={k} className="kfoto" href={`/app/foto-kendala/${i.id}/${k + 1}`} target="_blank" rel="noopener noreferrer"><img src={`/app/foto-kendala/${i.id}/${k + 1}`} alt={`Foto bukti ${k + 1}`} loading="lazy" /></a>)}</div>}
               {i.status === "RESOLVED" && <p className="muted" style={{ margin: 0 }}>{i.resolution === "RETUR_SELESAI" ? "Dikembalikan ke pengirim" : "Dilanjutkan"}: {i.resolutionNote}</p>}
               {i.status === "OPEN" && kepala && (
                 <form action={selesaikanKendala} className="stack">
@@ -47,20 +49,7 @@ export default async function KendalaPanel({ shipmentId, role, status }: { shipm
           ))}
         </div>
       )}
-      {lapor && (
-        <form action={laporKendala} className="card stack">
-          <h2>Laporkan kendala</h2>
-          <input type="hidden" name="id" value={shipmentId} />
-          <label className="f" htmlFor="jenis-kendala">Jenis kendala</label>
-          <select id="jenis-kendala" name="jenis" required defaultValue="">
-            <option value="" disabled>Pilih jenis…</option>
-            {opsi.map(([k, v]) => <option key={k} value={k}>{v}</option>)}
-          </select>
-          <label className="f" htmlFor="catatan-kendala">Apa yang terjadi</label>
-          <textarea id="catatan-kendala" name="catatan" required minLength={3} rows={3} placeholder="Tulis singkat dan jelas" />
-          <SubmitButton className="btn ghost" steps={["Mencatat kendala…"]}>Laporkan kendala</SubmitButton>
-        </form>
-      )}
+      {lapor && <KendalaLaporForm id={shipmentId} opsi={opsi} />}
       {t && (t.transitId || (kepala && t.canSet)) && (
         <div className="card stack">
           <h2>Transit antar gudang</h2>
