@@ -8,7 +8,7 @@ SELECT t.fails($$select public.create_shipment('jakarta-makassar-port-to-door-kg
 SELECT t.fails($$select public.create_shipment('jakarta-makassar-port-to-door-kg','A','0811','B','0822','Alamat',1,NULL,NULL,'KIRIM_SENDIRI','x')$$, 'cara barang masuk');
 DO $$ DECLARE r jsonb; BEGIN
   r := public.create_shipment('jakarta-makassar-port-to-door-kg','Pelanggan Datang','0811','Budi','0822','Makassar',2,NULL,NULL,'DROPOFF',NULL);
-  ASSERT r->>'resiNo' ~ '^KLX-JKT-MKS-LA-[0-9]{6}-[0-9]{4}-[0-9]{4}-[A-Z]{2}$', 'kode antar sendiri memuat LA: ' || (r->>'resiNo');
+  ASSERT r->>'resiNo' ~ '^KML-JKT-MKS-LA-[0-9]{6}-[0-9]{4}-[0-9]{4}-[A-Z]{2}$', 'kode antar sendiri memuat LA: ' || (r->>'resiNo');
   PERFORM set_config('t.drop', r->>'id', false);
   r := public.create_shipment('jakarta-makassar-port-to-door-kg','Dijemput','0811','Budi','0822','Makassar',1,NULL,NULL,'PICKUP','Jl. Jemput 5');
   ASSERT r->>'resiNo' ~ '-LJ-', 'kode dijemput memuat LJ';
@@ -37,7 +37,7 @@ DO $$ DECLARE r jsonb; g jsonb; BEGIN
   ASSERT g->>'pickupType' = 'DROPOFF' AND g->>'mode' = 'LAUT' AND (g->>'iAmHolder')::boolean, 'gudang jadi pemegang; detail memuat cara masuk dan moda';
   ASSERT g->>'next' = 'SORTED_INVOICED', 'berikutnya ditimbang';
   r := public.measure_shipment(current_setting('t.drop')::uuid, '[{"weightKg":10},{"weightKg":12}]'::jsonb);
-  ASSERT (r->>'total')::bigint > 0, 'bisa ditimbang dan ditagih';
+  ASSERT (r->>'weighed')::boolean, 'bisa ditimbang';
 END $$;
 
 -- ---------- Pencarian lewat kode ----------
@@ -50,12 +50,12 @@ DO $$ DECLARE f jsonb; rn text; BEGIN
   f := public.staff_find_shipment(replace(rn, '-', ' '));
   ASSERT f->>'id' = current_setting('t.drop'), 'spasi diganti tanda hubung';
 END $$;
-SELECT t.fails($$select public.staff_find_shipment('KLX-JKT-MKS-LJ-000000-0000-0000-X')$$, 'tidak dikenali');
+SELECT t.fails($$select public.staff_find_shipment('KML-JKT-MKS-LJ-000000-0000-0000-X')$$, 'tidak dikenali');
 SELECT t.fails($$select public.staff_find_shipment('x')$$, 'tidak dikenali');
 SELECT t.as_user('00000000-0000-0000-0000-000000000009');   -- orang luar tanpa peran
-SELECT t.fails($$select public.staff_find_shipment('KLX-JKT-MKS-LA-000000-0000-0001-X')$$, 'belum terdaftar');
+SELECT t.fails($$select public.staff_find_shipment('KML-JKT-MKS-LA-000000-0000-0001-X')$$, 'belum terdaftar');
 SELECT t.as_anon();
-SELECT t.fails($$select public.staff_find_shipment('KLX-JKT-MKS-LA-000000-0000-0001-X')$$, 'permission denied');
+SELECT t.fails($$select public.staff_find_shipment('KML-JKT-MKS-LA-000000-0000-0001-X')$$, 'permission denied');
 -- Lacak publik menerima kode resi dan kode barang
 DO $$ DECLARE j jsonb; BEGIN
   j := public.public_track(current_setting('t.rn'));

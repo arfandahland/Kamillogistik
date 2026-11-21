@@ -49,11 +49,15 @@ DO $$ DECLARE m1 jsonb; m2 jsonb; BEGIN
   PERFORM t.inspect(current_setting('t.rb2b')::uuid, 'ORIGIN_HUB'); PERFORM t.inspect(current_setting('t.rret')::uuid, 'ORIGIN_HUB');
   PERFORM public.advance_shipment(current_setting('t.rb2b')::uuid, 'AT_ORIGIN_HUB');
   PERFORM public.advance_shipment(current_setting('t.rret')::uuid, 'AT_ORIGIN_HUB');
-  m1 := public.measure_shipment(current_setting('t.rb2b')::uuid, '[{"weightKg":10}]'::jsonb);
-  m2 := public.measure_shipment(current_setting('t.rret')::uuid, '[{"weightKg":10}]'::jsonb);
+  PERFORM public.measure_shipment(current_setting('t.rb2b')::uuid, '[{"weightKg":10}]'::jsonb);
+  PERFORM public.measure_shipment(current_setting('t.rret')::uuid, '[{"weightKg":10}]'::jsonb);
+END $$;
+SELECT t.as_user('00000000-0000-0000-0000-000000000002');   -- kasir mengisi harga manual masing-masing
+DO $$ DECLARE m1 jsonb; m2 jsonb; BEGIN
+  m1 := public.invoice_issue(current_setting('t.rb2b')::uuid, 'KG', 10, 2000);
+  m2 := public.invoice_issue(current_setting('t.rret')::uuid, 'KG', 10, 2500);
   ASSERT (m1->>'total')::bigint = 20000, 'B2B: 10 kg x Rp2.000 = Rp20.000, dapat ' || (m1->>'total');
-  ASSERT (m1->'calc'->>'unitPrice')::bigint = 2000, 'rincian tagihan memuat harga khusus';
-  ASSERT (m2->>'total')::bigint = 10 * (m2->'calc'->>'unitPrice')::bigint AND (m2->'calc'->>'unitPrice')::bigint <> 2000, 'ritel tetap tarif normal: ' || (m2->>'total');
+  ASSERT (m2->>'total')::bigint = 25000, 'ritel: harga manual kasir';
 END $$;
 RESET ROLE;
 DO $$ BEGIN

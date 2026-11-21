@@ -12,9 +12,9 @@ describe("kode manifest", () => {
   it("menolak salah ketik dan kode resi biasa", () => {
     const k = buat("MNF-MKS-JKT-U-261118-1432-02");
     expect(parseManifest(k.replace("-02-", "-03-"))).toBeNull();
-    expect(parseManifest("KLX-MKS-JKT-LJ-261118-1432-0007-P")).toBeNull();
+    expect(parseManifest("KML-MKS-JKT-LJ-261118-1432-0007-P")).toBeNull();
     expect(isManifestCode(k)).toBe(true);
-    expect(isManifestCode("KLX-MKS-JKT-LJ-261118-1432-0007-P")).toBe(false);
+    expect(isManifestCode("KML-MKS-JKT-LJ-261118-1432-0007-P")).toBe(false);
   });
   it("langkah muat sampai bongkar mengarah ke manifest, bukan tombol per resi", () => {
     expect(nextAction("WAREHOUSE", "SORTED_INVOICED")).toMatchObject({ kind: "manifest" });

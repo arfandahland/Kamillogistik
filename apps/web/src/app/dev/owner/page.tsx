@@ -22,9 +22,9 @@ function sample(): Data {
       { code: "AT_ORIGIN_HUB", level: "warn", title: "Di gudang asal tapi belum ditimbang (lebih dari 48 jam)", count: 1, items: [{ id: "3", resiNo: "KLX-2611-000127" }] },
     ],
     recent: [
-      { id: "1", resiNo: "KLX-JKT-MKS-LJ-261117-1415-0005-VW", status: "OUT_FOR_DELIVERY", at: "2026-11-18T01:20:00Z", by: "Budi (Kurir)", location: "Gudang Makassar" },
-      { id: "2", resiNo: "KLX-JKT-MKS-LJ-261116-0930-0004-VM", status: "SORTED_INVOICED", at: "2026-11-18T00:50:00Z", by: "Sari (Gudang)", location: "Gudang Jakarta" },
-      { id: "3", resiNo: "KLX-JKT-MKS-LJ-261115-1100-0003-KE", status: "IN_TRANSIT_SEA", at: "2026-11-17T23:10:00Z", by: "Andi (Kontainer)", location: "Pelabuhan Jakarta" },
+      { id: "1", resiNo: "KML-JKT-MKS-LJ-261117-1415-0005-UJ", status: "OUT_FOR_DELIVERY", at: "2026-11-18T01:20:00Z", by: "Budi (Kurir)", location: "Gudang Makassar" },
+      { id: "2", resiNo: "KML-JKT-MKS-LJ-261116-0930-0004-UA", status: "SORTED_INVOICED", at: "2026-11-18T00:50:00Z", by: "Sari (Gudang)", location: "Gudang Jakarta" },
+      { id: "3", resiNo: "KML-JKT-MKS-LJ-261115-1100-0003-HT", status: "IN_TRANSIT_SEA", at: "2026-11-17T23:10:00Z", by: "Andi (Kontainer)", location: "Pelabuhan Jakarta" },
     ],
   };
 }

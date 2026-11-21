@@ -60,11 +60,11 @@ SELECT t.fails($$select public.advance_shipment((select v::uuid from t.state whe
 RESET ROLE;
 DO $$ DECLARE s record; BEGIN
   SELECT * INTO s FROM shipments;
-  ASSERT s.resi_no ~ '^KLX-JKT-MKS-LJ-[0-9]{6}-[0-9]{4}-0001-[A-Z]{2}$', 'format resi: ' || s.resi_no;
+  ASSERT s.resi_no ~ '^KML-JKT-MKS-LJ-[0-9]{6}-[0-9]{4}-0001-[A-Z]{2}$', 'format resi: ' || s.resi_no;
   ASSERT split_part(s.resi_no, '-', 8) = public.resi_check(substr(s.resi_no, 1, length(s.resi_no) - 3)), 'huruf pemeriksa sesuai';
   ASSERT s.status = 'CREATED' AND s.current_holder_user_id IS NULL, 'awal CREATED tanpa pemegang';
   ASSERT (SELECT count(*) FROM shipment_items) = 2, 'dua barang';
-  ASSERT (SELECT string_agg(barcode, ',' ORDER BY barcode) FROM shipment_items) ~ '-[A-Z]{2}-01,KLX-.*-[A-Z]{2}-02$', 'barcode per barang';
+  ASSERT (SELECT string_agg(barcode, ',' ORDER BY barcode) FROM shipment_items) ~ '-[A-Z]{2}-01,KML-.*-[A-Z]{2}-02$', 'barcode per barang';
 END $$;
 
 -- ---------- Driver menjemput ----------
@@ -116,10 +116,16 @@ SELECT t.fails($$select public.measure_shipment((select v::uuid from t.state whe
 DO $$ DECLARE m jsonb; BEGIN
   m := public.measure_shipment((SELECT v::uuid FROM t.state WHERE k='sid'),
     '[{"weightKg":5,"lCm":80,"wCm":50,"hCm":50},{"weightKg":3}]');
+  ASSERT (m->>'weighed')::boolean AND (m->>'totalKg')::numeric = 8 AND (m->>'volumeKg')::numeric = 50, 'data timbang: ' || m::text;
+END $$;
+SELECT t.as_user('00000000-0000-0000-0000-000000000002');   -- kasir menerbitkan invoice dengan harga manual
+DO $$ DECLARE m jsonb; BEGIN
+  m := public.invoice_issue((SELECT v::uuid FROM t.state WHERE k='sid'), 'KG', 50, 2500);
   ASSERT (m->>'total')::bigint = 125000, 'total invoice 125000, dapat ' || (m->>'total');
   ASSERT m->>'invoiceNo' ~ '^INV-[0-9]{4}-000001$', 'format invoice';
 END $$;
-SELECT t.fails($$select public.measure_shipment((select v::uuid from t.state where k='sid'),'[{"weightKg":5},{"weightKg":3}]')$$, 'sudah ditimbang');
+SELECT t.as_user('00000000-0000-0000-0000-000000000004');
+SELECT t.fails($$select public.measure_shipment((select v::uuid from t.state where k='sid'),'[{"weightKg":5},{"weightKg":3}]')$$, 'sudah punya invoice');
 RESET ROLE;
 DO $$ BEGIN
   ASSERT (SELECT status FROM shipments) = 'SORTED_INVOICED', 'status maju otomatis setelah ditimbang';
@@ -162,8 +168,8 @@ END $$;
 -- ---------- Audit & log permanen ----------
 RESET ROLE;
 DO $$ BEGIN
-  ASSERT (SELECT count(*) FROM audit_logs) = 7, 'tepat 7 tindakan diaudit (duplikat tidak dicatat ganda)';
-  ASSERT (SELECT count(DISTINCT action) FROM audit_logs) = 6, 'beragam aksi tercatat';
+  ASSERT (SELECT count(*) FROM audit_logs) = 8, 'tepat 8 tindakan diaudit (duplikat tidak dicatat ganda)';
+  ASSERT (SELECT count(DISTINCT action) FROM audit_logs) = 7, 'beragam aksi tercatat';
 END $$;
 SELECT t.fails($$delete from tracking_logs$$, 'append-only');
 SELECT t.fails($$update audit_logs set action='x'$$, 'append-only');

@@ -157,7 +157,7 @@ export default function Pemindai({ onKode, langsung, terus, petunjuk }: Props) {
         <form onSubmit={(e) => { e.preventDefault(); if (manual.trim()) { terakhir.current = { kode: "", t: 0 }; void tangani(manual.trim()); } }} className="manualform">
           <label className="f" htmlFor="kodemanual">Atau ketik kode</label>
           <div className="manualrow">
-            <input id="kodemanual" value={manual} onChange={(e) => setManual(e.target.value)} placeholder="KLX-MKS-JKT-LJ-261118-1432-0007-P" autoCapitalize="characters" autoComplete="off" spellCheck={false} />
+            <input id="kodemanual" value={manual} onChange={(e) => setManual(e.target.value)} placeholder="KML-MKS-JKT-LJ-261118-1432-0007-UC" autoCapitalize="characters" autoComplete="off" spellCheck={false} />
             <button className="btn" disabled={!manual.trim() || mencari}>Cari</button>
           </div>
         </form>

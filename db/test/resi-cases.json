@@ -1,27 +1,27 @@
 [
  {
-  "body": "KLX-MKS-JKT-LJ-261118-1432-0007",
-  "check": "VP"
+  "body": "KML-MKS-JKT-LJ-261118-1432-0007",
+  "check": "UC"
  },
  {
-  "body": "KLX-JKT-MKS-LJ-261118-0905-0001",
-  "check": "YN"
+  "body": "KML-JKT-MKS-LJ-261118-0905-0001",
+  "check": "XB"
  },
  {
-  "body": "KLX-MKS-JKT-UA-261118-2359-0123",
-  "check": "DH"
+  "body": "KML-MKS-JKT-UA-261118-2359-0123",
+  "check": "BW"
  },
  {
-  "body": "KLX-SUB-MRW-DJ-270101-0000-0999",
-  "check": "FK"
+  "body": "KML-SUB-MRW-DJ-270101-0000-0999",
+  "check": "DY"
  },
  {
-  "body": "KLX-JKT-MKS-LA-261231-1200-10000",
-  "check": "FJ"
+  "body": "KML-JKT-MKS-LA-261231-1200-10000",
+  "check": "DX"
  },
  {
-  "body": "KLX-PLU-MKS-LJ-261118-0800-0042",
-  "check": "VD"
+  "body": "KML-PLU-MKS-LJ-261118-0800-0042",
+  "check": "TS"
  },
  {
   "body": "MNF-MKS-JKT-L-261118-1432-01",
@@ -30,5 +30,13 @@
  {
   "body": "MNF-JKT-MKS-U-261118-0905-12",
   "check": "SN"
+ },
+ {
+  "body": "KLX-MKS-JKT-LJ-261118-1432-0007",
+  "check": "VP"
+ },
+ {
+  "body": "KLX-JKT-MKS-LA-261231-1200-10000",
+  "check": "FJ"
  }
 ]

@@ -1,7 +1,7 @@
 /**
- * Kode resi yang bisa DIBACA manusia. Contoh: KLX-MKS-JKT-LJ-261118-1432-0007-PK
+ * Kode resi yang bisa DIBACA manusia. Contoh: KML-MKS-JKT-LJ-261118-1432-0007-PK
  *
- *   KLX     merek Kamil Logistik Express
+ *   KML     merek Kamil Logistik (resi lama berawalan KLX tetap sah)
  *   MKS     kota/gudang asal            JKT   kota/gudang tujuan
  *   LJ      L = laut (U udara, D darat) · J = dijemput kurir (A = diantar sendiri)
  *   261118  tanggal 18-11-2026          1432  jam 14.32 WITA saat resi dibuat
@@ -11,7 +11,9 @@
  * Tiap barang dalam satu resi memakai kode yang sama + "-01", "-02", dst. (untuk label dan pemindaian).
  * Rumus huruf pemeriksa HARUS sama dengan fungsi SQL public.resi_check (diuji dengan db/test/resi-cases.json).
  */
-export const RESI_PREFIX = "KLX";
+/** Awalan resi baru: KML (Kamil Logistik). Resi lama berawalan KLX tetap sah dan bisa dilacak. */
+export const RESI_PREFIX = "KML";
+export const RESI_PREFIX_LAMA = "KLX";
 const CHECK_ALPHABET = "ABCDEFGHJKLMNPRSTUVWXYZ"; // 23 huruf (bilangan prima), tanpa I, O, Q agar tidak tertukar dengan 1, 0
 export type Moda = "LAUT" | "DARAT" | "UDARA";
 export type CaraMasuk = "PICKUP" | "DROPOFF";
@@ -52,7 +54,7 @@ export function formatResi(i: ResiInput): string {
   return `${body}-${resiCheck(body)}`;
 }
 
-const RE = /^KLX-([A-Z]{2,5})-([A-Z]{2,5})-([LDU])([JA])-(\d{2})(\d{2})(\d{2})-(\d{2})(\d{2})-(\d{4,5})-([A-Z]{2})(?:-(\d{2,3}))?$/;
+const RE = /^(KML|KLX)-([A-Z]{2,5})-([A-Z]{2,5})-([LDU])([JA])-(\d{2})(\d{2})(\d{2})-(\d{2})(\d{2})-(\d{4,5})-([A-Z]{2})(?:-(\d{2,3}))?$/;
 
 export type ResiParsed = {
   resi: string; origin: string; dest: string; moda: Moda; masuk: CaraMasuk;
@@ -63,14 +65,14 @@ export type ResiParsed = {
 export function parseResi(raw: string): ResiParsed | null {
   const m = RE.exec(normalizeResi(raw));
   if (!m) return null;
-  const body = `KLX-${m[1]}-${m[2]}-${m[3]}${m[4]}-${m[5]}${m[6]}${m[7]}-${m[8]}${m[9]}-${m[10]}`;
-  if (resiCheck(body) !== m[11]) return null;
-  const moda = ({ L: "LAUT", D: "DARAT", U: "UDARA" } as const)[m[3] as "L" | "D" | "U"];
-  const mm = Number(m[6]), dd = Number(m[7]), hh = Number(m[8]), mi = Number(m[9]);
+  const body = `${m[1]}-${m[2]}-${m[3]}-${m[4]}${m[5]}-${m[6]}${m[7]}${m[8]}-${m[9]}${m[10]}-${m[11]}`;
+  if (resiCheck(body) !== m[12]) return null;
+  const moda = ({ L: "LAUT", D: "DARAT", U: "UDARA" } as const)[m[4] as "L" | "D" | "U"];
+  const mm = Number(m[7]), dd = Number(m[8]), hh = Number(m[9]), mi = Number(m[10]);
   if (mm < 1 || mm > 12 || dd < 1 || dd > 31 || hh > 23 || mi > 59) return null;
   return {
-    resi: `${body}-${m[11]}`, origin: m[1]!, dest: m[2]!, moda, masuk: m[4] === "J" ? "PICKUP" : "DROPOFF",
-    tanggal: { yy: Number(m[5]), mm, dd }, jam: { hh, mi }, seq: Number(m[10]), item: m[12] ? Number(m[12]) : null,
+    resi: `${body}-${m[12]}`, origin: m[2]!, dest: m[3]!, moda, masuk: m[5] === "J" ? "PICKUP" : "DROPOFF",
+    tanggal: { yy: Number(m[6]), mm, dd }, jam: { hh, mi }, seq: Number(m[11]), item: m[13] ? Number(m[13]) : null,
   };
 }
 
@@ -84,8 +86,8 @@ export function normalizeResi(input: string): string {
   let s = input.trim().toUpperCase().replace(/[\s_./\\–—]+/g, "-").replace(/-{2,}/g, "-").replace(/^-+|-+$/g, "");
   if (!s.includes("-")) {
     // salinan dari chat sering kehilangan tanda hubung; hanya terima asal/tujuan 3 huruf
-    const c = /^KLX([A-Z]{3})([A-Z]{3})([LDU][JA])(\d{6})(\d{4})(\d{4,5})([A-Z]{2})(\d{2,3})?$/.exec(s);
-    if (c) s = ["KLX", c[1], c[2], c[3], c[4], c[5], c[6], c[7], c[8]].filter(Boolean).join("-");
+    const c = /^(KML|KLX)([A-Z]{3})([A-Z]{3})([LDU][JA])(\d{6})(\d{4})(\d{4,5})([A-Z]{2})(\d{2,3})?$/.exec(s);
+    if (c) s = [c[1], c[2], c[3], c[4], c[5], c[6], c[7], c[8], c[9]].filter(Boolean).join("-");
   }
   return s;
 }

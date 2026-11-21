@@ -26,7 +26,7 @@ describe("createSupabaseRepo", () => {
 
   it("lacak resi dari data database, aman tanpa foto/lokasi petugas", async () => {
     const { fn } = fakeFetch({ public_track: {
-      resiNo: "KLX-JKT-MKS-LJ-261112-0830-0001-RH", status: "DELIVERED", origin: place("JKT", "Jakarta"), dest: place("MKS", "Makassar"),
+      resiNo: "KML-JKT-MKS-LJ-261112-0830-0001-NW", status: "DELIVERED", origin: place("JKT", "Jakarta"), dest: place("MKS", "Makassar"),
       etaAt: null, vesselName: null, pod: { receiverName: "Budi Santoso", photoUrl: "ada", signatureUrl: "ada", signedAt: "2026-11-17T13:30:00+00:00" },
       events: [{ status: "PICKED_UP", at: "2026-11-10T08:15:00+00:00", location: "Jakarta" }, { status: "DELIVERED", at: "2026-11-17T13:30:00+00:00", location: "Makassar" }],
     } });
@@ -41,16 +41,16 @@ describe("createSupabaseRepo", () => {
 
   it("resi tidak ada → 404 ramah; resi dibatalkan tidak membuat error", async () => {
     const none = createSupabaseRepo({ url: "https://x", publishableKey: "k", fetchImpl: fakeFetch({ public_track: null }).fn });
-    expect((await handleTrack(none, "KLX-JKT-MKS-LJ-261118-1200-0999-RE")).status).toBe(404);
+    expect((await handleTrack(none, "KML-JKT-MKS-LJ-261118-1200-0999-NT")).status).toBe(404);
     const cancelled = createSupabaseRepo({ url: "https://x", publishableKey: "k", fetchImpl: fakeFetch({ public_track: {
-      resiNo: "KLX-JKT-MKS-LJ-261118-1300-0500-NX", status: "CANCELLED", origin: place("JKT", "Jakarta"), dest: place("MKS", "Makassar"), events: [] } }).fn });
-    const r = await handleTrack(cancelled, "KLX-JKT-MKS-LJ-261118-1300-0500-NX");
+      resiNo: "KML-JKT-MKS-LJ-261118-1300-0500-MK", status: "CANCELLED", origin: place("JKT", "Jakarta"), dest: place("MKS", "Makassar"), events: [] } }).fn });
+    const r = await handleTrack(cancelled, "KML-JKT-MKS-LJ-261118-1300-0500-MK");
     expect((r.body as any).statusLabel).toBe("Dibatalkan");
   });
 
   it("galat database jadi pesan ramah, tanpa detail teknis", async () => {
     const bad = createSupabaseRepo({ url: "https://x", publishableKey: "k", fetchImpl: async () => ({ ok: false, status: 500, json: async () => ({}) }) });
-    const r = await handleTrack(bad, "KLX-JKT-MKS-LJ-261112-0830-0001-RH");
+    const r = await handleTrack(bad, "KML-JKT-MKS-LJ-261112-0830-0001-NW");
     expect(r.status).toBe(503);
     expect(JSON.stringify(r.body)).toMatch(/sibuk/);
     expect(JSON.stringify(r.body)).not.toMatch(/Supabase|500/);

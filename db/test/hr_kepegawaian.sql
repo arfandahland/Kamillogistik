@@ -68,7 +68,7 @@ DO $$ DECLARE r jsonb; k jsonb; BEGIN
   SELECT x INTO k FROM jsonb_array_elements(r) x WHERE x->>'id' = '00000000-0000-0000-0000-000000000003';
   ASSERT (k->>'hadir')::int = 1 AND (k->>'cutiHari')::int = 3, 'rekap kehadiran: ' || k::text;
   ASSERT NOT EXISTS (SELECT 1 FROM jsonb_array_elements(r) x WHERE x->>'peran' IN ('SUPER_ADMIN','HRD')), 'rekap tidak memuat pemilik atau HRD';
-  ASSERT k::text NOT LIKE '%resi_no%' AND k::text NOT LIKE '%KLX%', 'rekap tidak memuat isi resi';
+  ASSERT k::text NOT LIKE '%resi_no%' AND k::text NOT LIKE '%KML%', 'rekap tidak memuat isi resi';
 END $$;
 SELECT t.fails($$select public.hr_recap(current_date - 200, current_date)$$, 'maksimal');
 -- Setelah cuti disetujui, kurir tidak bisa absen pada hari cuti, tetapi hari ini aman; pengajuan tidak bisa diubah sendiri

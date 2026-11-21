@@ -25,7 +25,7 @@ npm run dev        # http://localhost:3000 (data contoh; isi apps/web/.env.local
 Hijau teal (primer), oranye (aksen), kuning (sorotan), tagline "Best Price Best Service", WA 0853-4223-8748. Domain resmi: kamillogistik.com (DNS di Hostinger menunjuk ke Vercel; `SITE_URL` di Vercel = https://kamillogistik.com).
 
 ## Fitur inti
-- **Kode resi terbaca** `KLX-MKS-JKT-LJ-261118-1432-0007-VP`: asal, tujuan, jalur (L laut / U udara / D darat) + cara masuk (J dijemput / A antar sendiri), tanggal, jam WITA, urutan harian, dua huruf pemeriksa. Kode manifest `MNF-...` memakai pola yang sama.
+- **Kode resi terbaca** `KML-MKS-JKT-LJ-261118-1432-0007-UC`: asal, tujuan, jalur (L laut / U udara / D darat) + cara masuk (J dijemput / A antar sendiri), tanggal, jam WITA, urutan harian, dua huruf pemeriksa. Kode manifest `MNF-...` memakai pola yang sama.
 - **Dua cara barang masuk:** dijemput kurir atau diantar sendiri (tanpa tahap jemput).
 - **Volumetrik:** pembagi 4000 (laut/darat), 6000 (udara). Rute udara tampil publik setelah Pemilik mengisi harga.
 - **Label + pindai:** cetak barcode Code128 dan QR per barang, pemindai kamera (zxing) di aplikasi petugas dan halaman lacak.

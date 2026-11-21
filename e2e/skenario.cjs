@@ -130,8 +130,13 @@ async function direction(browser, cfg, accounts) {
     await p.goto(`${BASE}/app/resi/${resiId}`, { waitUntil: "networkidle" });
     await p.fill("input[name=w0]", "12"); await p.fill("input[name=w1]", "18");
     await p.evaluate(() => scrollTo(0, 0));
-    const r2 = await act(p, p.getByRole("button", { name: "Hitung dan buat tagihan" }));
-    ok(`[${cfg.key}] sortir, timbang, tagihan terbit`, r2.ok && /Tagihan INV/.test(r2.ok), JSON.stringify(r2));
+    const r1 = await act(p, p.getByRole("button", { name: "Simpan data timbang" }));
+    ok(`[${cfg.key}] sortir dan timbang oleh gudang, data diteruskan ke kasir`, r1.ok && /Selesai ditimbang/.test(r1.ok), JSON.stringify(r1));
+    const kp = A[cfg.kasirO].page;
+    await kp.goto(`${BASE}/app/resi/${resiId}`, { waitUntil: "networkidle" });
+    await kp.fill("#inv-harga", "2500");
+    const r2 = await act(kp, kp.getByRole("button", { name: /Terbitkan invoice/ }));
+    ok(`[${cfg.key}] kasir menerbitkan invoice dengan harga manual`, r2.ok && /Invoice INV/.test(r2.ok), JSON.stringify(r2));
     await shot(p, cfg.labels[cfg.gudangO], "Sortir, penandaan (marking), dan penimbangan", `Tiap barang ditandai kode unik (${resiNo}-01, -02) dan ditimbang. Ongkir dihitung otomatis dari berat nyata (atau berat volume bila lebih besar): ${r2.ok}`);
     // Manifest
     await p.goto(`${BASE}/app/manifest/baru`, { waitUntil: "networkidle" });

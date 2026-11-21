@@ -11,7 +11,7 @@ describe("kode resi yang bisa dibaca", () => {
   it("membuat kode: asal, tujuan, moda, cara masuk, tanggal, jam WITA, urutan", () => {
     // 06.32 UTC = 14.32 WITA
     const r = formatResi({ origin: "MKS", dest: "JKT", moda: "LAUT", masuk: "PICKUP", at: new Date(Date.UTC(2026, 10, 18, 6, 32)), seq: 7 });
-    expect(r.startsWith("KLX-MKS-JKT-LJ-261118-1432-0007-")).toBe(true);
+    expect(r.startsWith("KML-MKS-JKT-LJ-261118-1432-0007-")).toBe(true);
     expect(isValidResi(r)).toBe(true);
   });
   it("zona waktu WITA: lewat tengah malam UTC jadi hari berikutnya", () => {

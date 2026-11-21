@@ -27,6 +27,15 @@ async function login(browser, email, pass = PASS, vp) {
   await Promise.race([page.waitForURL(/\/app/, { timeout: 15000 }), page.waitForSelector(".err", { timeout: 15000 })]).catch(() => {});
   return { ctx, page, loggedIn: /\/app/.test(page.url()) };
 }
+/** Kasir menerbitkan invoice dengan harga manual untuk satu resi (setelah gudang menimbang). */
+async function invoiceKasir(browser, email, resiId, qty, harga) {
+  const k = await login(browser, email, PASS, { width: 390, height: 844 });
+  await k.page.goto(`${BASE}/app/resi/${resiId}`, { waitUntil: "networkidle" });
+  if (qty != null) await k.page.fill("#inv-jumlah", String(qty));
+  await k.page.fill("#inv-harga", String(harga));
+  const r = await act(k.page, k.page.getByRole("button", { name: /Terbitkan (ulang )?invoice/ }));
+  await k.ctx.close(); return r;
+}
 /** Tekan tombol lalu tunggu halaman berpindah dan pesan hasil (.ok / .err) muncul. */
 async function act(page, locator) {
   const before = page.url();
@@ -72,11 +81,11 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await page.fill("#w0", "10"); await page.click("form > button.btn:not(.ghost)");
     await page.waitForSelector(".price", { timeout: 15000 }).catch(() => {});
     ok("kalkulator ongkir: 10 kg x Rp2.500 = Rp25.000", /Rp25\.000/.test(await text(page)));
-    await page.goto(`${BASE}/lacak/KLX-JKT-MKS-LJ-261118-1400-0998-ST`, { waitUntil: "networkidle" });
+    await page.goto(`${BASE}/lacak/KML-JKT-MKS-LJ-261118-1400-0998-RF`, { waitUntil: "networkidle" });
     ok("resi tak dikenal: pesan awam", /tidak ditemukan/.test(await text(page)));
     await page.goto(`${BASE}/lacak/abc`, { waitUntil: "networkidle" });
     ok("format resi salah: pesan awam", /tidak dikenali/.test(await text(page)));
-    await page.goto(`${BASE}/lacak/KLX-JKT-MKS-LJ-261118-1400-0999-AA`, { waitUntil: "networkidle" });
+    await page.goto(`${BASE}/lacak/KML-JKT-MKS-LJ-261118-1400-0999-AA`, { waitUntil: "networkidle" });
     ok("salah ketik satu angka ketahuan (huruf pemeriksa)", /tidak dikenali/.test(await text(page)));
     const ro = await page.request.get(`${BASE}/api/owner`);
     ok("/api/owner tanpa login ditolak", ro.status() === 403);
@@ -145,7 +154,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     const r = await act(p, p.getByRole("button", { name: "Buat resi" }));
     ok("resi dibuat dengan pesan sukses", r.ok && /Resi sudah dibuat/.test(r.ok), JSON.stringify(r));
     resiNo = (await p.locator("h1").first().innerText()).trim(); resiId = p.url().match(/resi\/([0-9a-f-]+)/)?.[1] || "";
-    ok("nomor resi terbaca: KLX-asal-tujuan-moda-tanggal-jam-urutan-huruf", /^KLX-JKT-MKS-LJ-\d{6}-\d{4}-0001-[A-Z]{2}$/.test(resiNo), resiNo);
+    ok("nomor resi terbaca: KML-asal-tujuan-moda-tanggal-jam-urutan-huruf", /^KML-JKT-MKS-LJ-\d{6}-\d{4}-0001-[A-Z]{2}$/.test(resiNo), resiNo);
     ok("penjelasan arti kode tampil", (await p.locator(".kodebox").count()) === 1 && (await p.locator(".tag.moda").innerText()).includes("Laut"));
     ok("penanda tahap: Tahap 1 dari 10", /Tahap 1 dari 10/.test(await text(p)));
     await noOverflow(p, "detail resi (HP)");
@@ -187,7 +196,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await p.fill("#kodemanual", resiNo.toLowerCase().replace(/-/g, " ")); await p.getByRole("button", { name: "Cari" }).click();
     await p.waitForSelector(".hasil", { timeout: 15000 }).catch(() => {});
     ok("pindai manual: kode huruf kecil tanpa tanda hubung tetap dikenali", /Buka resi/.test(await p.locator(".hasil").first().innerText().catch(() => "")));
-    await p.fill("#kodemanual", "KLX-JKT-MKS-LJ-261118-1400-0998-ST"); await p.getByRole("button", { name: "Cari" }).click();
+    await p.fill("#kodemanual", "KML-JKT-MKS-LJ-261118-1400-0998-RF"); await p.getByRole("button", { name: "Cari" }).click();
     await p.waitForFunction(() => /bukan tugas|tidak dikenali/i.test(document.body.innerText), null, { timeout: 15000 }).catch(() => {});
     ok("pindai manual: kode yang tidak ada ditolak dengan pesan awam", /tidak dikenali|bukan tugas/i.test(await text(p)));
     await p.screenshot({ path: `${OUT}/e2e-pindai.png` });
@@ -233,9 +242,13 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("gudang: barang tiba di gudang asal", r.ok && /diterima di gudang/.test(r.ok), JSON.stringify(r));
     ok("form timbang muncul dengan 2 barang", (await p.locator("input[name=w0]").count()) === 1 && (await p.locator("input[name=w1]").count()) === 1);
     await p.fill("input[name=w0]", "10"); await p.fill("input[name=w1]", "12");
-    r = await act(p, p.getByRole("button", { name: "Hitung dan buat tagihan" }));
-    ok("tagihan terbit otomatis: 22 kg x Rp2.800 = Rp61.600 (tarif baru dipakai)", r.ok && /Rp61\.600/.test(r.ok) && /INV-\d{4}-000001/.test(r.ok), JSON.stringify(r));
-    ok("gudang TIDAK melihat nominal tagihan (data keuangan)", !/Rp61\.600/.test((await text(p)).replace(/Tagihan .* sebesar Rp61\.600 sudah dibuat\./, "")));
+    r = await act(p, p.getByRole("button", { name: "Simpan data timbang" }));
+    ok("gudang menyimpan data timbang dan diteruskan ke Kasir", r.ok && /Selesai ditimbang: 22 kg/.test(r.ok), JSON.stringify(r));
+    const ridE = p.url().match(/resi\/([0-9a-f-]+)/)?.[1] || "";
+    const invE = await invoiceKasir(browser, "kasir@uji.id", ridE, 22, 2800);
+    ok("kasir menerbitkan invoice dengan harga manual: 22 kg x Rp2.800 = Rp61.600", invE.ok && /Rp61\.600/.test(invE.ok) && /INV-\d{4}-000001/.test(invE.ok), JSON.stringify(invE));
+    await p.goto(`${BASE}/app/resi/${ridE}`, { waitUntil: "networkidle" });
+    ok("gudang TIDAK melihat nominal tagihan (data keuangan)", !/Rp61\.600/.test(await text(p)));
     ok("Tahap 4 dari 10 setelah ditimbang", /Tahap 4 dari 10/.test(await text(p)));
     ok("sesudah ditimbang: tidak ada tombol muat per resi, diarahkan ke manifest", (await p.getByRole("button", { name: "Barang sudah dimuat ke kontainer" }).count()) === 0 && /Masukkan ke manifest/.test(await text(p)));
 
@@ -249,7 +262,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     r = await act(p, p.locator(".cand form").first().getByRole("button", { name: "Tambah" }));
     ok("resi ditambahkan dari daftar siap muat", r.ok && /Resi ditambahkan/.test(r.ok), JSON.stringify(r));
     ok("ringkasan manifest: 1 resi, 2 barang, 22 kg", /1 resi · 2 barang · 22 kg/.test(await text(p)));
-    await p.fill("input[aria-label=Kode]", "KLX-JKT-MKS-LJ-261118-1400-0998-ST"); await p.getByRole("button", { name: "Tambah" }).first().click();
+    await p.fill("input[aria-label=Kode]", "KML-JKT-MKS-LJ-261118-1400-0998-RF"); await p.getByRole("button", { name: "Tambah" }).first().click();
     await p.waitForSelector(".mlog li.bad", { timeout: 15000 }).catch(() => {});
     ok("kode yang tidak ada ditolak dengan pesan awam", /tidak dikenali|sudah ada|belum siap/i.test(await p.locator(".mlog li").first().innerText().catch(() => "")));
     await p.fill("#segel", "SEG-001");
@@ -288,7 +301,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     let r = await act(p, p.getByRole("button", { name: "Ya, manifest sudah saya terima" }));
     ok("gudang Makassar menerima manifest (cabang tujuan)", r.ok && /sudah Anda terima/.test(r.ok), JSON.stringify(r));
     ok("bongkar: 0 dari 2 barang dipindai", /0 dari 2 barang/.test(await text(p)));
-    await p.fill("input[aria-label=Kode]", "KLX-JKT-MKS-LJ-261118-1400-0998-ST-01"); await p.getByRole("button", { name: "Cocokkan" }).click();
+    await p.fill("input[aria-label=Kode]", "KML-JKT-MKS-LJ-261118-1400-0998-RF-01"); await p.getByRole("button", { name: "Cocokkan" }).click();
     await p.waitForSelector(".mlog li.bad", { timeout: 15000 }).catch(() => {});
     ok("barang yang bukan isi manifest ditolak", /TIDAK ada di manifest|tidak dikenali/i.test(await p.locator(".mlog li").first().innerText().catch(() => "")));
     for (const n of ["01", "02"]) {
@@ -489,8 +502,10 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     r = await act(g, g.getByRole("button", { name: "Barang diantar pelanggan sudah saya terima" }));
     ok("gudang menerima barang yang diantar pelanggan", r.ok && /diantar sendiri/.test(r.ok), JSON.stringify(r));
     await g.fill("input[name=w0]", "10");
-    r = await act(g, g.getByRole("button", { name: "Hitung dan buat tagihan" }));
-    ok("harga khusus dipakai: 10 kg x Rp2.000 = Rp20.000", r.ok && /Rp20\.000/.test(r.ok), JSON.stringify(r));
+    r = await act(g, g.getByRole("button", { name: "Simpan data timbang" }));
+    ok("data timbang pelanggan korporat tersimpan", r.ok && /Selesai ditimbang: 10 kg/.test(r.ok), JSON.stringify(r));
+    r = await invoiceKasir(browser, "kasir@uji.id", korId, 10, 2000);
+    ok("harga manual kasir: 10 kg x Rp2.000 = Rp20.000", r.ok && /Rp20\.000/.test(r.ok), JSON.stringify(r));
     await k.goto(`${BASE}/app/baru`, { waitUntil: "networkidle" });
     await selectByText(k, "#rute", "Jakarta → Makassar · Diantar sampai alamat (per kilo)");
     await k.getByText("Perusahaan langganan").click(); await k.selectOption("#company", { label: "PT Sinar Jaya (tempo 14 hari)" });
@@ -583,7 +598,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await pp.reload({ waitUntil: "networkidle" });
     ok("setelah dimuat ulang: sudah dinilai, form tidak muncul lagi", (await pp.locator("form.nilai").count()) === 0 && /sudah menilai/.test(await text(pp)));
     const html = await (await fetch(`${BASE}/lacak/${resiNo}`)).text();
-    ok("halaman lacak memuat meta og:image dan og:title status", /property="og:image"/.test(html) && /og:title" content="Resi KLX/.test(html));
+    ok("halaman lacak memuat meta og:image dan og:title status", /property="og:image"/.test(html) && /og:title" content="Resi KML/.test(html));
     const ogUrl = (html.match(/property="og:image" content="([^"]+)"/) || [])[1] || "";
     const og = await fetch(ogUrl.replace(/^https?:\/\/[^/]+/, BASE));
     ok("kartu pratinjau WhatsApp (gambar OG) dibuat untuk resi", og.status === 200 && /image\/png/.test(og.headers.get("content-type") || ""), `${og.status} ${ogUrl}`);
@@ -600,7 +615,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("tautan portal panjang dan acak (/portal/ + 64 karakter)", /\/portal\/[0-9a-f]{64}$/.test(link1), link1);
     const ac = await browser.newContext({ viewport: { width: 412, height: 860 } }); const ap = await ac.newPage();
     await ap.goto(link1.replace(/^https?:\/\/[^/]+/, BASE), { waitUntil: "networkidle" });
-    ok("portal terbuka tanpa login: nama perusahaan, tagihan, dan resi", /PT Sinar Jaya/.test(await text(ap)) && /Belum dibayar/.test(await text(ap)) && /INV-/.test(await text(ap)) && /KLX-/.test(await text(ap)));
+    ok("portal terbuka tanpa login: nama perusahaan, tagihan, dan resi", /PT Sinar Jaya/.test(await text(ap)) && /Belum dibayar/.test(await text(ap)) && /INV-/.test(await text(ap)) && /KML-/.test(await text(ap)));
     ok("portal tidak memuat nomor HP", !/0811|0812|0813/.test(await text(ap)));
     await ap.screenshot({ path: `${OUT}/e2e-portal.png`, fullPage: true });
     r = await act(o, o.getByRole("button", { name: "Ganti tautan" }));
@@ -642,7 +657,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("SEO: sitemap.xml adalah indeks dengan 4 peta situs (utama, layanan, rute, panduan)", /<sitemapindex/.test(idx.body) && segs.length === 4 && segs.every((x) => /^\/sitemap\/\d\.xml$/.test(x)), segs.join(","));
     const sm = { body: (await Promise.all(segs.map((x) => get(x)))).map((r) => r.body).join("\n") };
     ok("SEO: peta situs memuat wilayah, tentang, kontak, syarat, dan panduan baru", /ekspedisi-ke-sulawesi-selatan/.test(sm.body) && /\/tentang</.test(sm.body) && /\/kontak</.test(sm.body) && /cara-membaca-kode-resi/.test(sm.body));
-    ok("SEO: peta situs tidak memuat halaman privat (/app, /invoice, /portal, /lacak/KLX)", !/\/app|\/invoice|\/portal|\/lacak\/KLX/.test(sm.body));
+    ok("SEO: peta situs tidak memuat halaman privat (/app, /invoice, /portal, /lacak/KML)", !/\/app|\/invoice|\/portal|\/lacak\/(KLX|KML)/.test(sm.body));
     const rb = await get("/robots.txt");
     ok("SEO: robots menutup /app /api /masuk /invoice /portal dan menunjuk peta situs", ["/app", "/api", "/masuk", "/invoice", "/portal"].every((x) => rb.body.includes(`Disallow: ${x}`)) && /Sitemap: .*sitemap\.xml/.test(rb.body));
     const llm = await get("/llms.txt");
@@ -974,8 +989,8 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await isiJemput("LAUT", "Ternate", "kardus keempat", "");
     ok("X3 pesanan jemput dibatasi 3 per nomor per hari (pesanan ke-4 ditolak dengan pesan jelas)", /sudah kami terima/.test(await pg.locator(".err").first().innerText().catch(() => "")));
     await pg.goto(`${BASE}/jemput`, { waitUntil: "networkidle" }); await noOverflow(pg, "Pesan jemput (HP)");
-    await pg.goto(`${BASE}/klaim?resi=KLX-JKT-MKS-LJ-261112-0830-0001-RH`, { waitUntil: "networkidle" });
-    ok("X4 halaman Klaim membawa nomor resi dari tautan", (await pg.inputValue("#resi")) === "KLX-JKT-MKS-LJ-261112-0830-0001-RH");
+    await pg.goto(`${BASE}/klaim?resi=KML-JKT-MKS-LJ-261112-0830-0001-NW`, { waitUntil: "networkidle" });
+    ok("X4 halaman Klaim membawa nomor resi dari tautan", (await pg.inputValue("#resi")) === "KML-JKT-MKS-LJ-261112-0830-0001-NW");
     await pg.selectOption("#jenis", "RUSAK"); await pg.fill("#nama", "Siti Klaim Uji"); await pg.fill("#hp", "0813 6666 0202"); await pg.fill("#cerita", "Kardus basah dan isinya pecah saat tiba di Jayapura.");
     await pg.click("form button.btn"); await pg.waitForSelector(".nilai.done", { timeout: 15000 }).catch(() => {});
     const tk = await pg.locator(".nilai.done").innerText().catch(() => ""); const wk = await pg.locator(".nilai.done a.btn").getAttribute("href").catch(() => "");
@@ -1149,7 +1164,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await ow.page.goto(`${BASE}/app/pegawai?t=rekap`, { waitUntil: "networkidle" });
     ok("AE8 rekap memuat Kurir Jakarta dengan 1 hari hadir dan unduhan CSV", /Kurir Jakarta/.test(await ow.page.locator("main").innerText()) && (await ow.page.locator("a[href^='/app/ekspor/rekap-pegawai']").count()) === 1);
     const csv = await ow.page.request.get(`${BASE}/app/ekspor/rekap-pegawai`); const csvt = await csv.text();
-    ok("AE9 CSV rekap pegawai terunduh dan tidak memuat data resi", csv.status() === 200 && /Kurir Jakarta/.test(csvt) && !/KLX-/.test(csvt), String(csv.status()));
+    ok("AE9 CSV rekap pegawai terunduh dan tidak memuat data resi", csv.status() === 200 && /Kurir Jakarta/.test(csvt) && !/KML-/.test(csvt), String(csv.status()));
     await noOverflow(ow.page, "Kepegawaian rekap (HP)");
     await ow.page.goto(`${BASE}/app/kendala`, { waitUntil: "networkidle" }); await noOverflow(ow.page, "Kendala (Pemilik, HP)");
     await ow.ctx.close();
@@ -1258,6 +1273,18 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
       ok(`AH3 ${nm}: tanpa tombol Cetak label, cetak diblokir, dan form resi baru tertutup`, !adaTombol && !bocor && !/\/app\/baru/.test(x.page.url()), `${adaTombol} ${bocor} ${x.page.url()}`);
       await x.ctx.close();
     }
+
+    // Harga manual kasir: satuan per m3 + baris biaya bebas, terbit ulang selagi belum dibayar
+    const ridI = sqlq(`SELECT s.id FROM shipments s JOIN invoices i ON i.shipment_id = s.id AND i.status = 'UNPAID' WHERE s.origin_id = (SELECT id FROM branches_partners WHERE code='JKT') AND s.status NOT IN ('CANCELLED','DELIVERED') AND NOT EXISTS (SELECT 1 FROM payment_allocations pa WHERE pa.invoice_id = i.id) ORDER BY s.created_at DESC LIMIT 1;`);
+    const ki = await login(browser, "kasir@uji.id", PASS, { width: 390, height: 844 });
+    await ki.page.goto(`${BASE}/app/resi/${ridI}`, { waitUntil: "networkidle" });
+    await ki.page.getByText("Per m³").click(); await ki.page.fill("#inv-jumlah", "2"); await ki.page.fill("#inv-harga", "500000");
+    await ki.page.getByRole("button", { name: "+ Ongkos jemput" }).click();
+    await ki.page.fill("input[aria-label='Jumlah biaya 1 (Rp)']", "50000");
+    ok("AI1 pratinjau total invoice per m³ + biaya lain dihitung langsung (2 m³ x 500.000 + 50.000)", /Rp1\.050\.000/.test(await ki.page.locator("#invoice-form").innerText()));
+    await act(ki.page, ki.page.getByRole("button", { name: "Terbitkan ulang invoice" }));
+    ok("AI2 kasir menerbitkan ulang invoice dengan harga manual dan baris biaya bebas", /Invoice INV-\d{4}-\d{6} sebesar Rp1\.050\.000 diterbitkan/.test(await pesan(ki.page)));
+    await noOverflow(ki.page, "Form invoice manual (HP)"); await ki.ctx.close();
 
     // Pre-booking antar sendiri dari website
     const pb = await (await browser.newContext({ viewport: { width: 390, height: 844 } })).newPage();

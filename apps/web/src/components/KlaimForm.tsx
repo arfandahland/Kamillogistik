@@ -23,7 +23,7 @@ export default function KlaimForm({ resiAwal = "" }: { resiAwal?: string }) {
         <option value="" disabled>Pilih jenis masalah…</option>
         {Object.entries(JENIS_KLAIM).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
       </select>
-      <label className="f" htmlFor="resi">Nomor resi (jika ada)</label><input id="resi" name="resi" maxLength={60} defaultValue={resiAwal} placeholder="KLX-JKT-MKS-..." autoCapitalize="characters" />
+      <label className="f" htmlFor="resi">Nomor resi (jika ada)</label><input id="resi" name="resi" maxLength={60} defaultValue={resiAwal} placeholder="KML-JKT-MKS-..." autoCapitalize="characters" />
       <label className="f" htmlFor="nama">Nama Anda</label><input id="nama" name="nama" required minLength={3} maxLength={80} autoComplete="name" />
       <label className="f" htmlFor="hp">Nomor WhatsApp aktif</label><input id="hp" name="hp" required inputMode="tel" autoComplete="tel" maxLength={20} placeholder="Contoh: 0812 3456 7890" />
       <label className="f" htmlFor="cerita">Ceritakan kejadiannya</label><textarea id="cerita" name="cerita" required minLength={15} rows={4} maxLength={1000} placeholder="Kapan barang diterima, apa yang rusak atau hilang, dan apa yang Anda harapkan." />

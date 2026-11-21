@@ -25,12 +25,32 @@ SELECT t.fails($$select public.measure_shipment(current_setting('t.sid')::uuid, 
 SELECT t.fails($$select public.measure_shipment(current_setting('t.sid')::uuid, '[{"weightKg":60000},{"weightKg":5}]'::jsonb)$$, '50.000 kg');
 SELECT t.fails($$select public.measure_shipment(current_setting('t.sid')::uuid, '[{"weightKg":5,"lCm":-1},{"weightKg":5}]'::jsonb)$$, 'Ukuran barang');
 SELECT t.fails($$select public.measure_shipment(current_setting('t.sid')::uuid, '[{"weightKg":5,"lCm":9999,"wCm":1,"hCm":1},{"weightKg":5}]'::jsonb)$$, 'Ukuran barang');
-SELECT t.fails($$select public.measure_shipment(current_setting('t.sid')::uuid, '[{"weightKg":5},{"weightKg":5}]'::jsonb, '[{"code":"X","label":"diskon","amount":-5000}]'::jsonb)$$, 'lebih dari Rp0');
-SELECT t.fails($$select public.measure_shipment(current_setting('t.sid')::uuid, '[{"weightKg":5},{"weightKg":5}]'::jsonb, '[{"code":"X","label":"raksasa","amount":99999999999}]'::jsonb)$$, '20.000.000');
-SELECT t.fails($$select public.measure_shipment(current_setting('t.sid')::uuid, '[{"weightKg":5},{"weightKg":5}]'::jsonb, '[{"code":"A","label":"a","amount":1},{"code":"B","label":"b","amount":1},{"code":"C","label":"c","amount":1},{"code":"D","label":"d","amount":1},{"code":"E","label":"e","amount":1},{"code":"F","label":"f","amount":1}]'::jsonb)$$, 'paling banyak 5');
 DO $$ DECLARE r jsonb; BEGIN
-  r := public.measure_shipment(current_setting('t.sid')::uuid, '[{"weightKg":5},{"weightKg":5}]'::jsonb, '[{"code":"PACK","label":"packing kayu","amount":25000}]'::jsonb);
+  r := public.measure_shipment(current_setting('t.sid')::uuid, '[{"weightKg":5},{"weightKg":5}]'::jsonb);
   ASSERT r IS NOT NULL, 'penimbangan normal tetap berhasil';
+END $$;
+-- Batas wajar invoice manual oleh kasir
+SELECT t.as_user('00000000-0000-0000-0000-000000000002');
+SELECT t.fails($$select public.invoice_issue(current_setting('t.sid')::uuid, 'METER', 10, 1000)$$, 'Pilih satuan');
+SELECT t.fails($$select public.invoice_issue(current_setting('t.sid')::uuid, 'KG', 0, 1000)$$, 'jumlah');
+SELECT t.fails($$select public.invoice_issue(current_setting('t.sid')::uuid, 'KG', 10, -1)$$, 'harga satuan');
+SELECT t.fails($$select public.invoice_issue(current_setting('t.sid')::uuid, 'KG', 10, 0)$$, 'lebih dari nol');
+SELECT t.fails($$select public.invoice_issue(current_setting('t.sid')::uuid, 'KG', 10, 1000, '[{"label":"diskon","amount":-5000}]'::jsonb)$$, 'lebih dari nol');
+SELECT t.fails($$select public.invoice_issue(current_setting('t.sid')::uuid, 'KG', 10, 1000, '[{"label":"x","amount":5000}]'::jsonb)$$, 'nama');
+SELECT t.fails($$select public.invoice_issue(current_setting('t.sid')::uuid, 'KG', 10, 1000, (select jsonb_agg(jsonb_build_object('label','biaya','amount',1)) from generate_series(1,11)))$$, 'paling banyak 10');
+SELECT t.as_user('00000000-0000-0000-0000-000000000004');
+SELECT t.fails($$select public.invoice_issue(current_setting('t.sid')::uuid, 'KG', 10, 1000)$$, 'izin');
+SELECT t.as_user('00000000-0000-0000-0000-000000000002');
+DO $$ DECLARE r jsonb; BEGIN
+  r := public.invoice_issue(current_setting('t.sid')::uuid, 'M3', 1.5, 500000, '[{"label":"Ongkos jemput","amount":50000},{"label":"Ongkir antar kecamatan","amount":120000}]'::jsonb, 3, 'harga dari pemilik');
+  ASSERT (r->>'total')::bigint = 750000 + 50000 + 120000, 'm3 x harga + baris biaya bebas: ' || r::text;
+  r := public.invoice_issue(current_setting('t.sid')::uuid, 'BORONGAN', 99, 900000);   -- diterbitkan ulang selagi belum dibayar
+  ASSERT (r->>'total')::bigint = 900000, 'borongan: jumlah dianggap 1';
+END $$;
+RESET ROLE;
+DO $$ BEGIN
+  ASSERT (SELECT count(*) FROM invoices WHERE shipment_id = current_setting('t.sid')::uuid AND status = 'VOID') >= 1, 'invoice lama dibatalkan saat terbit ulang';
+  ASSERT (SELECT count(*) FROM invoices WHERE shipment_id = current_setting('t.sid')::uuid AND status <> 'VOID') = 1, 'hanya satu invoice aktif';
 END $$;
 
 -- ---------- Penjaga percobaan masuk ----------

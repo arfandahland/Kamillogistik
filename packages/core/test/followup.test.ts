@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { followupLink, followupMessage, umur, type FollowupItem } from "../src";
 
-const base: FollowupItem = { shipmentId: "s", resiNo: "KLX-JKT-MKS-LJ-261118-1432-0007-VP", kind: "JEMPUT", party: "sender", name: "Bu Rina", phone: "6281234567890",
+const base: FollowupItem = { shipmentId: "s", resiNo: "KML-JKT-MKS-LJ-261118-1432-0007-VP", kind: "JEMPUT", party: "sender", name: "Bu Rina", phone: "6281234567890",
   hours: 5, level: "warn", amount: null, invoiceNo: null, token: null, origin: "Jakarta", dest: "Makassar", status: "CREATED", contactedAt: null };
 
 describe("tindak lanjut", () => {

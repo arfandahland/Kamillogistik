@@ -67,12 +67,25 @@ export async function timbang(fd: FormData) {
     const l = num(fd.get(`l${i}`)), wd = num(fd.get(`wd${i}`)), h = num(fd.get(`h${i}`));
     return { weightKg: w, ...(l && wd && h ? { lCm: l, wCm: wd, hCm: h } : {}) };
   });
-  const extra = num(fd.get("biaya"));
-  const surcharges = extra && extra > 0 ? [{ code: "TAMBAHAN", label: String(fd.get("ket") || "Biaya tambahan"), amount: extra }] : [];
-  const { data, error } = await staffRpc<{ invoiceNo: string; total: number }>("measure_shipment", { p_id: id, p_items: items, p_surcharges: surcharges });
+  const { data, error } = await staffRpc<{ totalKg: number; volumeKg: number; volumeM3: number }>("measure_shipment", { p_id: id, p_items: items });
   revalidatePath("/app");
   if (error || !data) back(id, "e", error ?? "Gagal menimbang");
-  back(id, "ok", `Selesai ditimbang. Tagihan ${data!.invoiceNo} sebesar Rp${data!.total.toLocaleString("id-ID")} sudah dibuat.`);
+  back(id, "ok", `Selesai ditimbang: ${Number(data!.totalKg).toLocaleString("id-ID")} kg. Data timbang sudah masuk ke Kasir untuk dibuatkan invoice.`);
+}
+
+/** Kasir menerbitkan invoice dengan harga yang diisi sendiri (per kg, per m3, atau borongan) ditambah baris biaya bebas. */
+export async function terbitkanInvoice(fd: FormData) {
+  const id = String(fd.get("id"));
+  let baris: { label: string; amount: number }[] = [];
+  try { const j = JSON.parse(String(fd.get("baris") ?? "[]")); if (Array.isArray(j)) baris = j.filter((x) => x && String(x.label ?? "").trim() && Number(x.amount) > 0).map((x) => ({ label: String(x.label).trim().slice(0, 80), amount: Math.round(Number(x.amount)) })).slice(0, 10); } catch { /* tanpa baris */ }
+  const hari = String(fd.get("tempo") ?? "").trim();
+  const { data, error } = await staffRpc<{ invoiceNo: string; total: number }>("invoice_issue", {
+    p_shipment: id, p_basis: String(fd.get("satuan") ?? "KG"), p_qty: num(String(fd.get("jumlah") ?? "").replace(",", ".")) ?? 0, p_unit_price: Math.round(num(String(fd.get("harga") ?? "").replace(/\D/g, "")) ?? 0),
+    p_lines: baris, p_due_days: hari ? Math.max(0, Math.min(365, Math.round(Number(hari)))) : null, p_note: String(fd.get("catatan") ?? "").trim().slice(0, 300) || null,
+  });
+  revalidatePath("/app"); revalidatePath(`/app/resi/${id}`);
+  if (error || !data) back(id, "e", error ?? "Gagal menerbitkan invoice");
+  back(id, "ok", `Invoice ${data!.invoiceNo} sebesar Rp${data!.total.toLocaleString("id-ID")} diterbitkan.`);
 }
 
 export async function serahkan(fd: FormData) {

@@ -52,7 +52,7 @@ describe("asisten tanya-jawab", () => {
     expect(r.actions?.[0]?.href).toContain("/lacak/");
   });
   it("resi dengan salah ketik ditolak dengan penjelasan", async () => {
-    const r = await tanya("cek KLX-JKT-MKS-LJ-261112-0830-0001-AA");
+    const r = await tanya("cek KML-JKT-MKS-LJ-261112-0830-0001-AA");
     expect(r.text).toMatch(/tidak valid|belum ditemukan/);
   });
   it("menjawab topik bisnis singkat: jemput, bayar, volumetrik, larangan, mitra, korporat", async () => {

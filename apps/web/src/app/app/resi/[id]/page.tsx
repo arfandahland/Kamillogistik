@@ -10,6 +10,7 @@ import KodeResi from "@/components/KodeResi";
 import PodForm from "@/components/PodForm";
 import KondisiForm from "@/components/KondisiForm";
 import KendalaPanel from "@/components/KendalaPanel";
+import InvoiceForm from "@/components/InvoiceForm";
 import { catatTerima, lanjut, periksa, serahkan, terima, timbang } from "../../actions";
 
 type Detail = {
@@ -113,10 +114,10 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
         )
       )}
 
-      {action?.kind === "measure" && (
+      {(action?.kind === "measure" || (!viewOnly && ["WAREHOUSE", "HUB_MANAGER"].includes(role) && s.status === "SORTED_INVOICED" && !s.manifest)) && (
         <form action={timbang} className="card">
-          <h2>Timbang dan ukur barang</h2>
-          <p className="muted">Isi berat tiap barang. Ukuran boleh dikosongkan kalau barang kecil dan padat.</p>
+          <h2>{s.status === "SORTED_INVOICED" ? "Perbaiki data timbang" : "Timbang dan ukur barang"}</h2>
+          <p className="muted">Isi berat tiap barang. Ukuran boleh dikosongkan kalau barang kecil dan padat. Data ini diteruskan ke Kasir yang membuat invoice.</p>
           <input type="hidden" name="id" value={s.id} /><input type="hidden" name="n" value={s.items.length} />
           {s.items.map((it, i) => (
             <div className="item" key={it.barcode}>
@@ -131,12 +132,15 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
               </div>
             </div>
           ))}
-          <label className="f" htmlFor="biaya">Biaya tambahan, kalau ada (Rp)</label>
-          <input id="biaya" name="biaya" inputMode="numeric" placeholder="Contoh: 25000 untuk packing kayu" />
-          <input name="ket" placeholder="Keterangan biaya tambahan" style={{ marginTop: 8 }} />
-          <SubmitButton style={{ marginTop: 16 }} steps={["Memeriksa berat dan ukuran…", "Menghitung tarif…", "Membuat tagihan…", "Mencatat riwayat…"]}>Hitung dan buat tagihan</SubmitButton>
+          <SubmitButton style={{ marginTop: 16 }} steps={["Memeriksa berat dan ukuran…", "Menyimpan data timbang…", "Mengirim ke Kasir…"]}>Simpan data timbang</SubmitButton>
         </form>
       )}
+
+      {role === "MITRA_POS" && !["CREATED", "PICKED_UP", "AT_ORIGIN_HUB", "CANCELLED", "EXCEPTION"].includes(s.status) && (!s.invoice || s.invoice.status !== "PAID") && (() => {
+        const aktual = s.items.reduce((a, x) => a + Number(x.weightKg ?? 0), 0), cm3 = s.items.reduce((a, x) => a + Number(x.lCm ?? 0) * Number(x.wCm ?? 0) * Number(x.hCm ?? 0), 0);
+        const div = s.mode === "UDARA" ? 6000 : 4000;
+        return <InvoiceForm id={s.id} aktualKg={aktual} volumeKg={Math.round((cm3 / div) * 100) / 100} volumeM3={Math.round((cm3 / 1e6) * 10000) / 10000} ada={!!s.invoice} judul={s.invoice ? "Ubah invoice" : "Buat invoice"} />;
+      })()}
 
       {s.manifest && (
         <Link href={`/app/manifest/${s.manifest.id}`} className="card lift manifestlink">

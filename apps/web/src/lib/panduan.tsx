@@ -150,7 +150,7 @@ export const ARTIKEL: Artikel[] = [
       <ol>
         <li><b>Cek perkiraan ongkir</b> di <Link href="/ongkir">kalkulator</Link>. Pilih kota asal dan tujuan, isi berat dan ukuran. Misalnya Jakarta ke Makassar mulai {harga(pairs, "ekspedisi-jakarta-makassar")}.</li>
         <li><b>Hubungi tim</b> lewat WhatsApp atau datang ke gerai mitra. Sebutkan isi barang, jumlah, dan alamat penerima.</li>
-        <li><b>Barang dijemput atau diantar ke gerai</b>. Kasir membuat resi dan Anda menerima nomor resi (contoh KLX-JKT-MKS-LJ-261112-0830-0001-RH).</li>
+        <li><b>Barang dijemput atau diantar ke gerai</b>. Kasir membuat resi dan Anda menerima nomor resi (contoh KML-JKT-MKS-LJ-261112-0830-0001-NW).</li>
         <li><b>Barang ditimbang di gudang</b>. Ongkir pasti dihitung dari berat atau ukuran sebenarnya, lalu Anda menerima <b>invoice resmi</b> yang bisa dibuka lewat tautan.</li>
         <li><b>Bayar lewat transfer atau tunai</b>. Cantumkan nomor invoice di berita transfer dan kirim bukti ke WhatsApp. Kasir mencatat setelah dana masuk.</li>
         <li><b>Pantau perjalanan</b> di <Link href="/lacak">Cek Resi</Link> kapan saja, tanpa login.</li>
@@ -176,7 +176,7 @@ export const ARTIKEL: Artikel[] = [
       <h2>Cara melacak</h2>
       <ol>
         <li>Buka halaman <Link href="/lacak">Cek Resi</Link>.</li>
-        <li>Masukkan nomor resi, bentuknya seperti <b>KLX-JKT-MKS-LJ-261112-0830-0001-RH</b>.</li>
+        <li>Masukkan nomor resi, bentuknya seperti <b>KML-JKT-MKS-LJ-261112-0830-0001-NW</b>.</li>
         <li>Tekan <b>Cek posisi barang</b>. Perjalanan barang tampil berurutan lengkap dengan waktu dan lokasinya.</li>
       </ol>
       <h2>Arti tiap status</h2>
@@ -301,15 +301,15 @@ export const ARTIKEL: Artikel[] = [
   },
   {
     slug: "cara-membaca-kode-resi-kamil-logistik",
-    title: "Cara Membaca Kode Resi Kamil Logistik (KLX-…)",
+    title: "Cara Membaca Kode Resi Kamil Logistik (KML-…)",
     heading: "Cara membaca kode resi Kamil Logistik: arti setiap bagian",
     description: "Kode resi Kamil Logistik bisa dibaca manusia: kota asal, tujuan, jalur, cara barang masuk, tanggal, jam, urutan, dan huruf pemeriksa. Contoh dan cara mengeceknya.",
     updated: "2026-11-19",
     body: () => (<>
-      <p>Nomor resi Kamil Logistik dirancang agar mudah dibaca oleh pelanggan dan petugas. Contohnya: <code>KLX-MKS-JKT-LJ-261118-1432-0007-VP</code>.</p>
+      <p>Nomor resi Kamil Logistik dirancang agar mudah dibaca oleh pelanggan dan petugas. Contohnya: <code>KML-MKS-JKT-LJ-261118-1432-0007-UC</code>.</p>
       <h2>Arti tiap bagian</h2>
       <ul>
-        <li><b>KLX</b>: tanda Kamil Logistik Express.</li>
+        <li><b>KML</b>: tanda Kamil Logistik (resi lama berawalan KLX tetap sah).</li>
         <li><b>MKS</b>: kode kota asal (di contoh, Makassar).</li>
         <li><b>JKT</b>: kode kota tujuan (Jakarta).</li>
         <li><b>LJ</b>: dua huruf. Huruf pertama adalah jalur: <b>L</b> laut, <b>U</b> udara, <b>D</b> darat. Huruf kedua adalah cara barang masuk: <b>J</b> dijemput kurir, <b>A</b> diantar sendiri ke gudang.</li>

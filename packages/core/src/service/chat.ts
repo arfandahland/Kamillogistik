@@ -76,7 +76,7 @@ export async function jawab(deps: ChatDeps, pesan: string, ctxIn: ChatCtx = {}):
   if (!t) return { text: "Silakan tulis pertanyaan Anda. Contoh: “ongkir Jakarta ke Makassar 25 kg”.", chips: CHIPS_AWAL };
 
   // 1) Kode resi di dalam kalimat
-  const token = raw.toUpperCase().split(/[\s,;:()]+/).map((x) => x.replace(/^[^A-Z0-9]+|[^A-Z0-9-]+$/g, "")).find((x) => /^KLX[-A-Z0-9]{8,}$/.test(x.replace(/[._/\\]/g, "-")));
+  const token = raw.toUpperCase().split(/[\s,;:()]+/).map((x) => x.replace(/^[^A-Z0-9]+|[^A-Z0-9-]+$/g, "")).find((x) => /^(KML|KLX)[-A-Z0-9]{8,}$/.test(x.replace(/[._/\\]/g, "-")));
   if (token) {
     const { resi } = splitItem(normalizeResi(token));
     const p = parseResi(resi);
@@ -137,10 +137,10 @@ export async function jawab(deps: ChatDeps, pesan: string, ctxIn: ChatCtx = {}):
 
   // 3) Topik lain (aturan sederhana, jawaban ringkas)
   if (has(t, "lacak", "tracking", "cek resi", "posisi barang", "resi saya", "dimana barang", "di mana barang")) {
-    return { text: "Kirim nomor resi di sini, atau buka halaman Cek Resi. Anda juga bisa memindai QR di struk dengan kamera. Contoh kode: KLX-MKS-JKT-LJ-261118-1432-0007-PK", actions: [{ label: "Cek resi", href: "/lacak" }], chips: ["Cara membaca kode resi"] };
+    return { text: "Kirim nomor resi di sini, atau buka halaman Cek Resi. Anda juga bisa memindai QR di struk dengan kamera. Contoh kode: KML-MKS-JKT-LJ-261118-1432-0007-UC", actions: [{ label: "Cek resi", href: "/lacak" }], chips: ["Cara membaca kode resi"] };
   }
   if (has(t, "arti kode", "baca kode", "kode resi", "format resi", "nomor resi")) {
-    return { text: "Kode resi bisa dibaca: KLX-MKS-JKT-LJ-261118-1432-0007-PK\n• MKS → JKT: asal dan tujuan\n• L = laut (U udara, D darat), J = dijemput (A = diantar sendiri)\n• 261118 tanggal, 1432 jam (WITA), 0007 urutan hari itu\n• PK huruf pemeriksa anti salah ketik", actions: [{ label: "Cek resi", href: "/lacak" }] };
+    return { text: "Kode resi bisa dibaca: KML-MKS-JKT-LJ-261118-1432-0007-UC\n• MKS → JKT: asal dan tujuan\n• L = laut (U udara, D darat), J = dijemput (A = diantar sendiri)\n• 261118 tanggal, 1432 jam (WITA), 0007 urutan hari itu\n• PK huruf pemeriksa anti salah ketik", actions: [{ label: "Cek resi", href: "/lacak" }] };
   }
   if (has(t, "jemput", "antar sendiri", "diantar sendiri", "drop", "datang ke gudang", "antar ke gudang")) {
     return { text: "Ada dua cara:\n• Dijemput: kurir kami mengambil barang ke alamat Anda.\n• Diantar sendiri: Anda membawa barang ke gudang kami, tanpa biaya jemput.\nKasir akan menanyakan pilihannya saat membuat resi.", chips: ["Hitung ongkir", "Cara pembayaran"], actions: [wa("Halo, saya mau kirim barang. Bisa dijemput?")] };

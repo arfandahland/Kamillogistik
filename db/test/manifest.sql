@@ -39,7 +39,7 @@ DO $$ DECLARE r jsonb; BEGIN
 END $$;
 
 -- ---------- Tambah resi ----------
-SELECT t.fails($$select public.manifest_add(current_setting('t.m')::uuid, 'KLX-JKT-MKS-LJ-000000-0000-0000-X')$$, 'tidak dikenali');
+SELECT t.fails($$select public.manifest_add(current_setting('t.m')::uuid, 'KML-JKT-MKS-LJ-000000-0000-0000-X')$$, 'tidak dikenali');
 DO $$ DECLARE r jsonb; BEGIN
   r := public.manifest_add(current_setting('t.m')::uuid, current_setting('t.ra'));
   ASSERT (r->>'items')::int = 2 AND (r->>'kg')::numeric = 20, 'resi A masuk (2 barang, 20 kg)';
@@ -116,7 +116,7 @@ SELECT t.fails($$select public.manifest_scan_unload(current_setting('t.m')::uuid
 DO $$ BEGIN ASSERT (public.manifest_handover_accept(current_setting('t.m')::uuid)->>'accepted')::int = 2, 'gudang Makassar menerima manifest'; END $$;
 
 -- ---------- Bongkar: pindai, selisih, selesai ----------
-SELECT t.fails($$select public.manifest_scan_unload(current_setting('t.m')::uuid, 'KLX-JKT-MKS-LA-000000-0000-0000-X-01')$$, 'TIDAK ada di manifest');
+SELECT t.fails($$select public.manifest_scan_unload(current_setting('t.m')::uuid, 'KML-JKT-MKS-LA-000000-0000-0000-X-01')$$, 'TIDAK ada di manifest');
 DO $$ DECLARE r jsonb; BEGIN
   r := public.manifest_scan_unload(current_setting('t.m')::uuid, current_setting('t.ra') || '-01');
   ASSERT (r->>'scanned')::int = 1 AND (r->>'expected')::int = 3, 'pindai 1 dari 3';
