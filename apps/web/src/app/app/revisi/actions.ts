@@ -10,8 +10,15 @@ const FIELD = ["sender_name", "sender_phone", "receiver_name", "receiver_phone",
 /** Kasir mengubah data resi yang masih boleh diubah. Hanya kolom yang benar-benar berbeda yang dikirim. */
 export async function ubahResi(fd: FormData) {
   const id = str(fd, "id");
-  const perubahan: Record<string, string> = {};
+  const perubahan: Record<string, unknown> = {};
   for (const k of FIELD) { if (fd.has(k) && str(fd, k) !== str(fd, `awal_${k}`)) perubahan[k] = str(fd, k); }
+  const areaBaru = str(fd, "area");
+  if (fd.has("area") && areaBaru !== str(fd, "awal_area")) {
+    try { const a = JSON.parse(areaBaru); if (a && typeof a === "object") perubahan.area = a; } catch { /* wilayah belum lengkap */ }
+    if (!perubahan.area) back(id, "e", "Alamat tujuan harus dipilih lengkap sampai kelurahan atau desa.");
+  }
+  const kd = Object.fromEntries(["jenis", "merek", "nopol", "rangka", "mesin", "stnk", "bpkb", "catatan"].map((k) => [k, str(fd, `kd_${k}`)]).filter(([, v]) => v));
+  if (fd.has("kd_jenis") && JSON.stringify(kd) !== str(fd, "awal_kd")) perubahan.vehicle = kd;
   const r = await staffRpc("shipment_revise", { p_id: id, p_changes: perubahan, p_reason: str(fd, "alasan") || null });
   revalidatePath(`/app/resi/${id}`); revalidatePath("/app");
   if (r.error) back(id, "e", r.error);

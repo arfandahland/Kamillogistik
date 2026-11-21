@@ -21,19 +21,26 @@ export async function buatResi(fd: FormData) {
   const hpS = normalizePhone(String(fd.get("hp_pengirim") ?? "")), hpP = normalizePhone(String(fd.get("hp_penerima") ?? ""));
   if (!hpS.ok) redirect(`/app/baru?e=${encodeURIComponent("Pengirim: " + hpS.error)}`);
   if (!hpP.ok) redirect(`/app/baru?e=${encodeURIComponent("Penerima: " + hpP.error)}`);
-  const { data, error } = await staffRpc<{ id: string }>("create_shipment", {
+  let area: unknown = null;
+  try { area = JSON.parse(String(fd.get("area") ?? "")); } catch { area = null; }
+  if (!area || typeof area !== "object") redirect(`/app/baru?e=${encodeURIComponent("Pilih alamat tujuan sampai kelurahan atau desa (provinsi, kabupaten atau kota, kecamatan, kelurahan atau desa).")}`);
+  const kd = (k: string) => String(fd.get(`kd_${k}`) ?? "").trim().slice(0, 80);
+  const kendaraan = Object.fromEntries(["jenis", "merek", "nopol", "rangka", "mesin", "stnk", "bpkb", "catatan"].map((k) => [k, kd(k)]).filter(([, v]) => v));
+  const { data, error } = await staffRpc<{ id: string }>("create_shipment_full", {
     p_route_slug: String(fd.get("rute") ?? ""),
     p_sender_name: String(fd.get("pengirim") ?? ""),
     p_sender_phone: hpS.ok ? hpS.wa : "",
     p_receiver_name: String(fd.get("penerima") ?? ""),
     p_receiver_phone: hpP.ok ? hpP.wa : "",
     p_receiver_address: String(fd.get("alamat") ?? ""),
+    p_area: area,
     p_piece_count: Number(fd.get("jumlah") ?? 1) || 1,
     p_condition_note: String(fd.get("catatan") ?? "") || null,
     p_client_ref: /^[0-9a-f-]{36}$/i.test(String(fd.get("ref") ?? "")) ? String(fd.get("ref")) : null,
     p_pickup_type: fd.get("masuk") === "DROPOFF" ? "DROPOFF" : "PICKUP",
     p_pickup_address: String(fd.get("alamat_jemput") ?? "").trim() || null,
     p_company_id: fd.get("jenis") === "B2B" && /^[0-9a-f-]{36}$/i.test(String(fd.get("company") ?? "")) ? String(fd.get("company")) : null,
+    p_vehicle: Object.keys(kendaraan).length ? kendaraan : null,
   });
   if (error || !data) redirect(`/app/baru?e=${encodeURIComponent(error ?? "Gagal membuat resi")}`);
   revalidatePath("/app");

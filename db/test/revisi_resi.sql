@@ -42,3 +42,31 @@ UPDATE shipments SET status = 'OUT_FOR_DELIVERY' WHERE id = current_setting('t.r
 SELECT t.as_user('00000000-0000-0000-0000-000000000002');
 SELECT t.fails($$select public.shipment_revise(current_setting('t.ra')::uuid, '{"receiver_name":"Nama Lain"}'::jsonb)$$, 'sudah diantar');
 SELECT 'revisi_resi OK' AS hasil;
+
+-- ================= 039: alamat tujuan lengkap dan data kendaraan =================
+RESET ROLE;
+SELECT t.as_user('00000000-0000-0000-0000-00000000000c');
+SELECT t.fails($$select public.create_shipment_full('jakarta-makassar-port-to-door-kg','A','0811','B','0822','Jl. X No. 1, Makassar','{"province":"Sulawesi Selatan"}'::jsonb)$$, 'izin');
+SELECT t.as_user('00000000-0000-0000-0000-000000000002');
+SELECT t.fails($$select public.create_shipment_full('jakarta-makassar-port-to-door-kg','A','0811','B','0822','Jl. X No. 1, Makassar',NULL)$$, 'dipilih lengkap');
+SELECT t.fails($$select public.create_shipment_full('jakarta-makassar-port-to-door-kg','A','0811','B','0822','Jl. X No. 1, Makassar','{"province":"Sulawesi Selatan","regency":"Kota Makassar","district":"Panakkukang"}'::jsonb)$$, 'dipilih lengkap');
+SELECT t.fails($$select public.create_shipment_full('jakarta-makassar-port-to-door-kg','A','0811','B','0822','Jl. X No. 1, Makassar','{"province":"Sulawesi Selatan","regency":"Kota Makassar","district":"Panakkukang","village":"Pandang","code":"73.71.07"}'::jsonb)$$, 'Kode wilayah');
+SELECT t.fails($$select public.create_shipment_full('jakarta-makassar-port-to-door-kg','A','0811','B','0822','x','{"province":"Sulawesi Selatan","regency":"Kota Makassar","district":"Panakkukang","village":"Pandang","code":"73.71.07.1001"}'::jsonb)$$, 'alamat penerima');
+DO $$ DECLARE r jsonb; g jsonb; BEGIN
+  r := public.create_shipment_full('jakarta-makassar-port-to-door-kg','Pengirim Area','0811','Penerima Area','0822','Jl. Perintis No. 10, Makassar',
+    '{"province":"Sulawesi Selatan","regency":"Kota Makassar","district":"Panakkukang","village":"Pandang","code":"73.71.07.1001"}'::jsonb, 1, NULL, NULL, 'DROPOFF', NULL, NULL,
+    '{"jenis":"Motor","merek":"Honda Beat","nopol":"DD 1234 XY","stnk":"Ada","bpkb":"","kolom_aneh":"diabaikan"}'::jsonb);
+  PERFORM set_config('t.rarea', r->>'id', false);
+  g := public.staff_get_shipment((r->>'id')::uuid);
+  ASSERT g->'area'->>'district' = 'Panakkukang' AND g->'area'->>'code' = '73.71.07.1001', 'alamat lengkap tersimpan: ' || (g->'area')::text;
+  ASSERT g->'vehicle'->>'nopol' = 'DD 1234 XY' AND g->'vehicle'->>'stnk' = 'Ada' AND NOT (g->'vehicle' ? 'bpkb') AND NOT (g->'vehicle' ? 'kolom_aneh'), 'data kendaraan dibersihkan: ' || (g->'vehicle')::text;
+  r := public.shipment_revise(current_setting('t.rarea')::uuid, '{"area":{"province":"Sulawesi Selatan","regency":"Kota Makassar","district":"Rappocini","village":"Gunung Sari","code":"73.71.06.1002"},"vehicle":{"jenis":"Motor","nopol":"DD 9999 ZZ","bpkb":"Ada"}}'::jsonb, 'Salah pilih kecamatan');
+  ASSERT (r->>'berubah')::int = 2, 'area dan kendaraan direvisi';
+END $$;
+DO $$ DECLARE g jsonb; BEGIN
+  g := public.staff_get_shipment(current_setting('t.rarea')::uuid);
+  ASSERT g->'area'->>'district' = 'Rappocini' AND g->'vehicle'->>'nopol' = 'DD 9999 ZZ', 'revisi alamat dan kendaraan tersimpan';
+  ASSERT public.shipment_revisions_list(current_setting('t.rarea')::uuid)->0->'changes'->'area'->>'ke' LIKE '%Rappocini%', 'riwayat mencatat alamat lama dan baru';
+END $$;
+SELECT t.fails($$select public.shipment_revise(current_setting('t.rarea')::uuid, '{"area":{"province":"X"}}'::jsonb)$$, 'dipilih lengkap');
+SELECT 'wilayah_kendaraan OK' AS hasil;

@@ -1,11 +1,13 @@
 import { staffRpc } from "@/lib/supabase/server";
 import { tanggalWaktu } from "@/lib/brand";
 import SubmitButton from "./SubmitButton";
+import WilayahField, { type Area } from "./WilayahField";
+import DataKendaraan from "./DataKendaraan";
 import { batalkanResi, ubahResi } from "@/app/app/revisi/actions";
 
 type Rev = { id: string; kind: "UBAH" | "BATAL"; changes: Record<string, { dari: string | null; ke: string | null }>; reason: string | null; oleh: string | null; at: string };
-const NAMA: Record<string, string> = { sender_name: "Nama pengirim", sender_phone: "HP pengirim", receiver_name: "Nama penerima", receiver_phone: "HP penerima", receiver_address: "Alamat penerima", pickup_address: "Alamat jemput" };
-type D = { id: string; status: string; pickupType: "PICKUP" | "DROPOFF"; pickupAddress: string | null; senderName: string; senderPhone: string | null; receiverName: string; receiverPhone: string | null; receiverAddress: string | null; manifest?: unknown };
+const NAMA: Record<string, string> = { area: "Alamat tujuan (wilayah)", vehicle: "Data kendaraan", sender_name: "Nama pengirim", sender_phone: "HP pengirim", receiver_name: "Nama penerima", receiver_phone: "HP penerima", receiver_address: "Alamat penerima", pickup_address: "Alamat jemput" };
+type D = { id: string; status: string; pickupType: "PICKUP" | "DROPOFF"; pickupAddress: string | null; senderName: string; senderPhone: string | null; receiverName: string; receiverPhone: string | null; receiverAddress: string | null; area?: Area | null; vehicle?: Record<string, string> | null; manifest?: unknown };
 
 /** Revisi dan pembatalan resi (Kasir saja) serta riwayat perubahan (semua petugas yang melihat resi). */
 export default async function RevisiPanel({ s, role }: { s: D; role: string }) {
@@ -29,6 +31,8 @@ export default async function RevisiPanel({ s, role }: { s: D; role: string }) {
             <label className="f" htmlFor="rv-rn">Nama penerima</label><input id="rv-rn" name="receiver_name" defaultValue={s.receiverName} maxLength={120} required />{awal("receiver_name", s.receiverName)}
             <label className="f" htmlFor="rv-rp">HP penerima</label><input id="rv-rp" name="receiver_phone" defaultValue={s.receiverPhone ?? ""} inputMode="tel" maxLength={30} />{awal("receiver_phone", s.receiverPhone)}
             <label className="f" htmlFor="rv-ra">Alamat penerima</label><textarea id="rv-ra" name="receiver_address" defaultValue={s.receiverAddress ?? ""} rows={3} maxLength={400} />{awal("receiver_address", s.receiverAddress)}
+            <WilayahField awal={s.area ?? null} wajib={false} />{<input type="hidden" name="awal_area" value={s.area ? JSON.stringify(s.area) : ""} />}
+            <DataKendaraan awal={s.vehicle ?? null} /><input type="hidden" name="awal_kd" value={JSON.stringify(s.vehicle ?? {})} />
             {s.pickupType === "PICKUP" && <><label className="f" htmlFor="rv-pa">Alamat jemput</label><textarea id="rv-pa" name="pickup_address" defaultValue={s.pickupAddress ?? ""} rows={2} maxLength={400} />{awal("pickup_address", s.pickupAddress)}</>}
             <label className="f" htmlFor="rv-al">Alasan perubahan (boleh kosong)</label><input id="rv-al" name="alasan" maxLength={300} autoComplete="off" />
             <SubmitButton steps={["Memeriksa perubahan…", "Menyimpan dan mencatat riwayat…"]}>Simpan perubahan</SubmitButton>
@@ -49,7 +53,7 @@ export default async function RevisiPanel({ s, role }: { s: D; role: string }) {
           <h2>Riwayat perubahan data</h2>
           <ul className="rows">{riwayat.map((x) => (
             <li key={x.id}><span><b>{x.kind === "BATAL" ? "Resi dibatalkan" : Object.keys(x.changes).map((k) => NAMA[k] ?? k).join(", ")}</b>
-              {x.kind === "UBAH" && Object.entries(x.changes).map(([k, v]) => <small key={k}>{NAMA[k] ?? k}: {v.dari || "kosong"} → {v.ke || "kosong"}</small>)}
+              {x.kind === "UBAH" && Object.entries(x.changes).map(([k, v]) => <small key={k}>{NAMA[k] ?? k}: {k === "vehicle" ? "diperbarui" : `${v.dari || "kosong"} → ${v.ke || "kosong"}`}</small>)}
               {x.reason && <small>Alasan: {x.reason}</small>}<small>{tanggalWaktu(x.at)}{x.oleh ? ` · ${x.oleh}` : ""}</small></span></li>))}</ul>
         </div>
       )}

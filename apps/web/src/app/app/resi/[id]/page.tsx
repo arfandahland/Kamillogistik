@@ -18,7 +18,7 @@ type Detail = {
   id: string; resiNo: string; status: AnyStatus; next: string | null;
   inspections: Inspection[]; pickupType: "PICKUP" | "DROPOFF"; pickupAddress: string | null; mode: "LAUT" | "DARAT" | "UDARA"; segment: string; company: string | null; manifest: { id: string; code: string; status: string } | null;
   origin: { code: string; city: string; name: string }; dest: { code: string; city: string; name: string };
-  senderName: string; senderPhone: string | null; receiverName: string; receiverPhone: string | null; receiverAddress: string | null;
+  senderName: string; senderPhone: string | null; receiverName: string; receiverPhone: string | null; receiverAddress: string | null; area?: { province: string; regency: string; district: string; village: string; code: string } | null; vehicle?: Record<string, string> | null;
   holder: { id: string; name: string } | null; iAmHolder: boolean;
   items: { barcode: string; weightKg: number | null; lCm: number | null; wCm: number | null; hCm: number | null; note: string | null }[];
   events: { status: AnyStatus; at: string; location: string | null; by: string | null }[];
@@ -64,6 +64,8 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
         <ResiStepper status={s.status} masuk={s.pickupType} mode={s.mode} />
         <dl className="kv">
           {s.receiverAddress && (<><dt>Alamat</dt><dd>{s.receiverAddress}</dd></>)}
+          {s.area && (<><dt>Wilayah tujuan</dt><dd>{s.area.village}, {s.area.district}, {s.area.regency}, {s.area.province}</dd></>)}
+          {s.vehicle && (<><dt>Kendaraan</dt><dd>{[s.vehicle.jenis, s.vehicle.merek, s.vehicle.nopol].filter(Boolean).join(" · ")}{s.vehicle.stnk ? ` · STNK: ${s.vehicle.stnk}` : ""}{s.vehicle.bpkb ? ` · BPKB: ${s.vehicle.bpkb}` : ""}</dd></>)}
           {s.pickupType === "PICKUP" && s.pickupAddress && (<><dt>Alamat jemput</dt><dd>{s.pickupAddress}</dd></>)}
           <dt>Barang dipegang</dt><dd>{s.iAmHolder ? "Anda" : s.holder?.name ?? (s.pickupType === "PICKUP" ? "Belum ada (menunggu dijemput)" : "Belum ada (menunggu diantar pelanggan)")}</dd>
         </dl>

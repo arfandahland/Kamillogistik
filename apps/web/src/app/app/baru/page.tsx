@@ -6,6 +6,8 @@ import { staffRpc, getMe, type Staff } from "@/lib/supabase/server";
 import SubmitButton from "@/components/SubmitButton";
 import CaraMasukField from "@/components/CaraMasukField";
 import PelangganField from "@/components/PelangganField";
+import WilayahField from "@/components/WilayahField";
+import DataKendaraan from "@/components/DataKendaraan";
 import { randomUUID } from "node:crypto";
 import { buatResi } from "../actions";
 
@@ -17,7 +19,9 @@ export default async function Baru({ searchParams }: { searchParams: Promise<{ e
   if (!me || !CAN_CREATE_ORDER.includes(me.role)) redirect("/app");
   const rr = await handleRoutes(repo);
   const all = (rr.status === 200 ? rr.body : []) as any[];
-  const routes = me.role === "SUPER_ADMIN" ? all : all.filter((r) => r.origin.name === me.branchName);
+  const semua = me.role === "SUPER_ADMIN" ? all : all.filter((r) => r.origin.name === me.branchName);
+  // Harga diisi manual oleh Kasir, jadi cukup satu pilihan per kota tujuan dan moda (bukan per varian tarif).
+  const routes = [...new Map(semua.map((r) => [`${r.origin.city}|${r.dest.city}|${r.mode ?? "LAUT"}`, r])).values()];
   const perusahaan = (await staffRpc<{ id: string; name: string; top: number }[]>("staff_list_customers")).data ?? [];
 
   return (
@@ -32,7 +36,7 @@ export default async function Baru({ searchParams }: { searchParams: Promise<{ e
             <select id="rute" name="rute" required>
               {routes.map((r) => (
                 <option key={r.slug} value={r.slug}>
-                  {r.origin.city} → {r.dest.city} · {r.serviceTitle} ({r.basis === "PER_M3" ? "per ukuran m³" : "per kilo"}){r.mode && r.mode !== "LAUT" ? ` · ${r.mode === "UDARA" ? "Udara" : "Darat"}` : ""}
+                  {r.origin.city} → {r.dest.city} · {r.mode === "UDARA" ? "Udara" : r.mode === "DARAT" ? "Darat" : "Laut"}
                 </option>
               ))}
             </select>
@@ -53,15 +57,17 @@ export default async function Baru({ searchParams }: { searchParams: Promise<{ e
             <label className="f" htmlFor="hp_penerima">Nomor WhatsApp penerima</label>
             <input id="hp_penerima" name="hp_penerima" inputMode="tel" placeholder="Contoh: 0812 3456 7890" required />
             <p className="hint">Wajib diisi dan benar. Dipakai kurir dan tim untuk menghubungi penerima.</p>
-            <label className="f" htmlFor="alamat">Alamat lengkap penerima</label>
-            <textarea id="alamat" name="alamat" />
+            <label className="f" htmlFor="alamat">Alamat lengkap penerima (jalan, nomor, patokan)</label>
+            <textarea id="alamat" name="alamat" required minLength={5} />
+            <WilayahField />
 
             <h3 style={{ marginTop: 20 }}>Barang</h3>
             <label className="f" htmlFor="jumlah">Jumlah barang (koli/dus)</label>
             <input id="jumlah" name="jumlah" type="number" inputMode="numeric" min={1} max={100} defaultValue={1} required />
             <label className="f" htmlFor="catatan">Catatan kondisi barang (boleh kosong)</label>
             <input id="catatan" name="catatan" placeholder="Contoh: dus sedikit penyok" />
-            <p className="hint">Berat dan ukuran dicatat nanti saat barang ditimbang di gudang.</p>
+            <p className="hint">Berat dan ukuran dicatat nanti saat barang ditimbang di gudang. Harga diisi Kasir saat membuat invoice.</p>
+            <DataKendaraan />
 
             <SubmitButton style={{ marginTop: 18 }} steps={["Memeriksa data…", "Membuat nomor resi…", "Menyiapkan barang…", "Menyimpan resi…"]}>Buat resi</SubmitButton>
           </>

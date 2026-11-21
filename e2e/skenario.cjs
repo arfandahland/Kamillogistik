@@ -24,6 +24,15 @@ async function login(browser, email) {
   return { ctx, page };
 }
 const periksaDulu = async (p, opts = {}) => {
+/** Pilih alamat tujuan lengkap (Sulawesi Selatan, Kota Makassar, Panakkukang, desa pertama) pada form resi. */
+async function isiWilayah(p, nama = "area") {
+  const b = `#${nama}`;
+  const tunggu = (sel) => p.waitForFunction((s) => document.querySelectorAll(s + " option").length > 1, sel, { timeout: 15000 });
+  await tunggu(`${b}-prov`); await p.selectOption(`${b}-prov`, { label: "Sulawesi Selatan" });
+  await tunggu(`${b}-kab`); await p.selectOption(`${b}-kab`, { label: "Kota Makassar" });
+  await tunggu(`${b}-kec`); await p.selectOption(`${b}-kec`, { label: "Panakkukang" });
+  await tunggu(`${b}-desa`); const v = await p.$eval(`${b}-desa option:nth-child(2)`, (o) => o.value); await p.selectOption(`${b}-desa`, v);
+}
   await p.fill("#isi", opts.isi || "Pakaian dan perlengkapan");
   if (opts.bad) { await p.getByText(opts.bad, { exact: true }).click(); await p.fill("#catatan", "Sudut kardus penyok, isi aman"); }
   const buf = await p.screenshot({ type: "jpeg", quality: 55 });
@@ -66,6 +75,7 @@ async function direction(browser, cfg, accounts) {
     await p.fill("#penerima", cfg.receiver); await p.fill("#hp_penerima", "082233445566"); await p.fill("#alamat", cfg.address);
     if (cfg.dropoff) await p.getByText("Diantar sendiri").click(); else await p.fill("#alamat_jemput", cfg.pickupAddr);
     await p.fill("#jumlah", "2");
+    await isiWilayah(p);
     const r = await act(p, p.getByRole("button", { name: "Buat resi" }));
     ok(`[${cfg.key}] resi dibuat`, r.ok && /Resi sudah dibuat/.test(r.ok), JSON.stringify(r));
     resiNo = (await p.locator("h1").first().innerText()).trim(); resiId = p.url().match(/resi\/([0-9a-f-]+)/)?.[1] || "";
@@ -242,12 +252,12 @@ async function direction(browser, cfg, accounts) {
   const accounts = { kasir: "kasir@uji.id", kasirMks: "kasir.mks@uji.id", kurir: "kurir@uji.id", gudang: "gudang@uji.id", sopir: "sopir@uji.id", gudangMks: "gudang.mks@uji.id", kurirMks: "kurir.mks@uji.id" };
   const runs = [];
   runs.push(await direction(browser, {
-    key: "mks-jkt", title: "Makassar → Jakarta", routeText: "Makassar → Jakarta · Diantar sampai alamat (per kilo)",
+    key: "mks-jkt", title: "Makassar → Jakarta", routeText: "Makassar → Jakarta · Laut",
     sender: "CV Sulawesi Makmur", receiver: "Rina Wijaya", address: "Jl. Kebon Jeruk Raya No. 21, Jakarta Barat", destCity: "Jakarta", gps: { latitude: -6.1944, longitude: 106.7694 }, destCode: "JKT", pickupAddr: "Jl. Racing Centre No. 8, Makassar", dropoff: false,
     kasirO: "kasirMks", kurirO: "kurirMks", gudangO: "gudangMks", gudangOName: "Gudang Makassar", gudangD: "gudang", gudangDName: "Gudang Jakarta", kurirD: "kurir", kurirDName: "Kurir Jakarta", labels,
   }, accounts));
   runs.push(await direction(browser, {
-    key: "jkt-mks", title: "Jakarta → Makassar", routeText: "Jakarta → Makassar · Diantar sampai alamat (per kilo)",
+    key: "jkt-mks", title: "Jakarta → Makassar", routeText: "Jakarta → Makassar · Laut",
     sender: "PT Maju Jaya", receiver: "Budi Santoso", address: "Jl. Pettarani No. 5, Makassar", destCity: "Makassar", gps: { latitude: -5.1477, longitude: 119.4327 }, destCode: "MKS", dropoff: true,
     kasirO: "kasir", kurirO: "kurir", gudangO: "gudang", gudangOName: "Gudang Jakarta", gudangD: "gudangMks", gudangDName: "Gudang Makassar", kurirD: "kurirMks", kurirDName: "Kurir Makassar", labels,
   }, accounts));

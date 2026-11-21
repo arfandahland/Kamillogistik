@@ -1,0 +1,1 @@
+Data wilayah administrasi Indonesia: paket idn-area-data (fityannugroho), Open Database License (ODbL) 1.0. https://github.com/fityannugroho/idn-area-data

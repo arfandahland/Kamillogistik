@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic";
 type D = {
   id: string; resiNo: string; status: AnyStatus; pickupType: "PICKUP" | "DROPOFF"; mode: "LAUT" | "DARAT" | "UDARA";
   origin: { code: string; city: string; name: string }; dest: { code: string; city: string; name: string };
-  senderName: string; senderPhone: string | null; receiverName: string; receiverPhone: string | null; receiverAddress: string | null;
+  senderName: string; senderPhone: string | null; receiverName: string; receiverPhone: string | null; receiverAddress: string | null; area?: { district: string; regency: string; province: string; village: string } | null;
   segment: string; company: string | null;
   items: { barcode: string; weightKg: number | null }[];
 };
@@ -30,7 +30,7 @@ export default async function Cetak({ params }: { params: Promise<{ id: string }
   const base = {
     resi: s.resiNo, asal: s.origin.code, tujuan: s.dest.code, kotaAsal: s.origin.city, kotaTujuan: s.dest.city,
     moda: MODA_LABEL[s.mode].toUpperCase(), modaKode: s.mode, masuk: s.pickupType, masukLabel: MASUK_LABEL[s.pickupType],
-    penerima: s.receiverName, hpPenerima: s.receiverPhone, alamat: s.receiverAddress, pengirim: s.senderName, hpPengirim: s.senderPhone,
+    penerima: s.receiverName, hpPenerima: s.receiverPhone, alamat: [s.receiverAddress, s.area ? `${s.area.village}, ${s.area.district}, ${s.area.regency}, ${s.area.province}` : null].filter(Boolean).join(", ") || null, pengirim: s.senderName, hpPengirim: s.senderPhone,
     tanggal: tgl, korporat: s.segment === "B2B" ? s.company : null, lacak: abs("/lacak"),
   };
   const total = s.items.length;
