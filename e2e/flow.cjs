@@ -1391,7 +1391,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
 
   console.log("\n[AJ] Super Admin: konsol koreksi; kasir: jemput opsi B");
   {
-    const sa = await login(browser, "owner@uji.id");
+    const sa = await login(browser, "owner@uji.id", "Pemilik2026x");
     await sa.page.goto(`${BASE}/app/koreksi`, { waitUntil: "networkidle" });
     ok("AJ4 Super Admin membuka konsol koreksi (alasan wajib)", /Koreksi data/.test(await text(sa.page)) && /Alasan koreksi/.test(await text(sa.page)));
     await sa.page.fill("#kr-kode", "KML-TIDAK-ADA"); await sa.page.selectOption("#kr-status", "AT_DEST_HUB"); await sa.page.fill("#kr-alasan", "Uji koreksi resi tidak ada");
