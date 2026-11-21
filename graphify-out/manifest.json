@@ -924,9 +924,9 @@
     "semantic_hash": ""
   },
   "e2e/flow.cjs": {
-    "mtime": 1795258128.0523074,
-    "seen": 1795258185.7564645,
-    "ast_hash": "490a1a538715d24a9d45faa63b5a48a0",
+    "mtime": 1795263337.4831247,
+    "seen": 1795263379.758626,
+    "ast_hash": "c62b9b8f830243630a1e25978120754a",
     "semantic_hash": ""
   },
   "e2e/kamera.cjs": {
@@ -8634,9 +8634,9 @@
     "semantic_hash": ""
   },
   "db/test/revisi_resi.sql": {
-    "mtime": 1795252941.3737404,
-    "seen": 1795253790.5332685,
-    "ast_hash": "",
+    "mtime": 1795258005.8491936,
+    "seen": 1795263379.758614,
+    "ast_hash": "24b4b6ec5e1b66b6b12d990e3ad83364",
     "semantic_hash": ""
   },
   "apps/web/src/components/TutupResiPanel.tsx": {
@@ -8721,6 +8721,12 @@
     "mtime": 1795252941.3557115,
     "seen": 1795253790.5332365,
     "ast_hash": "ff54cb642bfdd47550048fb4605fe54e",
+    "semantic_hash": ""
+  },
+  "db/migrations/046_penjagaan_lokasi_resi.sql": {
+    "mtime": 1795257996.093974,
+    "seen": 1795263379.7585845,
+    "ast_hash": "a8e3cbe3229c37f6820ec89cdcc082c0",
     "semantic_hash": ""
   },
   "package-lock.json": {
