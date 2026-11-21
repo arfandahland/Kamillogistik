@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import LaporanCharts, { type DataLaporan } from "@/components/LaporanCharts";
 import PrintButton from "@/components/PrintButton";
-import { requireOwner } from "@/lib/auth";
+import { requireRole } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
 import { rupiah, tanggal, tanggalWita } from "@/lib/brand";
 
@@ -25,7 +25,7 @@ const EKSPOR: { jenis: string; label: string; ket: string }[] = [
 ];
 
 export default async function LaporanPemilik({ searchParams }: { searchParams: Promise<{ dari?: string; sampai?: string }> }) {
-  await requireOwner(); const sp = await searchParams;
+  await requireRole(["SUPER_ADMIN", "FINANCE"]); const sp = await searchParams;
   const ok = (v?: string) => /^\d{4}-\d{2}-\d{2}$/.test(v ?? "");
   const dari = ok(sp.dari) ? sp.dari! : geser(29), sampai = ok(sp.sampai) ? sp.sampai! : iso(new Date());
   const r = await staffRpc<Laporan>("owner_report", { p_from: dari, p_to: sampai });

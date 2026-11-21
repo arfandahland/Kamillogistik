@@ -3,25 +3,33 @@ import { CAN_CREATE_ORDER, OWNER_ROLE, STATUS_GROUPS, type OwnerDashboard as Own
 import OwnerDashboard from "@/components/OwnerDashboard";
 import { OwnerInsights, KasirDash, KurirDash, GudangDash, SopirDash, type OwnerInsight, type KasirData, type KurirData, type GudangData, type SopirData } from "@/components/PeranDashboard";
 import HubDashboard, { type HubData } from "@/components/HubDashboard";
+import Link from "next/link";
+import Icon from "@/components/Icon";
 import StaffHome, { TABS, type Pending, type Row } from "@/components/StaffHome";
 import { staffRpc, getMe, getPending } from "@/lib/supabase/server";
+
+function KendalaBadge({ n }: { n: number }) {
+  if (n <= 0) return null;
+  return <div className="wrap" style={{ paddingBottom: 0 }}><Link href="/app/kendala" className="homebadge"><span className="n">{n}</span><span className="t"><b>Kendala pengiriman terbuka</b><small>Salah sortir, rusak, gagal kirim, retur, atau ditahan</small></span><Icon name="arrow" size={22} /></Link></div>;
+}
 
 export default async function Beranda({ searchParams }: { searchParams: Promise<{ s?: string; q?: string; n?: string }> }) {
   const sp = await searchParams;
   const who = (await getMe()).data;
   if (who?.role === "HRD") redirect("/app/rekrutmen");
   if (who?.role === "KONTEN") redirect("/app/konten");
+  if (who?.role === "FINANCE") redirect("/app/keuangan");
   if (who?.role === OWNER_ROLE) {
-    const [o, ins] = await Promise.all([staffRpc<OwnerData>("owner_dashboard", { p_days: 30 }), staffRpc<OwnerInsight>("owner_insights")]);
-    return <>{ins.data && <OwnerInsights d={ins.data} />}<OwnerDashboard initial={o.data} initialError={o.error} /></>;
+    const [o, ins, kn] = await Promise.all([staffRpc<OwnerData>("owner_dashboard", { p_days: 30 }), staffRpc<OwnerInsight>("owner_insights"), staffRpc<number>("issue_count")]);
+    return <><KendalaBadge n={Number(kn.data ?? 0)} />{ins.data && <OwnerInsights d={ins.data} />}<OwnerDashboard initial={o.data} initialError={o.error} /></>;
   }
   const peran = who?.role;
   const tab = TABS.find((t) => t.k === sp.s)?.k ?? "aktif";
   const q = (sp.q ?? "").trim();
   const n = Math.min(100, Math.max(30, Number(sp.n) || 30)); // baris yang ditampilkan (HTML lebih ringan di HP)
-  const hasQueue = peran !== undefined && ["HUB_MANAGER", "MITRA_POS", "WAREHOUSE"].includes(peran);
+  const hasQueue = peran !== undefined && ["HUB_MANAGER", "MITRA_POS", "WAREHOUSE", "CS_SALES"].includes(peran);
   // Semua panggilan database dijalankan bersamaan (satu putaran), bukan berurutan.
-  const [me, list, pend, fq, hub, kas, kur, gud, sop] = await Promise.all([
+  const [me, list, pend, fq, hub, kas, kur, gud, sop, kn] = await Promise.all([
     getMe(),
     staffRpc<Row[]>("staff_list_shipments", { p_q: q || null, p_limit: 100 }),
     getPending() as Promise<{ data: Pending[] | null; error: string | null }>,
@@ -31,6 +39,7 @@ export default async function Beranda({ searchParams }: { searchParams: Promise<
     peran === "DRIVER" ? staffRpc<KurirData>("kurir_dashboard") : Promise.resolve(null),
     peran === "WAREHOUSE" ? staffRpc<GudangData>("gudang_dashboard") : Promise.resolve(null),
     peran === "CONTAINER_DRIVER" ? staffRpc<SopirData>("sopir_dashboard") : Promise.resolve(null),
+    peran === "HUB_MANAGER" || peran === "WAREHOUSE" ? staffRpc<number>("issue_count") : Promise.resolve(null),
   ]);
   const punyaDash = !!(hub?.data || kas?.data || kur?.data || gud?.data || sop?.data);
   const all = list.data ?? [];
@@ -38,6 +47,7 @@ export default async function Beranda({ searchParams }: { searchParams: Promise<
   const rows = all.filter((r) => (tab === "semua" ? true : (STATUS_GROUPS[tab] as readonly string[]).includes(r.status)));
   return (
     <>
+    <KendalaBadge n={Number(kn?.data ?? 0)} />
     {hub?.data && <div className="wrap hubwrap"><HubDashboard d={hub.data} /></div>}
     {kas?.data && <KasirDash d={kas.data} />}{kur?.data && <KurirDash d={kur.data} />}{gud?.data && <GudangDash d={gud.data} />}{sop?.data && <SopirDash d={sop.data} />}
     {hub?.error && <div className="wrap"><div className="err">{hub.error}</div></div>}

@@ -60,3 +60,12 @@ Sistem memakai 10 status; penyesuaian terhadap 9 tahap spesifikasi:
 12. COD (butuh keputusan karena menyangkut uang).
 
 Butir 3, 7, 8, 10, 12 menyentuh uang atau privasi dan perlu keputusan Pemilik sebelum dibangun.
+
+## Pembaruan setelah perbaikan (migrasi 028 sampai 030)
+Dikerjakan tanpa mengubah perilaku fitur lama; uji SQL dan 438 uji peramban lolos.
+- **Kendala pengiriman** (salah sortir, rusak, gagal kirim, retur, hold): ada dan dijaga (resi tidak bisa diantar, diterima, atau masuk manifest selama terbuka). [SESUAI]
+- **Revisi ETA** setelah berangkat, tersinkron ke semua resi di manifest dan tercatat. [SESUAI]
+- **Transit dua leg** (Jakarta → Surabaya → Makassar): resi bisa diberi gudang transit; bongkar di transit mengembalikan resi ke "siap dimuat" untuk leg 2. Catatan: di halaman lacak pelanggan tahap bisa tampak mundur saat singgah (riwayat memuat tulisan "Singgah di ..."). Tarif rute lain (mis. Surabaya dan wilayah Timur) tetap perlu diisi Pemilik lewat menu Tarif dan rute. [SESUAI dengan catatan]
+- **HRD kepegawaian**: dokumen dan masa berlaku, shift, absensi, cuti dan izin, rekap kehadiran dan langkah kerja (CSV). HRD tidak punya akses resi atau keuangan. [SESUAI]
+- **Peran Finance dan CS/Sales** ditambahkan. **Persetujuan berjenjang klaim**: CS mengusulkan, Pemilik memutuskan. [SESUAI]
+- **Masih belum**: peran Dispatcher terpisah (penugasan driver pick up), pemisahan Super Admin dan Owner (tetap satu peran), approval matrix selain klaim, biaya operasional dan margin per manifest, unggah foto bukti pada klaim dan kendala, COD, OTP penerima, notifikasi otomatis, antrean offline (keputusan sebelumnya).

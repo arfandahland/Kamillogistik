@@ -7,7 +7,7 @@ import { staffRpc } from "@/lib/supabase/server";
 export const metadata: Metadata = { title: "Pesanan Jemput" };
 
 export default async function JemputAntrean({ searchParams }: { searchParams: Promise<{ s?: string }> }) {
-  await requireRole(["SUPER_ADMIN", "HUB_MANAGER", "MITRA_POS"]); const sp = await searchParams;
+  await requireRole(["SUPER_ADMIN", "HUB_MANAGER", "MITRA_POS", "CS_SALES"]); const sp = await searchParams;
   const status = Object.keys(STATUS_JEMPUT).find((k) => k === sp.s);
   const q = await staffRpc<{ counts: Record<string, number>; items: Jemput[] }>("staff_pickups", { p_status: status ?? null });
   const total = Object.values(q.data?.counts ?? {}).reduce((a, b) => a + b, 0);

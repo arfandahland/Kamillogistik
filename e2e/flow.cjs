@@ -1107,6 +1107,108 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await pg.close();
   }
 
+  console.log("\n[AE] Kendala pengiriman, kepegawaian, peran Finance dan CS");
+  {
+    const cp = require("child_process"), dbn = require("fs").readFileSync(__dirname + "/.dbname", "utf8").trim();
+    const sqlq = (q) => cp.spawnSync("su", ["postgres", "-c", `psql -At -q -X -d ${dbn}`], { input: q, encoding: "utf8" }).stdout.trim();
+    sqlq(`INSERT INTO staff_invites(email, full_name, role, branch_id) VALUES ('finance@uji.id','Finance Uji','FINANCE',NULL),('cs@uji.id','CS Uji','CS_SALES',(SELECT id FROM branches_partners WHERE code='JKT'));
+      INSERT INTO auth.users(id,email,encrypted_password,email_confirmed_at,aud,role,raw_app_meta_data,raw_user_meta_data) SELECT gen_random_uuid(), email, extensions.crypt('Test1234', extensions.gen_salt('bf')), now(),'authenticated','authenticated','{}','{}' FROM staff_invites WHERE email IN ('finance@uji.id','cs@uji.id');`);
+    const iso = (n) => new Date(Date.now() + n * 86400000).toISOString().slice(0, 10);
+    const pesan = async (p) => ((await p.locator(".ok, .err").first().textContent({ timeout: 8000 }).catch(() => "")) || "").trim();
+
+    // Absen dan cuti oleh petugas lapangan
+    const kk = await login(browser, "kurir@uji.id", PASS, { width: 390, height: 844 });
+    await kk.page.goto(`${BASE}/app/akun`, { waitUntil: "networkidle" });
+    await act(kk.page, kk.page.getByRole("button", { name: "Absen masuk" }));
+    ok("AE1 petugas bisa absen masuk dari menu Akun", /Absen masuk tercatat/.test(await pesan(kk.page)));
+    await act(kk.page, kk.page.getByRole("button", { name: "Absen pulang" }));
+    ok("AE2 petugas bisa absen pulang", /Absen pulang tercatat/.test(await pesan(kk.page)));
+    await kk.page.fill("#cuti-dari", iso(5)); await kk.page.fill("#cuti-sampai", iso(6)); await kk.page.fill("#cuti-alasan", "Acara keluarga di Makassar");
+    await act(kk.page, kk.page.getByRole("button", { name: "Kirim pengajuan" }));
+    ok("AE3 pengajuan cuti terkirim dan tampil menunggu keputusan", /Pengajuan terkirim/.test(await pesan(kk.page)) && /Menunggu keputusan/.test(await kk.page.locator("main").innerText()));
+    await noOverflow(kk.page, "Akun dengan absen (HP)");
+    await kk.ctx.close();
+
+    // Pemilik: kepegawaian
+    const ow = await login(browser, "owner@uji.id", "Pemilik2026x", { width: 390, height: 844 });
+    await ow.page.goto(`${BASE}/app/pegawai?t=cuti`, { waitUntil: "networkidle" });
+    ok("AE4 Pemilik melihat pengajuan cuti Kurir Jakarta", /Kurir Jakarta/.test(await ow.page.locator("main").innerText()));
+    await act(ow.page, ow.page.getByRole("button", { name: "Setujui" }).first());
+    ok("AE5 pengajuan cuti bisa disetujui", /Keputusan tersimpan/.test(await pesan(ow.page)));
+    await ow.page.goto(`${BASE}/app/pegawai?t=dokumen`, { waitUntil: "networkidle" });
+    const kurirId = await ow.page.$$eval("#d-pegawai option", (o) => (o.find((x) => /Kurir Jakarta/.test(x.textContent)) || {}).value);
+    await ow.page.selectOption("#d-pegawai", kurirId); await ow.page.selectOption("#d-jenis", "SIM"); await ow.page.fill("#d-nomor", "B2-UJI-123"); await ow.page.fill("#d-berlaku", iso(10));
+    await act(ow.page, ow.page.getByRole("button", { name: "Simpan dokumen" }));
+    const dt = await ow.page.locator("main").innerText();
+    ok("AE6 dokumen SIM tersimpan dan diberi peringatan hampir habis", /Dokumen disimpan/.test(dt) && /B2-UJI-123/.test(dt) && /10 hari lagi/.test(dt), dt.slice(0, 200));
+    await noOverflow(ow.page, "Kepegawaian dokumen (HP)");
+    await ow.page.goto(`${BASE}/app/pegawai?t=shift`, { waitUntil: "networkidle" }); await noOverflow(ow.page, "Kepegawaian shift (HP)");
+    await ow.page.selectOption("#s-pegawai", kurirId); await ow.page.selectOption("#s-shift", "PAGI");
+    await act(ow.page, ow.page.getByRole("button", { name: "Simpan shift" }));
+    ok("AE7 shift tersimpan", /Shift disimpan/.test(await pesan(ow.page)));
+    await ow.page.goto(`${BASE}/app/pegawai?t=rekap`, { waitUntil: "networkidle" });
+    ok("AE8 rekap memuat Kurir Jakarta dengan 1 hari hadir dan unduhan CSV", /Kurir Jakarta/.test(await ow.page.locator("main").innerText()) && (await ow.page.locator("a[href^='/app/ekspor/rekap-pegawai']").count()) === 1);
+    const csv = await ow.page.request.get(`${BASE}/app/ekspor/rekap-pegawai`); const csvt = await csv.text();
+    ok("AE9 CSV rekap pegawai terunduh dan tidak memuat data resi", csv.status() === 200 && /Kurir Jakarta/.test(csvt) && !/KLX-/.test(csvt), String(csv.status()));
+    await noOverflow(ow.page, "Kepegawaian rekap (HP)");
+    await ow.page.goto(`${BASE}/app/kendala`, { waitUntil: "networkidle" }); await noOverflow(ow.page, "Kendala (Pemilik, HP)");
+    await ow.ctx.close();
+
+    // Kendala pengiriman oleh kepala gudang
+    const rid = sqlq(`SELECT id FROM shipments WHERE status NOT IN ('DELIVERED','CANCELLED','EXCEPTION') AND origin_id = (SELECT id FROM branches_partners WHERE code='JKT') ORDER BY created_at DESC LIMIT 1;`);
+    const rno = sqlq(`SELECT resi_no FROM shipments WHERE id = '${rid}';`);
+    const mg = await login(browser, "manajer@uji.id", PASS, { width: 390, height: 844 });
+    await mg.page.goto(`${BASE}/app/resi/${rid}`, { waitUntil: "networkidle" });
+    await mg.page.selectOption("#jenis-kendala", "HOLD"); await mg.page.fill("#catatan-kendala", "RAHASIA-INTERNAL ditahan menunggu dokumen pengirim");
+    await act(mg.page, mg.page.getByRole("button", { name: "Laporkan kendala" }));
+    const kt = await mg.page.locator("main").innerText();
+    ok("AE10 kendala dilaporkan dan tampil terbuka di halaman resi", /Kendala dilaporkan/.test(kt) && /Terbuka/.test(kt) && /ditahan/.test(kt), kt.slice(0, 160));
+    await mg.page.goto(`${BASE}/app`, { waitUntil: "networkidle" });
+    ok("AE11 beranda kepala gudang menampilkan penanda kendala terbuka", (await mg.page.locator("a.homebadge[href='/app/kendala']").count()) === 1);
+    await mg.page.goto(`${BASE}/app/kendala`, { waitUntil: "networkidle" });
+    ok("AE12 daftar kendala memuat resi tersebut", (await mg.page.locator("main").innerText()).includes(rno)); await noOverflow(mg.page, "Daftar kendala (HP)");
+    const pub = await fetch(`${BASE}/lacak/${rno}`); const pubt = await pub.text();
+    ok("AE13 halaman lacak publik tidak membocorkan catatan internal kendala", !/RAHASIA-INTERNAL/.test(pubt));
+    await mg.page.goto(`${BASE}/app/resi/${rid}`, { waitUntil: "networkidle" });
+    await mg.page.fill("input[name=catatan][id^=ck-]", "Dokumen sudah diterima, barang dilepas");
+    await act(mg.page, mg.page.getByRole("button", { name: "Selesaikan kendala" }));
+    ok("AE14 kendala bisa diselesaikan kepala gudang", /Kendala selesai/.test(await pesan(mg.page)));
+    await mg.page.goto(`${BASE}/app/kendala?s=selesai`, { waitUntil: "networkidle" });
+    ok("AE15 kendala yang selesai pindah ke tab Selesai", (await mg.page.locator("main").innerText()).includes(rno));
+    await mg.page.goto(`${BASE}/app`, { waitUntil: "networkidle" });
+    ok("AE16 beranda kepala gudang tanpa tombol Buat resi ganda (dashboard cabang)", (await mg.page.locator("a[href='/app/baru']:not(.tabbar a):not(.sidebar a)").count()) === 1);
+    await mg.ctx.close();
+
+    // Finance
+    const fn = await login(browser, "finance@uji.id", PASS, { width: 390, height: 844 });
+    ok("AE17 Finance masuk dan diarahkan ke Keuangan", fn.loggedIn && /\/app\/keuangan/.test((await (async () => { await fn.page.goto(`${BASE}/app`, { waitUntil: "networkidle" }); return fn.page.url(); })())));
+    const tabF = await fn.page.locator(".tabbar").innerText();
+    ok("AE18 menu bawah Finance: Keuangan, Tagihan, Laporan, Akun", /Keuangan/.test(tabF) && /Tagihan/.test(tabF) && /Laporan/.test(tabF) && /Akun/.test(tabF) && !/Pindai/.test(tabF), tabF.replace(/\n/g, " "));
+    await fn.page.goto(`${BASE}/app/tagihan`, { waitUntil: "networkidle" });
+    ok("AE19 Finance melihat daftar tagihan", /Tagihan/.test(await fn.page.locator("h1").first().innerText()) && (await fn.page.locator("main .err").count()) === 0);
+    await fn.page.goto(`${BASE}/app/pegawai`, { waitUntil: "networkidle" });
+    ok("AE20 Finance tidak bisa membuka data kepegawaian", (await fn.page.locator(".err").count()) > 0);
+    await fn.page.goto(`${BASE}/app/klaim`, { waitUntil: "networkidle" });
+    ok("AE21 Finance tidak bisa membuka klaim", !/\/app\/klaim/.test(fn.page.url()) || (await fn.page.locator(".err").count()) > 0);
+    await noOverflow(fn.page, "Finance (HP)");
+    await fn.ctx.close();
+
+    // CS/Sales
+    const cs = await login(browser, "cs@uji.id", PASS, { width: 390, height: 844 });
+    ok("AE22 CS masuk ke beranda", cs.loggedIn);
+    const tabC = await cs.page.locator(".tabbar").innerText();
+    ok("AE23 menu bawah CS: Beranda, Resi baru, Jemput, Klaim, Akun", /Beranda/.test(tabC) && /Resi baru/.test(tabC) && /Jemput/.test(tabC) && /Klaim/.test(tabC) && !/Tagihan/.test(tabC), tabC.replace(/\n/g, " "));
+    await cs.page.goto(`${BASE}/app/baru`, { waitUntil: "networkidle" });
+    ok("AE24 CS bisa membuka formulir resi baru (booking)", (await cs.page.locator("form").count()) > 0 && (await cs.page.locator(".err").count()) === 0);
+    await cs.page.goto(`${BASE}/app/klaim`, { waitUntil: "networkidle" });
+    const kl = await cs.page.locator("main").innerText();
+    ok("AE25 CS melihat klaim dengan usulan, tanpa kolom penyelesaian final", /Klaim dan keluhan/.test(kl) && !/Penyelesaian\n/.test(kl) && ((await cs.page.getByRole("button", { name: "Simpan usulan" }).count()) > 0 || /Belum ada laporan/.test(kl)), kl.slice(0, 160));
+    await cs.page.goto(`${BASE}/app/keuangan`, { waitUntil: "networkidle" });
+    ok("AE26 CS tidak bisa membuka Keuangan", !/\/app\/keuangan/.test(cs.page.url()));
+    await noOverflow(cs.page, "CS (HP)");
+    await cs.ctx.close();
+  }
+
   await browser.close();
   const fail = results.filter((r) => !r.ok);
   console.log(`\n==== HASIL: ${results.length - fail.length}/${results.length} lolos ====`);

@@ -4,7 +4,7 @@ import { rupiahRingkas } from "@kamil/core";
 import { Donut } from "@/components/Charts";
 import { MoneyArea, MoneyCount, MoneyHBars } from "@/components/MoneyCharts";
 import Icon from "@/components/Icon";
-import { requireOwner } from "@/lib/auth";
+import { requireRole } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
 import { rupiah, tanggalWaktu } from "@/lib/brand";
 
@@ -17,7 +17,7 @@ type Fin = {
 };
 
 export default async function Keuangan({ searchParams }: { searchParams: Promise<{ hari?: string }> }) {
-  await requireOwner();
+  await requireRole(["SUPER_ADMIN", "FINANCE"]);
   const hari = [7, 30, 90].includes(Number((await searchParams).hari)) ? Number((await searchParams).hari) : 30;
   const r = await staffRpc<Fin>("finance_overview", { p_days: hari });
   if (r.error || !r.data) return <main className="wrap stack"><div className="err">{r.error ?? "Data keuangan belum tersedia."}</div></main>;

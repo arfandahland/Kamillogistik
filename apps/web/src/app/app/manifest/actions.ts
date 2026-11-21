@@ -77,3 +77,7 @@ export async function pindaiManifest(id: string, mode: "tambah" | "bongkar", kod
   const d = r.data as { scanned: number; expected: number };
   return { ok: true, pesan: `Cocok. ${d.scanned} dari ${d.expected} barang sudah dipindai.` };
 }
+export async function revisiEta(fd: FormData) {
+  const id = str(fd, "id");
+  await hasil(id, "manifest_revise_eta", { p_id: id, p_eta: waktu(fd, "tiba"), p_reason: str(fd, "alasan") }, "Perkiraan tiba diperbarui untuk semua resi di manifest ini.");
+}

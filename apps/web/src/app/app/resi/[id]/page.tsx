@@ -9,6 +9,7 @@ import ResiStepper from "@/components/ResiStepper";
 import KodeResi from "@/components/KodeResi";
 import PodForm from "@/components/PodForm";
 import KondisiForm from "@/components/KondisiForm";
+import KendalaPanel from "@/components/KendalaPanel";
 import { catatTerima, lanjut, periksa, serahkan, terima, timbang } from "../../actions";
 
 type Detail = {
@@ -224,6 +225,8 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
             {s.invoice.calc.surchargeTotal > 0 ? ` + biaya tambahan ${rupiah(s.invoice.calc.surchargeTotal)}` : ""}.</p>
         </div>
       )}
+
+      <KendalaPanel shipmentId={s.id} role={role} status={s.status} />
 
       <div className="card">
         <h2>Riwayat</h2>

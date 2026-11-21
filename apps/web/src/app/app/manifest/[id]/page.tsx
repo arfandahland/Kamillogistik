@@ -6,7 +6,7 @@ import SubmitButton from "@/components/SubmitButton";
 import ManifestPindai from "@/components/ManifestPindai";
 import { tanggalWaktu } from "@/lib/brand";
 import { getMe, staffRpc } from "@/lib/supabase/server";
-import { berangkatManifest, keluarkanResi, segelManifest, selesaiBongkar, selesaikanSelisih, serahkanManifest, tambahResiForm, terimaManifest, tibaManifest, ubahManifest } from "../actions";
+import { berangkatManifest, keluarkanResi, segelManifest, selesaiBongkar, selesaikanSelisih, revisiEta, serahkanManifest, tambahResiForm, terimaManifest, tibaManifest, ubahManifest } from "../actions";
 
 export const metadata: Metadata = { title: "Manifest" };
 type Place = { code: string; city: string; name: string };
@@ -139,6 +139,16 @@ export default async function ManifestDetail({ params, searchParams }: { params:
           <label className="f" htmlFor="ke">Diserahkan kepada</label>
           <select id="ke" name="ke" required defaultValue=""><option value="" disabled>Pilih petugas gudang…</option>{gudangTujuan.map((u) => <option key={u.id} value={u.id}>{u.name}</option>)}</select>
           <SubmitButton className="btn ghost" style={{ marginTop: 12 }} steps={["Memeriksa penerima…", "Mengirim permintaan serah terima…"]}>Serahkan manifest</SubmitButton>
+        </form>
+      )}
+
+      {(m.status === "SEALED" || m.status === "IN_TRANSIT") && sopir && (role === "HUB_MANAGER" || m.iAmHolder) && (
+        <form action={revisiEta} className="card">
+          <h2>Perkiraan tiba berubah?</h2><input type="hidden" name="id" value={m.id} />
+          <p className="muted" style={{ marginTop: 0 }}>Kalau kapal atau truk terlambat, isi perkiraan tiba yang baru. Semua resi di manifest ini ikut diperbarui dan tercatat di riwayatnya.</p>
+          <label className="f" htmlFor="eta-baru">Perkiraan tiba baru</label><input id="eta-baru" name="tiba" type="datetime-local" required defaultValue={dtl(m.eta)} />
+          <label className="f" htmlFor="eta-alasan">Alasan</label><input id="eta-alasan" name="alasan" required minLength={3} placeholder="Misalnya cuaca buruk atau antrean sandar" autoComplete="off" />
+          <SubmitButton className="btn ghost" style={{ marginTop: 12 }} steps={["Memeriksa manifest…", "Memperbarui semua resi…"]}>Perbarui perkiraan tiba</SubmitButton>
         </form>
       )}
 

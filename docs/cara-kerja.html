@@ -38,7 +38,7 @@ small,.muted{color:#51706a}
 <li>Tautan rahasia: invoice dan portal pelanggan korporat</li>
 </ul></div>
 <div class="card"><h3>B. Aplikasi petugas (wajib login, alamat <i>/masuk</i>)</h3><ul>
-<li>Dipakai di HP oleh 8 peran, tiap peran hanya melihat tugasnya</li>
+<li>Dipakai di HP oleh 10 peran, tiap peran hanya melihat tugasnya</li>
 <li>Membuat resi, memindai barcode, serah terima, manifest, tagihan</li>
 <li>Pemilik memantau seluruh bisnis dan mengatur data</li>
 </ul></div></div>
@@ -52,7 +52,9 @@ small,.muted{color:#51706a}
 <tr><td><b>Kurir</b></td><td>Menjemput dan mengantar barang, serah terima, bukti terima.</td><td>Beranda · Pindai · Serah terima · Akun</td></tr>
 <tr><td><b>Staf gudang</b></td><td>Menerima, menimbang, memuat dan membongkar barang.</td><td>Beranda · Pindai · Manifest · Serah terima · Akun</td></tr>
 <tr><td><b>Sopir kontainer</b></td><td>Membawa manifest antar kota: terima, berangkat, tiba, serahkan.</td><td>Beranda · Pindai · Manifest · Serah terima · Akun</td></tr>
-<tr><td><b>HRD</b></td><td>Lamaran kerja dan lowongan.</td><td>Dashboard · Lamaran · Akun</td></tr>
+<tr><td><b>HRD</b></td><td>Kepegawaian (dokumen dan masa berlaku SIM/kontrak, shift, cuti dan izin, rekap kehadiran dan kerja) serta lamaran dan lowongan. Tidak melihat resi maupun keuangan.</td><td>Dashboard · Lamaran · Pegawai · Akun</td></tr>
+<tr><td><b>Finance</b></td><td>Tagihan, pencatatan pembayaran, komisi, dan laporan keuangan seluruh cabang. Boleh membaca resi untuk keperluan tagihan, tidak menjalankan langkah resi.</td><td>Keuangan · Tagihan · Laporan · Akun</td></tr>
+<tr><td><b>CS dan Sales</b></td><td>Membuat booking resi di cabangnya, memantau resi, tindak lanjut, pesanan jemput, dan mengusulkan ganti rugi klaim. Tidak melihat uang.</td><td>Beranda · Resi baru · Jemput · Klaim · Akun</td></tr>
 <tr><td><b>Admin konten</b></td><td>Foto dan testimoni slider beranda website.</td><td>Konten · Akun</td></tr></table>
 <p class="muted">Akun dibuat oleh Pemilik (menu Petugas atau Mitra dan cabang). Masuk memakai email dan kata sandi. Kata sandi bisa diganti sendiri lewat menu Akun. Petugas yang dinonaktifkan langsung tidak bisa masuk. Di komputer, menu samping memuat semua menu; di HP menu bawah memuat yang utama saja.</p>
 
@@ -122,6 +124,13 @@ small,.muted{color:#51706a}
 <div class="st g"><b>Dibongkar</b><small>tiap barang dipindai dan dicocokkan jumlahnya</small></div></div>
 <div class="box"><b>Bila jumlah tidak cocok:</b> sistem membuat <b>kasus selisih</b>. Resi terkait tidak boleh diantar sampai selisihnya diselesaikan (ditandai ditemukan atau tidak ditemukan) di halaman manifest oleh petugas yang berwenang.</div>
 
+<h3>Perkiraan tiba berubah (kapal atau truk terlambat)</h3>
+<p>Selama manifest disegel atau di perjalanan, sopir atau kepala gudang bisa memperbarui <b>perkiraan tiba</b> dengan alasan. Semua resi di manifest ikut diperbarui dan tercatat di riwayatnya; alasan tersimpan di catatan aktivitas.</p>
+<h3>Transit antar gudang (mis. Jakarta → Surabaya → Makassar)</h3>
+<p>Kepala gudang asal dapat menetapkan <b>gudang transit</b> pada sebuah resi sebelum masuk manifest. Muatan dibuat dua kali (asal → transit, lalu transit → tujuan). Di gudang transit, resi dibongkar, dicatat "singgah", lalu siap dimuat lagi untuk leg kedua; tanggung jawab tetap lewat serah terima. Tarif pelanggan tetap tarif asal → tujuan.</p>
+<h3>Kendala pengiriman</h3>
+<p>Kepala gudang, petugas gudang, kurir, atau sopir dapat melaporkan kendala pada sebuah resi: <b>salah sortir, barang rusak atau kurang, gagal kirim, retur, atau ditahan</b>. Status resi tidak diubah dan tidak bisa loncat. Selama kendala terbuka, resi <b>tidak bisa diantar atau diterima dan tidak bisa masuk manifest baru</b>. Kepala gudang menyelesaikannya dengan catatan: dilanjutkan, atau (untuk retur dan gagal kirim) dikembalikan ke pengirim sehingga resi dibatalkan. Catatan internal tidak tampil di halaman lacak pelanggan. Daftar kendala ada di menu Kendala pengiriman dan penandanya muncul di beranda kepala gudang dan Pemilik.</p>
+
 <h2>7. Tagihan dan pembayaran</h2>
 <ol><li>Tagihan terbit otomatis saat barang ditimbang (nomor contoh INV-2611-000002). Angkanya dari tarif di data rute; petugas tidak bisa mengubahnya.</li>
 <li>Jatuh tempo: hari ini untuk pelanggan umum; mengikuti jumlah hari tempo untuk pelanggan korporat.</li>
@@ -141,7 +150,7 @@ small,.muted{color:#51706a}
 <tr><td>Tagihan jatuh tempo</td><td>Ingatkan pembayaran lewat transfer atau tunai</td></tr></table>
 <h3>Pesanan jemput dan klaim</h3>
 <ul><li><b>Pesanan jemput</b> (dari website): status Baru → Sudah dihubungi → Dijadwalkan → Selesai (atau Batal). Dilihat Pemilik, kepala gudang, dan kasir. Resinya tetap dibuat petugas seperti biasa.</li>
-<li><b>Klaim dan keluhan</b>: status Baru → Diproses → Menunggu bukti → Selesai (atau Ditolak), dengan catatan internal. Hanya Pemilik.</li></ul>
+<li><b>Klaim dan keluhan</b>: status Baru → Diproses → Menunggu bukti → Selesai (atau Ditolak). CS dan Sales boleh mengubah status sampai Diproses atau Menunggu bukti dan <b>mengusulkan</b> nilai ganti rugi; <b>keputusan akhir hanya Pemilik</b>.</li></ul>
 
 <h2>9. Isi dashboard tiap peran</h2>
 <table><tr><th style="width:20%">Peran</th><th>Yang tampil di beranda</th></tr>
@@ -157,6 +166,13 @@ small,.muted{color:#51706a}
 <li>Detail resi: data pengirim dan penerima hanya tampil sekali (satu kartu dengan tombol Chat dan Telepon); tombol Pindai dan Kembali ke daftar yang berulang dihapus.</li>
 <li>Angka rupiah tidak terpotong, kolom pencarian dan filter rapi di layar HP.</li></ul>
 
+<h2>9b. Kepegawaian (HRD)</h2>
+<ul><li><b>Absen:</b> setiap petugas menekan Absen masuk dan Absen pulang di menu Akun (waktu WITA). Tidak bisa absen pada hari cuti yang sudah disetujui.</li>
+<li><b>Cuti, izin, sakit:</b> diajukan petugas dari menu Akun; HRD atau Pemilik menyetujui atau menolak (penolakan wajib beralasan). Pengajuan sendiri tidak bisa diputuskan sendiri.</li>
+<li><b>Dokumen:</b> SIM, KTP, kontrak, surat sehat dengan tanggal berlaku. Yang hampir habis (30 hari) atau habis ditandai di daftar pegawai dan diingatkan kepada petugasnya.</li>
+<li><b>Shift:</b> pagi, siang, malam, libur, dengan papan jadwal 7 hari.</li>
+<li><b>Rekap:</b> hari hadir, hari cuti, shift terjadwal, dan jumlah langkah kerja (dijemput, ditimbang, diantar) dari catatan resmi sistem, bisa diunduh CSV. Berisi jumlah saja, bukan nominal uang, dan tidak memuat isi resi.</li></ul>
+
 <h2>10. Keamanan dan data</h2>
 <ul><li><b>Hak akses di basis data</b> (bukan hanya di tampilan): tiap petugas hanya membaca data cabangnya; fungsi basis data memeriksa peran sebelum bertindak.</li>
 <li>Foto dan CV <b>tidak pernah publik</b>; foto testimoni tayang hanya bila dikurasi Admin konten.</li>
@@ -170,7 +186,7 @@ small,.muted{color:#51706a}
 <tr><td><b>Pengujian</b></td><td>Uji SQL dan uji peramban end-to-end otomatis (403 pemeriksaan lolos pada audit terakhir).</td></tr></table>
 
 <h2>12. Yang sengaja tidak ada (keputusan saat ini)</h2>
-<ul><li>Dashboard Pemilik hanya memantau.</li><li>Pembayaran hanya transfer atau tunai (tanpa payment gateway).</li><li>WhatsApp dikirim manual oleh petugas (belum otomatis).</li><li>Tanpa mode offline; perlu sinyal internet.</li><li>Verifikasi dua langkah (2FA) ditunda.</li><li>Login Google belum diaktifkan (butuh pengaturan Google Cloud).</li></ul>
+<ul><li>Dashboard Pemilik hanya memantau.</li><li>Pembayaran hanya transfer atau tunai (tanpa payment gateway).</li><li>WhatsApp dikirim manual oleh petugas (belum otomatis).</li><li>Tanpa mode offline; perlu sinyal internet.</li><li>Verifikasi dua langkah (2FA) ditunda.</li><li>Login Google belum diaktifkan (butuh pengaturan Google Cloud).</li><li>Peran Dispatcher terpisah, pemisahan akun Super Admin dan Owner, serta COD belum ada.</li></ul>
 <div class="box"><b>Catatan keterbatasan:</b> daftar fitur bertanda rencana di dokumen FITUR-PER-PERAN belum dibangun (misalnya jadwal shift, struk thermal, urutan rute otomatis, lokasi langsung). Paket gratis Supabase tidak menyediakan cadangan harian; sebelum operasi penuh disarankan naik ke paket berbayar.</div>
 <p class="foot">Kamil Logistik Express · Laporan cara kerja aplikasi · disusun dari kode sumber pada cabang pengembangan.</p>
 </body></html>

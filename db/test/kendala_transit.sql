@@ -1,0 +1,201 @@
+\set ON_ERROR_STOP on
+-- 028: kendala pengiriman, revisi ETA manifest, dan transit dua leg (Jakarta -> Surabaya -> Makassar).
+RESET ROLE;
+INSERT INTO staff_invites(email, full_name, role, branch_id) VALUES
+ ('kepala-jkt@x.id','Kepala Gudang Jakarta','HUB_MANAGER',(SELECT id FROM branches_partners WHERE code='JKT')),
+ ('gudang-sub@x.id','Gudang Surabaya','WAREHOUSE',(SELECT id FROM branches_partners WHERE code='SUB')),
+ ('kepala-sub@x.id','Kepala Gudang Surabaya','HUB_MANAGER',(SELECT id FROM branches_partners WHERE code='SUB'));
+INSERT INTO auth.users(id,email) VALUES ('00000000-0000-0000-0000-00000000000c','kepala-jkt@x.id'),('00000000-0000-0000-0000-00000000000d','gudang-sub@x.id'),('00000000-0000-0000-0000-00000000000e','kepala-sub@x.id');
+
+SELECT set_config('t.sub', (SELECT id::text FROM branches_partners WHERE code='SUB'), false), set_config('t.mks', (SELECT id::text FROM branches_partners WHERE code='MKS'), false), set_config('t.jkt', (SELECT id::text FROM branches_partners WHERE code='JKT'), false);
+-- Resi uji: dua resi Jakarta -> Makassar yang sudah ditimbang
+SELECT t.as_user('00000000-0000-0000-0000-000000000002');
+DO $$ DECLARE a jsonb; b jsonb; c jsonb; BEGIN
+  a := public.create_shipment('jakarta-makassar-port-to-door-kg','Pengirim K1','0811','Penerima K1','0822','Makassar',1,NULL,NULL,'DROPOFF');
+  b := public.create_shipment('jakarta-makassar-port-to-door-kg','Pengirim K2','0811','Penerima K2','0822','Makassar',1,NULL,NULL,'DROPOFF');
+  c := public.create_shipment('jakarta-makassar-port-to-door-kg','Pengirim K3','0811','Penerima K3','0822','Makassar',1,NULL,NULL,'DROPOFF');
+  PERFORM set_config('t.k1', a->>'id', false); PERFORM set_config('t.k2', b->>'id', false); PERFORM set_config('t.k3', c->>'id', false);
+  PERFORM set_config('t.rk1', a->>'resiNo', false); PERFORM set_config('t.rk2', b->>'resiNo', false); PERFORM set_config('t.rk3', c->>'resiNo', false);
+END $$;
+RESET ROLE;
+UPDATE shipments SET status = 'SORTED_INVOICED', current_holder_user_id = '00000000-0000-0000-0000-00000000000c'
+ WHERE id IN (current_setting('t.k1')::uuid, current_setting('t.k2')::uuid, current_setting('t.k3')::uuid);
+UPDATE shipment_items SET weight_kg = 5 WHERE shipment_id IN (current_setting('t.k1')::uuid, current_setting('t.k2')::uuid, current_setting('t.k3')::uuid);
+
+-- ================= KENDALA =================
+SELECT t.as_user('00000000-0000-0000-0000-000000000002');   -- kasir tidak melaporkan kendala gudang
+SELECT t.fails($$select public.issue_open(current_setting('t.k1')::uuid, 'SALAH_SORTIR', 'salah rak')$$, 'izin');
+SELECT t.as_anon();
+SELECT t.fails($$select public.issue_open(current_setting('t.k1')::uuid, 'SALAH_SORTIR', 'salah rak')$$, 'permission denied');
+SELECT t.as_user('00000000-0000-0000-0000-000000000004');   -- gudang Jakarta
+SELECT t.fails($$select public.issue_open(current_setting('t.k1')::uuid, 'ASAL', 'salah rak')$$, 'tidak dikenal');
+SELECT t.fails($$select public.issue_open(current_setting('t.k1')::uuid, 'SALAH_SORTIR', 'a')$$, 'keterangan');
+SELECT t.fails($$select public.issue_open(current_setting('t.k1')::uuid, 'GAGAL_KIRIM', 'penerima tidak di tempat')$$, 'sedang diantar');
+DO $$ DECLARE r jsonb; BEGIN
+  r := public.issue_open(current_setting('t.k1')::uuid, 'SALAH_SORTIR', 'Koli masuk rak Surabaya, seharusnya Makassar');
+  PERFORM set_config('t.i1', r->>'id', false);
+  ASSERT (public.issue_count()) >= 1, 'hitungan kendala terbuka';
+  ASSERT jsonb_array_length(public.issue_for_shipment(current_setting('t.k1')::uuid)) = 1, 'resi punya satu kendala';
+END $$;
+SELECT t.fails($$select public.issue_open(current_setting('t.k1')::uuid, 'SALAH_SORTIR', 'lagi')$$, 'sudah dilaporkan');
+-- Kendala terbuka menutup jalur masuk manifest
+SELECT t.as_user('00000000-0000-0000-0000-00000000000c');   -- kepala gudang Jakarta
+DO $$ DECLARE r jsonb; BEGIN
+  r := public.manifest_create('MKS', 'LAUT', 'MSKU7654321', 'KM Uji', now() + interval '1 day', now() + interval '6 days', 'uji kendala');
+  PERFORM set_config('t.mk', r->>'id', false);
+END $$;
+SELECT t.fails($$select public.manifest_add(current_setting('t.mk')::uuid, current_setting('t.rk1'))$$, 'kendala');
+DO $$ BEGIN ASSERT NOT (public.manifest_candidates(current_setting('t.mk')::uuid))::text LIKE '%' || current_setting('t.rk1') || '%', 'resi bermasalah tidak jadi calon muatan'; END $$;
+SELECT t.fails($$select public.issue_resolve(current_setting('t.i1')::uuid, 'LANJUT', 'a')$$, 'catatan');
+SELECT t.fails($$select public.issue_resolve(current_setting('t.i1')::uuid, 'RETUR_SELESAI', 'dikembalikan saja')$$, 'hanya untuk');
+SELECT t.fails($$select public.issue_resolve(current_setting('t.i1')::uuid, 'ABC', 'dikembalikan saja')$$, 'tidak dikenal');
+SELECT t.as_user('00000000-0000-0000-0000-00000000000d');   -- petugas gudang biasa tidak boleh menyelesaikan
+SELECT t.fails($$select public.issue_resolve(current_setting('t.i1')::uuid, 'LANJUT', 'sudah dipindah ke rak benar')$$, 'izin');
+SELECT t.as_user('00000000-0000-0000-0000-00000000000e');   -- kepala gudang kota lain (Surabaya, belum terkait resi)
+SELECT t.fails($$select public.issue_resolve(current_setting('t.i1')::uuid, 'LANJUT', 'sudah dipindah ke rak benar')$$, 'bukan untuk gudang');
+SELECT t.as_user('00000000-0000-0000-0000-00000000000c');
+DO $$ BEGIN
+  PERFORM public.issue_resolve(current_setting('t.i1')::uuid, 'LANJUT', 'Koli sudah dipindah ke rak yang benar');
+  ASSERT (public.manifest_add(current_setting('t.mk')::uuid, current_setting('t.rk1'))->>'items')::int = 1, 'setelah selesai, resi bisa masuk manifest';
+END $$;
+SELECT t.fails($$select public.issue_resolve(current_setting('t.i1')::uuid, 'LANJUT', 'sekali lagi')$$, 'sudah diselesaikan');
+
+-- Gagal kirim: tidak boleh diterima sebelum kendala selesai, dan bisa berakhir retur
+RESET ROLE;
+UPDATE shipments SET status = 'OUT_FOR_DELIVERY', current_holder_user_id = '00000000-0000-0000-0000-000000000003' WHERE id = current_setting('t.k2')::uuid;
+SELECT t.as_user('00000000-0000-0000-0000-000000000003');
+DO $$ DECLARE r jsonb; BEGIN
+  r := public.issue_open(current_setting('t.k2')::uuid, 'GAGAL_KIRIM', 'Penerima tidak di tempat dan telepon mati');
+  PERFORM set_config('t.i2', r->>'id', false);
+END $$;
+RESET ROLE;
+SELECT t.fails($$update shipments set status = 'DELIVERED' where id = current_setting('t.k2')::uuid$$, 'kendala');
+DO $$ BEGIN ASSERT (SELECT status FROM shipments WHERE id = current_setting('t.k2')::uuid) = 'OUT_FOR_DELIVERY', 'status tidak berubah oleh kendala (tidak ada loncat)'; END $$;
+SELECT t.as_anon();
+DO $$ DECLARE p text; BEGIN
+  p := public.public_track(current_setting('t.rk2'))::text;
+  ASSERT p NOT LIKE '%telepon mati%', 'catatan internal kendala tidak bocor ke pelanggan';
+END $$;
+SELECT t.as_user('00000000-0000-0000-0000-00000000000c');
+DO $$ BEGIN
+  PERFORM public.issue_resolve(current_setting('t.i2')::uuid, 'RETUR_SELESAI', 'Penerima menolak, barang dikembalikan ke gudang dan pengirim');
+END $$;
+RESET ROLE;
+DO $$ BEGIN
+  ASSERT (SELECT status FROM shipments WHERE id = current_setting('t.k2')::uuid) = 'CANCELLED', 'retur selesai: resi dibatalkan';
+  ASSERT EXISTS (SELECT 1 FROM tracking_logs WHERE shipment_id = current_setting('t.k2')::uuid AND note LIKE '%dikembalikan ke pengirim%'), 'riwayat retur tercatat';
+  ASSERT EXISTS (SELECT 1 FROM audit_logs WHERE action = 'issue_resolve'), 'kendala masuk catatan aktivitas';
+END $$;
+
+-- ================= REVISI ETA =================
+-- Manifest mk berisi k1; segel lalu anggap sudah di tangan sopir dan berangkat
+SELECT t.as_user('00000000-0000-0000-0000-00000000000c');
+SELECT t.fails($$select public.manifest_revise_eta(current_setting('t.mk')::uuid, now() + interval '9 days', 'cuaca')$$, 'hanya bisa direvisi');
+DO $$ BEGIN PERFORM public.manifest_seal(current_setting('t.mk')::uuid, 'SEG-K01'); END $$;
+SELECT t.fails($$select public.manifest_revise_eta(current_setting('t.mk')::uuid, now() + interval '9 days', 'ok')$$, 'alasan');
+SELECT t.as_user('00000000-0000-0000-0000-000000000003');   -- kurir bukan pihak manifest
+SELECT t.fails($$select public.manifest_revise_eta(current_setting('t.mk')::uuid, now() + interval '9 days', 'cuaca buruk')$$, 'izin');
+SELECT t.as_user('00000000-0000-0000-0000-00000000000c');
+DO $$ BEGIN
+  PERFORM public.manifest_handover_start(current_setting('t.mk')::uuid, '00000000-0000-0000-0000-000000000005');
+END $$;
+SELECT t.as_user('00000000-0000-0000-0000-000000000005');
+DO $$ BEGIN
+  PERFORM public.manifest_handover_accept(current_setting('t.mk')::uuid);
+  PERFORM public.manifest_depart(current_setting('t.mk')::uuid, 'KM Uji', now(), now() + interval '5 days');
+END $$;
+SELECT t.fails($$select public.manifest_revise_eta(current_setting('t.mk')::uuid, now() - interval '30 days', 'cuaca buruk')$$, 'sebelum waktu berangkat');
+DO $$ BEGIN
+  PERFORM set_config('t.eta', (now() + interval '8 days')::text, false);
+  PERFORM public.manifest_revise_eta(current_setting('t.mk')::uuid, current_setting('t.eta')::timestamptz, 'Cuaca buruk, kapal menunggu antrean sandar');
+END $$;
+RESET ROLE;
+DO $$ BEGIN
+  ASSERT (SELECT eta FROM manifests WHERE id = current_setting('t.mk')::uuid) = current_setting('t.eta')::timestamptz, 'ETA manifest berubah';
+  ASSERT (SELECT eta FROM vessel_voyages WHERE manifest_id = current_setting('t.mk')::uuid) = current_setting('t.eta')::timestamptz, 'ETA pelayaran ikut berubah';
+END $$;
+DO $$ BEGIN
+  ASSERT EXISTS (SELECT 1 FROM tracking_logs WHERE shipment_id = current_setting('t.k1')::uuid AND note LIKE 'Perkiraan tiba diperbarui ke%'), 'ETA baru tercatat di resi di dalam manifest';
+  ASSERT EXISTS (SELECT 1 FROM audit_logs WHERE action = 'manifest_revise_eta' AND (after->>'alasan') LIKE 'Cuaca buruk%'), 'alasan revisi tercatat di catatan aktivitas';
+END $$;
+SELECT t.as_user('00000000-0000-0000-0000-000000000005');
+DO $$ BEGIN PERFORM public.manifest_arrive(current_setting('t.mk')::uuid); END $$;
+SELECT t.fails($$select public.manifest_revise_eta(current_setting('t.mk')::uuid, now() + interval '9 days', 'sudah tiba')$$, 'hanya bisa direvisi');
+
+-- ================= TRANSIT: Jakarta -> Surabaya -> Makassar =================
+SELECT t.as_user('00000000-0000-0000-0000-000000000002');
+SELECT t.fails($$select public.shipment_set_transit(current_setting('t.k3')::uuid, current_setting('t.sub')::uuid)$$, 'izin');
+SELECT t.as_user('00000000-0000-0000-0000-00000000000b');
+SELECT t.fails($$select public.shipment_set_transit(current_setting('t.k3')::uuid, current_setting('t.sub')::uuid)$$, 'bukan dari gudang');
+SELECT t.as_user('00000000-0000-0000-0000-00000000000c');
+SELECT t.fails($$select public.shipment_set_transit(current_setting('t.k3')::uuid, current_setting('t.mks')::uuid)$$, 'berbeda dari kota asal dan tujuan');
+SELECT t.fails($$select public.shipment_set_transit(current_setting('t.k3')::uuid, current_setting('t.jkt')::uuid)$$, 'berbeda dari kota asal dan tujuan');
+DO $$ DECLARE r jsonb; BEGIN
+  ASSERT (public.shipment_transit_info(current_setting('t.k3')::uuid)->>'canSet')::boolean, 'transit boleh diatur';
+  PERFORM public.shipment_set_transit(current_setting('t.k3')::uuid, current_setting('t.sub')::uuid);
+  r := public.shipment_transit_info(current_setting('t.k3')::uuid);
+  ASSERT r->>'transitCity' = 'Surabaya' AND (r->>'leg')::int = 1, 'transit Surabaya tersimpan';
+  r := public.manifest_create('MKS', 'LAUT', NULL, 'KM Lurus', now(), now() + interval '6 days');
+  PERFORM set_config('t.mlurus', r->>'id', false);
+  r := public.manifest_create('SUB', 'LAUT', NULL, 'KM Leg Satu', now(), now() + interval '2 days');
+  PERFORM set_config('t.m1', r->>'id', false);
+END $$;
+SELECT t.fails($$select public.manifest_add(current_setting('t.mlurus')::uuid, current_setting('t.rk3'))$$, 'bertransit di Surabaya');
+DO $$ BEGIN
+  ASSERT public.manifest_candidates(current_setting('t.m1')::uuid)::text LIKE '%' || current_setting('t.rk3') || '%', 'resi transit jadi calon muatan leg 1';
+  PERFORM public.manifest_add(current_setting('t.m1')::uuid, current_setting('t.rk3'));
+  PERFORM public.manifest_seal(current_setting('t.m1')::uuid, 'SEG-L01');
+  PERFORM public.manifest_handover_start(current_setting('t.m1')::uuid, '00000000-0000-0000-0000-000000000005');
+END $$;
+SELECT t.fails($$select public.shipment_set_transit(current_setting('t.k3')::uuid, NULL)$$, 'sebelum resi masuk manifest');
+SELECT t.as_user('00000000-0000-0000-0000-000000000005');
+DO $$ BEGIN
+  PERFORM public.manifest_handover_accept(current_setting('t.m1')::uuid);
+  PERFORM public.manifest_depart(current_setting('t.m1')::uuid);
+  PERFORM public.manifest_arrive(current_setting('t.m1')::uuid);
+  PERFORM public.manifest_handover_start(current_setting('t.m1')::uuid, '00000000-0000-0000-0000-00000000000d');
+END $$;
+SELECT t.as_user('00000000-0000-0000-0000-00000000000d');   -- gudang Surabaya
+DO $$ BEGIN
+  PERFORM public.manifest_handover_accept(current_setting('t.m1')::uuid);
+  PERFORM public.manifest_scan_unload(current_setting('t.m1')::uuid, current_setting('t.rk3') || '-01');
+  ASSERT (public.manifest_finish_unload(current_setting('t.m1')::uuid)->>'resiSelesai')::int = 1, 'bongkar di Surabaya selesai';
+END $$;
+RESET ROLE;
+DO $$ BEGIN
+  ASSERT (SELECT status FROM shipments WHERE id = current_setting('t.k3')::uuid) = 'SORTED_INVOICED'
+     AND (SELECT leg FROM shipments WHERE id = current_setting('t.k3')::uuid) = 2, 'singgah di Surabaya: siap dimuat leg 2';
+  ASSERT EXISTS (SELECT 1 FROM tracking_logs WHERE shipment_id = current_setting('t.k3')::uuid AND note LIKE 'Singgah di Gudang Surabaya%'), 'singgah tercatat';
+END $$;
+SELECT t.as_user('00000000-0000-0000-0000-00000000000e');   -- kepala gudang Surabaya melihat resi transit
+DO $$ BEGIN ASSERT public.can_see(current_setting('t.k3')::uuid), 'gudang transit boleh melihat resi'; END $$;
+SELECT t.as_user('00000000-0000-0000-0000-00000000000d');   -- petugas gudang Surabaya yang membongkar memuat leg 2
+DO $$ DECLARE r jsonb; BEGIN
+  r := public.manifest_create('MKS', 'LAUT', NULL, 'KM Leg Dua', now(), now() + interval '4 days');
+  PERFORM set_config('t.m2', r->>'id', false);
+  ASSERT public.manifest_candidates(current_setting('t.m2')::uuid)::text LIKE '%' || current_setting('t.rk3') || '%', 'resi jadi calon muatan leg 2';
+END $$;
+SELECT t.fails($$select public.manifest_add(current_setting('t.m1')::uuid, current_setting('t.rk3'))$$, 'bukan dari gudang');
+DO $$ BEGIN
+  PERFORM public.manifest_add(current_setting('t.m2')::uuid, current_setting('t.rk3'));
+  PERFORM public.manifest_seal(current_setting('t.m2')::uuid, 'SEG-L02');
+  PERFORM public.manifest_handover_start(current_setting('t.m2')::uuid, '00000000-0000-0000-0000-000000000005');
+END $$;
+SELECT t.as_user('00000000-0000-0000-0000-000000000005');
+DO $$ BEGIN
+  PERFORM public.manifest_handover_accept(current_setting('t.m2')::uuid);
+  PERFORM public.manifest_depart(current_setting('t.m2')::uuid);
+  PERFORM public.manifest_arrive(current_setting('t.m2')::uuid);
+  PERFORM public.manifest_handover_start(current_setting('t.m2')::uuid, '00000000-0000-0000-0000-00000000000a');
+END $$;
+SELECT t.as_user('00000000-0000-0000-0000-00000000000a');   -- gudang Makassar
+DO $$ BEGIN
+  PERFORM public.manifest_handover_accept(current_setting('t.m2')::uuid);
+  PERFORM public.manifest_scan_unload(current_setting('t.m2')::uuid, current_setting('t.rk3') || '-01');
+  PERFORM public.manifest_finish_unload(current_setting('t.m2')::uuid);
+END $$;
+RESET ROLE;
+DO $$ BEGIN
+  ASSERT (SELECT status FROM shipments WHERE id = current_setting('t.k3')::uuid) = 'AT_DEST_HUB', 'leg 2 selesai: tiba di gudang tujuan Makassar';
+END $$;
+SELECT 'kendala_transit OK' AS hasil;

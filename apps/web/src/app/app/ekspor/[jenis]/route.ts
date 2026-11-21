@@ -1,4 +1,4 @@
-import { LABEL_STATUS_LAMARAN, posisiDari, type StatusLamaran } from "@kamil/core";
+import { LABEL_STATUS_LAMARAN, ROLE_LABEL, posisiDari, type StatusLamaran } from "@kamil/core";
 import { staffRpc } from "@/lib/supabase/server";
 
 /** Awas rumus Excel: sel yang diawali = + - @ diberi tanda petik supaya tidak dijalankan sebagai rumus. */
@@ -40,6 +40,14 @@ export async function GET(req: Request, { params }: { params: Promise<{ jenis: s
     nama = "calon-mitra";
     baris = [["Kode", "Tanggal", "Jenis", "Usaha", "Pemilik", "WhatsApp", "Kota", "Alamat", "Cerita usaha", "Status", "Catatan"],
       ...r.data.items.map((a) => [a.code, tgl(a.createdAt), a.kind, a.business, a.ownerName, a.phone, a.city, a.address, a.note, a.status, a.adminNote])];
+  } else if (jenis === "rekap-pegawai") {
+    const u = new URL(req.url), hariIni = new Date(Date.now() + 8 * 3600_000).toISOString().slice(0, 10);
+    const dari = tglOk(u.searchParams.get("dari")) ?? hariIni.slice(0, 8) + "01", sampai = tglOk(u.searchParams.get("sampai")) ?? hariIni;
+    const r = await staffRpc<Record<string, any>[]>("hr_recap", { p_from: dari, p_to: sampai });
+    if (r.error || !r.data) return new Response("Tidak diizinkan", { status: 403 });
+    nama = `rekap-pegawai-${dari}-sd-${sampai}`;
+    baris = [["Nama", "Peran", "Cabang", "Hari hadir", "Hadir tanpa absen pulang", "Hari cuti disetujui", "Shift terjadwal", "Langkah kerja", "Dijemput", "Ditimbang", "Diantar"],
+      ...r.data.map((a) => [a.nama, ROLE_LABEL[a.peran] ?? a.peran, a.cabang ?? "", a.hadir, a.tanpaPulang, a.cutiHari, a.shiftTerjadwal, a.langkah, a.dijemput, a.ditimbang, a.diantar])];
   } else return new Response("Tidak ditemukan", { status: 404 });
   const csv = "﻿" + baris.map((b) => b.map(sel).join(",")).join("\r\n");
   return new Response(csv, { headers: { "content-type": "text/csv; charset=utf-8", "content-disposition": `attachment; filename="${nama}-${new Date().toISOString().slice(0, 10)}.csv"`, "cache-control": "private, no-store", "x-content-type-options": "nosniff" } });

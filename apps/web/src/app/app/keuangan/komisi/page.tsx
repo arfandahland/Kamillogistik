@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { requireOwner } from "@/lib/auth";
+import { requireRole } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
 import { rupiah, tanggalWita } from "@/lib/brand";
 
@@ -9,7 +9,7 @@ type Row = { id: string; name: string; city: string; type: string; pct: number; 
 const iso = (d: Date) => tanggalWita(d);
 
 export default async function Komisi({ searchParams }: { searchParams: Promise<{ dari?: string; sampai?: string }> }) {
-  await requireOwner();
+  await requireRole(["SUPER_ADMIN", "FINANCE"]);
   const sp = await searchParams;
   const today = new Date(); const first = new Date(`${tanggalWita(today).slice(0, 8)}01T00:00:00+08:00`);
   const dari = /^\d{4}-\d{2}-\d{2}$/.test(sp.dari ?? "") ? sp.dari! : iso(first), sampai = /^\d{4}-\d{2}-\d{2}$/.test(sp.sampai ?? "") ? sp.sampai! : iso(today);
