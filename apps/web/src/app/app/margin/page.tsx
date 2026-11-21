@@ -12,7 +12,7 @@ const wita = () => new Date(Date.now() + 8 * 3600_000).toISOString().slice(0, 10
 const tglOk = (v?: string) => (/^\d{4}-\d{2}-\d{2}$/.test(v ?? "") ? v! : null);
 
 export default async function Margin({ searchParams }: { searchParams: Promise<{ dari?: string; sampai?: string }> }) {
-  await requireRole(["SUPER_ADMIN", "FINANCE"]);
+  await requireRole(["SUPER_ADMIN", "OWNER", "FINANCE"]);
   const sp = await searchParams, hariIni = wita();
   const dari = tglOk(sp.dari) ?? hariIni.slice(0, 8) + "01", sampai = tglOk(sp.sampai) ?? hariIni;
   const r = await staffRpc<Lap>("margin_report", { p_from: dari, p_to: sampai });

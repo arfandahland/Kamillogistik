@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Icon from "@/components/Icon";
-import { requireOwner } from "@/lib/auth";
+import { requireOwnerView } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
 import { tanggalWaktu } from "@/lib/brand";
 
@@ -12,7 +12,7 @@ type Lane = { id: string; code: string; status: string; mode: string; from: stri
 const LANE_LABEL: Record<string, string> = { OPEN: "Sedang diisi", SEALED: "Disegel, siap berangkat", IN_TRANSIT: "Dalam perjalanan", ARRIVED: "Tiba, menunggu dibongkar" };
 
 export default async function Peta() {
-  await requireOwner();
+  await requireOwnerView();
   const r = await staffRpc<{ nodes: Node[]; lanes: Lane[] }>("owner_map");
   const nodes = r.data?.nodes ?? [], lanes = r.data?.lanes ?? [];
   const W = 360, H = 230, P = 40;

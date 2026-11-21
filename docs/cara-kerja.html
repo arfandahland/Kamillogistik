@@ -46,7 +46,8 @@ small,.muted{color:#51706a}
 
 <h2>2. Siapa saja pengguna</h2>
 <table><tr><th style="width:22%">Peran</th><th>Tugas utama</th><th style="width:26%">Menu bawah di HP</th></tr>
-<tr><td><b>Pemilik / Admin pusat</b></td><td>Memantau bisnis, keuangan, mitra, petugas, tarif, laporan, klaim. Dashboard hanya memantau, bukan menjalankan operasional harian.</td><td>Pantauan · Resi · Keuangan · Kelola · Akun</td></tr>
+<tr><td><b>Super Admin</b></td><td>Akun pengelola sistem: kendali penuh atas menu, mitra, petugas, tarif, keuangan, dan <b>konsol Koreksi data</b> (memperbaiki status resi yang salah, alasan wajib, tercatat di riwayat resi dan catatan aktivitas). Tidak menjalankan operasional harian.</td><td>Pantauan · Resi · Keuangan · Kelola · Akun</td></tr>
+<tr><td><b>Owner</b> (Pemilik)</td><td><b>Hanya memantau</b>: dashboard, semua resi, keuangan, laporan, margin, peta. Tidak bisa mengubah data apa pun. Akun dibuat Super Admin.</td><td>Pantauan · Resi · Keuangan · Kelola · Akun</td></tr>
 <tr><td><b>Kepala gudang</b> (Manajer)</td><td>Memimpin satu gudang: manifest, serah terima, kendala, tagihan cabang, pesanan jemput, tindak lanjut. Tidak membuat resi dan tidak mencetak label.</td><td>Beranda · Pindai · Manifest · Tagihan · Akun</td></tr>
 <tr><td><b>Kasir</b> (mitra)</td><td><b>Satu-satunya pintu pembuatan resi dan pencetakan label</b> di tiap gudang atau gerai; juga melihat tagihan, mencatat pembayaran, setoran kas.</td><td>Beranda · Resi baru · Pindai · Tagihan · Akun</td></tr>
 <tr><td><b>Kurir</b></td><td>Menjemput dan mengantar barang, serah terima, bukti terima.</td><td>Beranda · Pindai · Serah terima · Akun</td></tr>
@@ -56,7 +57,7 @@ small,.muted{color:#51706a}
 <tr><td><b>Finance</b></td><td>Tagihan, pencatatan pembayaran, komisi, dan laporan keuangan seluruh cabang. Boleh membaca resi untuk keperluan tagihan, tidak menjalankan langkah resi.</td><td>Keuangan · Tagihan · Laporan · Akun</td></tr>
 <tr><td><b>CS dan Sales</b></td><td>Memantau resi cabangnya, tindak lanjut, pesanan jemput, dan mengusulkan ganti rugi klaim. Tidak membuat resi dan tidak melihat uang.</td><td>Beranda · Jemput · Klaim · Akun</td></tr>
 <tr><td><b>Admin konten</b></td><td>Foto dan testimoni slider beranda website.</td><td>Konten · Akun</td></tr></table>
-<p class="muted">Akun dibuat oleh Pemilik (menu Petugas atau Mitra dan cabang). Masuk memakai email dan kata sandi. Kata sandi bisa diganti sendiri lewat menu Akun. Petugas yang dinonaktifkan langsung tidak bisa masuk. Di komputer, menu samping memuat semua menu; di HP menu bawah memuat yang utama saja.</p>
+<p class="muted">Akun dibuat oleh Super Admin (menu Petugas atau Mitra dan cabang). Tanggung jawab selalu melekat pada akun yang mudah dilacak. Masuk memakai email dan kata sandi. Kata sandi bisa diganti sendiri lewat menu Akun. Petugas yang dinonaktifkan langsung tidak bisa masuk. Di komputer, menu samping memuat semua menu; di HP menu bawah memuat yang utama saja.</p>
 
 <h2 class="pb">3. Jalur pelanggan di website</h2>
 <div class="flow">
@@ -71,9 +72,10 @@ small,.muted{color:#51706a}
 <li><b>Calon mitra dan pelamar kerja:</b> mengisi formulir di /mitra dan /karir; masuk ke Pemilik dan HRD.</li></ul>
 
 <h2>4. Alur satu resi (inti aplikasi)</h2>
+<div class="box"><b>Tanpa master rute:</b> Kasir memilih <b>gudang tujuan</b> dan <b>moda</b> (laut, udara, darat) sendiri, jadi kota seperti Surabaya atau Manado tidak perlu didaftar dulu. Alamat penerima wajib lengkap sampai kelurahan atau desa. <b>Harga diisi Kasir</b> saat membuat invoice (per kg, per m³, atau borongan, ditambah biaya bebas); gudang hanya menimbang.</div>
 <div class="box ok"><b>Satu pintu:</b> resi dibuat dan labelnya dicetak <b>hanya oleh Kasir</b> di tiap gudang atau gerai (barang diantar sendiri maupun dijemput). Kepala gudang, staf gudang, kurir, CS, Finance, dan Pemilik tidak bisa membuat resi atau mencetak label; mereka menimbang, memuat, mengantar, dan memantau. Pesanan jemput dari website diteruskan ke kasir untuk dibuatkan resinya.</div>
-<p>Resi adalah satu pengiriman. Nomornya bisa dibaca manusia, contoh <b>KLX-MKS-JKT-LJ-261118-1432-0007-PK</b>:</p>
-<table><tr><td width="22%">KLX</td><td>merek Kamil Logistik Express</td></tr>
+<p>Resi adalah satu pengiriman. Nomornya bisa dibaca manusia, contoh <b>KML-JKT-MKS-LJ-261118-1432-0007-PK</b> (resi lama berawalan KLX tetap sah):</p>
+<table><tr><td width="22%">KML</td><td>merek Kamil Logistik (resi lama: KLX)</td></tr>
 <tr><td>MKS · JKT</td><td>kota asal · kota tujuan</td></tr>
 <tr><td>L / U / D</td><td>moda: Laut, Udara, Darat</td></tr>
 <tr><td>J / A</td><td>J = dijemput kurir, A = diantar sendiri ke gudang</td></tr>
@@ -85,15 +87,17 @@ small,.muted{color:#51706a}
 <div class="st"><b>1 Order baru</b><small>kasir (satu pintu)</small></div><span class="ar">→</span>
 <div class="st"><b>2 Sudah dijemput</b><small>kurir</small></div><span class="ar">→</span>
 <div class="st"><b>3 Di gudang asal</b><small>staf gudang</small></div><span class="ar">→</span>
-<div class="st o"><b>4 Sudah ditimbang</b><small>tagihan terbit otomatis</small></div><span class="ar">→</span>
+<div class="st o"><b>4 Sudah ditimbang</b><small>data timbang masuk ke Kasir</small></div><span class="ar">→</span>
 <div class="st"><b>5 Sudah dimuat</b><small>lewat manifest</small></div></div>
 <div class="flow">
 <div class="st"><b>6 Dalam perjalanan</b><small>pelayaran / penerbangan / darat, sopir</small></div><span class="ar">→</span>
 <div class="st"><b>7 Tiba di tujuan</b><small>pelabuhan / bandara / kota</small></div><span class="ar">→</span>
 <div class="st"><b>8 Di gudang tujuan</b><small>dibongkar, dihitung</small></div><span class="ar">→</span>
 <div class="st"><b>9 Sedang diantar</b><small>kurir</small></div><span class="ar">→</span>
-<div class="st g"><b>10 Sudah diterima</b><small>foto + tanda tangan + nama</small></div></div>
+<div class="st g"><b>10 Sudah diterima</b><small>ditutup Kasir atau Kepala gudang tujuan</small></div></div>
 <ul><li><b>Diantar sendiri oleh pelanggan</b> (kode A): tahap 2 dilewati; dari Order baru langsung Di gudang asal.</li>
+<li><b>Jemput (kode J), opsi B:</b> pelanggan memesan lewat website; kurir menjemput barang lebih dulu. <b>Kasir membuat resi setelah barang tiba di gudang</b> (tombol "Barang sudah tiba, buat resi" di pesanan jemput; data pengirim terisi otomatis), dan resi langsung berstatus Di gudang asal.</li>
+<li><b>Satu resi sampai tujuan akhir.</b> Nomor resi tidak diganti sepanjang perjalanan, walau barang melewati beberapa gudang (lihat "Resi berantai" di bagian 6).</li>
 <li>Status hanya maju satu langkah, tidak boleh loncat atau mundur, dan hanya oleh peran yang berhak (dijaga sistem dan basis data).</li>
 <li>Resi bisa juga berstatus Dibatalkan atau Perlu ditangani (bermasalah).</li>
 <li>Tahap 5 sampai 8 dicatat <b>lewat manifest</b>, bukan satu per satu, bila resi sudah masuk manifest.</li></ul>
@@ -101,9 +105,9 @@ small,.muted{color:#51706a}
 <table><tr><th style="width:26%">Tahap</th><th>Syarat yang harus dipenuhi</th></tr>
 <tr><td>Sudah dijemput</td><td>Kurir mengisi <b>pemeriksaan dan foto barang</b> dulu (isi, kemasan, kondisi).</td></tr>
 <tr><td>Di gudang asal</td><td>Petugas gudang mengisi pemeriksaan dan foto saat terima.</td></tr>
-<tr><td>Sudah ditimbang</td><td>Berat dan ukuran wajib diisi; sistem menghitung tagihan. Berat tertagih = yang lebih besar antara berat asli dan berat volume (P×L×T cm ÷ 4000 untuk laut dan darat, ÷ 6000 untuk udara).</td></tr>
+<tr><td>Sudah ditimbang</td><td>Berat dan ukuran wajib diisi. Berat tertagih = yang lebih besar antara berat asli dan berat volume (P×L×T cm ÷ 4000 untuk laut dan darat, ÷ 6000 untuk udara).</td></tr>
 <tr><td>Sedang diantar</td><td>Tidak boleh bila masih ada selisih jumlah barang yang belum selesai.</td></tr>
-<tr><td>Sudah diterima</td><td>Bukti terima lengkap: <b>foto, tanda tangan, dan nama penerima</b>.</td></tr></table>
+<tr><td>Sudah diterima</td><td>Kurir mencatat bukti terima (foto, tanda tangan, nama) bila ada. <b>Penutupan resi</b> oleh Kasir atau Kepala gudang tujuan: catatan dan tautan bukti (https) boleh kosong; foto dari grup hanya referensi. Kasir asal melihat hasilnya dan bisa mengabari pengirim lewat WhatsApp.</td></tr></table>
 
 <h2>5. Serah terima (siapa yang bertanggung jawab)</h2>
 <div class="flow">
@@ -121,19 +125,20 @@ small,.muted{color:#51706a}
 <div class="st o"><b>Di perjalanan</b><small>sopir mengisi kapal / penerbangan / plat truk dan perkiraan tiba</small></div></div>
 <div class="flow">
 <div class="st"><b>Sudah tiba</b><small>semua resi ikut tercatat tiba</small></div><span class="ar">→</span>
-<div class="st"><b>Diserahkan ke gudang tujuan</b><small>petugas gudang kota tujuan menerima</small></div><span class="ar">→</span>
-<div class="st g"><b>Dibongkar</b><small>tiap barang dipindai dan dicocokkan jumlahnya</small></div></div>
+<div class="st"><b>Diserahkan ke Kepala gudang tujuan</b><small>hanya Kepala gudang kota tujuan yang menerima; ia yang bertanggung jawab</small></div><span class="ar">→</span>
+<div class="st g"><b>Dibongkar</b><small>dipindai satu per satu, atau "Terima semua sesuai manifest"; lalu Berita Acara Bongkar</small></div></div>
+<p><b>Berita Acara Bongkar</b> (cetak): kode manifest, pengangkut, voyage, waktu bongkar, cara terima, jumlah seharusnya dan diterima, barang yang kurang per resi, dan kolom tanda tangan sopir dan penerima.</p>
 <div class="box"><b>Bila jumlah tidak cocok:</b> sistem membuat <b>kasus selisih</b>. Resi terkait tidak boleh diantar sampai selisihnya diselesaikan (ditandai ditemukan atau tidak ditemukan) di halaman manifest oleh petugas yang berwenang.</div>
 
 <h3>Perkiraan tiba berubah (kapal atau truk terlambat)</h3>
 <p>Selama manifest disegel atau di perjalanan, sopir atau kepala gudang bisa memperbarui <b>perkiraan tiba</b> dengan alasan. Semua resi di manifest ikut diperbarui dan tercatat di riwayatnya; alasan tersimpan di catatan aktivitas.</p>
-<h3>Transit antar gudang (mis. Jakarta → Surabaya → Makassar)</h3>
-<p>Kepala gudang asal dapat menetapkan <b>gudang transit</b> pada sebuah resi sebelum masuk manifest. Muatan dibuat dua kali (asal → transit, lalu transit → tujuan). Di gudang transit, resi dibongkar, dicatat "singgah", lalu siap dimuat lagi untuk leg kedua; tanggung jawab tetap lewat serah terima. Tarif pelanggan tetap tarif asal → tujuan.</p>
+<h3>Resi berantai dan sortir tujuan akhir</h3>
+<p>Satu resi bisa melewati beberapa gudang tanpa ganti nomor. Contoh: Jakarta → <b>Makassar</b> lewat kapal; di Makassar barang disortir menurut tujuan akhir (menu <b>Sortir tujuan akhir</b>, dikelompokkan per kabupaten atau kota). Tujuan dekat seperti Mamuju (darat) diantar kurir; tujuan yang menyeberang pulau <b>diteruskan</b> oleh Kasir atau Kepala gudang Makassar ke gudang berikutnya lewat darat, laut, atau udara (tombol "Teruskan ke gudang lain" di halaman resi). Pengiriman langsung dari Surabaya ke Manado atau Balikpapan cukup dibuat dengan tujuan gudang terkait. Tiap penerusan tercatat sebagai <b>leg</b> dan resi siap dimuat ke manifest berikutnya; gudang yang pernah dilewati tetap bisa melihat resi.</p>
 <h3>Kendala pengiriman</h3>
 <p>Kepala gudang, petugas gudang, kurir, atau sopir dapat melaporkan kendala pada sebuah resi: <b>salah sortir, barang rusak atau kurang, gagal kirim, retur, atau ditahan</b>. Status resi tidak diubah dan tidak bisa loncat. Selama kendala terbuka, resi <b>tidak bisa diantar atau diterima dan tidak bisa masuk manifest baru</b>. Kepala gudang menyelesaikannya dengan catatan: dilanjutkan, atau (untuk retur dan gagal kirim) dikembalikan ke pengirim sehingga resi dibatalkan. Catatan internal tidak tampil di halaman lacak pelanggan. Daftar kendala ada di menu Kendala pengiriman dan penandanya muncul di beranda kepala gudang dan Pemilik.</p>
 
 <h2>7. Tagihan dan pembayaran</h2>
-<ol><li>Tagihan terbit otomatis saat barang ditimbang (nomor contoh INV-2611-000002). Angkanya dari tarif di data rute; petugas tidak bisa mengubahnya.</li>
+<ol><li>Setelah barang ditimbang, <b>Kasir menerbitkan invoice</b> (nomor contoh INV-2611-000002) dengan harga yang diisi sendiri: per kg, per m³, atau borongan, ditambah baris biaya bebas (ongkos jemput, ongkir antar, packing, dan lain-lain). Tanpa persetujuan tambahan; Pemilik menyampaikan harga langsung ke Kasir. Invoice yang belum dibayar boleh diterbitkan ulang dan riwayatnya tercatat.</li>
 <li>Jatuh tempo: hari ini untuk pelanggan umum; mengikuti jumlah hari tempo untuk pelanggan korporat.</li>
 <li>Dari halaman tagihan: cetak atau simpan PDF, salin tautan rahasia, atau kirim ke pelanggan lewat WhatsApp.</li>
 <li><b>Mencatat pembayaran</b> hanya oleh Pemilik, kepala gudang, atau kasir, setelah uang benar-benar masuk. Cara bayar: <b>transfer</b> (wajib isi nomor referensi) atau <b>tunai</b>. Boleh dicicil; status tagihan: belum dibayar, dibayar sebagian, lunas, atau dibatalkan.</li>
@@ -187,7 +192,7 @@ small,.muted{color:#51706a}
 <tr><td><b>Pengujian</b></td><td>Uji SQL dan uji peramban end-to-end otomatis (403 pemeriksaan lolos pada audit terakhir).</td></tr></table>
 
 <h2>12. Yang sengaja tidak ada (keputusan saat ini)</h2>
-<ul><li>Dashboard Pemilik hanya memantau.</li><li>Pembayaran hanya transfer atau tunai (tanpa payment gateway).</li><li>WhatsApp dikirim manual oleh petugas (belum otomatis).</li><li>Tanpa mode offline; perlu sinyal internet.</li><li>Verifikasi dua langkah (2FA) ditunda.</li><li>Login Google belum diaktifkan (butuh pengaturan Google Cloud).</li><li>Peran Dispatcher terpisah, pemisahan akun Super Admin dan Owner, serta COD belum ada.</li></ul>
+<ul><li>Akun Owner hanya memantau; perubahan data hanya lewat petugas yang berwenang atau konsol Koreksi Super Admin.</li><li>Transit via Surabaya sudah dihapus (diganti resi berantai).</li><li>Pembayaran hanya transfer atau tunai (tanpa payment gateway).</li><li>WhatsApp dikirim manual oleh petugas (belum otomatis).</li><li>Tanpa mode offline; perlu sinyal internet.</li><li>Verifikasi dua langkah (2FA) ditunda.</li><li>Login Google belum diaktifkan (butuh pengaturan Google Cloud).</li><li>Peran Dispatcher terpisah, pemisahan akun Super Admin dan Owner, serta COD belum ada.</li></ul>
 <div class="box"><b>Catatan keterbatasan:</b> daftar fitur bertanda rencana di dokumen FITUR-PER-PERAN belum dibangun (misalnya jadwal shift, struk thermal, urutan rute otomatis, lokasi langsung). Paket gratis Supabase tidak menyediakan cadangan harian; sebelum operasi penuh disarankan naik ke paket berbayar.</div>
 <p class="foot">Kamil Logistik Express · Laporan cara kerja aplikasi · disusun dari kode sumber pada cabang pengembangan.</p>
 </body></html>

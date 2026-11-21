@@ -6,7 +6,7 @@ import { requireRole } from "@/lib/auth";
 export const metadata: Metadata = { title: "Biaya Manifest" };
 
 export default async function MarginManifest({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ e?: string; ok?: string }> }) {
-  await requireRole(["SUPER_ADMIN", "FINANCE"]);
+  await requireRole(["SUPER_ADMIN", "OWNER", "FINANCE"]);
   const { id } = await params; const sp = await searchParams;
   if (!/^[0-9a-f-]{36}$/i.test(id)) return <main className="wrap narrow stack"><div className="err">Manifest tidak valid.</div></main>;
   return (

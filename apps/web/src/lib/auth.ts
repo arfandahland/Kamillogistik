@@ -1,11 +1,18 @@
 import { redirect } from "next/navigation";
-import { OWNER_ROLE } from "@kamil/core";
+import { OWNER_ROLE, OWNER_VIEW } from "@kamil/core";
 import { staffRpc, getMe, type Staff } from "./supabase/server";
 
 /** Halaman khusus Pemilik: selain Pemilik dialihkan ke beranda. (Hak akses sebenarnya dijaga lagi di database.) */
 export async function requireOwner(): Promise<Staff> {
   const me = (await getMe()).data;
   if (me?.role !== OWNER_ROLE) redirect("/app");
+  return me;
+}
+
+/** Halaman pantauan: Super Admin dan Owner (Owner hanya membaca). */
+export async function requireOwnerView(): Promise<Staff> {
+  const me = (await getMe()).data;
+  if (!me || !OWNER_VIEW.includes(me.role)) redirect("/app");
   return me;
 }
 

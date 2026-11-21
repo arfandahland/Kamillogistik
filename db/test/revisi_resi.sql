@@ -124,3 +124,34 @@ DO $$ DECLARE r jsonb; g jsonb; BEGIN
 END $$;
 SELECT t.fails($$select public.create_shipment_from_pickup(current_setting('t.pjid')::uuid, current_setting('t.b_mks')::uuid, 'LAUT', 'X', '0811', 'Y', '0822', 'Jl. Perintis No. 3', '{"province":"a1","regency":"b1","district":"c1","village":"d1","code":"73.71.07.1001"}'::jsonb)$$, 'sudah selesai');
 SELECT 'jemput_opsi_b OK' AS hasil;
+
+-- ================= 045: Owner memantau, Super Admin mengoreksi =================
+RESET ROLE;
+INSERT INTO auth.users(id, email) VALUES ('00000000-0000-0000-0000-0000000000a1', 'owner-pantau@uji.id');
+INSERT INTO public.users(id, email, full_name) VALUES ('00000000-0000-0000-0000-0000000000a1', 'owner-pantau@uji.id', 'Pemilik Pantau');
+INSERT INTO public.employee_profiles(user_id, role, branch_id) VALUES ('00000000-0000-0000-0000-0000000000a1', 'OWNER', NULL);
+SELECT t.as_user('00000000-0000-0000-0000-0000000000a1');
+DO $$ BEGIN
+  ASSERT public.can_see(current_setting('t.ra')::uuid), 'Owner melihat resi semua cabang';
+  ASSERT public.staff_get_shipment(current_setting('t.ra')::uuid)->>'resiNo' IS NOT NULL, 'Owner membuka detail resi';
+  ASSERT public.owner_dashboard() IS NOT NULL, 'Owner membuka dashboard pantauan';
+END $$;
+SELECT t.fails($$select public.admin_correct_shipment(current_setting('t.ra')::uuid, 'AT_DEST_HUB', 'Koreksi oleh pemilik tidak boleh')$$, 'izin');
+SELECT t.fails($$select public.shipment_cancel(current_setting('t.ra')::uuid, 'Pemilik tidak mengubah data')$$, 'izin');
+SELECT t.fails($$select public.shipment_close(current_setting('t.ra')::uuid, 'x', NULL)$$, 'izin');
+SELECT t.as_user('00000000-0000-0000-0000-000000000001');
+SELECT t.fails($$select public.admin_correct_shipment(current_setting('t.ra')::uuid, 'AT_DEST_HUB', 'singkat')$$, 'alasan');
+DO $$ BEGIN
+  PERFORM public.admin_correct_shipment(current_setting('t.ra')::uuid, 'AT_DEST_HUB', 'Salah tutup oleh petugas, dikembalikan ke gudang tujuan');
+  ASSERT public.staff_get_shipment(current_setting('t.ra')::uuid)->>'status' = 'AT_DEST_HUB', 'status dikoreksi';
+END $$;
+RESET ROLE;
+DO $$ BEGIN
+  ASSERT EXISTS (SELECT 1 FROM audit_logs WHERE action = 'admin_correct_shipment' AND (after->>'alasan') LIKE 'Salah tutup%'), 'koreksi tercatat di catatan aktivitas';
+  ASSERT EXISTS (SELECT 1 FROM tracking_logs WHERE shipment_id = current_setting('t.ra')::uuid AND note LIKE 'Koreksi Super Admin:%'), 'koreksi tercatat di riwayat resi';
+END $$;
+SELECT t.as_user('00000000-0000-0000-0000-000000000001');
+DO $$ BEGIN PERFORM public.owner_create_staff('owner-baru@uji.id','Pemilik Baru','OWNER',NULL,'Sandi1234'); END $$;
+RESET ROLE;
+DO $$ BEGIN ASSERT (SELECT role FROM employee_profiles ep JOIN users u ON u.id = ep.user_id WHERE u.email = 'owner-baru@uji.id') = 'OWNER', 'akun Owner terbuat tanpa cabang'; END $$;
+SELECT 'owner_superadmin OK' AS hasil;

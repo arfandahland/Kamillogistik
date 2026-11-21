@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { OWNER_ROLE, STATUS_GROUPS } from "@kamil/core";
+import { OWNER_VIEW, STATUS_GROUPS } from "@kamil/core";
 import { redirect } from "next/navigation";
 import StaffHome, { TABS, type Row } from "@/components/StaffHome";
 import { staffRpc, getMe, type Staff } from "@/lib/supabase/server";
@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: "Semua Resi" };
 export default async function Semua({ searchParams }: { searchParams: Promise<{ s?: string; q?: string; n?: string }> }) {
   const sp = await searchParams;
   const me = (await getMe()).data;
-  if (me?.role !== OWNER_ROLE) redirect("/app");
+  if (!OWNER_VIEW.includes(me?.role ?? "")) redirect("/app");
   const tab = TABS.find((t) => t.k === sp.s)?.k ?? "semua";
   const q = (sp.q ?? "").trim();
   const n = Math.min(100, Math.max(30, Number(sp.n) || 30)); // baris yang ditampilkan (HTML lebih ringan di HP)

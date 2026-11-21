@@ -43,3 +43,16 @@ BEGIN
 END $$;
 REVOKE ALL ON FUNCTION public.admin_correct_shipment(uuid,text,text) FROM PUBLIC, anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.admin_correct_shipment(uuid,text,text) TO authenticated;
+
+-- Super Admin bisa membuat akun Owner (tanpa cabang).
+CREATE OR REPLACE FUNCTION pg_temp.patch_fn(p_name text, p_from text, p_to text) RETURNS void LANGUAGE plpgsql AS $$
+DECLARE n int; d text; o oid;
+BEGIN
+  SELECT count(*), min(p.oid) INTO n, o FROM pg_proc p WHERE p.proname = p_name AND p.pronamespace = 'public'::regnamespace;
+  IF n <> 1 THEN RAISE EXCEPTION 'Fungsi % ditemukan % kali (harus 1).', p_name, n; END IF;
+  d := pg_get_functiondef(o);
+  IF position(p_from IN d) = 0 THEN RAISE EXCEPTION 'Pola tidak ditemukan di %: %', p_name, p_from; END IF;
+  EXECUTE replace(d, p_from, p_to);
+END $$;
+SELECT pg_temp.patch_fn('owner_create_staff', 'p_role NOT IN (''SUPER_ADMIN'',''HUB_MANAGER''', 'p_role NOT IN (''SUPER_ADMIN'',''OWNER'',''HUB_MANAGER''');
+SELECT pg_temp.patch_fn('owner_create_staff', 'p_role NOT IN (''SUPER_ADMIN'',''HRD'',''KONTEN'',''FINANCE'')', 'p_role NOT IN (''SUPER_ADMIN'',''OWNER'',''HRD'',''KONTEN'',''FINANCE'')');

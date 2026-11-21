@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { MANIFEST_STATUS_LABEL, OWNER_ROLE } from "@kamil/core";
+import { MANIFEST_STATUS_LABEL, OWNER_VIEW } from "@kamil/core";
 import Icon from "@/components/Icon";
 import { getMe, staffRpc } from "@/lib/supabase/server";
 
@@ -36,7 +36,7 @@ export default async function Manifest({ searchParams }: { searchParams: Promise
             </span>
           </Link>
         ))}
-        {!r.error && rows.length === 0 && <div className="card"><p className="muted" style={{ margin: 0 }}>{role === OWNER_ROLE ? "Belum ada manifest." : bisaBuat ? "Belum ada manifest. Tekan Buat manifest untuk mulai memuat." : "Belum ada manifest untuk Anda."}</p></div>}
+        {!r.error && rows.length === 0 && <div className="card"><p className="muted" style={{ margin: 0 }}>{OWNER_VIEW.includes(role ?? "") ? "Belum ada manifest." : bisaBuat ? "Belum ada manifest. Tekan Buat manifest untuk mulai memuat." : "Belum ada manifest untuk Anda."}</p></div>}
       </div>
     </main>
   );

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { MANIFEST_STATUS_LABEL, MODA_LABEL, OWNER_ROLE } from "@kamil/core";
+import { MANIFEST_STATUS_LABEL, MODA_LABEL, OWNER_VIEW } from "@kamil/core";
 import Icon from "@/components/Icon";
 import BiayaManifest from "@/components/BiayaManifest";
 import SubmitButton from "@/components/SubmitButton";
@@ -188,7 +188,7 @@ export default async function ManifestDetail({ params, searchParams }: { params:
         </div>
       )}
 
-      {m.status === "UNLOADED" && (role === "HUB_MANAGER" || role === "WAREHOUSE" || role === OWNER_ROLE || role === "FINANCE") && (
+      {m.status === "UNLOADED" && (role === "HUB_MANAGER" || role === "WAREHOUSE" || OWNER_VIEW.includes(role) || role === "FINANCE") && (
         <Link href={`/app/manifest/${m.id}/berita-acara`} className="btn ghost">Berita Acara Bongkar (cetak)</Link>
       )}
 

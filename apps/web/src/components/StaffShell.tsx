@@ -1,4 +1,4 @@
-import { CAN_CREATE_ORDER, OWNER_ROLE, ROLE_LABEL } from "@kamil/core";
+import { CAN_CREATE_ORDER, OWNER_VIEW, ROLE_LABEL } from "@kamil/core";
 import Sidebar from "./Sidebar";
 import StaffHeader from "./StaffHeader";
 import TabBar from "./TabBar";
@@ -11,7 +11,8 @@ import { initials, sapaan } from "@/lib/ui";
 export type Me = { name: string; role: string; branchName: string | null };
 
 export default function StaffShell({ me, pending, children, forceFull }: { me: Me; pending: number; children: React.ReactNode; forceFull?: boolean }) {
-  const owner = me.role === OWNER_ROLE;
+  const owner = OWNER_VIEW.includes(me.role);
+  const pantau = me.role === "OWNER"; // hanya memantau: menu pengelolaan disembunyikan
   const finance = owner || me.role === "HUB_MANAGER" || me.role === "MITRA_POS";
   // Menu bawah di HP (maks 5) dan menu samping di komputer (lengkap).
   const tabs = me.role === "HRD"
@@ -59,8 +60,9 @@ export default function StaffShell({ me, pending, children, forceFull }: { me: M
         { href: "/app/pegawai", label: "Kepegawaian", icon: "user" },
         { href: "/app/tarif", label: "Tarif dan rute", icon: "tag" },
         { href: "/app/pengaturan", label: "Pengaturan", icon: "sliders" },
+        ...(me.role === "SUPER_ADMIN" ? [{ href: "/app/koreksi", label: "Koreksi data", icon: "shield" }] : []),
         { href: "/app/akun", label: "Akun", icon: "user" },
-      ]
+      ].filter((t) => !pantau || !["/app/mitra", "/app/petugas", "/app/tarif", "/app/pengaturan", "/app/korporat"].includes(t.href))
     : [...tabs.slice(0, -1), ...(["HUB_MANAGER", "MITRA_POS", "WAREHOUSE"].includes(me.role) ? [{ href: "/app/tindak-lanjut", label: "Perlu dihubungi", icon: "chat" }] : []), ...(["HUB_MANAGER", "WAREHOUSE"].includes(me.role) ? [{ href: "/app/kendala", label: "Kendala pengiriman", icon: "alert" }] : []), ...(["HUB_MANAGER", "WAREHOUSE", "MITRA_POS"].includes(me.role) ? [{ href: "/app/sortir", label: "Sortir tujuan akhir", icon: "layers" }] : []), { href: "/app/cari", label: "Cari", icon: "search" }, { href: "/app/serah", label: "Serah terima", icon: "swap", badge: pending }, tabs[tabs.length - 1]!].filter((t, i, a) => a.findIndex((x) => x.href === t.href) === i);
   const role = ROLE_LABEL[me.role] ?? me.role;
   const tanggal = new Intl.DateTimeFormat("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Makassar" }).format(new Date());

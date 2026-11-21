@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Icon from "@/components/Icon";
-import { requireOwner } from "@/lib/auth";
+import { requireOwnerView } from "@/lib/auth";
 
 export const metadata: Metadata = { title: "Kelola Bisnis" };
 
@@ -32,7 +32,7 @@ const ITEMS = [
 ];
 
 export default async function Kelola() {
-  await requireOwner();
+  await requireOwnerView();
   return (
     <main className="wrap stack" style={{ paddingTop: 8 }}>
       <h1>Kelola bisnis</h1>

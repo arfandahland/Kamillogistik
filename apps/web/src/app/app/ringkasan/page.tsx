@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { requireOwner } from "@/lib/auth";
+import { requireOwnerView } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
 import { rupiah } from "@/lib/brand";
 import Icon from "@/components/Icon";
@@ -21,7 +21,7 @@ function Delta({ a, b }: { a: number; b: number }) {
 }
 
 export default async function Ringkasan({ searchParams }: { searchParams: Promise<{ tgl?: string }> }) {
-  await requireOwner();
+  await requireOwnerView();
   const sp = await searchParams; const hari = nowWita();
   const tgl = /^\d{4}-\d{2}-\d{2}$/.test(sp.tgl ?? "") && sp.tgl! <= hari ? sp.tgl! : hari;
   const [s, p, nl] = await Promise.all([staffRpc<S>("owner_daily_summary", { p_date: tgl }), staffRpc<P[]>("owner_partner_scores", { p_days: 30 }), staffRpc<{ count: number; avg: number | null; dist: Record<string, number>; latest: { resiNo: string; stars: number; comment: string | null; origin: string }[] }>("owner_ratings", { p_days: 30 })]);

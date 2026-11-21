@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { FOLLOWUP_LABEL, OWNER_ROLE, type FollowupItem, type FollowupKind } from "@kamil/core";
+import { FOLLOWUP_LABEL, OWNER_VIEW, type FollowupItem, type FollowupKind } from "@kamil/core";
 import Icon from "@/components/Icon";
 import FollowupCard from "@/components/FollowupCard";
 import { getMe, staffRpc } from "@/lib/supabase/server";
@@ -16,7 +16,7 @@ export default async function TindakLanjut({ searchParams }: { searchParams: Pro
   const all = q.data?.items ?? [];
   const items = kind ? all.filter((i) => i.kind === kind) : all;
   const todo = items.filter((i) => !i.contactedAt), doneL = items.filter((i) => i.contactedAt);
-  const canMark = me.data?.role !== OWNER_ROLE;
+  const canMark = !OWNER_VIEW.includes(me.data?.role ?? "");
   const n = (k: FollowupKind) => all.filter((i) => i.kind === k && !i.contactedAt).length;
   return (
     <main className="wrap narrow stack" style={{ paddingTop: 8 }}>

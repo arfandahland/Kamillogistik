@@ -17,7 +17,7 @@ type Fin = {
 };
 
 export default async function Keuangan({ searchParams }: { searchParams: Promise<{ hari?: string }> }) {
-  await requireRole(["SUPER_ADMIN", "FINANCE"]);
+  await requireRole(["SUPER_ADMIN", "OWNER", "FINANCE"]);
   const hari = [7, 30, 90].includes(Number((await searchParams).hari)) ? Number((await searchParams).hari) : 30;
   const r = await staffRpc<Fin>("finance_overview", { p_days: hari });
   if (r.error || !r.data) return <main className="wrap stack"><div className="err">{r.error ?? "Data keuangan belum tersedia."}</div></main>;

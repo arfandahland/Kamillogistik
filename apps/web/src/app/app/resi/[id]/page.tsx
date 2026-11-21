@@ -43,7 +43,7 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
   const role = me.data.role as Actor;
   const invId = s.invoice && SEES_MONEY.includes(role) ? (await staffRpc<{ id: string }[]>("staff_list_invoices", { p_q: s.resiNo, p_limit: 1 })).data?.[0]?.id : undefined;
   const pod = s.status === "DELIVERED" ? (await staffRpc<Pod>("get_pod", { p_id: id })).data : null;
-  const viewOnly = role === OWNER_ROLE; // Pemilik hanya memantau
+  const viewOnly = (role as string) === "OWNER" || role === OWNER_ROLE; // Pemilik hanya memantau (Super Admin mengoreksi lewat konsol)
   const action = viewOnly ? null : nextAction(role, s.status, s.pickupType);
   const pendingToMe = viewOnly ? undefined : s.handovers.find((h) => h.state === "PENDING_ACK" && h.toMe);
   const pending = s.handovers.find((h) => h.state === "PENDING_ACK");

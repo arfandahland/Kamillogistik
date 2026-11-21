@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { CAN_CREATE_ORDER, OWNER_ROLE, STATUS_GROUPS, type OwnerDashboard as OwnerData } from "@kamil/core";
+import { CAN_CREATE_ORDER, OWNER_VIEW, STATUS_GROUPS, type OwnerDashboard as OwnerData } from "@kamil/core";
 import OwnerDashboard from "@/components/OwnerDashboard";
 import { OwnerInsights, KasirDash, KurirDash, GudangDash, SopirDash, type OwnerInsight, type KasirData, type KurirData, type GudangData, type SopirData } from "@/components/PeranDashboard";
 import HubDashboard, { type HubData } from "@/components/HubDashboard";
@@ -19,7 +19,7 @@ export default async function Beranda({ searchParams }: { searchParams: Promise<
   if (who?.role === "HRD") redirect("/app/rekrutmen");
   if (who?.role === "KONTEN") redirect("/app/konten");
   if (who?.role === "FINANCE") redirect("/app/keuangan");
-  if (who?.role === OWNER_ROLE) {
+  if (OWNER_VIEW.includes(who?.role ?? "")) {
     const [o, ins, kn] = await Promise.all([staffRpc<OwnerData>("owner_dashboard", { p_days: 30 }), staffRpc<OwnerInsight>("owner_insights"), staffRpc<number>("issue_count")]);
     return <><KendalaBadge n={Number(kn.data ?? 0)} />{ins.data && <OwnerInsights d={ins.data} />}<OwnerDashboard initial={o.data} initialError={o.error} /></>;
   }

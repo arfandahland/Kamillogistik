@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { requireOwner } from "@/lib/auth";
+import { requireOwnerView } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
 
 export const metadata: Metadata = { title: "Catatan Aktivitas" };
@@ -10,7 +10,7 @@ const NAMA: Record<string, string> = {
 type Row = { id: string; action: string; entity: string; who: string | null; at: string };
 
 export default async function Catatan() {
-  await requireOwner();
+  await requireOwnerView();
   const q = await staffRpc<Row[]>("owner_audit", { p_limit: 150 });
   return (
     <main className="wrap narrow stack" style={{ paddingTop: 8 }}>

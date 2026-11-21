@@ -2,7 +2,8 @@ import { canSetStatus, nextStatus, type Actor, type AnyStatus, type ShipmentStat
 
 /** Teks untuk petugas — tanpa istilah teknis. */
 export const ROLE_LABEL: Record<string, string> = {
-  SUPER_ADMIN: "Pemilik / Admin pusat",
+  SUPER_ADMIN: "Super Admin",
+  OWNER: "Pemilik (pantau)",
   HRD: "HRD (kepegawaian dan rekrutmen)",
   FINANCE: "Finance",
   CS_SALES: "CS dan Sales",
@@ -85,15 +86,18 @@ export const CAN_CREATE_ORDER = ["MITRA_POS"];
 /** Satu pintu: resi dibuat dan label dicetak hanya oleh Kasir di tiap gudang atau gerai. */
 export const CAN_PRINT_LABEL = ["MITRA_POS"];
 export const OWNER_ROLE = "SUPER_ADMIN";
-export const SEES_MONEY = ["SUPER_ADMIN", "HUB_MANAGER", "MITRA_POS", "FINANCE"];
+/** Tampilan pantauan pemilik: Super Admin (kendali penuh) dan Owner (hanya memantau). */
+export const OWNER_VIEW: readonly string[] = ["SUPER_ADMIN", "OWNER"];
+export const SEES_MONEY = ["SUPER_ADMIN", "OWNER", "HUB_MANAGER", "MITRA_POS", "FINANCE"];
 
 /** Peran yang bisa dipilih saat Pemilik membuat akun baru. Tiga yang terakhir tidak terikat cabang. */
-export const PERAN_BARU = ["DRIVER", "WAREHOUSE", "CONTAINER_DRIVER", "MITRA_POS", "HUB_MANAGER", "HRD", "KONTEN", "FINANCE", "CS_SALES", "SUPER_ADMIN"] as const;
-export const PERAN_TANPA_CABANG = ["HRD", "KONTEN", "FINANCE", "SUPER_ADMIN"] as const;
+export const PERAN_BARU = ["DRIVER", "WAREHOUSE", "CONTAINER_DRIVER", "MITRA_POS", "HUB_MANAGER", "HRD", "KONTEN", "FINANCE", "CS_SALES", "OWNER", "SUPER_ADMIN"] as const;
+export const PERAN_TANPA_CABANG = ["HRD", "KONTEN", "FINANCE", "OWNER", "SUPER_ADMIN"] as const;
 export const PERAN_KETERANGAN: Record<string, string> = {
   HRD: "Kepegawaian (dokumen, shift, absensi, cuti, rekap) dan Lamaran kerja. Tidak melihat resi maupun keuangan.",
   FINANCE: "Tagihan, pembayaran, komisi, dan laporan keuangan seluruh cabang. Tidak menjalankan langkah resi.",
   CS_SALES: "Memantau resi cabang, tindak lanjut, pesanan jemput, dan mengusulkan ganti rugi klaim. Tidak membuat resi dan tidak melihat uang.",
   KONTEN: "Hanya mengelola foto dan testimoni di website.",
-  SUPER_ADMIN: "Akses penuh seperti Pemilik: semua menu, tarif, mitra, keuangan, dan petugas. Berikan dengan hati-hati.",
+  OWNER: "Hanya memantau: dashboard, semua resi, keuangan, laporan, margin, dan peta. Tidak bisa mengubah data apa pun.",
+  SUPER_ADMIN: "Kendali penuh: semua menu, tarif, mitra, petugas, dan konsol koreksi data (alasan wajib, tercatat). Berikan dengan hati-hati.",
 };

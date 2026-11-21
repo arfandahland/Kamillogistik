@@ -121,3 +121,10 @@ Fitur lintas peran yang dibangun putaran ini: pesan jemput online, klaim dan kel
 - Angka ✅ dan 🆕 sudah dibuktikan lewat uji otomatis (SQL dan peramban). 📋 belum dikerjakan; prioritaskan berdasarkan kebutuhan lapangan.
 - Fitur 📋 yang menyentuh uang (diskon, insentif, penggajian) butuh keputusan Pemilik dulu.
 - Fitur lokasi langsung dan notifikasi butuh keputusan privasi dan biaya.
+
+## Pembaruan terbaru (fase resi berantai)
+
+- 🆕 **Super Admin** (kendali penuh): konsol **Koreksi data** (status resi, alasan wajib, tercatat di riwayat dan catatan aktivitas), kelola akun, tarif, mitra. **Owner** (Pemilik) hanya memantau.
+- 🆕 **Kasir**: membuat resi tanpa master rute (pilih gudang tujuan dan moda), menerbitkan invoice dengan harga manual, **menutup resi** di gudang tujuan (bukti opsional, tautan https), meneruskan resi ke gudang berikutnya, membuat resi dari **pesanan jemput** setelah barang tiba.
+- 🆕 **Kepala gudang**: menerima serah terima manifest yang tiba (hanya Kepala gudang tujuan), bongkar dengan pindai atau **Terima semua sesuai manifest**, cetak **Berita Acara Bongkar**, papan **Sortir tujuan akhir**, meneruskan resi (resi berantai), menutup resi.
+- ✅ Kode transit Surabaya dihapus; pengganti: resi berantai (satu nomor resi sepanjang perjalanan, riwayat leg).
