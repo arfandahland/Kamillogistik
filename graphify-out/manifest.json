@@ -222,9 +222,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/kelola/page.tsx": {
-    "mtime": 1795221392.5459263,
-    "seen": 1795222726.4789326,
-    "ast_hash": "2caeb856c869ac9eb93c75239d8a6e34",
+    "mtime": 1795226180.5165117,
+    "seen": 1795227166.2407503,
+    "ast_hash": "e819ba86ec14519bb065436b33b7624b",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/keuangan/komisi/page.tsx": {
@@ -300,9 +300,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/manifest/[id]/page.tsx": {
-    "mtime": 1795221203.9324903,
-    "seen": 1795222726.4793026,
-    "ast_hash": "bdc2eaffd6640b2ebca7e6f56d002614",
+    "mtime": 1795226180.4614801,
+    "seen": 1795227166.2410982,
+    "ast_hash": "2e66fc658bce186ca992836cd6383d88",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/manifest/actions.ts": {
@@ -756,9 +756,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/StaffShell.tsx": {
-    "mtime": 1795221580.963966,
-    "seen": 1795222726.4815848,
-    "ast_hash": "c5042d9d76fa4411deba1f8fa64036ec",
+    "mtime": 1795226180.4618487,
+    "seen": 1795227166.2431521,
+    "ast_hash": "ebce9e35d6e548955844a5cdc7d2008a",
     "semantic_hash": ""
   },
   "apps/web/src/components/SubmitButton.tsx": {
@@ -900,9 +900,9 @@
     "semantic_hash": ""
   },
   "db/test/run.sh": {
-    "mtime": 1795221545.2572782,
-    "seen": 1795222726.4832294,
-    "ast_hash": "20814de0a82987127dce0fb03e648ec6",
+    "mtime": 1795226220.0175939,
+    "seen": 1795227166.2445214,
+    "ast_hash": "0fa126ec7963a5ce6d8b15e35340bc7a",
     "semantic_hash": ""
   },
   "db/test/tariff-cases.json": {
@@ -924,9 +924,9 @@
     "semantic_hash": ""
   },
   "e2e/flow.cjs": {
-    "mtime": 1795222210.2650845,
-    "seen": 1795222726.4833477,
-    "ast_hash": "96ef1fca6bc68ab872a91b82a612a29a",
+    "mtime": 1795226253.7302847,
+    "seen": 1795227166.2446146,
+    "ast_hash": "45291c22973c3e362ab67e1a7b288d32",
     "semantic_hash": ""
   },
   "e2e/kamera.cjs": {
@@ -954,9 +954,9 @@
     "semantic_hash": ""
   },
   "e2e/setup.sh": {
-    "mtime": 1795221486.889117,
-    "seen": 1795222726.4834235,
-    "ast_hash": "327c9dc1fe1dbd28a9ea463daf05f674",
+    "mtime": 1795226220.0192666,
+    "seen": 1795227166.2446742,
+    "ast_hash": "77532a368a93704559660b56575c9912",
     "semantic_hash": ""
   },
   "e2e/skenario.cjs": {
@@ -2010,9 +2010,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/kendala/actions.ts": {
-    "mtime": 1795221187.2032218,
-    "seen": 1795222726.4789352,
-    "ast_hash": "b8de518eb823c5030c29029a8f78a575",
+    "mtime": 1795226238.6078193,
+    "seen": 1795227166.240753,
+    "ast_hash": "3949aaf329abd9314a76e52e1269f7e5",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/kendala/page.tsx": {
@@ -2040,9 +2040,75 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/KendalaPanel.tsx": {
-    "mtime": 1795221187.2044182,
-    "seen": 1795222726.4808712,
-    "ast_hash": "ae28f4dea41a7202b81e916a86f003fc",
+    "mtime": 1795226238.608105,
+    "seen": 1795227166.2424612,
+    "ast_hash": "0de7c82d1617c264c2b0e19bb652f39f",
+    "semantic_hash": ""
+  },
+  "apps/web/src/app/app/foto-kendala/[id]/[n]/route.ts": {
+    "mtime": 1795226238.594752,
+    "seen": 1795227166.2406526,
+    "ast_hash": "4a9508d4d700e5b262cedfe8a7a3a658",
+    "semantic_hash": ""
+  },
+  "apps/web/src/app/app/margin/[id]/page.tsx": {
+    "mtime": 1795226180.4506857,
+    "seen": 1795227166.2411609,
+    "ast_hash": "24fc3ffc83fc183c33ab929edd2e1c8d",
+    "semantic_hash": ""
+  },
+  "apps/web/src/app/app/margin/actions.ts": {
+    "mtime": 1795226180.449373,
+    "seen": 1795227166.241163,
+    "ast_hash": "48ce26957d087adb96997379d7e19f92",
+    "semantic_hash": ""
+  },
+  "apps/web/src/app/app/margin/page.tsx": {
+    "mtime": 1795226180.4518101,
+    "seen": 1795227166.241164,
+    "ast_hash": "baefe40e213caa382e1ace6b68887125",
+    "semantic_hash": ""
+  },
+  "apps/web/src/components/BiayaManifest.tsx": {
+    "mtime": 1795226180.4445117,
+    "seen": 1795227166.2421222,
+    "ast_hash": "8b12bf9fb228a7211e3bd2752dfd70aa",
+    "semantic_hash": ""
+  },
+  "apps/web/src/components/KendalaLaporForm.tsx": {
+    "mtime": 1795226238.5960484,
+    "seen": 1795227166.2424586,
+    "ast_hash": "e0c28df32f95a1987bdfbadabe4e2d06",
+    "semantic_hash": ""
+  },
+  "db/migrations/028_kendala_eta_transit.sql": {
+    "mtime": 1795221026.2346776,
+    "seen": 1795227166.244184,
+    "ast_hash": "a30dc14397ef57e533921f69d76932c9",
+    "semantic_hash": ""
+  },
+  "db/migrations/029_hrd_kepegawaian.sql": {
+    "mtime": 1795221302.5243788,
+    "seen": 1795227166.244186,
+    "ast_hash": "d5f39f9f372ef3cc99a189b924f7a746",
+    "semantic_hash": ""
+  },
+  "db/migrations/030_peran_finance_cs.sql": {
+    "mtime": 1795221486.8823276,
+    "seen": 1795227166.2441869,
+    "ast_hash": "24d223dc98e92d142cf9a8a1a7fb32ca",
+    "semantic_hash": ""
+  },
+  "db/test/hr_kepegawaian.sql": {
+    "mtime": 1795221329.8556995,
+    "seen": 1795227166.244256,
+    "ast_hash": "a0e4e0d385ea5f18a7818118af50d89f",
+    "semantic_hash": ""
+  },
+  "db/test/peran_baru.sql": {
+    "mtime": 1795221536.5893207,
+    "seen": 1795227166.2444727,
+    "ast_hash": "8f0ec8fe4adc4399f3646fcc51413514",
     "semantic_hash": ""
   },
   "package-lock.json": {

@@ -1226,6 +1226,22 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("AE26 CS tidak bisa membuka Keuangan", !/\/app\/keuangan/.test(cs.page.url()));
     await noOverflow(cs.page, "CS (HP)");
     await cs.ctx.close();
+
+    // Pre-booking antar sendiri dari website
+    const pb = await (await browser.newContext({ viewport: { width: 390, height: 844 } })).newPage();
+    await pb.goto(`${BASE}/jemput`, { waitUntil: "networkidle" });
+    await pb.getByText("Saya antar sendiri ke gudang").click();
+    ok("AF1 pilihan antar sendiri menyembunyikan kolom alamat jemput", (await pb.locator("#alamat").count()) === 0);
+    await pb.selectOption("#layanan", "LAUT"); await pb.fill("#nama", "Budi Antar Sendiri"); await pb.fill("#hp", "0812 7777 6666");
+    await pb.fill("#kota", "Jakarta"); await pb.fill("#tujuan", "Makassar"); await pb.fill("#barang", "3 kardus pakaian");
+    await pb.getByRole("button", { name: "Pesan antar sendiri" }).click();
+    await pb.waitForSelector(".nilai.done", { timeout: 15000 }).catch(() => {});
+    ok("AF2 pesanan antar sendiri terkirim dengan kode dan petunjuk datang ke gudang", /antar sendiri terkirim/i.test(await pb.locator("main").innerText()) && /JMP-/.test(await pb.locator("main").innerText()));
+    await noOverflow(pb, "Pesan antar sendiri (HP)"); await pb.close();
+    const k2 = await login(browser, "kasir@uji.id", PASS, { width: 390, height: 844 });
+    await k2.page.goto(`${BASE}/app/jemput`, { waitUntil: "networkidle" });
+    ok("AF3 kasir melihat pesanan antar sendiri tanpa alamat jemput", /Diantar sendiri ke gudang Jakarta/.test(await k2.page.locator("main").innerText()));
+    await k2.ctx.close();
   }
 
   await browser.close();

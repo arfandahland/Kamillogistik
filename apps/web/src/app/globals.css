@@ -1266,3 +1266,4 @@ a.card:active, .tile:active { transform: scale(.985); }
 .stats > * { min-width: 0; }
 
 .hubquick.three { grid-template-columns: repeat(3, 1fr); } .hubquick.two { grid-template-columns: repeat(2, 1fr); }
+.kchip { position: relative; }

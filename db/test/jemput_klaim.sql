@@ -79,3 +79,18 @@ SELECT t.fails($$select public.owner_report((now() AT TIME ZONE 'Asia/Makassar')
 SELECT t.fails($$select public.staff_claim_set(gen_random_uuid(),'SELESAI',NULL,NULL)$$, 'tidak ditemukan');
 RESET ROLE;
 \echo 'JEMPUT, KLAIM, LAPORAN DAN EKSPOR LOLOS'
+
+-- ===== 033: pre-booking antar sendiri =====
+SELECT t.as_anon();
+SELECT t.fails($$select public.public_pickup_request('Budi Antar','081200000555','Jakarta','','Makassar','LAUT','3 kardus pakaian',NULL,NULL,NULL,'TERBANG')$$, 'dijemput atau diantar');
+SELECT t.fails($$select public.public_pickup_request('Budi Antar','081200000555','Jakarta','x','Makassar','LAUT','3 kardus pakaian',NULL,NULL,NULL,'JEMPUT')$$, 'alamat penjemputan');
+DO $$ DECLARE r jsonb; BEGIN
+  r := public.public_pickup_request('Budi Antar','081200000555','Jakarta',NULL,'Makassar','LAUT','3 kardus pakaian',NULL,NULL,NULL,'ANTAR');
+  ASSERT r->>'intake' = 'ANTAR' AND (r->>'code') LIKE 'JMP-%', 'antar sendiri tanpa alamat jemput diterima';
+END $$;
+SELECT t.as_user('00000000-0000-0000-0000-000000000002');
+DO $$ DECLARE x jsonb; BEGIN
+  x := (SELECT i FROM jsonb_array_elements(public.staff_pickups()->'items') i WHERE i->>'name' = 'Budi Antar');
+  ASSERT x->>'intake' = 'ANTAR' AND x->>'address' LIKE 'Diantar sendiri oleh pelanggan ke gudang Jakarta%', 'staf melihat cara antar: ' || x::text;
+END $$;
+SELECT 'prebooking_antar OK' AS hasil;
