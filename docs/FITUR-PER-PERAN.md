@@ -55,7 +55,7 @@ Fitur lintas peran yang dibangun putaran ini: pesan jemput online, klaim dan kel
 8. 🆕 Pesanan jemput website belum diproses
 9. 🆕 Kinerja tim gudang hari ini dan 7 hari
 10. 🆕 Laporan akhir shift ke WhatsApp Pemilik
-11. 🆕 Aksi cepat: resi baru, pindai, manifest baru, serah terima
+11. 🆕 Aksi cepat: resi baru, manifest baru, serah terima (Pindai sudah di menu bawah)
 12. ✅ Buat resi, ✅ 13 pindai barcode/QR, ✅ 14 manifest (buat, segel, serah, bongkar), ✅ 15 tagihan dan pembayaran
 16. ✅ Perlu dihubungi, ✅ 17 cari cepat, ✅ 18 serah terima, ✅ 19 foto pemeriksaan kondisi, ✅ 20 cetak label dan manifest, ✅ 21 ganti sandi sendiri
 22. 📋 Jadwal shift tim, 23. 📋 Kapasitas dan slot muat, 24. 📋 Absensi tim, 25. 📋 Stok kemasan
@@ -68,7 +68,7 @@ Fitur lintas peran yang dibangun putaran ini: pesan jemput online, klaim dan kel
 5. 🆕 Daftar resi perlu ditimbang
 6. 🆕 Pelanggan langganan dengan tombol chat
 7. 🆕 Kepuasan pelanggan cabang
-8. 🆕 Aksi cepat 4 tombol
+8. 🆕 Aksi cepat: Jemput dan Serah terima (tombol lain sudah ada di menu bawah)
 9. ✅ Buat resi, 10. ✅ hitung ongkir, 11. ✅ tagihan dan catat bayar, 12. ✅ cetak invoice dan label
 13. ✅ Perlu dihubungi, 14. ✅ cari cepat, 15. ✅ pindai, 16. ✅ serah terima, 17. ✅ foto pemeriksaan, 18. ✅ pilih pelanggan korporat, 19. ✅ pesanan jemput website, 20. ✅ ganti sandi sendiri, 21. ✅ lacak resi publik
 22. 📋 Buku pelanggan tersimpan, 23. 📋 Rekonsiliasi transfer, 24. 📋 Diskon dengan persetujuan, 25. 📋 Cetak struk thermal

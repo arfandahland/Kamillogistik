@@ -25,7 +25,8 @@ function Stat({ icon, n, label, warm, dx }: { icon: string; n: number; label: st
 export default function StaffHome({ rows, stats, pending, tab, q, canCreate, error, hideStats, basePath = "/app", title = "Tugas hari ini", more, followup, hubMode }: {
   rows: Row[]; stats: Stats; pending: Pending[]; tab: string; q: string; canCreate: boolean; error?: string | null; hideStats?: boolean; basePath?: string; title?: string; more?: string | null; followup?: number | null; hubMode?: boolean;
 }) {
-  const hasSide = canCreate || pending.length > 0;
+  const buatDiSini = canCreate && !hubMode; // di dashboard cabang, tombol ini sudah ada di menu
+  const hasSide = buatDiSini || pending.length > 0;
   return (
     <main className="wrap stack home">
       {!hubMode && <h1 className="sr-only">Beranda petugas</h1>}
@@ -45,8 +46,8 @@ export default function StaffHome({ rows, stats, pending, tab, q, canCreate, err
 
       <div className={`homegrid ${hasSide ? "" : "solo"}`}>
         {hasSide && <aside className="sidecol stack">
-          {canCreate && <Link href="/app/baru" className="btn shine"><Icon name="plus" size={22} strokeWidth={2.8} /> Buat resi baru</Link>}
-          {canCreate && <Link href="/app/jemput" className="btn ghost"><Icon name="truck" size={20} /> Pesanan jemput dari website</Link>}
+          {buatDiSini && <Link href="/app/baru" className="btn shine"><Icon name="plus" size={22} strokeWidth={2.8} /> Buat resi baru</Link>}
+          {buatDiSini && <Link href="/app/jemput" className="btn ghost"><Icon name="truck" size={20} /> Pesanan jemput dari website</Link>}
           {pending.length > 0 && (
             <div className="banner">
               <b style={{ display: "flex", gap: 8, alignItems: "center" }}><Icon name="swap" size={20} /> {pending.length} barang menunggu Anda terima</b>

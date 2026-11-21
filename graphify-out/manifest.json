@@ -300,9 +300,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/manifest/[id]/page.tsx": {
-    "mtime": 1794984123.9951718,
-    "seen": 1795104170.4403863,
-    "ast_hash": "bd893e107c5a22ce48466c46a3259fd7",
+    "mtime": 1795218667.069053,
+    "seen": 1795219265.1218858,
+    "ast_hash": "30e1877c3af77b0384f969f807382ba4",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/manifest/actions.ts": {
@@ -378,9 +378,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/resi/[id]/page.tsx": {
-    "mtime": 1794992188.6145782,
-    "seen": 1795104170.4404,
-    "ast_hash": "6493bc37489da333fcd40416e6751170",
+    "mtime": 1795218669.7328124,
+    "seen": 1795219265.121903,
+    "ast_hash": "bf50ae2c063795064b1cfe18cd720acc",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/ringkasan/page.tsx": {
@@ -750,9 +750,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/StaffHome.tsx": {
-    "mtime": 1795187903.964814,
-    "seen": 1795188089.0582962,
-    "ast_hash": "a143dbb2a94933616748120f6989cdcf",
+    "mtime": 1795218552.0004158,
+    "seen": 1795219265.1219957,
+    "ast_hash": "c9beb12713203e2af99d2309d4973837",
     "semantic_hash": ""
   },
   "apps/web/src/components/StaffShell.tsx": {
@@ -924,9 +924,9 @@
     "semantic_hash": ""
   },
   "e2e/flow.cjs": {
-    "mtime": 1795214677.2834074,
-    "seen": 1795214702.9769776,
-    "ast_hash": "698572961284126d3b76eafc1bfa1f41",
+    "mtime": 1795218679.0376935,
+    "seen": 1795219265.1220784,
+    "ast_hash": "6d905a6158e3bc9b41df59f3b87ff2b2",
     "semantic_hash": ""
   },
   "e2e/kamera.cjs": {
@@ -1920,15 +1920,15 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/HubDashboard.tsx": {
-    "mtime": 1795188041.1925416,
-    "seen": 1795188089.057603,
-    "ast_hash": "248bb750791010f96f756e4d3f0f11fd",
+    "mtime": 1795218552.0002441,
+    "seen": 1795219265.121952,
+    "ast_hash": "efdd941be34438554fc840fd52b76550",
     "semantic_hash": ""
   },
   "apps/web/src/components/PeranDashboard.tsx": {
-    "mtime": 1795188475.3465252,
-    "seen": 1795188527.045454,
-    "ast_hash": "ab033e403c8d7ecac9fa2d7a28d84768",
+    "mtime": 1795218555.52184,
+    "seen": 1795219265.1219845,
+    "ast_hash": "8ea95d0db0b9822622ee5555d9463633",
     "semantic_hash": ""
   },
   "apps/web/src/components/TargetForm.tsx": {
@@ -1962,9 +1962,9 @@
     "semantic_hash": ""
   },
   "docs/FITUR-PER-PERAN.md": {
-    "mtime": 1795188540.7283401,
-    "seen": 1795188552.050589,
-    "ast_hash": "fd8708ab1be699b40581f4f90fec501c",
+    "mtime": 1795218789.3014586,
+    "seen": 1795219265.1221242,
+    "ast_hash": "d6e329cb2432b94d8e27ca5449aa5bf6",
     "semantic_hash": ""
   },
   "apps/web/vercel.json": {
@@ -1989,6 +1989,18 @@
     "mtime": 1795214622.9796016,
     "seen": 1795214702.9768264,
     "ast_hash": "42e281866fea9e40c65c996896ee01df",
+    "semantic_hash": ""
+  },
+  "docs/cara-kerja.html": {
+    "mtime": 1795218783.1251066,
+    "seen": 1795219265.1221292,
+    "ast_hash": "c0ff7b409d658e9527cfbb363d4f5c8d",
+    "semantic_hash": ""
+  },
+  "docs/CARA-KERJA-APLIKASI.pdf": {
+    "mtime": 1795218783.498214,
+    "seen": 1795219265.1221302,
+    "ast_hash": "3b10f465a9cae661583e6560630fb094",
     "semantic_hash": ""
   },
   "package-lock.json": {

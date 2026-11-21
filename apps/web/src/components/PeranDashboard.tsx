@@ -89,7 +89,7 @@ export function KasirDash({ d }: { d: KasirData }) {
   return (
     <section className="hub stack wrap" aria-label="Dashboard kasir">
       <h1 className="sr-only">Dashboard kasir {d.cabang}</h1>
-      <nav className="hubquick" aria-label="Aksi cepat"><Link href="/app/baru"><Icon name="plus" size={22} /><span>Resi baru</span></Link><Link href="/app/pindai"><Icon name="scan" size={22} /><span>Pindai</span></Link><Link href="/app/tagihan"><Icon name="file" size={22} /><span>Tagihan</span></Link><Link href="/app/jemput"><Icon name="truck" size={22} /><span>Jemput{d.jemputBaru ? ` (${d.jemputBaru})` : ""}</span></Link></nav>
+      <nav className="hubquick two" aria-label="Aksi cepat"><Link href="/app/jemput"><Icon name="truck" size={22} /><span>Jemput{d.jemputBaru ? ` (${d.jemputBaru})` : ""}</span></Link><Link href="/app/serah"><Icon name="swap" size={22} /><span>Serah terima</span></Link></nav>
       <div className="hubgrid">
         <Kartu ikon="cash" judul="Kas hari ini" span>
           <div className="shiftnums"><Angka n={d.hariIni.resi} l="resi dibuat" /><Angka n={rupiah(d.hariIni.omzet).replace("Rp", "")} l="tagihan Rp" /><Angka n={rupiah(d.hariIni.tunai).replace("Rp", "")} l="tunai Rp" /><Angka n={rupiah(d.hariIni.transfer).replace("Rp", "")} l="transfer Rp" /></div>
@@ -126,7 +126,6 @@ export function KurirDash({ d }: { d: KurirData }) {
   return (
     <section className="hub stack wrap" aria-label="Dashboard kurir">
       <h1 className="sr-only">Dashboard kurir</h1>
-      <nav className="hubquick" aria-label="Aksi cepat"><Link href="/app/pindai"><Icon name="scan" size={22} /><span>Pindai</span></Link><Link href="/app/serah"><Icon name="swap" size={22} /><span>Serah terima{d.menunggu ? ` (${d.menunggu})` : ""}</span></Link><Link href="/app/cari"><Icon name="search" size={22} /><span>Cari</span></Link><Link href="/app/akun"><Icon name="user" size={22} /><span>Akun</span></Link></nav>
       <div className="hubgrid">
         <Kartu ikon="truck" judul="Barang yang saya bawa" span flag={d.dibawa.length > 0} aksi={<span className="pill">{d.dibawa.length}</span>}>
           {d.dibawa.length === 0 ? <Kosong t="Belum ada barang di tangan Anda." /> : (
@@ -153,7 +152,6 @@ export function GudangDash({ d }: { d: GudangData }) {
   return (
     <section className="hub stack wrap" aria-label="Dashboard staf gudang">
       <h1 className="sr-only">Dashboard staf gudang {d.cabang}</h1>
-      <nav className="hubquick" aria-label="Aksi cepat"><Link href="/app/pindai"><Icon name="scan" size={22} /><span>Pindai</span></Link><Link href="/app/manifest"><Icon name="layers" size={22} /><span>Manifest</span></Link><Link href="/app/serah"><Icon name="swap" size={22} /><span>Serah terima{d.menunggu ? ` (${d.menunggu})` : ""}</span></Link><Link href="/app/tindak-lanjut"><Icon name="chat" size={22} /><span>Perlu dihubungi</span></Link></nav>
       <div className="hubgrid">
         <Kartu ikon="layers" judul="Isi gudang" span><div className="shiftnums"><Angka n={d.diGudang} l="di gudang" /><Angka n={d.antreanTimbang.length} l="menunggu timbang" /><Angka n={d.antreanMuat} l="siap dimuat" /><Angka n={d.menungguBongkar} l="menunggu bongkar" /></div></Kartu>
         <Kartu ikon="box" judul="Antrean timbang" span flag={d.antreanTimbang.length > 0} aksi={<span className="pill">{d.antreanTimbang.length}</span>}>
@@ -177,7 +175,6 @@ export function SopirDash({ d }: { d: SopirData }) {
   return (
     <section className="hub stack wrap" aria-label="Dashboard sopir">
       <h1 className="sr-only">Dashboard sopir kontainer</h1>
-      <nav className="hubquick" aria-label="Aksi cepat"><Link href="/app/manifest"><Icon name="layers" size={22} /><span>Manifest</span></Link><Link href="/app/pindai"><Icon name="scan" size={22} /><span>Pindai</span></Link><Link href="/app/akun"><Icon name="user" size={22} /><span>Akun</span></Link><Link href="/app/cari"><Icon name="search" size={22} /><span>Cari</span></Link></nav>
       <div className="hubgrid">
         <Kartu ikon="truck" judul="Muatan saya" span flag={d.aktif.length > 0} aksi={<span className="pill">{d.aktif.length}</span>}>
           {d.aktif.length === 0 ? <Kosong t="Tidak ada muatan aktif." /> : <ul className="rows">{d.aktif.map((m) => <li key={m.id}><Link href={`/app/manifest/${m.id}`}><b>{m.code}{m.menunggu ? " · menunggu Anda terima" : ""}</b><small>{m.asal} → {m.tujuan} · {STM[m.status] ?? m.status} · {m.resi} resi{m.kontainer ? ` · ${m.kontainer}` : ""}{m.segel ? ` · segel ${m.segel}` : ""}</small><small>Berangkat {wkt(m.berangkat)} · tiba {wkt(m.eta)}</small></Link></li>)}</ul>}

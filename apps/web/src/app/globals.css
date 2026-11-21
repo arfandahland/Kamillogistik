@@ -643,7 +643,7 @@ details.admitem .admbody { padding: 4px 18px 18px; border-top: 1px dashed var(--
 /* tombol Pindai menonjol di tengah bilah menu bawah */
 .tabbar .tab.featured { position: relative; } .tabbar .tab.featured .ti { width: 54px; height: 54px; margin-top: -26px; border-radius: 50%; display: grid; place-items: center; color: #fff; background: linear-gradient(145deg, #2fd1a8, #14806a); box-shadow: 0 10px 22px rgba(20, 128, 106, .45), 0 0 0 5px var(--card, #fff); }
 .tabbar .tab.featured.on .ti { background: linear-gradient(145deg, #ffb347, #f28c28); box-shadow: 0 10px 22px rgba(242, 140, 40, .45), 0 0 0 5px var(--card, #fff); }
-.resiact { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+.resiact { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 14px; }
 .studio { grid-template-columns: minmax(0, 1fr); } .studio > * { min-width: 0; } .previewwrap { min-width: 0; overflow: hidden; }
 
 /* ----- manifest ----- */
@@ -1264,3 +1264,5 @@ a.card:active, .tile:active { transform: scale(.985); }
 /* angka besar pada kartu ringkas tidak boleh meluber di layar sempit */
 .stat b { font-size: clamp(19px, 5.8vw, 30px); overflow-wrap: anywhere; }
 .stats > * { min-width: 0; }
+
+.hubquick.three { grid-template-columns: repeat(3, 1fr); } .hubquick.two { grid-template-columns: repeat(2, 1fr); }

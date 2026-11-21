@@ -1033,7 +1033,8 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     const kepala = await p.locator(".hubhead").innerText();
     ok("Y3 dashboard terkunci ke Gudang Jakarta dan menampilkan status perhatian", /Gudang Jakarta/.test(kepala) && /(terkendali|perlu perhatian)/.test(kepala), kepala.replace(/\n/g, " "));
     const aksi = await p.$$eval(".hubquick a", (as) => as.map((a) => a.getAttribute("href")));
-    ok("Y4 aksi cepat: resi baru, pindai, manifest baru, serah terima", ["/app/baru", "/app/pindai", "/app/manifest/baru", "/app/serah"].every((h) => aksi.includes(h)), aksi.join(","));
+    ok("Y4 aksi cepat tanpa tombol ganda: resi baru, manifest baru, serah terima (Pindai sudah di menu bawah)", ["/app/baru", "/app/manifest/baru", "/app/serah"].every((h) => aksi.includes(h)) && !aksi.includes("/app/pindai"), aksi.join(","));
+    ok("AD1 dashboard cabang tidak punya tombol Buat resi baru ganda di isi halaman", (await p.locator("a[href='/app/baru']:not(.tabbar a):not(.sidebar a)").count()) === 1);
     const wa = await p.locator(".shift a.btn").getAttribute("href"); const pesan = decodeURIComponent(wa || "");
     ok("Y5 laporan akhir shift: pesan WhatsApp berisi ringkasan cabang dan angka hari ini", /Ringkasan shift Gudang Jakarta/.test(pesan) && /Resi baru: \d+/.test(pesan) && /Piutang cabang: Rp/.test(pesan), pesan.slice(0, 80));
     await noOverflow(p, "Dashboard Manajer Gudang (HP)");

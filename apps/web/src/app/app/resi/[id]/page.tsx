@@ -60,8 +60,6 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
         <KodeResi kode={s.resiNo} kota={{ [s.origin.code]: s.origin.city, [s.dest.code]: s.dest.city }} />
         <ResiStepper status={s.status} masuk={s.pickupType} mode={s.mode} />
         <dl className="kv">
-          <dt>Pengirim</dt><dd>{s.senderName}{s.senderPhone ? ` · ${displayPhone(s.senderPhone)}` : ""}</dd>
-          <dt>Penerima</dt><dd>{s.receiverName}{s.receiverPhone ? ` · ${displayPhone(s.receiverPhone)}` : ""}</dd>
           {s.receiverAddress && (<><dt>Alamat</dt><dd>{s.receiverAddress}</dd></>)}
           {s.pickupType === "PICKUP" && s.pickupAddress && (<><dt>Alamat jemput</dt><dd>{s.pickupAddress}</dd></>)}
           <dt>Barang dipegang</dt><dd>{s.iAmHolder ? "Anda" : s.holder?.name ?? (s.pickupType === "PICKUP" ? "Belum ada (menunggu dijemput)" : "Belum ada (menunggu diantar pelanggan)")}</dd>
@@ -81,7 +79,6 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
         </div>
         <div className="resiact">
           <Link className="btn" href={`/app/resi/${s.id}/cetak`}><Icon name="print" size={20} /> Cetak label</Link>
-          <Link className="btn ghost" href="/app/pindai"><Icon name="scan" size={20} /> Pindai</Link>
         </div>
       </div>
 
@@ -238,7 +235,6 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
         </ol>
       </div>
 
-      <Link href="/app" className="btn ghost">← Kembali ke daftar</Link>
     </main>
   );
 }

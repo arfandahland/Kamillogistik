@@ -1,0 +1,176 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><title>Cara Kerja Aplikasi Kamil Logistik Express</title>
+<style>
+@page{size:A4;margin:16mm 14mm}
+*{box-sizing:border-box}
+body{font:11pt/1.5 "Helvetica Neue",Arial,sans-serif;color:#0c2924;margin:0}
+h1{font-size:25pt;margin:0 0 4pt;color:#072f29}h2{font-size:15pt;color:#0b4d42;border-bottom:2.5px solid #f28c28;padding-bottom:3pt;margin:20pt 0 8pt;break-after:avoid}
+h3{font-size:12pt;color:#0f6a5b;margin:12pt 0 4pt;break-after:avoid}p{margin:4pt 0 6pt}
+.cover{background:linear-gradient(160deg,#04231e,#0f6a5b);color:#fff;border-radius:14pt;padding:34pt 28pt;margin-bottom:16pt}
+.cover h1{color:#fff;font-size:28pt}.cover p{color:#c8f8f0;font-size:12pt}
+.tag{display:inline-block;background:#f28c28;color:#2b1600;border-radius:99pt;padding:2pt 10pt;font-weight:700;font-size:9.5pt;margin-bottom:10pt}
+table{border-collapse:collapse;width:100%;margin:6pt 0;font-size:9.8pt;break-inside:auto}th{background:#0b4d42;color:#fff;text-align:left;padding:5pt 7pt}td{padding:5pt 7pt;border-bottom:1px solid #d5e8e3;vertical-align:top}tr{break-inside:avoid}tr:nth-child(even) td{background:#f2f9f7}
+.flow{display:flex;flex-wrap:nowrap;gap:5pt;align-items:stretch;margin:8pt 0;break-inside:avoid}
+.st{flex:1 1 0;min-width:0;background:#e3f6f1;border:1.5px solid #2f9e8a;border-radius:9pt;padding:6pt 6pt;font-size:9pt;text-align:center}
+.st b{display:block;color:#0b4d42;font-size:9.6pt}.st small{color:#51706a;font-size:8pt}
+.st.o{background:#fff3e0;border-color:#f28c28}.st.g{background:#d6f5df;border-color:#2e9e57}
+.ar{align-self:center;color:#f28c28;font-weight:900;flex:none}
+.box{border-left:4px solid #f28c28;background:#fff8ee;padding:7pt 10pt;border-radius:0 8pt 8pt 0;margin:8pt 0;break-inside:avoid}
+.ok{border-left-color:#2f9e8a;background:#eaf8f4}
+ul,ol{margin:4pt 0 6pt 16pt;padding:0}li{margin:2pt 0}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:10pt}.card{border:1px solid #d5e8e3;border-radius:10pt;padding:8pt 10pt;break-inside:avoid}.card h3{margin-top:0}
+.pb{break-before:page}
+small,.muted{color:#51706a}
+.foot{margin-top:18pt;font-size:9pt;color:#51706a;border-top:1px solid #d5e8e3;padding-top:6pt}
+</style></head><body>
+
+<div class="cover"><span class="tag">Laporan cara kerja</span>
+<h1>Kamil Logistik Express</h1>
+<p>Bagaimana aplikasi ini bekerja dari pelanggan memesan sampai barang diterima dan dibayar: siapa mengerjakan apa, tombol apa yang ditekan, dan apa yang dijaga sistem.</p>
+<p style="margin-top:14pt;font-size:10pt">Disusun dari kode dan basis data yang berjalan (bukan dari rencana). Bahasa tampilan aplikasi: Indonesia.</p></div>
+
+<h2>1. Gambaran singkat</h2>
+<p>Aplikasi terdiri dari <b>dua bagian</b>:</p>
+<div class="cols">
+<div class="card"><h3>A. Website pelanggan (tanpa login)</h3><ul>
+<li>Beranda, layanan, hitung ongkir, lacak resi</li>
+<li>Pesan jemput online, lapor klaim atau keluhan</li>
+<li>Panduan, jadwal, tentang kami, karir, kemitraan</li>
+<li>Tautan rahasia: invoice dan portal pelanggan korporat</li>
+</ul></div>
+<div class="card"><h3>B. Aplikasi petugas (wajib login, alamat <i>/masuk</i>)</h3><ul>
+<li>Dipakai di HP oleh 8 peran, tiap peran hanya melihat tugasnya</li>
+<li>Membuat resi, memindai barcode, serah terima, manifest, tagihan</li>
+<li>Pemilik memantau seluruh bisnis dan mengatur data</li>
+</ul></div></div>
+<div class="box ok"><b>Prinsip yang berlaku di seluruh aplikasi:</b> (1) tanggung jawab atas barang hanya pindah setelah penerima menekan tombol terima; (2) tagihan dihitung sistem dan tidak bisa diubah petugas; (3) pembayaran hanya transfer atau tunai; (4) WhatsApp dikirim manual oleh petugas (sistem hanya mengisikan pesannya); (5) setiap perubahan penting tercatat permanen.</div>
+
+<h2>2. Siapa saja pengguna</h2>
+<table><tr><th style="width:22%">Peran</th><th>Tugas utama</th><th style="width:26%">Menu bawah di HP</th></tr>
+<tr><td><b>Pemilik / Admin pusat</b></td><td>Memantau bisnis, keuangan, mitra, petugas, tarif, laporan, klaim. Dashboard hanya memantau, bukan menjalankan operasional harian.</td><td>Pantauan · Resi · Keuangan · Kelola · Akun</td></tr>
+<tr><td><b>Kepala gudang</b> (Manajer)</td><td>Memimpin satu gudang: buat resi, manifest, serah terima, tagihan cabang, pesanan jemput, tindak lanjut.</td><td>Beranda · Pindai · Manifest · Tagihan · Akun</td></tr>
+<tr><td><b>Kasir</b> (mitra)</td><td>Gerai mitra: buat resi, melihat tagihan dan mencatat pembayaran, setoran kas.</td><td>Beranda · Resi baru · Pindai · Tagihan · Akun</td></tr>
+<tr><td><b>Kurir</b></td><td>Menjemput dan mengantar barang, serah terima, bukti terima.</td><td>Beranda · Pindai · Serah terima · Akun</td></tr>
+<tr><td><b>Staf gudang</b></td><td>Menerima, menimbang, memuat dan membongkar barang.</td><td>Beranda · Pindai · Manifest · Serah terima · Akun</td></tr>
+<tr><td><b>Sopir kontainer</b></td><td>Membawa manifest antar kota: terima, berangkat, tiba, serahkan.</td><td>Beranda · Pindai · Manifest · Serah terima · Akun</td></tr>
+<tr><td><b>HRD</b></td><td>Lamaran kerja dan lowongan.</td><td>Dashboard · Lamaran · Akun</td></tr>
+<tr><td><b>Admin konten</b></td><td>Foto dan testimoni slider beranda website.</td><td>Konten · Akun</td></tr></table>
+<p class="muted">Akun dibuat oleh Pemilik (menu Petugas atau Mitra dan cabang). Masuk memakai email dan kata sandi. Kata sandi bisa diganti sendiri lewat menu Akun. Petugas yang dinonaktifkan langsung tidak bisa masuk. Di komputer, menu samping memuat semua menu; di HP menu bawah memuat yang utama saja.</p>
+
+<h2 class="pb">3. Jalur pelanggan di website</h2>
+<div class="flow">
+<div class="st"><b>Hitung ongkir</b><small>/ongkir, tarif dari data rute</small></div><span class="ar">→</span>
+<div class="st"><b>Pesan jemput</b><small>/jemput, tanpa login, maks 3 pesanan per nomor WhatsApp per hari</small></div><span class="ar">→</span>
+<div class="st o"><b>Petugas menghubungi</b><small>lewat WhatsApp, membuat resi</small></div><span class="ar">→</span>
+<div class="st"><b>Lacak resi</b><small>/lacak, cukup kode resi</small></div><span class="ar">→</span>
+<div class="st g"><b>Terima + nilai</b><small>bintang untuk layanan</small></div></div>
+<ul><li><b>Lapor masalah:</b> /klaim atau tombol di halaman lacak. Setelah kirim, pelanggan diarahkan ke WhatsApp after sales dengan kode laporan. Hanya Pemilik yang melihat daftarnya.</li>
+<li><b>Invoice:</b> pelanggan membuka tautan rahasia (/invoice/…) dari WhatsApp tanpa login, melihat rincian dan rekening.</li>
+<li><b>Pelanggan korporat:</b> punya portal tautan rahasia (/portal/…), tempo bayar, dan batas kredit yang diatur Pemilik.</li>
+<li><b>Calon mitra dan pelamar kerja:</b> mengisi formulir di /mitra dan /karir; masuk ke Pemilik dan HRD.</li></ul>
+
+<h2>4. Alur satu resi (inti aplikasi)</h2>
+<p>Resi adalah satu pengiriman. Nomornya bisa dibaca manusia, contoh <b>KLX-MKS-JKT-LJ-261118-1432-0007-PK</b>:</p>
+<table><tr><td width="22%">KLX</td><td>merek Kamil Logistik Express</td></tr>
+<tr><td>MKS · JKT</td><td>kota asal · kota tujuan</td></tr>
+<tr><td>L / U / D</td><td>moda: Laut, Udara, Darat</td></tr>
+<tr><td>J / A</td><td>J = dijemput kurir, A = diantar sendiri ke gudang</td></tr>
+<tr><td>261118 · 1432</td><td>tanggal 18-11-2026 · jam 14.32 WITA</td></tr>
+<tr><td>0007 · PK</td><td>urutan hari itu dari kota asal · dua huruf pemeriksa (menangkap salah ketik)</td></tr></table>
+<p>Tiap barang dalam resi memakai kode yang sama ditambah -01, -02, dan seterusnya untuk label dan pemindaian.</p>
+<h3>Sepuluh tahap resi</h3>
+<div class="flow">
+<div class="st"><b>1 Order baru</b><small>kasir / kepala gudang</small></div><span class="ar">→</span>
+<div class="st"><b>2 Sudah dijemput</b><small>kurir</small></div><span class="ar">→</span>
+<div class="st"><b>3 Di gudang asal</b><small>staf gudang</small></div><span class="ar">→</span>
+<div class="st o"><b>4 Sudah ditimbang</b><small>tagihan terbit otomatis</small></div><span class="ar">→</span>
+<div class="st"><b>5 Sudah dimuat</b><small>lewat manifest</small></div></div>
+<div class="flow">
+<div class="st"><b>6 Dalam perjalanan</b><small>pelayaran / penerbangan / darat, sopir</small></div><span class="ar">→</span>
+<div class="st"><b>7 Tiba di tujuan</b><small>pelabuhan / bandara / kota</small></div><span class="ar">→</span>
+<div class="st"><b>8 Di gudang tujuan</b><small>dibongkar, dihitung</small></div><span class="ar">→</span>
+<div class="st"><b>9 Sedang diantar</b><small>kurir</small></div><span class="ar">→</span>
+<div class="st g"><b>10 Sudah diterima</b><small>foto + tanda tangan + nama</small></div></div>
+<ul><li><b>Diantar sendiri oleh pelanggan</b> (kode A): tahap 2 dilewati; dari Order baru langsung Di gudang asal.</li>
+<li>Status hanya maju satu langkah, tidak boleh loncat atau mundur, dan hanya oleh peran yang berhak (dijaga sistem dan basis data).</li>
+<li>Resi bisa juga berstatus Dibatalkan atau Perlu ditangani (bermasalah).</li>
+<li>Tahap 5 sampai 8 dicatat <b>lewat manifest</b>, bukan satu per satu, bila resi sudah masuk manifest.</li></ul>
+<h3>Aturan penjaga di tiap tahap</h3>
+<table><tr><th style="width:26%">Tahap</th><th>Syarat yang harus dipenuhi</th></tr>
+<tr><td>Sudah dijemput</td><td>Kurir mengisi <b>pemeriksaan dan foto barang</b> dulu (isi, kemasan, kondisi).</td></tr>
+<tr><td>Di gudang asal</td><td>Petugas gudang mengisi pemeriksaan dan foto saat terima.</td></tr>
+<tr><td>Sudah ditimbang</td><td>Berat dan ukuran wajib diisi; sistem menghitung tagihan. Berat tertagih = yang lebih besar antara berat asli dan berat volume (P×L×T cm ÷ 4000 untuk laut dan darat, ÷ 6000 untuk udara).</td></tr>
+<tr><td>Sedang diantar</td><td>Tidak boleh bila masih ada selisih jumlah barang yang belum selesai.</td></tr>
+<tr><td>Sudah diterima</td><td>Bukti terima lengkap: <b>foto, tanda tangan, dan nama penerima</b>.</td></tr></table>
+
+<h2>5. Serah terima (siapa yang bertanggung jawab)</h2>
+<div class="flow">
+<div class="st"><b>Pemegang barang</b><small>menekan "Serahkan barang", memilih penerima</small></div><span class="ar">→</span>
+<div class="st o"><b>Menunggu diterima</b><small>tanggung jawab belum pindah; muncul di menu Serah terima penerima</small></div><span class="ar">→</span>
+<div class="st g"><b>Penerima menekan "Ya, barang sudah saya terima"</b><small>baru saat itu pemegang berpindah</small></div></div>
+<p>Hanya pemegang saat ini yang bisa menyerahkan, hanya penerima yang dituju yang bisa menerima, dan pemberi tidak boleh sama dengan penerima. Jika serah terima belum diterima terlalu lama, muncul peringatan di dashboard kepala gudang (lebih dari 4 jam) dan Pemilik (lebih dari 8 jam).</p>
+
+<h2>6. Manifest (muatan antar kota)</h2>
+<p>Satu manifest = satu muatan (kontainer, bagasi pesawat, atau truk) dari satu kota ke kota lain. Kodenya contoh <b>MNF-MKS-JKT-L-261118-1432-01-X</b>. Serah terima manifest memindahkan tanggung jawab <b>semua resi di dalamnya sekaligus</b>.</p>
+<div class="flow">
+<div class="st"><b>Terbuka</b><small>gudang asal menambah barang; hanya resi yang sudah ditimbang dan tujuannya sama</small></div><span class="ar">→</span>
+<div class="st"><b>Disegel</b><small>nomor segel dicatat; barang tidak bisa ditambah lagi</small></div><span class="ar">→</span>
+<div class="st"><b>Diserahkan ke sopir</b><small>sopir menekan terima</small></div><span class="ar">→</span>
+<div class="st o"><b>Di perjalanan</b><small>sopir mengisi kapal / penerbangan / plat truk dan perkiraan tiba</small></div></div>
+<div class="flow">
+<div class="st"><b>Sudah tiba</b><small>semua resi ikut tercatat tiba</small></div><span class="ar">→</span>
+<div class="st"><b>Diserahkan ke gudang tujuan</b><small>petugas gudang kota tujuan menerima</small></div><span class="ar">→</span>
+<div class="st g"><b>Dibongkar</b><small>tiap barang dipindai dan dicocokkan jumlahnya</small></div></div>
+<div class="box"><b>Bila jumlah tidak cocok:</b> sistem membuat <b>kasus selisih</b>. Resi terkait tidak boleh diantar sampai selisihnya diselesaikan (ditandai ditemukan atau tidak ditemukan) di halaman manifest oleh petugas yang berwenang.</div>
+
+<h2>7. Tagihan dan pembayaran</h2>
+<ol><li>Tagihan terbit otomatis saat barang ditimbang (nomor contoh INV-2611-000002). Angkanya dari tarif di data rute; petugas tidak bisa mengubahnya.</li>
+<li>Jatuh tempo: hari ini untuk pelanggan umum; mengikuti jumlah hari tempo untuk pelanggan korporat.</li>
+<li>Dari halaman tagihan: cetak atau simpan PDF, salin tautan rahasia, atau kirim ke pelanggan lewat WhatsApp.</li>
+<li><b>Mencatat pembayaran</b> hanya oleh Pemilik, kepala gudang, atau kasir, setelah uang benar-benar masuk. Cara bayar: <b>transfer</b> (wajib isi nomor referensi) atau <b>tunai</b>. Boleh dicicil; status tagihan: belum dibayar, dibayar sebagian, lunas, atau dibatalkan.</li>
+<li>Tiap pembayaran otomatis masuk pembukuan berpasangan (kas atau bank dan piutang) yang selalu seimbang.</li>
+<li>Komisi mitra dihitung dari ongkir resi yang dibuat di tiap mitra, dikali persentase komisi yang diatur Pemilik; bagian yang sudah lunas ditampilkan terpisah.</li></ol>
+
+<h2>8. Tindak lanjut pelanggan</h2>
+<p>Menu <b>Perlu dihubungi</b> mengumpulkan pelanggan yang menunggu kabar. Tiap baris punya tombol <b>Chat</b> (WhatsApp, pesan sudah terisi dan boleh diubah) dan <b>Telepon</b>.</p>
+<table><tr><th style="width:34%">Jenis</th><th>Artinya</th></tr>
+<tr><td>Belum dijemput</td><td>Hubungi pengirim, atur jam jemput</td></tr>
+<tr><td>Belum diantar ke gudang</td><td>Ingatkan pengirim membawa barang</td></tr>
+<tr><td>Di gudang tujuan, belum diantar</td><td>Hubungi penerima, atur waktu antar</td></tr>
+<tr><td>Sedang diantar terlalu lama</td><td>Pastikan penerima siap menerima</td></tr>
+<tr><td>Barang bermasalah</td><td>Kabari penerima soal kendalanya</td></tr>
+<tr><td>Tagihan jatuh tempo</td><td>Ingatkan pembayaran lewat transfer atau tunai</td></tr></table>
+<h3>Pesanan jemput dan klaim</h3>
+<ul><li><b>Pesanan jemput</b> (dari website): status Baru → Sudah dihubungi → Dijadwalkan → Selesai (atau Batal). Dilihat Pemilik, kepala gudang, dan kasir. Resinya tetap dibuat petugas seperti biasa.</li>
+<li><b>Klaim dan keluhan</b>: status Baru → Diproses → Menunggu bukti → Selesai (atau Ditolak), dengan catatan internal. Hanya Pemilik.</li></ul>
+
+<h2>9. Isi dashboard tiap peran</h2>
+<table><tr><th style="width:20%">Peran</th><th>Yang tampil di beranda</th></tr>
+<tr><td><b>Pemilik</b></td><td>Pusat peringatan (8 jenis masalah dengan tautan langsung) · proyeksi omzet dan target bulanan · perbandingan cabang dan mitra 30 hari · pelanggan teratas · kepuasan pelanggan · kesehatan sistem · kartu angka, grafik, pipeline, rute terlaris. Menu Kelola: laporan lengkap, ekspor CSV, peta pantauan, ringkasan harian, tarif dan rute, mitra, petugas, pelanggan korporat, pengaturan, catatan aktivitas, klaim, pesanan jemput, konten, lamaran.</td></tr>
+<tr><td><b>Kepala gudang</b></td><td>Papan gudang per tahap · target hari ini vs rata-rata 7 hari · barang mengendap · agenda manifest · selisih manifest · serah terima macet · piutang cabang · pesanan jemput baru · kinerja tim · laporan akhir shift ke WhatsApp Pemilik. Tombol cepat: Resi baru, Manifest baru, Serah terima.</td></tr>
+<tr><td><b>Kasir</b></td><td>Kas hari ini (resi, tagihan, tunai, transfer) dan tombol kirim setoran ke Pemilik · bulan ini dan komisi · piutang · resi perlu ditimbang · pelanggan langganan · kepuasan. Tombol cepat: Jemput, Serah terima.</td></tr>
+<tr><td><b>Kurir</b></td><td>Barang yang saya bawa (tombol peta dan chat penerima) · menunggu diterima · hitungan hari ini dan 7 hari · aktivitas terakhir.</td></tr>
+<tr><td><b>Staf gudang</b></td><td>Isi gudang per tahap · antrean timbang dengan umur tunggu · manifest sedang disiapkan · hasil kerja hari ini · selisih manifest.</td></tr>
+<tr><td><b>Sopir kontainer</b></td><td>Muatan saya (segel, kontainer, jadwal) · menunggu diterima · perjalanan selesai 30 hari · riwayat.</td></tr>
+<tr><td><b>HRD · Admin konten</b></td><td>Dashboard rekrutmen dan lamaran · ringkasan slider dan ulasan bagus bahan testimoni.</td></tr></table>
+<h3>Aturan tampilan yang dirapikan pada audit ini</h3>
+<ul><li>Tombol yang sama tidak lagi muncul dua kali: aksi yang sudah ada di menu bawah (Pindai, Resi baru untuk kasir, Tagihan, Serah terima, Manifest) tidak diulang sebagai tombol di isi halaman.</li>
+<li>Detail resi: data pengirim dan penerima hanya tampil sekali (satu kartu dengan tombol Chat dan Telepon); tombol Pindai dan Kembali ke daftar yang berulang dihapus.</li>
+<li>Angka rupiah tidak terpotong, kolom pencarian dan filter rapi di layar HP.</li></ul>
+
+<h2>10. Keamanan dan data</h2>
+<ul><li><b>Hak akses di basis data</b> (bukan hanya di tampilan): tiap petugas hanya membaca data cabangnya; fungsi basis data memeriksa peran sebelum bertindak.</li>
+<li>Foto dan CV <b>tidak pernah publik</b>; foto testimoni tayang hanya bila dikurasi Admin konten.</li>
+<li>Pembatas kiriman ganda dan pembatas percobaan masuk; header keamanan; unggahan diperiksa.</li>
+<li>Catatan aktivitas permanen (siapa mengubah apa, kapan) tidak bisa diubah atau dihapus.</li>
+<li>Waktu ditampilkan WITA.</li></ul>
+<h2>11. Teknologi dan hosting</h2>
+<table><tr><td width="24%"><b>Aplikasi</b></td><td>Next.js 15 (satu aplikasi untuk website dan aplikasi petugas), logika bisnis terpisah di paket <i>core</i> yang diuji otomatis.</td></tr>
+<tr><td><b>Database dan login</b></td><td>Supabase (PostgreSQL, Auth, Storage) wilayah Singapura.</td></tr>
+<tr><td><b>Hosting</b></td><td>Vercel, fungsi di Singapura; setiap perubahan yang di-push ke GitHub otomatis terpasang ke produksi.</td></tr>
+<tr><td><b>Pengujian</b></td><td>Uji SQL dan uji peramban end-to-end otomatis (403 pemeriksaan lolos pada audit terakhir).</td></tr></table>
+
+<h2>12. Yang sengaja tidak ada (keputusan saat ini)</h2>
+<ul><li>Dashboard Pemilik hanya memantau.</li><li>Pembayaran hanya transfer atau tunai (tanpa payment gateway).</li><li>WhatsApp dikirim manual oleh petugas (belum otomatis).</li><li>Tanpa mode offline; perlu sinyal internet.</li><li>Verifikasi dua langkah (2FA) ditunda.</li><li>Login Google belum diaktifkan (butuh pengaturan Google Cloud).</li></ul>
+<div class="box"><b>Catatan keterbatasan:</b> daftar fitur bertanda rencana di dokumen FITUR-PER-PERAN belum dibangun (misalnya jadwal shift, struk thermal, urutan rute otomatis, lokasi langsung). Paket gratis Supabase tidak menyediakan cadangan harian; sebelum operasi penuh disarankan naik ke paket berbayar.</div>
+<p class="foot">Kamil Logistik Express · Laporan cara kerja aplikasi · disusun dari kode sumber pada cabang pengembangan.</p>
+</body></html>
