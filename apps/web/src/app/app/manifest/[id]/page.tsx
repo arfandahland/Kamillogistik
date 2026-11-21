@@ -70,7 +70,7 @@ export default async function ManifestDetail({ params, searchParams }: { params:
           <dt>Dipegang</dt><dd>{m.iAmHolder ? "Anda" : m.holder ?? "-"}{m.pendingTo ? ` (menunggu ${m.pendingTo} menerima)` : ""}</dd>
           {m.note && (<><dt>Catatan</dt><dd>{m.note}</dd></>)}
         </dl>
-        <div className="resiact"><Link className="btn" href={`/app/manifest/${m.id}/cetak`}><Icon name="print" size={20} /> Cetak manifest</Link>{m.status !== "OPEN" && <Link className="btn ghost" href={`/app/manifest/${m.id}/surat-jalan`}><Icon name="file" size={20} /> Surat jalan pelabuhan</Link>}</div>
+        <div className="resiact"><Link className="btn" href={`/app/manifest/${m.id}/cetak`}><Icon name="print" size={20} /> Cetak manifest</Link>{m.status !== "OPEN" && <Link className="btn ghost" href={`/app/manifest/${m.id}/surat-jalan`}><Icon name="file" size={20} /> Surat jalan pelabuhan</Link>}<a className="btn ghost" href={`/app/manifest/${m.id}/unduh`}><Icon name="file" size={20} /> Unduh isi manifest (CSV)</a></div>
       </div>
 
       {m.pendingToMe && (

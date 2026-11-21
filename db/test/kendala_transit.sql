@@ -238,3 +238,17 @@ DO $$ BEGIN
 END $$;
 SELECT t.fails($$select public.manifest_voyage_set(current_setting('t.mv')::uuid, repeat('x', 50), NULL, NULL)$$, 'terlalu panjang');
 SELECT 'voyage OK' AS hasil;
+
+-- ================= EKSPOR MANIFEST (040) =================
+SELECT t.as_user('00000000-0000-0000-0000-000000000002');
+SELECT t.fails($$select public.manifest_export(current_setting('t.mv')::uuid)$$, 'izin');
+SELECT t.as_user('00000000-0000-0000-0000-00000000000c');
+DO $$ DECLARE x jsonb; BEGIN
+  x := public.manifest_export(current_setting('t.mv')::uuid);
+  ASSERT x->'manifest'->>'voyage' = 'VY-2611' AND x->'manifest'->>'code' LIKE 'MNF-JKT-%', 'ringkasan manifest dalam ekspor';
+  ASSERT jsonb_array_length(x->'baris') >= 1 AND (x->'baris'->0) ? 'pengirim' AND (x->'baris'->0) ? 'alamat' AND (x->'baris'->0) ? 'beratKg', 'baris barang lengkap';
+  ASSERT x::text NOT LIKE '%invoice%' AND x::text NOT LIKE '%total%', 'ekspor tidak memuat uang';
+END $$;
+SELECT t.as_user('00000000-0000-0000-0000-00000000000e');
+SELECT t.fails($$select public.manifest_export(current_setting('t.mv')::uuid)$$, 'bukan tugas');
+SELECT 'manifest_export OK' AS hasil;

@@ -32,7 +32,8 @@ export async function simpanMitra(fd: FormData) {
   // Daftarkan akun pertama untuk mitra/cabang baru sekalian (opsional)
   const email = str(fd, "akun_email");
   if (!id && email) {
-    const role = type === "MITRA" ? "MITRA_POS" : type === "HUB" ? "HUB_MANAGER" : null;
+    const pilih = str(fd, "akun_peran");
+    const role = ["MITRA_POS", "HUB_MANAGER", "WAREHOUSE"].includes(pilih) ? pilih : type === "MITRA" ? "MITRA_POS" : type === "HUB" ? "HUB_MANAGER" : null;
     if (role) {
       const r = await staffRpc("owner_create_staff", { p_email: email, p_name: str(fd, "akun_nama") || str(fd, "kontak") || str(fd, "nama"), p_role: role, p_branch: pid, p_password: str(fd, "akun_sandi") });
       if (r.error) go(base, "e", `Mitra tersimpan, tetapi akun belum dibuat: ${r.error}`);

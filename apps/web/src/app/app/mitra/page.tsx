@@ -24,7 +24,9 @@ function Form({ p, ok }: { p?: P; ok?: boolean }) {
       <label className="f">Catatan</label><input name="catatan" defaultValue={p?.notes ?? ""} />
       {!p && (
         <fieldset className="admbox"><legend>Buat akun untuk mitra ini (boleh dilewati)</legend>
-          <p className="hint">Untuk gerai mitra jadi akun Kasir; untuk gudang/cabang jadi akun Kepala gudang. Sandi sementara minimal 8 karakter, ada huruf dan angka.</p>
+          <p className="hint">Pilih peran akun. Resi dan label hanya dibuat oleh <b>Kasir</b>, jadi tiap gudang atau gerai yang menerima barang perlu satu akun Kasir. Sandi sementara minimal 8 karakter, ada huruf dan angka. Akun lain (kepala gudang, petugas gudang, kurir) bisa ditambah di menu Petugas.</p>
+          <label className="f" htmlFor="akun_peran">Peran akun</label>
+          <select id="akun_peran" name="akun_peran" defaultValue=""><option value="">Otomatis (gerai mitra: Kasir, gudang: Kepala gudang)</option><option value="MITRA_POS">Kasir (membuat resi dan invoice)</option><option value="HUB_MANAGER">Kepala gudang</option><option value="WAREHOUSE">Petugas gudang</option></select>
           <input name="akun_nama" placeholder="Nama pemegang akun" /><input name="akun_email" type="email" placeholder="Email untuk masuk" style={{ marginTop: 8 }} />
           <input name="akun_sandi" placeholder="Sandi sementara" style={{ marginTop: 8 }} autoComplete="off" />
         </fieldset>

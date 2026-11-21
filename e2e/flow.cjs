@@ -1349,6 +1349,22 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("AI9 label resi memuat kecamatan dan kota tujuan", /Panakkukang/.test(await kw.page.locator("main").innerText()));
     await noOverflow(kw.page, "Label resi dengan wilayah (HP)"); await kw.ctx.close();
 
+    // Unduh isi manifest lengkap (CSV) dan pilihan peran akun saat Pemilik mendaftarkan mitra
+    const mgx = await login(browser, "manajer@uji.id", PASS, { width: 390, height: 844 });
+    const unduh = await mgx.page.request.get(`${BASE}/app/manifest/${mj}/unduh`); const ut = await unduh.text();
+    ok("AI10 CSV manifest lengkap: ringkasan, voyage, pelabuhan, dan kolom pengirim, penerima, alamat, wilayah, berat, ukuran", unduh.status() === 200 && /text\/csv/.test(unduh.headers()["content-type"] || "") && /VY-2611-UJI/.test(ut) && /Pelabuhan Soekarno-Hatta Makassar/.test(ut) && /Alamat penerima/.test(ut) && /Kecamatan/.test(ut) && /Volume \(m3\)/.test(ut), String(unduh.status()));
+    ok("AI11 CSV manifest tidak memuat data uang", !/Rp\d|invoice|INV-/i.test(ut));
+    await mgx.page.goto(`${BASE}/app/manifest/${mj}`, { waitUntil: "networkidle" });
+    ok("AI12 halaman manifest menyediakan tombol unduh isi manifest", (await mgx.page.getByRole("link", { name: /Unduh isi manifest/ }).count()) === 1);
+    const kasirX = await login(browser, "kasir@uji.id", PASS, { width: 390, height: 844 });
+    const bocorX = await kasirX.page.request.get(`${BASE}/app/manifest/${mj}/unduh`);
+    ok("AI13 kasir tidak bisa mengunduh isi manifest", bocorX.status() === 403);
+    await kasirX.ctx.close(); await mgx.ctx.close();
+    const ow2 = await login(browser, "owner@uji.id", "Pemilik2026x", { width: 390, height: 844 });
+    await ow2.page.goto(`${BASE}/app/mitra`, { waitUntil: "networkidle" });
+    ok("AI14 Pemilik memilih peran akun saat mendaftarkan mitra (Kasir, Kepala gudang, Petugas gudang)", (await ow2.page.locator("#akun_peran option").allTextContents()).join("|").includes("Kasir") && (await ow2.page.locator("#akun_peran option").count()) === 4);
+    await ow2.ctx.close();
+
     // Pre-booking antar sendiri dari website
     const pb = await (await browser.newContext({ viewport: { width: 390, height: 844 } })).newPage();
     await pb.goto(`${BASE}/jemput`, { waitUntil: "networkidle" });

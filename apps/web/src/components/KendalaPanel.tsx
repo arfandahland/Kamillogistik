@@ -2,24 +2,20 @@ import { staffRpc } from "@/lib/supabase/server";
 import { tanggalWaktu } from "@/lib/brand";
 import SubmitButton from "./SubmitButton";
 import KendalaLaporForm from "./KendalaLaporForm";
-import { aturTransit, selesaikanKendala } from "@/app/app/kendala/actions";
+import { selesaikanKendala } from "@/app/app/kendala/actions";
 
 type Issue = { id: string; kind: string; label: string; status: "OPEN" | "RESOLVED"; note: string; openedBy: string | null; openedAt: string; resolution: string | null; resolutionNote: string | null; resolvedAt: string | null; foto?: number };
-type Transit = { transitId: string | null; transitCity: string | null; leg: number; canSet: boolean; options: { id: string; city: string; name: string }[] };
 const JENIS: [string, string][] = [["SALAH_SORTIR", "Salah sortir (masuk rak atau tujuan keliru)"], ["RUSAK", "Barang rusak atau kurang jumlah"], ["GAGAL_KIRIM", "Gagal kirim (penerima tidak ada atau menunda)"], ["RETUR", "Retur (barang dikembalikan)"], ["HOLD", "Ditahan (tunggu keputusan)"]];
 
-/** Kendala pengiriman dan pengaturan transit pada halaman satu resi. */
+/** Kendala pengiriman pada halaman satu resi. (Fitur transit antar gudang disembunyikan: tidak dipakai di alur kerja saat ini.) */
 export default async function KendalaPanel({ shipmentId, role, status }: { shipmentId: string; role: string; status: string }) {
   const lapor = ["HUB_MANAGER", "WAREHOUSE", "DRIVER", "CONTAINER_DRIVER"].includes(role) && status !== "DELIVERED" && status !== "CANCELLED";
-  const [iss, tr] = await Promise.all([
-    staffRpc<Issue[]>("issue_for_shipment", { p_id: shipmentId }),
-    ["HUB_MANAGER", "WAREHOUSE", "SUPER_ADMIN", "MITRA_POS"].includes(role) ? staffRpc<Transit>("shipment_transit_info", { p_id: shipmentId }) : Promise.resolve(null),
-  ]);
-  const list = iss.data ?? [], t = tr?.data ?? null;
+  const iss = await staffRpc<Issue[]>("issue_for_shipment", { p_id: shipmentId });
+  const list = iss.data ?? [];
   const kepala = role === "HUB_MANAGER";
   const terbuka = list.filter((i) => i.status === "OPEN");
   const opsi = JENIS.filter(([k]) => k !== "GAGAL_KIRIM" || status === "OUT_FOR_DELIVERY");
-  if (!list.length && !lapor && !(t && (t.transitId || t.canSet))) return null;
+  if (!list.length && !lapor) return null;
   return (
     <>
       {list.length > 0 && (
@@ -50,24 +46,6 @@ export default async function KendalaPanel({ shipmentId, role, status }: { shipm
         </div>
       )}
       {lapor && <KendalaLaporForm id={shipmentId} opsi={opsi} />}
-      {t && (t.transitId || (kepala && t.canSet)) && (
-        <div className="card stack">
-          <h2>Transit antar gudang</h2>
-          {t.transitId && <p style={{ margin: 0 }}>Resi singgah di <b>{t.transitCity}</b>{t.leg === 2 ? " (sudah melewati leg pertama, sekarang menuju tujuan akhir)" : ""}.</p>}
-          {kepala && t.canSet && (
-            <form action={aturTransit} className="stack">
-              <input type="hidden" name="id" value={shipmentId} />
-              <label className="f" htmlFor="transit">Gudang transit</label>
-              <select id="transit" name="transit" defaultValue={t.transitId ?? ""}>
-                <option value="">Tanpa transit (langsung ke tujuan)</option>
-                {t.options.map((o) => <option key={o.id} value={o.id}>{o.city}</option>)}
-              </select>
-              <p className="hint">Atur sebelum resi masuk manifest. Muatan dibuat dua kali: asal ke gudang transit, lalu gudang transit ke tujuan.</p>
-              <SubmitButton className="btn ghost" steps={["Menyimpan transit…"]}>Simpan transit</SubmitButton>
-            </form>
-          )}
-        </div>
-      )}
     </>
   );
 }
