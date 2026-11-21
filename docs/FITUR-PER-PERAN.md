@@ -1,5 +1,7 @@
 # Peta 25 fitur untuk tiap akun
 
+> Aturan terbaru: resi dibuat dan label dicetak HANYA oleh Kasir (satu pintu di tiap gudang atau gerai). Kepala gudang dan CS tidak lagi membuat resi.
+
 Dibuat dari analisis kebutuhan harian tiap peran. Tanda: ✅ sudah ada sebelumnya · 🆕 dibangun di putaran ini · 📋 rencana (belum dibangun). Aturan tetap: dashboard Pemilik hanya memantau, pembayaran transfer/tunai, WhatsApp manual, tanpa mode offline, 2FA ditunda.
 
 ## Ringkasan
@@ -55,7 +57,7 @@ Fitur lintas peran yang dibangun putaran ini: pesan jemput online, klaim dan kel
 8. 🆕 Pesanan jemput website belum diproses
 9. 🆕 Kinerja tim gudang hari ini dan 7 hari
 10. 🆕 Laporan akhir shift ke WhatsApp Pemilik
-11. 🆕 Aksi cepat: resi baru, manifest baru, serah terima (Pindai sudah di menu bawah)
+11. 🆕 Aksi cepat: manifest baru, serah terima (Pindai sudah di menu bawah; resi dibuat kasir)
 12. ✅ Buat resi, ✅ 13 pindai barcode/QR, ✅ 14 manifest (buat, segel, serah, bongkar), ✅ 15 tagihan dan pembayaran
 16. ✅ Perlu dihubungi, ✅ 17 cari cepat, ✅ 18 serah terima, ✅ 19 foto pemeriksaan kondisi, ✅ 20 cetak label dan manifest, ✅ 21 ganti sandi sendiri
 22. 📋 Jadwal shift tim, 23. 📋 Kapasitas dan slot muat, 24. 📋 Absensi tim, 25. 📋 Stok kemasan

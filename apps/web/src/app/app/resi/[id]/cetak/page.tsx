@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { MASUK_LABEL, MODA_LABEL, parseResi, type AnyStatus } from "@kamil/core";
+import { redirect } from "next/navigation";
+import { CAN_PRINT_LABEL, MASUK_LABEL, MODA_LABEL, parseResi, type AnyStatus } from "@kamil/core";
 import LabelStudio, { type LabelData } from "@/components/LabelStudio";
 import { barcodeSvg, qrSvg } from "@/lib/barcode";
-import { staffRpc } from "@/lib/supabase/server";
+import { getMe, staffRpc } from "@/lib/supabase/server";
 import { abs } from "@/lib/site";
 import Icon from "@/components/Icon";
 
@@ -20,6 +21,8 @@ type D = {
 
 export default async function Cetak({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const me = (await getMe()).data;
+  if (!me || !CAN_PRINT_LABEL.includes(me.role)) redirect(`/app/resi/${id}?e=${encodeURIComponent("Label resi hanya dicetak oleh Kasir di gudang atau gerai.")}`);
   const r = await staffRpc<D>("staff_get_shipment", { p_id: id });
   if (r.error || !r.data) return <main className="wrap section stack"><div className="err">{r.error ?? "Resi tidak ditemukan."}</div><Link className="btn ghost" href="/app">← Kembali</Link></main>;
   const s = r.data, p = parseResi(s.resiNo);

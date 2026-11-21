@@ -47,14 +47,14 @@ small,.muted{color:#51706a}
 <h2>2. Siapa saja pengguna</h2>
 <table><tr><th style="width:22%">Peran</th><th>Tugas utama</th><th style="width:26%">Menu bawah di HP</th></tr>
 <tr><td><b>Pemilik / Admin pusat</b></td><td>Memantau bisnis, keuangan, mitra, petugas, tarif, laporan, klaim. Dashboard hanya memantau, bukan menjalankan operasional harian.</td><td>Pantauan · Resi · Keuangan · Kelola · Akun</td></tr>
-<tr><td><b>Kepala gudang</b> (Manajer)</td><td>Memimpin satu gudang: buat resi, manifest, serah terima, tagihan cabang, pesanan jemput, tindak lanjut.</td><td>Beranda · Pindai · Manifest · Tagihan · Akun</td></tr>
-<tr><td><b>Kasir</b> (mitra)</td><td>Gerai mitra: buat resi, melihat tagihan dan mencatat pembayaran, setoran kas.</td><td>Beranda · Resi baru · Pindai · Tagihan · Akun</td></tr>
+<tr><td><b>Kepala gudang</b> (Manajer)</td><td>Memimpin satu gudang: manifest, serah terima, kendala, tagihan cabang, pesanan jemput, tindak lanjut. Tidak membuat resi dan tidak mencetak label.</td><td>Beranda · Pindai · Manifest · Tagihan · Akun</td></tr>
+<tr><td><b>Kasir</b> (mitra)</td><td><b>Satu-satunya pintu pembuatan resi dan pencetakan label</b> di tiap gudang atau gerai; juga melihat tagihan, mencatat pembayaran, setoran kas.</td><td>Beranda · Resi baru · Pindai · Tagihan · Akun</td></tr>
 <tr><td><b>Kurir</b></td><td>Menjemput dan mengantar barang, serah terima, bukti terima.</td><td>Beranda · Pindai · Serah terima · Akun</td></tr>
 <tr><td><b>Staf gudang</b></td><td>Menerima, menimbang, memuat dan membongkar barang.</td><td>Beranda · Pindai · Manifest · Serah terima · Akun</td></tr>
 <tr><td><b>Sopir kontainer</b></td><td>Membawa manifest antar kota: terima, berangkat, tiba, serahkan.</td><td>Beranda · Pindai · Manifest · Serah terima · Akun</td></tr>
 <tr><td><b>HRD</b></td><td>Kepegawaian (dokumen dan masa berlaku SIM/kontrak, shift, cuti dan izin, rekap kehadiran dan kerja) serta lamaran dan lowongan. Tidak melihat resi maupun keuangan.</td><td>Dashboard · Lamaran · Pegawai · Akun</td></tr>
 <tr><td><b>Finance</b></td><td>Tagihan, pencatatan pembayaran, komisi, dan laporan keuangan seluruh cabang. Boleh membaca resi untuk keperluan tagihan, tidak menjalankan langkah resi.</td><td>Keuangan · Tagihan · Laporan · Akun</td></tr>
-<tr><td><b>CS dan Sales</b></td><td>Membuat booking resi di cabangnya, memantau resi, tindak lanjut, pesanan jemput, dan mengusulkan ganti rugi klaim. Tidak melihat uang.</td><td>Beranda · Resi baru · Jemput · Klaim · Akun</td></tr>
+<tr><td><b>CS dan Sales</b></td><td>Memantau resi cabangnya, tindak lanjut, pesanan jemput, dan mengusulkan ganti rugi klaim. Tidak membuat resi dan tidak melihat uang.</td><td>Beranda · Jemput · Klaim · Akun</td></tr>
 <tr><td><b>Admin konten</b></td><td>Foto dan testimoni slider beranda website.</td><td>Konten · Akun</td></tr></table>
 <p class="muted">Akun dibuat oleh Pemilik (menu Petugas atau Mitra dan cabang). Masuk memakai email dan kata sandi. Kata sandi bisa diganti sendiri lewat menu Akun. Petugas yang dinonaktifkan langsung tidak bisa masuk. Di komputer, menu samping memuat semua menu; di HP menu bawah memuat yang utama saja.</p>
 
@@ -71,6 +71,7 @@ small,.muted{color:#51706a}
 <li><b>Calon mitra dan pelamar kerja:</b> mengisi formulir di /mitra dan /karir; masuk ke Pemilik dan HRD.</li></ul>
 
 <h2>4. Alur satu resi (inti aplikasi)</h2>
+<div class="box ok"><b>Satu pintu:</b> resi dibuat dan labelnya dicetak <b>hanya oleh Kasir</b> di tiap gudang atau gerai (barang diantar sendiri maupun dijemput). Kepala gudang, staf gudang, kurir, CS, Finance, dan Pemilik tidak bisa membuat resi atau mencetak label; mereka menimbang, memuat, mengantar, dan memantau. Pesanan jemput dari website diteruskan ke kasir untuk dibuatkan resinya.</div>
 <p>Resi adalah satu pengiriman. Nomornya bisa dibaca manusia, contoh <b>KLX-MKS-JKT-LJ-261118-1432-0007-PK</b>:</p>
 <table><tr><td width="22%">KLX</td><td>merek Kamil Logistik Express</td></tr>
 <tr><td>MKS · JKT</td><td>kota asal · kota tujuan</td></tr>
@@ -81,7 +82,7 @@ small,.muted{color:#51706a}
 <p>Tiap barang dalam resi memakai kode yang sama ditambah -01, -02, dan seterusnya untuk label dan pemindaian.</p>
 <h3>Sepuluh tahap resi</h3>
 <div class="flow">
-<div class="st"><b>1 Order baru</b><small>kasir / kepala gudang</small></div><span class="ar">→</span>
+<div class="st"><b>1 Order baru</b><small>kasir (satu pintu)</small></div><span class="ar">→</span>
 <div class="st"><b>2 Sudah dijemput</b><small>kurir</small></div><span class="ar">→</span>
 <div class="st"><b>3 Di gudang asal</b><small>staf gudang</small></div><span class="ar">→</span>
 <div class="st o"><b>4 Sudah ditimbang</b><small>tagihan terbit otomatis</small></div><span class="ar">→</span>
@@ -155,14 +156,14 @@ small,.muted{color:#51706a}
 <h2>9. Isi dashboard tiap peran</h2>
 <table><tr><th style="width:20%">Peran</th><th>Yang tampil di beranda</th></tr>
 <tr><td><b>Pemilik</b></td><td>Pusat peringatan (8 jenis masalah dengan tautan langsung) · proyeksi omzet dan target bulanan · perbandingan cabang dan mitra 30 hari · pelanggan teratas · kepuasan pelanggan · kesehatan sistem · kartu angka, grafik, pipeline, rute terlaris. Menu Kelola: laporan lengkap, ekspor CSV, peta pantauan, ringkasan harian, tarif dan rute, mitra, petugas, pelanggan korporat, pengaturan, catatan aktivitas, klaim, pesanan jemput, konten, lamaran.</td></tr>
-<tr><td><b>Kepala gudang</b></td><td>Papan gudang per tahap · target hari ini vs rata-rata 7 hari · barang mengendap · agenda manifest · selisih manifest · serah terima macet · piutang cabang · pesanan jemput baru · kinerja tim · laporan akhir shift ke WhatsApp Pemilik. Tombol cepat: Resi baru, Manifest baru, Serah terima.</td></tr>
+<tr><td><b>Kepala gudang</b></td><td>Papan gudang per tahap · target hari ini vs rata-rata 7 hari · barang mengendap · agenda manifest · selisih manifest · serah terima macet · piutang cabang · pesanan jemput baru · kinerja tim · laporan akhir shift ke WhatsApp Pemilik. Tombol cepat: Manifest baru, Serah terima.</td></tr>
 <tr><td><b>Kasir</b></td><td>Kas hari ini (resi, tagihan, tunai, transfer) dan tombol kirim setoran ke Pemilik · bulan ini dan komisi · piutang · resi perlu ditimbang · pelanggan langganan · kepuasan. Tombol cepat: Jemput, Serah terima.</td></tr>
 <tr><td><b>Kurir</b></td><td>Barang yang saya bawa (tombol peta dan chat penerima) · menunggu diterima · hitungan hari ini dan 7 hari · aktivitas terakhir.</td></tr>
 <tr><td><b>Staf gudang</b></td><td>Isi gudang per tahap · antrean timbang dengan umur tunggu · manifest sedang disiapkan · hasil kerja hari ini · selisih manifest.</td></tr>
 <tr><td><b>Sopir kontainer</b></td><td>Muatan saya (segel, kontainer, jadwal) · menunggu diterima · perjalanan selesai 30 hari · riwayat.</td></tr>
 <tr><td><b>HRD · Admin konten</b></td><td>Dashboard rekrutmen dan lamaran · ringkasan slider dan ulasan bagus bahan testimoni.</td></tr></table>
 <h3>Aturan tampilan yang dirapikan pada audit ini</h3>
-<ul><li>Tombol yang sama tidak lagi muncul dua kali: aksi yang sudah ada di menu bawah (Pindai, Resi baru untuk kasir, Tagihan, Serah terima, Manifest) tidak diulang sebagai tombol di isi halaman.</li>
+<ul><li>Tombol yang sama tidak lagi muncul dua kali: aksi yang sudah ada di menu bawah (Pindai, Resi baru untuk kasir, Tagihan, Serah terima, Manifest) tidak diulang sebagai tombol di isi halaman. <b>Resi dan label hanya lewat satu pintu: Kasir.</b></li>
 <li>Detail resi: data pengirim dan penerima hanya tampil sekali (satu kartu dengan tombol Chat dan Telepon); tombol Pindai dan Kembali ke daftar yang berulang dihapus.</li>
 <li>Angka rupiah tidak terpotong, kolom pencarian dan filter rapi di layar HP.</li></ul>
 

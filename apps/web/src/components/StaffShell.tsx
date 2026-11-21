@@ -19,7 +19,7 @@ export default function StaffShell({ me, pending, children, forceFull }: { me: M
     : me.role === "FINANCE"
     ? [{ href: "/app/keuangan", label: "Keuangan", icon: "cash", also: ["/app/keuangan/komisi"] }, { href: "/app/tagihan", label: "Tagihan", icon: "file" }, { href: "/app/laporan", label: "Laporan", icon: "chart" }, { href: "/app/margin", label: "Margin", icon: "tag" }, { href: "/app/akun", label: "Akun", icon: "user" }]
     : me.role === "CS_SALES"
-    ? [{ href: "/app", label: "Beranda", icon: "home" }, { href: "/app/baru", label: "Resi baru", icon: "plus" }, { href: "/app/jemput", label: "Jemput", icon: "truck" }, { href: "/app/klaim", label: "Klaim", icon: "shield" }, { href: "/app/akun", label: "Akun", icon: "user" }]
+    ? [{ href: "/app", label: "Beranda", icon: "home" }, { href: "/app/jemput", label: "Jemput", icon: "truck" }, { href: "/app/klaim", label: "Klaim", icon: "shield" }, { href: "/app/akun", label: "Akun", icon: "user" }]
     : me.role === "KONTEN"
     ? [{ href: "/app/konten", label: "Konten", icon: "grid" }, { href: "/app/akun", label: "Akun", icon: "user" }]
     : owner

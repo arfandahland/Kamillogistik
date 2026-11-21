@@ -80,8 +80,10 @@ export const STATUS_GROUPS = {
   selesai: ["DELIVERED", "CANCELLED"],
 } as const;
 
-/** Pemilik hanya memantau (lihat dashboard); pembuatan resi dilakukan petugas operasional. */
-export const CAN_CREATE_ORDER = ["HUB_MANAGER", "MITRA_POS", "CS_SALES"];
+/** Pembuatan resi hanya oleh Kasir (satu pintu per gudang). */
+export const CAN_CREATE_ORDER = ["MITRA_POS"];
+/** Satu pintu: resi dibuat dan label dicetak hanya oleh Kasir di tiap gudang atau gerai. */
+export const CAN_PRINT_LABEL = ["MITRA_POS"];
 export const OWNER_ROLE = "SUPER_ADMIN";
 export const SEES_MONEY = ["SUPER_ADMIN", "HUB_MANAGER", "MITRA_POS", "FINANCE"];
 
@@ -91,7 +93,7 @@ export const PERAN_TANPA_CABANG = ["HRD", "KONTEN", "FINANCE", "SUPER_ADMIN"] as
 export const PERAN_KETERANGAN: Record<string, string> = {
   HRD: "Kepegawaian (dokumen, shift, absensi, cuti, rekap) dan Lamaran kerja. Tidak melihat resi maupun keuangan.",
   FINANCE: "Tagihan, pembayaran, komisi, dan laporan keuangan seluruh cabang. Tidak menjalankan langkah resi.",
-  CS_SALES: "Membuat booking resi, memantau resi cabang, tindak lanjut, pesanan jemput, dan mengusulkan ganti rugi klaim. Tidak melihat uang.",
+  CS_SALES: "Memantau resi cabang, tindak lanjut, pesanan jemput, dan mengusulkan ganti rugi klaim. Tidak membuat resi dan tidak melihat uang.",
   KONTEN: "Hanya mengelola foto dan testimoni di website.",
   SUPER_ADMIN: "Akses penuh seperti Pemilik: semua menu, tarif, mitra, keuangan, dan petugas. Berikan dengan hati-hati.",
 };

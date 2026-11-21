@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { chatLink, displayPhone, isProblem, KEMASAN_LABEL, KONDISI_LABEL, STAGE_LABEL, type Inspection, MASUK_LABEL, MODA_LABEL, nextAction, normalizePhone, telLink, OWNER_ROLE, ROLE_LABEL, SEES_MONEY, statusLabel, type Actor, type AnyStatus } from "@kamil/core";
+import { CAN_PRINT_LABEL, chatLink, displayPhone, isProblem, KEMASAN_LABEL, KONDISI_LABEL, STAGE_LABEL, type Inspection, MASUK_LABEL, MODA_LABEL, nextAction, normalizePhone, telLink, OWNER_ROLE, ROLE_LABEL, SEES_MONEY, statusLabel, type Actor, type AnyStatus } from "@kamil/core";
 import { staffRpc, getMe, type Staff } from "@/lib/supabase/server";
 import { rupiah, tanggalWaktu } from "@/lib/brand";
 import { SITE_URL } from "@/lib/site";
@@ -78,9 +78,11 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
             );
           })}
         </div>
+        {CAN_PRINT_LABEL.includes(role) && (
         <div className="resiact">
           <Link className="btn" href={`/app/resi/${s.id}/cetak`}><Icon name="print" size={20} /> Cetak label</Link>
         </div>
+        )}
       </div>
 
       {pendingToMe && (

@@ -1033,8 +1033,8 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     const kepala = await p.locator(".hubhead").innerText();
     ok("Y3 dashboard terkunci ke Gudang Jakarta dan menampilkan status perhatian", /Gudang Jakarta/.test(kepala) && /(terkendali|perlu perhatian)/.test(kepala), kepala.replace(/\n/g, " "));
     const aksi = await p.$$eval(".hubquick a", (as) => as.map((a) => a.getAttribute("href")));
-    ok("Y4 aksi cepat tanpa tombol ganda: resi baru, manifest baru, serah terima (Pindai sudah di menu bawah)", ["/app/baru", "/app/manifest/baru", "/app/serah"].every((h) => aksi.includes(h)) && !aksi.includes("/app/pindai"), aksi.join(","));
-    ok("AD1 dashboard cabang tidak punya tombol Buat resi baru ganda di isi halaman", (await p.locator("a[href='/app/baru']:not(.tabbar a):not(.sidebar a)").count()) === 1);
+    ok("Y4 aksi cepat kepala gudang: manifest baru dan serah terima, tanpa Pindai ganda dan tanpa Resi baru (satu pintu: kasir)", ["/app/manifest/baru", "/app/serah"].every((h) => aksi.includes(h)) && !aksi.includes("/app/pindai") && !aksi.includes("/app/baru"), aksi.join(","));
+    ok("AD1 dashboard kepala gudang tidak punya tombol Buat resi (resi satu pintu di kasir)", (await p.locator("a[href='/app/baru']").count()) === 0);
     const wa = await p.locator(".shift a.btn").getAttribute("href"); const pesan = decodeURIComponent(wa || "");
     ok("Y5 laporan akhir shift: pesan WhatsApp berisi ringkasan cabang dan angka hari ini", /Ringkasan shift Gudang Jakarta/.test(pesan) && /Resi baru: \d+/.test(pesan) && /Piutang cabang: Rp/.test(pesan), pesan.slice(0, 80));
     await noOverflow(p, "Dashboard Manajer Gudang (HP)");
@@ -1042,7 +1042,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await p.goto(`${BASE}/app/jemput`, { waitUntil: "networkidle" });
     const nomor = await p.locator("main").innerText(); ok("Y7 nomor WhatsApp di antrean jemput tampil rapi (0812-...) bukan 62...", !/\b628\d{8,}\b/.test(nomor));
     const bx = await p.locator("a:has-text('Unduh Excel')").boundingBox(); ok("Y8 tombol unduh CSV cukup besar untuk jari (tinggi minimal 40)", !!bx && bx.height >= 38, JSON.stringify(bx));
-    for (const u of ["/app/pindai", "/app/manifest", "/app/tagihan", "/app/serah", "/app/tindak-lanjut", "/app/akun", "/app/baru"]) { await p.goto(`${BASE}${u}`, { waitUntil: "networkidle" }); await noOverflow(p, `Manajer ${u} (HP)`); }
+    for (const u of ["/app/pindai", "/app/manifest", "/app/tagihan", "/app/serah", "/app/tindak-lanjut", "/app/akun"]) { await p.goto(`${BASE}${u}`, { waitUntil: "networkidle" }); await noOverflow(p, `Manajer ${u} (HP)`); }
     await mg.ctx.close();
     const md = await login(browser, "manajer@uji.id", PASS, { width: 1366, height: 900 });
     await md.page.goto(`${BASE}/app`, { waitUntil: "networkidle" }); await md.page.waitForTimeout(700);
@@ -1187,7 +1187,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await mg.page.fill("input[name=catatan][id^=ck-]", "Sudah diperiksa, aman dilanjutkan");
     await act(mg.page, mg.page.getByRole("button", { name: "Selesaikan kendala" }));
     await mg.page.goto(`${BASE}/app`, { waitUntil: "networkidle" });
-    ok("AE16 beranda kepala gudang tanpa tombol Buat resi ganda (dashboard cabang)", (await mg.page.locator("a[href='/app/baru']:not(.tabbar a):not(.sidebar a)").count()) === 1);
+    ok("AE16 beranda kepala gudang tanpa tombol Buat resi", (await mg.page.locator("a[href='/app/baru']").count()) === 0);
     await mg.ctx.close();
 
     // Finance
@@ -1216,9 +1216,9 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     const cs = await login(browser, "cs@uji.id", PASS, { width: 390, height: 844 });
     ok("AE22 CS masuk ke beranda", cs.loggedIn);
     const tabC = await cs.page.locator(".tabbar").innerText();
-    ok("AE23 menu bawah CS: Beranda, Resi baru, Jemput, Klaim, Akun", /Beranda/.test(tabC) && /Resi baru/.test(tabC) && /Jemput/.test(tabC) && /Klaim/.test(tabC) && !/Tagihan/.test(tabC), tabC.replace(/\n/g, " "));
+    ok("AE23 menu bawah CS: Beranda, Jemput, Klaim, Akun (tanpa Resi baru)", /Beranda/.test(tabC) && !/Resi baru/.test(tabC) && /Jemput/.test(tabC) && /Klaim/.test(tabC) && !/Tagihan/.test(tabC), tabC.replace(/\n/g, " "));
     await cs.page.goto(`${BASE}/app/baru`, { waitUntil: "networkidle" });
-    ok("AE24 CS bisa membuka formulir resi baru (booking)", (await cs.page.locator("form").count()) > 0 && (await cs.page.locator(".err").count()) === 0);
+    ok("AE24 CS tidak bisa membuka formulir resi baru (satu pintu: kasir)", !/\/app\/baru/.test(cs.page.url()) && (await cs.page.locator("form[action]").count()) === 0 || !/Buat resi baru/.test(await cs.page.locator("main").innerText()));
     await cs.page.goto(`${BASE}/app/klaim`, { waitUntil: "networkidle" });
     const kl = await cs.page.locator("main").innerText();
     ok("AE25 CS melihat klaim dengan usulan, tanpa kolom penyelesaian final", /Klaim dan keluhan/.test(kl) && !/Penyelesaian\n/.test(kl) && ((await cs.page.getByRole("button", { name: "Simpan usulan" }).count()) > 0 || /Belum ada laporan/.test(kl)), kl.slice(0, 160));
@@ -1239,6 +1239,25 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     const sj = await mg2.page.locator("main").innerText();
     ok("AG2 surat jalan pelabuhan memuat voyage, pelabuhan, segel, dan kolom tanda tangan", /SURAT JALAN PELABUHAN/.test(sj) && /VY-2611-UJI/.test(sj) && /Pelabuhan Soekarno-Hatta Makassar/.test(sj) && /Petugas pelabuhan/.test(sj));
     await noOverflow(mg2.page, "Surat jalan pelabuhan (HP)"); await mg2.ctx.close();
+
+    // Resi dan cetak label satu pintu: hanya Kasir
+    const rno2 = sqlq(`SELECT id FROM shipments WHERE origin_id = (SELECT id FROM branches_partners WHERE code='JKT') ORDER BY created_at DESC LIMIT 1;`);
+    const kp = await login(browser, "kasir@uji.id", PASS, { width: 390, height: 844 });
+    await kp.page.goto(`${BASE}/app/resi/${rno2}`, { waitUntil: "networkidle" });
+    ok("AH1 Kasir melihat tombol Cetak label", (await kp.page.getByRole("link", { name: /Cetak label/ }).count()) === 1);
+    await kp.page.goto(`${BASE}/app/resi/${rno2}/cetak`, { waitUntil: "networkidle" });
+    ok("AH2 Kasir bisa membuka halaman cetak label", /\/cetak/.test(kp.page.url()));
+    await kp.ctx.close();
+    for (const [em, nm] of [["manajer@uji.id", "Kepala gudang"], ["gudang@uji.id", "Staf gudang"], ["kurir@uji.id", "Kurir"], ["cs@uji.id", "CS"]]) {
+      const x = await login(browser, em, PASS, { width: 390, height: 844 });
+      await x.page.goto(`${BASE}/app/resi/${rno2}`, { waitUntil: "networkidle" }).catch(() => {});
+      const adaTombol = (await x.page.getByRole("link", { name: /Cetak label/ }).count()) > 0;
+      await x.page.goto(`${BASE}/app/resi/${rno2}/cetak`, { waitUntil: "networkidle" }).catch(() => {});
+      const bocor = !/Pindai|Label|\bKLX-/.test("") && /\/cetak/.test(x.page.url());
+      await x.page.goto(`${BASE}/app/baru`, { waitUntil: "networkidle" });
+      ok(`AH3 ${nm}: tanpa tombol Cetak label, cetak diblokir, dan form resi baru tertutup`, !adaTombol && !bocor && !/\/app\/baru/.test(x.page.url()), `${adaTombol} ${bocor} ${x.page.url()}`);
+      await x.ctx.close();
+    }
 
     // Pre-booking antar sendiri dari website
     const pb = await (await browser.newContext({ viewport: { width: 390, height: 844 } })).newPage();

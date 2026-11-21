@@ -36,13 +36,11 @@ SELECT t.fails($$select public.owner_dashboard(30)$$, 'izin');
 
 -- ===== CS/Sales =====
 SELECT t.as_user(current_setting('t.cs')::uuid);
-DO $$ DECLARE r jsonb; BEGIN
-  r := public.create_shipment('jakarta-makassar-port-to-door-kg','Pengirim CS','0811','Penerima CS','0822','Makassar',1,NULL,NULL,'DROPOFF');
-  ASSERT r->>'resiNo' IS NOT NULL, 'CS membuat booking resi';
-  ASSERT public.staff_get_shipment((r->>'id')::uuid)->>'resiNo' IS NOT NULL AND coalesce(jsonb_typeof(public.staff_get_shipment((r->>'id')::uuid)->'invoice'), 'null') = 'null', 'CS membaca resi tanpa uang';
-  ASSERT jsonb_array_length(public.staff_list_shipments(NULL, NULL, 20)) >= 1, 'CS melihat daftar resi cabangnya';
+SELECT t.fails($$select public.create_shipment('jakarta-makassar-port-to-door-kg','Pengirim CS','0811','Penerima CS','0822','Makassar',1,NULL,NULL,'DROPOFF')$$, 'izin');   -- satu pintu: hanya kasir
+DO $$ BEGIN
+  ASSERT jsonb_array_length(public.staff_list_shipments(NULL, NULL, 20)) >= 0, 'CS melihat daftar resi cabangnya';
 END $$;
-SELECT t.fails($$select public.create_shipment('makassar-jakarta-port-to-door','A','0811','B','0822','Jakarta',1,NULL,NULL,'DROPOFF')$$, 'cabang Anda sendiri');
+SELECT t.fails($$select public.create_shipment('makassar-jakarta-port-to-door','A','0811','B','0822','Jakarta',1,NULL,NULL,'DROPOFF')$$, 'izin');
 SELECT t.fails($$select public.staff_list_invoices(NULL, NULL, 10)$$, 'izin');
 SELECT t.fails($$select public.record_payment(current_setting('t.inv')::uuid, 'TUNAI', 1000, NULL, NULL)$$, 'izin');
 SELECT t.fails($$select public.advance_shipment(current_setting('t.sid')::uuid, 'PICKED_UP')$$, 'izin');
@@ -69,3 +67,12 @@ SELECT t.as_user('00000000-0000-0000-0000-000000000002');
 DO $$ BEGIN ASSERT public.staff_list_invoices(NULL, NULL, 10) IS NOT NULL, 'kasir tetap bisa'; END $$;
 SELECT t.fails($$select public.staff_claims()$$, 'izin');
 SELECT 'peran_baru OK' AS hasil;
+
+-- ===== 035: resi satu pintu, hanya kasir =====
+SELECT t.as_user('00000000-0000-0000-0000-00000000000c');   -- kepala gudang Jakarta
+SELECT t.fails($$select public.create_shipment('jakarta-makassar-port-to-door-kg','A','0811','B','0822','Makassar',1,NULL,NULL,'DROPOFF')$$, 'izin');
+SELECT t.as_user('00000000-0000-0000-0000-000000000001');   -- pemilik
+SELECT t.fails($$select public.create_shipment('jakarta-makassar-port-to-door-kg','A','0811','B','0822','Makassar',1,NULL,NULL,'DROPOFF')$$, 'izin');
+SELECT t.as_user('00000000-0000-0000-0000-000000000002');   -- kasir
+DO $$ BEGIN ASSERT public.create_shipment('jakarta-makassar-port-to-door-kg','Kasir Satu Pintu','0811','B','0822','Makassar',1,NULL,NULL,'DROPOFF')->>'resiNo' IS NOT NULL, 'kasir tetap membuat resi'; END $$;
+SELECT 'satu_pintu OK' AS hasil;

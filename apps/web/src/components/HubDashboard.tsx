@@ -40,8 +40,7 @@ export default function HubDashboard({ d, pesanOwner }: { d: HubData; pesanOwner
         <div className={`hubalert ${perhatian ? "warn" : "ok"}`}><Icon name={perhatian ? "clock" : "check"} size={18} /> {perhatian ? `${perhatian} hal perlu perhatian` : "Semua terkendali"}</div>
       </div>
 
-      <nav className="hubquick three" aria-label="Aksi cepat">
-        <Link href="/app/baru"><Icon name="plus" size={22} /><span>Resi baru</span></Link>
+      <nav className="hubquick two" aria-label="Aksi cepat">
         <Link href="/app/manifest/baru"><Icon name="layers" size={22} /><span>Manifest baru</span></Link>
         <Link href="/app/serah"><Icon name="swap" size={22} /><span>Serah terima</span></Link>
       </nav>
