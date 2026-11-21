@@ -116,6 +116,7 @@ BEGIN
     'weightKg', it.weight_kg, 'lCm', it.l_cm, 'wCm', it.w_cm, 'hCm', it.h_cm, 'mode', s.mode,
     'receiver', s.receiver_name, 'destCity', (SELECT city FROM public.branches_partners WHERE id = s.dest_id), 'pieces', total,
     'contents', s.contents, 'estWeightKg', s.est_weight_kg, 'packaging', s.packaging, 'fragile', s.fragile, 'declaredValue', s.declared_value, 'note', it.condition_note,
+    'items', (SELECT coalesce(jsonb_agg(jsonb_build_object('barcode', i.barcode, 'weightKg', i.weight_kg) ORDER BY i.barcode), '[]'::jsonb) FROM public.shipment_items i WHERE i.shipment_id = s.id),
     'bisa', s.status IN ('AT_ORIGIN_HUB','SORTED_INVOICED') AND s.manifest_id IS NULL AND NOT EXISTS (SELECT 1 FROM public.invoices iv WHERE iv.shipment_id = s.id AND iv.status <> 'VOID'));
 END $$;
 REVOKE ALL ON FUNCTION public.item_for_weighing(text) FROM PUBLIC, anon, authenticated;
