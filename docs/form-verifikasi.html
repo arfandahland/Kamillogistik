@@ -1,0 +1,190 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><title>Form Verifikasi Alur Kamil Logistik</title>
+<style>
+@page{size:A4 landscape;margin:12mm 11mm}
+*{box-sizing:border-box}body{font:9.6pt/1.42 "Helvetica Neue",Arial,sans-serif;color:#0c2924;margin:0}
+h1{font-size:22pt;margin:0 0 3pt;color:#072f29}h2{font-size:13.5pt;color:#0b4d42;border-bottom:2.2px solid #f28c28;padding-bottom:3pt;margin:15pt 0 6pt;break-after:avoid}h3{font-size:11pt;color:#0f6a5b;margin:11pt 0 4pt;break-after:avoid}
+p{margin:3pt 0 5pt}small{color:#51706a}
+.cover{background:linear-gradient(160deg,#04231e,#0f6a5b);color:#fff;border-radius:12pt;padding:22pt 24pt;margin-bottom:10pt}.cover h1{color:#fff}.cover p{color:#c8f8f0}
+table{border-collapse:collapse;width:100%;margin:4pt 0 8pt;font-size:8.8pt}th{background:#0b4d42;color:#fff;text-align:left;padding:4pt 5pt;font-weight:700}td{padding:4pt 5pt;border-bottom:1px solid #d5e8e3;vertical-align:top}tr{break-inside:avoid}tr:nth-child(even) td{background:#f4faf8}
+.s{display:inline-block;border-radius:99pt;padding:1pt 7pt;font-weight:800;font-size:8pt;white-space:nowrap}
+.ok{background:#d6f5df;color:#14602f}.sb{background:#fff0d6;color:#8a5200}.bd{background:#ffe0e0;color:#a11}.bl{background:#e4e8ff;color:#2a3a9a}.am{background:#efe0ff;color:#5b2a8a}
+.box{border-left:4px solid #f28c28;background:#fff8ee;padding:6pt 9pt;border-radius:0 7pt 7pt 0;margin:6pt 0;break-inside:avoid}.hijau{border-left-color:#2f9e8a;background:#eaf8f4}
+.cb{white-space:nowrap;font-size:9.5pt}.pb{break-before:page}
+ul,ol{margin:3pt 0 5pt 15pt;padding:0}li{margin:1.5pt 0}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6pt;margin:6pt 0}.k{border:1px solid #d5e8e3;border-radius:8pt;padding:6pt;text-align:center}.k b{display:block;font-size:17pt}
+.foot{margin-top:10pt;font-size:8.5pt;color:#51706a;border-top:1px solid #d5e8e3;padding-top:4pt}
+</style></head><body>
+
+<div class="cover"><h1>Form Verifikasi dan Validasi Alur Kerja</h1>
+<p>Kamil Logistik · dibandingkan butir demi butir dengan penjelasan bisnis dari Pemilik · kondisi aplikasi sesuai kode dan basis data yang berjalan.</p>
+<p style="font-size:9pt">Disusun sebagai Business Analyst dan System Architect. <b>Tidak ada alur yang saya ubah atau karang</b>: Bagian A menilai apa adanya; Bagian C memisahkan celah teknis; usulan fitur di Bagian E ditandai <b>usulan</b> dan belum dikerjakan.</p></div>
+
+<h2>Cara membaca</h2>
+<table><tr><th style="width:15%">Penilaian analis</th><th>Artinya</th></tr>
+<tr><td><span class="s ok">SESUAI</span></td><td>Aplikasi sudah melakukan persis yang dijelaskan.</td></tr>
+<tr><td><span class="s sb">SEBAGIAN</span></td><td>Inti ada, tetapi ada bagian penjelasan yang belum tercakup.</td></tr>
+<tr><td><span class="s bd">BERBEDA</span></td><td>Aplikasi berjalan dengan cara lain dari penjelasan (perlu diubah agar sama).</td></tr>
+<tr><td><span class="s bl">BELUM ADA</span></td><td>Penjelasan menyebut hal yang belum ada di aplikasi.</td></tr>
+<tr><td><span class="s am">PERLU KLARIFIKASI</span></td><td>Penjelasan bisa dibaca dua arti; mohon dipastikan (lihat Bagian F).</td></tr></table>
+<p>Kolom <b>☐ Sesuai / ☐ Perlu Revisi</b> dan <b>Catatan Anda</b> dikosongkan untuk Anda isi. Penilaian analis hanya pendapat saya dari kode.</p>
+
+<h2>Bagian A. Form verifikasi per tahapan</h2>
+
+<h3>Tahap 1. Masuknya barang (Inbound)</h3>
+<table><tr><th style="width:3%">No</th><th style="width:22%">Poin penjelasan</th><th style="width:34%">Kondisi aplikasi sekarang</th><th style="width:9%">Analis</th><th style="width:11%">Keputusan Anda</th><th>Catatan Anda</th></tr>
+<tr><td>1.1</td><td>Barang diantar langsung oleh customer ke gudang.</td><td>Jalur "diantar sendiri" ada. Kode resi memuat huruf A. Pelanggan boleh pre-booking dari website (/jemput); pesanan masuk ke Kasir.</td><td><span class="s ok">SESUAI</span></td><td class="cb">☐ Sesuai<br>☐ Perlu Revisi</td><td></td></tr>
+<tr><td>1.2</td><td>Barang dijemput tim Kamil Logistik ke tempat customer; data diinput setelah paket tiba di gudang/tempat Kamil.</td><td>Jalur jemput ada (kurir, foto pemeriksaan, serah terima ke gudang). Tetapi <b>urutannya terbalik</b>: Kasir membuat resi sebelum kurir berangkat, bukan setelah barang tiba.</td><td><span class="s bd">BERBEDA</span></td><td class="cb">☐ Sesuai<br>☐ Perlu Revisi</td><td></td></tr>
+<tr><td>1.3</td><td>Dua kondisi ini sama di Jakarta, di gudang mana pun, termasuk Indonesia Timur.</td><td>Aturan dan kode sama untuk semua cabang. Namun resi hanya bisa dibuat dari kota yang sudah punya rute di master rute; saat ini baru Jakarta↔Makassar (dan Makassar→Morowali).</td><td><span class="s sb">SEBAGIAN</span></td><td class="cb">☐ Sesuai<br>☐ Perlu Revisi</td><td></td></tr></table>
+
+<h3>Tahap 2. Input awal dan gudang asal</h3>
+<table><tr><th style="width:3%">No</th><th style="width:22%">Poin penjelasan</th><th style="width:34%">Kondisi aplikasi sekarang</th><th style="width:9%">Analis</th><th style="width:11%">Keputusan Anda</th><th>Catatan Anda</th></tr>
+<tr><td>2.1</td><td>Data diinput oleh kasir atau admin Kamil Logistik saat paket tiba.</td><td>Kasir adalah satu-satunya pembuat resi dan pencetak label. Peran "admin" terpisah dari kasir tidak ada.</td><td><span class="s sb">SEBAGIAN</span></td><td class="cb">☐ Sesuai<br>☐ Perlu Revisi</td><td></td></tr>
+<tr><td>2.2</td><td>Setelah diinput, data otomatis masuk ke admin gudang atau petugas penanggung jawab gudang.</td><td>Resi langsung tampil di daftar dan antrean gudang cabang asal. Petugas gudang menerima barang dengan pemeriksaan dan foto wajib.</td><td><span class="s ok">SESUAI</span></td><td class="cb">☐ Sesuai<br>☐ Perlu Revisi</td><td></td></tr>
+<tr><td>2.3</td><td>Petugas gudang menghitung/mengukur ukuran, berat, dan informasi detail barang.</td><td>Form timbang per barang (berat, panjang, lebar, tinggi) dengan batas wajar; pemeriksaan isi, kemasan, kondisi, jumlah.</td><td><span class="s ok">SESUAI</span></td><td class="cb">☐ Sesuai<br>☐ Perlu Revisi</td><td></td></tr>
+<tr><td>2.4</td><td>Hasil otomatis masuk kembali ke kasir.</td><td>Setelah gudang menyimpan, data timbang langsung terlihat di Kasir; dashboard Kasir menandai resi yang sudah ditimbang tetapi belum punya invoice.</td><td><span class="s ok">SESUAI</span></td><td class="cb">☐ Sesuai<br>☐ Perlu Revisi</td><td></td></tr></table>
+
+<h3>Tahap 3. Harga, invoice, dan pengiriman</h3>
+<table><tr><th style="width:3%">No</th><th style="width:22%">Poin penjelasan</th><th style="width:34%">Kondisi aplikasi sekarang</th><th style="width:9%">Analis</th><th style="width:11%">Keputusan Anda</th><th>Catatan Anda</th></tr>
+<tr><td>3.1</td><td>Kasir (khususnya kasir gudang pengirim) menentukan harga untuk invoice.</td><td>Harga diisi manual Kasir cabang asal (per kg, per m³, atau borongan) tanpa template dan tanpa persetujuan.</td><td><span class="s ok">SESUAI</span></td><td class="cb">☐ Sesuai<br>☐ Perlu Revisi</td><td></td></tr>
+<tr><td>3.2</td><td>Kasir melengkapi data-data terkait.</td><td>Kasir bisa merevisi nama, HP, alamat, wilayah, data kendaraan; membatalkan resi; menambah biaya lain di invoice.</td><td><span class="s ok">SESUAI</span></td><td class="cb">☐ Sesuai<br>☐ Perlu Revisi</td><td></td></tr>
+<tr><td>3.3</td><td>Barang dikirim melalui kargo (kontainer) atau pesawat.</td><td>Moda laut (kontainer), udara (bagasi pesawat), dan darat (truk) lewat manifest, dengan nomor kontainer/AWB, kapal/penerbangan, voyage, pelabuhan, surat jalan.</td><td><span class="s ok">SESUAI</span></td><td class="cb">☐ Sesuai<br>☐ Perlu Revisi</td><td></td></tr>
+<tr><td>3.4</td><td>Khusus rute Jakarta dan Surabaya (atau serah terima khusus): petugas gudang menyerahkan ke PIC pengiriman atau pihak kontainer.</td><td>Serah terima manifest dari petugas gudang ke sopir kontainer ada, dan baru sah setelah penerima menekan terima. Tidak ada perlakuan khusus Jakarta/Surabaya, dan pihak kontainer di luar perusahaan (tanpa akun) tidak bisa menerima.</td><td><span class="s sb">SEBAGIAN</span></td><td class="cb">☐ Sesuai<br>☐ Perlu Revisi</td><td></td></tr>
+<tr><td>3.5</td><td>Ada PIC yang bertanggung jawab atas pengiriman sampai tiba di cabang tujuan, termasuk serah terima langsung.</td><td>Pemegang manifest tercatat setiap saat; tanggung jawab semua resi berpindah hanya setelah penerima menekan terima.</td><td><span class="s ok">SESUAI</span></td><td class="cb">☐ Sesuai<br>☐ Perlu Revisi</td><td></td></tr></table>
+
+<h3>Tahap 4. Kedatangan di cabang tujuan dan bongkar muat</h3>
+<table><tr><th style="width:3%">No</th><th style="width:22%">Poin penjelasan</th><th style="width:34%">Kondisi aplikasi sekarang</th><th style="width:9%">Analis</th><th style="width:11%">Keputusan Anda</th><th>Catatan Anda</th></tr>
+<tr><td>4.1</td><td>Barang diterima oleh PIC pengiriman tujuan.</td><td>Sopir mencatat "tiba", lalu menyerahkan manifest ke petugas gudang kota tujuan. Peran "PIC pengiriman tujuan" yang terpisah dari gudang tidak ada.</td><td><span class="s sb">SEBAGIAN</span></td><td class="cb">☐ Sesuai<br>☐ Perlu Revisi</td><td></td></tr>
+<tr><td>4.2</td><td>Pembongkaran sesuai moda (bongkar kontainer atau bongkar pesawat).</td><td>Label tahap mengikuti moda (kapal, pesawat, truk), tetapi tidak ada langkah atau berita acara bongkar khusus per moda.</td><td><span class="s sb">SEBAGIAN</span></td><td class="cb">☐ Sesuai<br>☐ Perlu Revisi</td><td></td></tr>
+<tr><td>4.3</td><td>Setelah bongkar, barang diteruskan ke gudang tujuan.</td><td>Status berpindah "Tiba" → "Di gudang tujuan" saat bongkar selesai. Perjalanan terpisah pelabuhan/bandara → gudang tidak dicatat sebagai tahap sendiri.</td><td><span class="s sb">SEBAGIAN</span></td><td class="cb">☐ Sesuai<br>☐ Perlu Revisi</td><td></td></tr></table>
+
+<h3>Tahap 5. Dasar manifest dan pengecekan selisih/kerusakan</h3>
+<table><tr><th style="width:3%">No</th><th style="width:22%">Poin penjelasan</th><th style="width:34%">Kondisi aplikasi sekarang</th><th style="width:9%">Analis</th><th style="width:11%">Keputusan Anda</th><th>Catatan Anda</th></tr>
+<tr><td>5.1</td><td>Manifest memuat isi, berat, dan informasi detail pengiriman sebagai acuan.</td><td>Manifest memuat tiap resi dan barang; dapat diunduh CSV (pengirim, penerima, alamat, wilayah, berat, ukuran, kondisi, kendaraan) dan dicetak sebagai manifest dan surat jalan.</td><td><span class="s ok">SESUAI</span></td><td class="cb">☐ Sesuai<br>☐ Perlu Revisi</td><td></td></tr>
+<tr><td>5.2</td><td>PIC penerima/gudang tujuan mengecek dan mengkroscek data tersebut.</td><td>Tiap barang dipindai saat bongkar dan dicocokkan dengan manifest.</td><td><span class="s ok">SESUAI</span></td><td class="cb">☐ Sesuai<br>☐ Perlu Revisi</td><td></td></tr>
+<tr><td>5.3</td><td>Rusak, hilang, atau kurang menjadi keterangan/catatan sebelum barang masuk ke gudang tujuan.</td><td>Kurang jumlah: kasus selisih dengan catatan wajib ✓. Hilang: kasus selisih diputuskan "tidak ditemukan" → resi "Perlu ditangani" ✓. <b>Rusak:</b> tidak ada di langkah bongkar; hanya bisa dilaporkan sebagai kendala manual sesudahnya. Tidak ada berita acara per barang dengan foto di langkah bongkar.</td><td><span class="s sb">SEBAGIAN</span></td><td class="cb">☐ Sesuai<br>☐ Perlu Revisi</td><td></td></tr></table>
+
+<h3>Tahap 6. Sortir dan konfirmasi di gudang tujuan</h3>
+<table><tr><th style="width:3%">No</th><th style="width:22%">Poin penjelasan</th><th style="width:34%">Kondisi aplikasi sekarang</th><th style="width:9%">Analis</th><th style="width:11%">Keputusan Anda</th><th>Catatan Anda</th></tr>
+<tr><td>6.1</td><td>Sortirisasi ulang di gudang tujuan; sesuai dikonfirmasi sesuai, kurang dikonfirmasi kurang/tidak sesuai.</td><td>Hasil pindai bongkar menentukan sesuai atau kurang (dan membuat kasus selisih). Tidak ada langkah sortir terpisah setelah barang masuk gudang tujuan.</td><td><span class="s sb">SEBAGIAN</span></td><td class="cb">☐ Sesuai<br>☐ Perlu Revisi</td><td></td></tr>
+<tr><td>6.2</td><td>Setelah itu barang dipisahkan sesuai tujuan akhirnya.</td><td>Tidak ada pemisahan menurut tujuan akhir (antar langsung, lanjut darat, lanjut kapal). Resi hanya tahu kota tujuan dan wilayah alamat.</td><td><span class="s bl">BELUM ADA</span></td><td class="cb">☐ Sesuai<br>☐ Perlu Revisi</td><td></td></tr></table>
+
+<h3>Tahap 7. Penerusan rute darat, antar-pulau, dan arus balik</h3>
+<table><tr><th style="width:3%">No</th><th style="width:22%">Poin penjelasan</th><th style="width:34%">Kondisi aplikasi sekarang</th><th style="width:9%">Analis</th><th style="width:11%">Keputusan Anda</th><th>Catatan Anda</th></tr>
+<tr><td>7.1</td><td>Contoh Jakarta → Makassar lalu ke Sidrap: diteruskan lewat darat dan diantar sopir mitra.</td><td>Resi hanya punya satu rute asal→tujuan. Wilayah Sidrap bisa dipilih di alamat, tetapi tidak ada tahap lanjutan darat, dan sopir mitra bukan pengguna aplikasi.</td><td><span class="s bl">BELUM ADA</span></td><td class="cb">☐ Sesuai<br>☐ Perlu Revisi</td><td></td></tr>
+<tr><td>7.2</td><td>Antar-pulau lagi dari Makassar, atau balik ke Jakarta/Surabaya, mengikuti jadwal kapal.</td><td>Tidak ada alur untuk ini. Fitur transit dua leg pernah dibangun tetapi disembunyikan atas keputusan "tidak ada transit via Surabaya". Tidak ada master jadwal kapal; kapal dan voyage diisi per manifest.</td><td><span class="s bl">BELUM ADA</span></td><td class="cb">☐ Sesuai<br>☐ Perlu Revisi</td><td></td></tr></table>
+
+<h3>Tahap 8. Bukti terima di grup dan penutupan (closing)</h3>
+<table><tr><th style="width:3%">No</th><th style="width:22%">Poin penjelasan</th><th style="width:34%">Kondisi aplikasi sekarang</th><th style="width:9%">Analis</th><th style="width:11%">Keputusan Anda</th><th>Catatan Anda</th></tr>
+<tr><td>8.1</td><td>Foto bukti terima dikirim ke grup koordinasi, bukan lewat aplikasi.</td><td>Aplikasi mewajibkan bukti terima di dalam aplikasi: foto, tanda tangan, nama penerima oleh kurir. Tidak ada tempat mencatat bahwa bukti ada di grup.</td><td><span class="s bd">BERBEDA</span></td><td class="cb">☐ Sesuai<br>☐ Perlu Revisi</td><td></td></tr>
+<tr><td>8.2</td><td>Penyelesaian dipastikan oleh kasir/admin kasir di gudang tujuan bahwa paket sudah tiba.</td><td>Status "Sudah diterima" hanya bisa dicatat oleh kurir atau kepala gudang. Kasir tujuan dapat melihat resi tetapi tidak dapat menutupnya.</td><td><span class="s bd">BERBEDA</span></td><td class="cb">☐ Sesuai<br>☐ Perlu Revisi</td><td></td></tr>
+<tr><td>8.3</td><td>Judul poin: "Penutupan oleh Kasir Asal". Isi poin: kasir di gudang tujuan.</td><td>Belum bisa dipastikan siapa yang menutup dan siapa yang perlu menerima foto (lihat Bagian F, pertanyaan F1).</td><td><span class="s am">PERLU KLARIFIKASI</span></td><td class="cb">☐ Sesuai<br>☐ Perlu Revisi</td><td></td></tr></table>
+
+<h3>Tahap 9. Hak akses Owner dan Super Admin</h3>
+<table><tr><th style="width:3%">No</th><th style="width:22%">Poin penjelasan</th><th style="width:34%">Kondisi aplikasi sekarang</th><th style="width:9%">Analis</th><th style="width:11%">Keputusan Anda</th><th>Catatan Anda</th></tr>
+<tr><td>9.1</td><td>Owner mengontrol semua: alur kerja, semua cabang, mitra, hal operasional/bisnis.</td><td>Pemilik mengelola mitra, cabang, petugas, tarif/rute, pelanggan korporat, melihat semua cabang dan laporan. Pemilik tidak menjalankan operasional resi (hanya memantau) dan tidak bisa mengintervensi alur satu resi.</td><td><span class="s sb">SEBAGIAN</span></td><td class="cb">☐ Sesuai<br>☐ Perlu Revisi</td><td></td></tr>
+<tr><td>9.2</td><td>Super Admin berkuasa penuh: membuat apa saja, mengubah desain, menambah konten dan informasi, mengubah data.</td><td>Hanya ada satu peran (Pemilik/Admin pusat). Owner dan Super Admin belum dipisah. Tidak ada konsol koreksi data, dan konten yang bisa diubah dari aplikasi terbatas pada foto slider, lowongan, dan data master.</td><td><span class="s bl">BELUM ADA</span></td><td class="cb">☐ Sesuai<br>☐ Perlu Revisi</td><td></td></tr>
+<tr><td>9.3</td><td>(Dari permintaan analisis) audit log atas tindakan Super Admin.</td><td>Catatan aktivitas permanen (tidak bisa diubah/dihapus) sudah ada untuk tindakan penting. Belum ada penanda khusus tindakan Super Admin, kewajiban alasan, atau pemberitahuan ke Owner.</td><td><span class="s sb">SEBAGIAN</span></td><td class="cb">☐ Sesuai<br>☐ Perlu Revisi</td><td></td></tr></table>
+
+<h2 class="pb">Bagian B. Alur yang sudah sesuai penjelasan</h2>
+<div class="box hijau"><b>10 butir sudah sesuai</b> (1.1, 2.2, 2.3, 2.4, 3.1, 3.2, 3.3, 3.5, 5.1, 5.2). Ringkasnya, ini yang sudah berjalan seperti penjelasan Anda:
+<ol><li>Barang masuk dengan dua cara: diantar pelanggan atau dijemput; pelanggan bisa memesan dari website.</li>
+<li>Kasir membuat resi dan label; data langsung muncul bagi petugas gudang cabang asal.</li>
+<li>Petugas gudang menerima, memeriksa (foto wajib), menimbang, dan mengukur; hasilnya langsung terlihat oleh Kasir.</li>
+<li>Kasir cabang asal menentukan harga sendiri dan menerbitkan invoice; boleh menerbitkan ulang selagi belum dibayar.</li>
+<li>Pengiriman lewat manifest (kontainer, pesawat, atau truk) dengan segel, voyage, pelabuhan, dan surat jalan; tanggung jawab berpindah hanya setelah penerima menekan terima.</li>
+<li>Manifest menjadi acuan pengecekan: tiap barang dipindai di tujuan dan dicocokkan jumlahnya.</li></ol></div>
+
+<h2>Bagian C. Catatan analisis dan potensi celah teknis</h2>
+<p><small>Bagian ini hanya mencatat celah antara penjelasan Anda dan aplikasi. Bukan alur baru.</small></p>
+<table><tr><th style="width:4%">ID</th><th style="width:26%">Celah</th><th>Penjelasan dan dampak</th><th style="width:9%">Terkait</th><th style="width:7%">Tingkat</th></tr>
+<tr><td>G1</td><td>Urutan jemput terbalik</td><td>Penjelasan: data diinput setelah paket tiba. Aplikasi: resi dibuat sebelum kurir berangkat. Dampaknya, resi bisa menggantung tanpa barang bila penjemputan gagal. Pesanan jemput dari website perlu menjadi "penugasan kurir" lebih dulu, resi baru dibuat Kasir saat barang tiba.</td><td>1.2, 2.1</td><td>Tinggi</td></tr>
+<tr><td>G2</td><td>Master rute memuat harga dan kota terbatas</td><td>Resi hanya bisa dibuat bila ada rute di master, dan rute mewajibkan harga satuan walau harga kini manual. Kasir di Surabaya dan kota Indonesia Timur lain belum bisa membuat resi.</td><td>1.3</td><td>Tinggi</td></tr>
+<tr><td>G3</td><td>Pihak kontainer/PIC eksternal tanpa akun</td><td>Serah terima mensyaratkan penerima punya akun aplikasi. Penjelasan menyebut "pihak kontainer" dan "driver/sopir mitra kerja sama" yang bukan pegawai.</td><td>3.4, 7.1</td><td>Tinggi</td></tr>
+<tr><td>G4</td><td>Tidak ada berita acara bongkar</td><td>Rusak, hilang, kurang belum dicatat sebagai satu dokumen per barang dengan foto pada saat bongkar, padahal penjelasan menjadikannya catatan sebelum masuk gudang tujuan.</td><td>5.3, 4.2</td><td>Tinggi</td></tr>
+<tr><td>G5</td><td>Tidak ada sortir tujuan akhir</td><td>Setelah masuk gudang tujuan tidak ada langkah memisahkan barang menurut tujuan akhir (antar kota itu, lanjut darat, lanjut kapal).</td><td>6.1, 6.2</td><td>Tinggi</td></tr>
+<tr><td>G6</td><td>Resi satu rute, tidak berantai</td><td>Alur lanjutan darat (Makassar→Sidrap) dan antar-pulau/balik membutuhkan beberapa tahap per resi. Model sekarang satu asal-tujuan. Tahap kedua pernah ada sebagai "transit" tetapi disembunyikan.</td><td>7.1, 7.2</td><td>Tinggi</td></tr>
+<tr><td>G7</td><td>Bukti terima wajib di aplikasi</td><td>Pencatatan "Sudah diterima" mensyaratkan foto, tanda tangan, dan nama oleh kurir lewat aplikasi, sedangkan bukti sebenarnya ada di grup.</td><td>8.1</td><td>Tinggi</td></tr>
+<tr><td>G8</td><td>Kasir tidak bisa menutup resi</td><td>Hak menutup hanya pada kurir dan kepala gudang.</td><td>8.2</td><td>Tinggi</td></tr>
+<tr><td>G9</td><td>Pemisahan Owner dan Super Admin</td><td>Satu peran menanggung dua fungsi. "Super power" (ubah data, desain, konten) belum ada, dan pemantauan Owner tidak sama dengan "mengontrol alur".</td><td>9.1–9.3</td><td>Sedang</td></tr>
+<tr><td>G10</td><td>Konflik dengan jawaban sebelumnya</td><td>Anda sebelumnya menjawab "tidak ada barang transit via Surabaya". Penjelasan sekarang menyebut Jakarta–Surabaya sebagai serah terima khusus dan penerusan antar-pulau/balik. Perlu dipastikan batas mana yang berlaku (F3).</td><td>3.4, 7.2</td><td>Sedang</td></tr>
+<tr><td>G11</td><td>Tidak ada master jadwal kapal</td><td>Penjelasan mengacu "jadwal kapal yang tersedia". Aplikasi tidak menyimpan jadwal; hanya data per manifest.</td><td>7.2</td><td>Sedang</td></tr>
+<tr><td>G12</td><td>Bukti di luar aplikasi sulit diaudit</td><td>Foto di grup WhatsApp tidak terikat ke nomor resi, bisa hilang, dan tidak punya waktu serta pelaksana yang tercatat di sistem.</td><td>8.1</td><td>Sedang</td></tr>
+<tr><td>G13</td><td>Sinyal di pelabuhan</td><td>Aplikasi tanpa mode offline (keputusan sebelumnya). Pencatatan bongkar di pelabuhan atau bandara butuh sinyal.</td><td>4.2</td><td>Rendah</td></tr></table>
+
+<h2 class="pb">Bagian D. Ringkasan validasi kesesuaian</h2>
+<div class="grid"><div class="k"><b>10</b><span class="s ok">SESUAI</span></div><div class="k"><b>10</b><span class="s sb">SEBAGIAN</span></div><div class="k"><b>3</b><span class="s bd">BERBEDA</span></div><div class="k"><b>4</b><span class="s bl">BELUM ADA</span></div><div class="k"><b>1</b><span class="s am">KLARIFIKASI</span></div></div>
+<p>Dari <b>28 butir</b> penjelasan, tidak ada yang terlewat dari pemetaan. Rinciannya per tahap:</p>
+<table><tr><th>Tahap</th><th>Butir</th><th>Sesuai</th><th>Sebagian</th><th>Berbeda</th><th>Belum ada</th><th>Klarifikasi</th></tr>
+<tr><td>1 Masuknya barang</td><td>3</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td></tr>
+<tr><td>2 Input awal dan gudang asal</td><td>4</td><td>3</td><td>1</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>3 Harga, invoice, pengiriman</td><td>5</td><td>4</td><td>1</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>4 Kedatangan dan bongkar</td><td>3</td><td>0</td><td>3</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>5 Manifest dan selisih</td><td>3</td><td>2</td><td>1</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>6 Sortir gudang tujuan</td><td>2</td><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td></tr>
+<tr><td>7 Penerusan darat dan antar-pulau</td><td>2</td><td>0</td><td>0</td><td>0</td><td>2</td><td>0</td></tr>
+<tr><td>8 Bukti terima dan closing</td><td>3</td><td>0</td><td>0</td><td>2</td><td>0</td><td>1</td></tr>
+<tr><td>9 Owner dan Super Admin</td><td>3</td><td>0</td><td>2</td><td>0</td><td>1</td><td>0</td></tr>
+<tr><th>Jumlah</th><th>28</th><th>10</th><th>10</th><th>3</th><th>4</th><th>1</th></tr></table>
+<div class="box"><b>Kesimpulan.</b> Bagian <b>pangkal alur</b> (masuk gudang, input, timbang, harga, invoice, manifest, pengecekan di tujuan) sudah sesuai. Bagian <b>ujung alur</b> (bongkar bermoda, sortir tujuan akhir, penerusan darat dan antar-pulau, bukti via grup, penutupan oleh kasir, dan pemisahan Owner/Super Admin) belum sesuai 100% dan perlu pekerjaan sebelum bisa dinyatakan sesuai penuh.</div>
+
+<h2>Bagian E. Analisis mendalam dan improvisasi fitur <span style="font-size:9pt">(usulan, belum dikerjakan, menunggu persetujuan Anda)</span></h2>
+
+<h3>E1. Menjembatani foto bukti dari grup ke kasir gudang asal</h3>
+<p>Masalah: bukti ada di grup WhatsApp, sedangkan sistem butuh kepastian dan kasir asal perlu mengabari pelanggan. Tiga lapis solusi, dari yang paling sederhana:</p>
+<table><tr><th style="width:16%">Opsi</th><th>Cara kerja</th><th style="width:20%">Kelebihan / batas</th></tr>
+<tr><td><b>1. Kasir tujuan mengunggah</b></td><td>Kasir tujuan membuka resi, menekan <b>"Tutup resi"</b>, memilih foto dari galeri (foto yang diteruskan dari grup), mengisi nama penerima, tanggal dan jam terima, nama pengantar (kurir atau mitra), dan sumber "Grup koordinasi". Resi berstatus Sudah diterima dan <b>kasir asal langsung melihat</b> foto dan keterangan di halaman resi serta daftar "Bukti masuk".</td><td>Tanpa biaya, sesuai penjelasan (kasir tujuan menutup). Butuh disiplin kasir.</td></tr>
+<tr><td><b>2. Tautan unggah untuk mitra</b></td><td>Setiap resi yang diantar mitra punya <b>tautan unggah rahasia berumur pendek</b>. Mitra membukanya di HP tanpa akun, memilih foto, mengisi nama penerima, selesai. Bukti masuk ke antrean "Menunggu penutupan" kasir tujuan; kasir hanya memeriksa dan menekan tutup.</td><td>Foto terikat nomor resi, waktu, dan pelaksana tercatat. Mitra tidak perlu belajar aplikasi.</td></tr>
+<tr><td><b>3. Ambil otomatis dari grup</b></td><td>Menghubungkan grup dengan WhatsApp Business API atau bot.</td><td>Butuh keputusan biaya dan izin; saya sarankan ditunda.</td></tr></table>
+<ul><li><b>Pemberitahuan ke kasir asal:</b> setelah resi ditutup, muncul di dashboard Kasir asal "Bukti terima masuk" disertai tombol WhatsApp berisi pesan siap kirim ke pelanggan beserta tautan lacak.</li>
+<li><b>Aturan integritas:</b> penutupan tanpa foto ditolak; foto, waktu, penutup, dan sumber dicatat di catatan aktivitas; foto tidak pernah publik.</li></ul>
+
+<h3>E2. Pencatatan insiden rusak, hilang, kurang sebelum masuk gudang tujuan</h3>
+<ul><li><b>Berita Acara Bongkar</b> dibuat otomatis pada langkah bongkar manifest. Untuk tiap barang yang dipindai: <b>Sesuai / Rusak / Kurang / Lebih / Hilang</b>, dengan foto (wajib untuk Rusak), catatan, dan nama PIC penerima.</li>
+<li>Barang <b>Rusak</b>: tetap diterima ke gudang tujuan dengan penanda "dicatat rusak saat bongkar" dan otomatis membuka kendala tipe "rusak" (sudah ada) lengkap dengan foto.</li>
+<li>Barang <b>Kurang atau Hilang</b>: kasus selisih (sudah ada) kini memuat daftar barang yang tidak ditemukan; resi terkait ditahan sampai diputuskan.</li>
+<li>Berita Acara bisa diunduh dan dicetak (ditandatangani PIC pengiriman dan petugas gudang tujuan), tampil di resi, dan menjadi dasar klaim.</li>
+<li>Dilihat oleh kepala gudang asal dan Pemilik sebagai penanda; sesuai urutan penjelasan, <b>dicatat sebelum barang dianggap masuk</b> gudang tujuan.</li></ul>
+
+<h3>E3. Pelacakan multi-rute darat dan kapal (resi berantai)</h3>
+<ul><li>Resi memiliki <b>daftar tahap perjalanan (leg)</b>. Contoh Jakarta → Makassar → Sidrap: Leg 1 Kapal JKT→MKS (manifest), Leg 2 Darat MKS→Sidrap (pelaksana: mitra). Contoh arus balik: Leg 3 Kapal MKS→JKT mengikuti jadwal kapal.</li>
+<li>Tiap leg punya: moda, pelaksana (internal atau <b>mitra eksternal</b>), manifest atau jadwal, status leg, bukti serah terima.</li>
+<li><b>Master jadwal kapal</b> per rute: nama kapal, ETD, ETA, batas terima barang (cut-off). Barang yang melewati cut-off otomatis ditandai "jadwal berikutnya".</li>
+<li><b>Sortir tujuan akhir</b> (Tahap 6) menjadi langkah di gudang tujuan: barang dipilah menjadi Antar lokal, Lanjut darat, atau Lanjut kapal, lalu ditautkan ke leg berikutnya.</li>
+<li>Halaman lacak pelanggan menampilkan seluruh leg sebagai satu garis waktu, tanpa tahap tampak mundur. Tahap transit yang ada sekarang dapat dijadikan dasar, digeneralisasi dari 2 leg menjadi banyak leg.</li>
+<li><b>Mitra tanpa akun</b> memakai tautan unggah (E1) untuk serah terima dan bukti.</li></ul>
+
+<h3>E4. Kontrol Owner dan Super Admin serta audit log</h3>
+<table><tr><th style="width:15%">Peran</th><th>Usulan hak akses</th></tr>
+<tr><td><b>Owner</b></td><td>Melihat seluruh cabang dan mitra, semua laporan; mengelola mitra, cabang, tarif, petugas; <b>mengintervensi alur</b> (misalnya menahan atau melepas resi, memutuskan klaim dan selisih, menyetujui tindakan berisiko). Tidak mengubah desain atau data mentah.</td></tr>
+<tr><td><b>Super Admin (super power)</b></td><td>Konsol khusus: koreksi data (status, isian resi, master), kelola konten website dan teks aplikasi, kelola master dan konfigurasi, tambah peran dan hak akses, serta mengatur tema dan tata letak yang tersedia sebagai pengaturan. Perubahan kode program tetap lewat pengembangan.</td></tr></table>
+<ul><li><b>Audit log Super Admin:</b> setiap tindakan Super Admin bertanda khusus, <b>wajib beralasan</b>, menyimpan nilai sebelum dan sesudah, waktu, perangkat, dan alamat IP; log tidak bisa diubah atau dihapus oleh siapa pun (sudah demikian untuk catatan aktivitas sekarang).</li>
+<li><b>Dua kunci untuk tindakan berisiko</b> (menghapus data, mengubah angka keuangan, mengubah peran): memerlukan persetujuan Owner sebelum berlaku.</li>
+<li><b>Pemberitahuan ke Owner</b> setiap kali Super Admin mengubah data transaksi; daftar "Perubahan oleh Super Admin" di dashboard Owner.</li>
+<li><b>Keamanan akun:</b> verifikasi dua langkah (2FA) wajib untuk Super Admin dan Owner. Saat ini 2FA ditunda; saya sarankan mengaktifkannya untuk kedua peran ini lebih dulu.</li>
+<li>Pemisahan dilakukan dengan menambah peran baru, tanpa mengubah akun dan hak akses yang sudah berjalan.</li></ul>
+
+<h3>E5. Perbaikan pendukung (agar alur sesuai penjelasan)</h3>
+<ul><li><b>Jemput sesuai penjelasan:</b> pesanan jemput menjadi penugasan kurir; resi dibuat Kasir saat barang tiba (menutup G1).</li>
+<li><b>Master rute tanpa harga</b> dan menambah Surabaya serta kota-kota Indonesia Timur (menutup G2).</li>
+<li><b>Peran PIC pengiriman:</b> peran jelas untuk PIC asal dan PIC tujuan, termasuk PIC eksternal lewat tautan (menutup G3).</li>
+<li><b>Peran Admin Kasir</b> bila memang berbeda dari Kasir (lihat F2).</li></ul>
+
+<h2 class="pb">Bagian F. Pertanyaan klarifikasi (mohon dijawab agar tidak ada yang saya karang)</h2>
+<table><tr><th style="width:4%">No</th><th>Pertanyaan</th><th style="width:15%">Jawaban Anda</th></tr>
+<tr><td>F1</td><td>Poin 8 berjudul "Penutupan oleh Kasir Asal", tetapi isinya "kasir atau admin kasir di gudang tujuan". Yang menutup resi: kasir gudang <b>tujuan</b>, kasir gudang <b>asal</b>, atau keduanya (tujuan memastikan tiba, asal menutup untuk customer)?</td><td>☐ Tujuan ☐ Asal ☐ Keduanya</td></tr>
+<tr><td>F2</td><td>"Kasir atau admin Kamil Logistik": apakah "admin" peran berbeda dari Kasir (dengan hak berbeda), atau sebutan lain untuk Kasir?</td><td>☐ Sama ☐ Berbeda</td></tr>
+<tr><td>F3</td><td>Jakarta–Surabaya "serah terima khusus": jelaskan bedanya dengan rute lain. Dan antar-pulau/arus balik: apakah resi yang sama berlanjut (satu nomor resi dengan beberapa tahap), atau dibuat resi baru di Makassar?</td><td>☐ Satu resi ☐ Resi baru</td></tr>
+<tr><td>F4</td><td>"PIC pengiriman" dan "pihak kontainer" itu pegawai Kamil yang akan punya akun, atau pihak luar (ekspedisi pelayaran, mitra) yang tidak memakai aplikasi?</td><td>☐ Pegawai ☐ Pihak luar ☐ Dua-duanya</td></tr>
+<tr><td>F5</td><td>Bukti terima via grup: apakah aplikasi tetap perlu menyimpan salinan foto (diunggah kasir), atau cukup mencatat "bukti ada di grup" tanpa foto?</td><td>☐ Simpan foto ☐ Catat saja</td></tr>
+<tr><td>F6</td><td>Penutupan wajib: apakah resi tidak boleh ditutup tanpa foto bukti, atau boleh dengan alasan (mis. foto belum masuk grup)?</td><td>☐ Wajib foto ☐ Boleh dengan alasan</td></tr>
+<tr><td>F7</td><td>Super Admin: siapa orangnya (satu orang pengembang/admin pusat atau lebih), dan apakah Owner boleh melihat semua tindakannya?</td><td></td></tr>
+<tr><td>F8</td><td>Setelah barang rusak/kurang dicatat saat bongkar, siapa yang berhak memutuskan penanganannya (kepala gudang tujuan, kepala gudang asal, atau Owner)?</td><td></td></tr></table>
+
+<h2>Prioritas usulan perbaikan (jika semua klarifikasi disetujui)</h2>
+<table><tr><th style="width:8%">Urutan</th><th>Pekerjaan</th><th style="width:20%">Menutup celah</th></tr>
+<tr><td>P0</td><td>Jemput sesuai penjelasan (resi setelah barang tiba); master rute tanpa harga dan kota baru; penutupan resi oleh kasir dengan bukti dari grup.</td><td>G1, G2, G7, G8</td></tr>
+<tr><td>P1</td><td>Berita Acara Bongkar (rusak, hilang, kurang); peran PIC dan serah terima eksternal lewat tautan; sortir tujuan akhir.</td><td>G3, G4, G5</td></tr>
+<tr><td>P2</td><td>Resi berantai (darat, antar-pulau, balik) dan master jadwal kapal; pemisahan Owner dan Super Admin dengan audit log dan dua kunci.</td><td>G6, G9, G11</td></tr></table>
+
+<p class="foot">Kamil Logistik · Form verifikasi alur · analisis berdasarkan kode sumber dan basis data pada cabang pengembangan. Tidak ada perubahan fitur yang dibuat untuk dokumen ini.</p>
+</body></html>
