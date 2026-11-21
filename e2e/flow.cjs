@@ -1395,7 +1395,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await sa.page.goto(`${BASE}/app/koreksi`, { waitUntil: "networkidle" });
     ok("AJ4 Super Admin membuka konsol koreksi (alasan wajib)", /Koreksi data/.test(await text(sa.page)) && /Alasan koreksi/.test(await text(sa.page)));
     await sa.page.fill("#kr-kode", "KML-TIDAK-ADA"); await sa.page.selectOption("#kr-status", "AT_DEST_HUB"); await sa.page.fill("#kr-alasan", "Uji koreksi resi tidak ada");
-    await sa.page.getByRole("button", { name: "Koreksi status" }).click(); await sa.page.waitForURL(/koreksi\?e=/, { timeout: 15000 }).catch(() => {});
+    await sa.page.getByRole("button", { name: "Koreksi status" }).click(); await sa.page.waitForSelector(".err", { timeout: 15000 }).catch(() => {});
     ok("AJ5 koreksi resi yang tidak ada ditolak dengan pesan jelas", /tidak ditemukan|tidak dikenali/i.test(await text(sa.page)), (await text(sa.page)).slice(0, 200));
     await sa.ctx.close();
     const kj = await login(browser, "kasir@uji.id");
@@ -1403,7 +1403,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("AJ6 kasir tidak bisa membuka konsol koreksi", !/Koreksi data/.test(await text(kj.page)) && !/\/app\/koreksi/.test(kj.page.url()));
     await kj.page.goto(`${BASE}/app/jemput`, { waitUntil: "networkidle" });
     ok("AJ7 pesanan jemput menawarkan tombol buat resi setelah barang tiba", (await kj.page.locator("a[href^='/app/baru?jemput=']").count()) >= 1, (await text(kj.page)).slice(0, 160));
-    await kj.page.locator("a[href^='/app/baru?jemput=']").first().click(); await kj.page.waitForURL(/baru\?jemput=/, { timeout: 15000 });
+    await kj.page.locator("a[href^='/app/baru?jemput=']").first().click(); await kj.page.waitForURL(/baru\?jemput=/, { timeout: 15000 }); await kj.page.waitForSelector("#pengirim", { timeout: 15000 });
     ok("AJ8 form resi dari pesanan jemput terisi data pengirim dan tanpa pilihan cara masuk", /Dari pesanan jemput/.test(await text(kj.page)) && (await kj.page.inputValue("#pengirim")).length > 1 && (await kj.page.getByText("Diantar sendiri").count()) === 0);
     await kj.ctx.close();
   }
