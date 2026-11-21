@@ -1162,7 +1162,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     const sqlq = (q) => cp.spawnSync("su", ["postgres", "-c", `psql -At -q -X -d ${dbn}`], { input: q, encoding: "utf8" }).stdout.trim();
     sqlq(`INSERT INTO staff_invites(email, full_name, role, branch_id) VALUES ('finance@uji.id','Finance Uji','FINANCE',NULL),('cs@uji.id','CS Uji','CS_SALES',(SELECT id FROM branches_partners WHERE code='JKT'));
       INSERT INTO auth.users(id,email,encrypted_password,email_confirmed_at,aud,role,raw_app_meta_data,raw_user_meta_data) SELECT gen_random_uuid(), email, extensions.crypt('Test1234', extensions.gen_salt('bf')), now(),'authenticated','authenticated','{}','{}' FROM staff_invites WHERE email IN ('finance@uji.id','cs@uji.id');`);
-    const iso = (n) => new Date(Date.now() + n * 86400000).toISOString().slice(0, 10);
+    const iso = (n) => new Date(Date.now() + 8 * 3600000 + n * 86400000).toISOString().slice(0, 10); // tanggal WITA, sama dengan aplikasi
     const pesan = async (p) => ((await p.locator(".ok, .err").first().textContent({ timeout: 8000 }).catch(() => "")) || "").trim();
 
     // Absen dan cuti oleh petugas lapangan
