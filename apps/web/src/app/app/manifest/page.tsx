@@ -20,14 +20,14 @@ export default async function Manifest({ searchParams }: { searchParams: Promise
   const menunggu = rows.filter((x) => x.pendingToMe);
   return (
     <main className="wrap stack" style={{ paddingTop: 8 }}>
-      <div className="dashhead">
-        <div><h1 style={{ marginBottom: 2 }}>Manifest</h1><span className="muted">Satu manifest = satu muatan (kontainer, pesawat, atau truk) ke satu kota tujuan.</span></div>
+      <div className="pghead">
+        <div><h1>Manifest</h1><p className="muted">Satu manifest = satu muatan (kontainer, pesawat, atau truk) ke satu kota tujuan.</p></div>
         {bisaBuat && <Link href="/app/manifest/baru" className="btn shine"><Icon name="plus" size={20} /> Buat manifest</Link>}
       </div>
       {menunggu.length > 0 && <div className="banner"><b>{menunggu.length} manifest menunggu Anda menerima.</b> Buka manifestnya lalu tekan tombol terima.</div>}
       <nav className="chips" aria-label="Saring">{TABS.map((t) => <Link key={t.k} className={`chip ${tab === t.k ? "on" : ""}`} href={t.k ? `/app/manifest?s=${t.k}` : "/app/manifest"}>{t.t}</Link>)}</nav>
       {r.error && <div className="err">{r.error}</div>}
-      <div className="stagger">
+      <div className="stagger mlist">
         {rows.map((m) => (
           <Link key={m.id} href={`/app/manifest/${m.id}`} className="card resi lift">
             <span className="ic"><Icon name={m.mode === "UDARA" ? "plane" : m.mode === "DARAT" ? "truck" : "ship"} size={24} /></span>

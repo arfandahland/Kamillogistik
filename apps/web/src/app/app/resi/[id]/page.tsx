@@ -60,211 +60,215 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
       {sp.ok && <div className="ok" role="status">{sp.ok}</div>}
       {sp.e && <div className="err" role="alert">{sp.e}</div>}
 
-      <div className="card">
-        <span className="muted">Nomor resi</span>
-        <h1 className="resicode">{s.resiNo}</h1>
-        <p><span className={`pill ${s.status === "DELIVERED" ? "done" : ""}`}>{statusLabel(s.status, s.mode)}</span>{" "}
-          <span className="muted">{s.origin.city} → {s.dest.city}</span></p>
-        <p className="chipsrow">
-          <span className="tag moda"><Icon name={s.mode === "UDARA" ? "plane" : s.mode === "DARAT" ? "truck" : "ship"} size={14} /> {MODA_LABEL[s.mode]}</span>
-          <span className="tag"><Icon name={s.pickupType === "PICKUP" ? "truck" : "home"} size={14} /> {MASUK_LABEL[s.pickupType]}</span>
-          {s.segment === "B2B" && <span className="tag corp"><Icon name="building" size={14} /> {s.company ?? "Korporat"}</span>}
-        </p>
-        <KodeResi kode={s.resiNo} kota={{ [s.origin.code]: s.origin.city, [s.dest.code]: s.dest.city }} />
-        <ResiStepper status={s.status} masuk={s.pickupType} mode={s.mode} />
-        <dl className="kv">
-          {s.receiverAddress && (<><dt>Alamat</dt><dd>{s.receiverAddress}</dd></>)}
-          {s.area && (<><dt>Wilayah tujuan</dt><dd>{s.area.village}, {s.area.district}, {s.area.regency}, {s.area.province}</dd></>)}
-          {s.vehicle && (<><dt>Kendaraan</dt><dd>{[s.vehicle.jenis, s.vehicle.merek, s.vehicle.nopol].filter(Boolean).join(" · ")}{s.vehicle.stnk ? ` · STNK: ${s.vehicle.stnk}` : ""}{s.vehicle.bpkb ? ` · BPKB: ${s.vehicle.bpkb}` : ""}</dd></>)}
-          {s.pickupType === "PICKUP" && s.pickupAddress && (<><dt>Alamat jemput</dt><dd>{s.pickupAddress}</dd></>)}
-          <dt>Barang dipegang</dt><dd>{s.iAmHolder ? "Anda" : s.holder?.name ?? (s.pickupType === "PICKUP" ? "Belum ada (menunggu dijemput)" : "Belum ada (menunggu diantar pelanggan)")}</dd>
-        </dl>
-        <div className="followup" aria-label="Hubungi pelanggan">
-          {([["Pengirim", s.senderName, s.senderPhone, "pengirim"], ["Penerima", s.receiverName, s.receiverPhone, "penerima"]] as const).map(([peran, nama, hp, kind]) => {
-            const n = hp ? normalizePhone(hp) : null;
-            if (!n || !n.ok) return <div key={peran} className="fu none"><b>{peran}</b><small>Nomor HP belum ada atau tidak valid. Minta kasir melengkapi.</small></div>;
-            const pesan = `Halo ${nama}, kami dari Kamil Logistik. Kabar paket ${s.resiNo} (${s.origin.city} → ${s.dest.city}): ${statusLabel(s.status, s.mode)}. ${kind === "penerima" && s.status === "OUT_FOR_DELIVERY" ? "Kurir kami sedang menuju alamat Anda, mohon siap menerima. " : ""}Pantau di ${SITE_URL}/lacak/${s.resiNo}`;
-            return (
-              <div key={peran} className="fu"><span><b>{peran}</b><small>{nama} · {n.display}</small></span>
-                <a className="btn sm wabtn" href={chatLink(n.wa, pesan)} target="_blank" rel="noopener noreferrer"><Icon name="chat" size={18} /> Chat</a>
-                <a className="btn sm ghost" href={telLink(n.wa)} aria-label={`Telepon ${peran.toLowerCase()}`}><Icon name="phone" size={18} /> Telepon</a>
-              </div>
-            );
-          })}
-        </div>
-        {CAN_PRINT_LABEL.includes(role) && (isOrigin || (here !== null && here === s.at)) && (
-        <div className="resiact">
-          <Link className="btn" href={`/app/resi/${s.id}/cetak`}><Icon name="print" size={20} /> Cetak label</Link>
-        </div>
-        )}
-      </div>
-
-      {pendingToMe && (
-        <form action={terima} className="card banner">
-          <b>{pendingToMe.fromName} menyerahkan barang ini kepada Anda.</b>
-          <p className="muted" style={{ margin: "6px 0 10px" }}>Periksa barangnya dulu, baru tekan tombol di bawah.</p>
-          <input type="hidden" name="id" value={s.id} /><input type="hidden" name="hid" value={pendingToMe.id} />
-          <SubmitButton className="btn green" steps={["Memeriksa serah terima…", "Memindahkan tanggung jawab…", "Mencatat riwayat…"]}>Ya, barang sudah saya terima</SubmitButton>
-        </form>
-      )}
-
-      {action?.kind === "advance" && (action.to === "PICKED_UP" || action.to === "AT_ORIGIN_HUB") && (s.status === "CREATED" || s.iAmHolder || role === "SUPER_ADMIN" || role === "HUB_MANAGER") && role !== "SUPER_ADMIN" && (
-        <KondisiForm id={s.id} stage={action.to === "PICKED_UP" ? "PICKUP" : "ORIGIN_HUB"} to={action.to} done={action.done} action={periksa} pieces={s.items.length}
-          title={action.to === "PICKED_UP" ? "Periksa dan foto barang" : "Periksa barang yang diterima"}
-          hint={action.to === "PICKED_UP" ? "Sebelum dibawa, foto barangnya dan catat kondisinya. Ini melindungi Anda dan pelanggan kalau ada sengketa." : "Cocokkan jumlah dengan resi, foto barangnya, dan catat kondisinya sebelum ditimbang."}
-          button={action.label} />
-      )}
-      {action?.kind === "advance" && !((action.to === "PICKED_UP" || action.to === "AT_ORIGIN_HUB") && role !== "SUPER_ADMIN") && (
-        s.status === "CREATED" || s.iAmHolder || role === "SUPER_ADMIN" || role === "HUB_MANAGER" ? (
-          <form action={lanjut} className="card">
-            <h2>Langkah berikutnya</h2>
-            <input type="hidden" name="id" value={s.id} /><input type="hidden" name="to" value={action.to} /><input type="hidden" name="done" value={action.done} />
-            <SubmitButton steps={["Menyimpan langkah…", "Memperbarui status…", "Mencatat riwayat…"]}>{action.label}</SubmitButton>
-          </form>
-        ) : (
-          <div className="card"><h2>Langkah berikutnya</h2>
-            <p className="muted" style={{ margin: 0 }}>Barang belum diserahkan kepada Anda. Minta {s.holder?.name ?? "pemegang barang"} menyerahkannya lewat aplikasi ini, lalu Anda tekan terima.</p></div>
-        )
-      )}
-
-      {atMine && ["AT_ORIGIN_HUB", "SORTED_INVOICED"].includes(s.status) && !s.manifest && ["WAREHOUSE", "HUB_MANAGER"].includes(role) && (() => {
-        const sudah = s.items.filter((x) => x.weightKg != null).length;
-        const belum = s.items.find((x) => x.weightKg == null) ?? s.items[0];
-        return (
-          <div className="card">
-            <h2>{s.status === "SORTED_INVOICED" ? "Perbaiki data timbang" : "Timbang barang"}</h2>
-            <p className="muted" style={{ marginTop: 0 }}>{sudah} dari {s.items.length} barang sudah ditimbang. Pindai barcode tiap barang, isi berat dan ukurannya. Resi otomatis Sudah ditimbang bila semua barang tercatat.</p>
-            {role === "WAREHOUSE" && belum
-              ? <Link className="btn" href={`/app/timbang?kode=${encodeURIComponent(belum.barcode)}`}><Icon name="scan" size={20} /> {sudah === 0 ? "Mulai menimbang" : s.status === "SORTED_INVOICED" ? "Perbaiki data timbang" : "Lanjut menimbang"}</Link>
-              : <p className="hint" style={{ margin: 0 }}>Penimbangan dilakukan staf gudang dengan memindai barcode barang.</p>}
+      <div className="dcols">
+        <div className="dkol">
+        <div className="card">
+          <span className="muted">Nomor resi</span>
+          <h1 className="resicode">{s.resiNo}</h1>
+          <p><span className={`pill ${s.status === "DELIVERED" ? "done" : ""}`}>{statusLabel(s.status, s.mode)}</span>{" "}
+            <span className="muted">{s.origin.city} → {s.dest.city}</span></p>
+          <p className="chipsrow">
+            <span className="tag moda"><Icon name={s.mode === "UDARA" ? "plane" : s.mode === "DARAT" ? "truck" : "ship"} size={14} /> {MODA_LABEL[s.mode]}</span>
+            <span className="tag"><Icon name={s.pickupType === "PICKUP" ? "truck" : "home"} size={14} /> {MASUK_LABEL[s.pickupType]}</span>
+            {s.segment === "B2B" && <span className="tag corp"><Icon name="building" size={14} /> {s.company ?? "Korporat"}</span>}
+          </p>
+          <KodeResi kode={s.resiNo} kota={{ [s.origin.code]: s.origin.city, [s.dest.code]: s.dest.city }} />
+          <ResiStepper status={s.status} masuk={s.pickupType} mode={s.mode} />
+          <dl className="kv">
+            {s.receiverAddress && (<><dt>Alamat</dt><dd>{s.receiverAddress}</dd></>)}
+            {s.area && (<><dt>Wilayah tujuan</dt><dd>{s.area.village}, {s.area.district}, {s.area.regency}, {s.area.province}</dd></>)}
+            {s.vehicle && (<><dt>Kendaraan</dt><dd>{[s.vehicle.jenis, s.vehicle.merek, s.vehicle.nopol].filter(Boolean).join(" · ")}{s.vehicle.stnk ? ` · STNK: ${s.vehicle.stnk}` : ""}{s.vehicle.bpkb ? ` · BPKB: ${s.vehicle.bpkb}` : ""}</dd></>)}
+            {s.pickupType === "PICKUP" && s.pickupAddress && (<><dt>Alamat jemput</dt><dd>{s.pickupAddress}</dd></>)}
+            <dt>Barang dipegang</dt><dd>{s.iAmHolder ? "Anda" : s.holder?.name ?? (s.pickupType === "PICKUP" ? "Belum ada (menunggu dijemput)" : "Belum ada (menunggu diantar pelanggan)")}</dd>
+          </dl>
+          <div className="followup" aria-label="Hubungi pelanggan">
+            {([["Pengirim", s.senderName, s.senderPhone, "pengirim"], ["Penerima", s.receiverName, s.receiverPhone, "penerima"]] as const).map(([peran, nama, hp, kind]) => {
+              const n = hp ? normalizePhone(hp) : null;
+              if (!n || !n.ok) return <div key={peran} className="fu none"><b>{peran}</b><small>Nomor HP belum ada atau tidak valid. Minta kasir melengkapi.</small></div>;
+              const pesan = `Halo ${nama}, kami dari Kamil Logistik. Kabar paket ${s.resiNo} (${s.origin.city} → ${s.dest.city}): ${statusLabel(s.status, s.mode)}. ${kind === "penerima" && s.status === "OUT_FOR_DELIVERY" ? "Kurir kami sedang menuju alamat Anda, mohon siap menerima. " : ""}Pantau di ${SITE_URL}/lacak/${s.resiNo}`;
+              return (
+                <div key={peran} className="fu"><span><b>{peran}</b><small>{nama} · {n.display}</small></span>
+                  <a className="btn sm wabtn" href={chatLink(n.wa, pesan)} target="_blank" rel="noopener noreferrer"><Icon name="chat" size={18} /> Chat</a>
+                  <a className="btn sm ghost" href={telLink(n.wa)} aria-label={`Telepon ${peran.toLowerCase()}`}><Icon name="phone" size={18} /> Telepon</a>
+                </div>
+              );
+            })}
           </div>
-        );
-      })()}
+          {CAN_PRINT_LABEL.includes(role) && (isOrigin || (here !== null && here === s.at)) && (
+          <div className="resiact">
+            <Link className="btn" href={`/app/resi/${s.id}/cetak`}><Icon name="print" size={20} /> Cetak label</Link>
+          </div>
+          )}
+        </div>
 
-      {role === "MITRA_POS" && isOrigin && !["CREATED", "PICKED_UP", "AT_ORIGIN_HUB", "CANCELLED", "EXCEPTION"].includes(s.status) && (!s.invoice || s.invoice.status !== "PAID") && (() => {
-        const aktual = s.items.reduce((a, x) => a + Number(x.weightKg ?? 0), 0), cm3 = s.items.reduce((a, x) => a + Number(x.lCm ?? 0) * Number(x.wCm ?? 0) * Number(x.hCm ?? 0), 0);
-        const div = s.mode === "UDARA" ? 6000 : 4000;
-        return <InvoiceForm id={s.id} aktualKg={aktual} volumeKg={Math.round((cm3 / div) * 100) / 100} volumeM3={Math.round((cm3 / 1e6) * 10000) / 10000} ada={!!s.invoice} judul={s.invoice ? "Ubah invoice" : "Buat invoice"} />;
-      })()}
+        {pendingToMe && (
+          <form action={terima} className="card banner">
+            <b>{pendingToMe.fromName} menyerahkan barang ini kepada Anda.</b>
+            <p className="muted" style={{ margin: "6px 0 10px" }}>Periksa barangnya dulu, baru tekan tombol di bawah.</p>
+            <input type="hidden" name="id" value={s.id} /><input type="hidden" name="hid" value={pendingToMe.id} />
+            <SubmitButton className="btn green" steps={["Memeriksa serah terima…", "Memindahkan tanggung jawab…", "Mencatat riwayat…"]}>Ya, barang sudah saya terima</SubmitButton>
+          </form>
+        )}
 
-      {s.manifest && (
-        <Link href={`/app/manifest/${s.manifest.id}`} className="card lift manifestlink">
-          <span className="ic"><Icon name="layers" size={22} /></span>
-          <span><b>Ada di manifest</b><br /><code style={{ fontSize: 12.5, wordBreak: "break-all" }}>{s.manifest.code}</code></span>
-          <Icon name="arrow" size={20} />
-        </Link>
-      )}
-      {action?.kind === "manifest" && (
-        <div className="card banner"><b>Langkah berikutnya lewat manifest</b>
-          <p className="muted" style={{ margin: "6px 0 10px" }}>{action.hint}</p>
-          <Link className="btn" href={s.manifest ? `/app/manifest/${s.manifest.id}` : "/app/manifest"}><Icon name="layers" size={20} /> {action.label}</Link></div>
-      )}
-      {action?.kind === "pod" && <PodForm id={s.id} action={catatTerima} defaultName={s.receiverName} />}
+        {action?.kind === "advance" && (action.to === "PICKED_UP" || action.to === "AT_ORIGIN_HUB") && (s.status === "CREATED" || s.iAmHolder || role === "SUPER_ADMIN" || role === "HUB_MANAGER") && role !== "SUPER_ADMIN" && (
+          <KondisiForm id={s.id} stage={action.to === "PICKED_UP" ? "PICKUP" : "ORIGIN_HUB"} to={action.to} done={action.done} action={periksa} pieces={s.items.length}
+            title={action.to === "PICKED_UP" ? "Periksa dan foto barang" : "Periksa barang yang diterima"}
+            hint={action.to === "PICKED_UP" ? "Sebelum dibawa, foto barangnya dan catat kondisinya. Ini melindungi Anda dan pelanggan kalau ada sengketa." : "Cocokkan jumlah dengan resi, foto barangnya, dan catat kondisinya sebelum ditimbang."}
+            button={action.label} />
+        )}
+        {action?.kind === "advance" && !((action.to === "PICKED_UP" || action.to === "AT_ORIGIN_HUB") && role !== "SUPER_ADMIN") && (
+          s.status === "CREATED" || s.iAmHolder || role === "SUPER_ADMIN" || role === "HUB_MANAGER" ? (
+            <form action={lanjut} className="card">
+              <h2>Langkah berikutnya</h2>
+              <input type="hidden" name="id" value={s.id} /><input type="hidden" name="to" value={action.to} /><input type="hidden" name="done" value={action.done} />
+              <SubmitButton steps={["Menyimpan langkah…", "Memperbarui status…", "Mencatat riwayat…"]}>{action.label}</SubmitButton>
+            </form>
+          ) : (
+            <div className="card"><h2>Langkah berikutnya</h2>
+              <p className="muted" style={{ margin: 0 }}>Barang belum diserahkan kepada Anda. Minta {s.holder?.name ?? "pemegang barang"} menyerahkannya lewat aplikasi ini, lalu Anda tekan terima.</p></div>
+          )
+        )}
 
-      {atMine && ["ARRIVED_DEST_PORT", "AT_DEST_HUB", "OUT_FOR_DELIVERY"].includes(s.status) && ["WAREHOUSE", "HUB_MANAGER", "DRIVER"].includes(role ?? "") && !s.inspections.some((i) => i.stage === "DEST_HUB") && (
-        <details className="card destlapor"><summary><Icon name="camera" size={20} /> Laporkan kondisi barang di sini</summary>
-          <KondisiForm id={s.id} stage="DEST_HUB" action={periksa} pieces={s.items.length} title="Kondisi barang di kota tujuan" hint="Isi bila ada kerusakan, atau sebagai bukti barang tiba dengan baik. Foto boleh kosong kalau kondisinya baik." button="Simpan laporan kondisi" />
-        </details>
-      )}
-      {s.inspections.length > 0 && (
-        <div className="card inspview">
-          <h2>Pemeriksaan fisik barang</h2>
-          {s.inspections.map((n) => (
-            <div key={n.id} className={`insp ${isProblem(n) ? "bad" : ""}`}>
-              <div className="insph"><b>{STAGE_LABEL[n.stage]}</b><span className={`pill ${isProblem(n) ? "warn" : "done"}`}>{n.conditions.map((c) => KONDISI_LABEL[c] ?? c).join(", ")}</span></div>
-              <p className="muted" style={{ margin: "2px 0" }}>{n.contents} · {KEMASAN_LABEL[n.packaging] ?? n.packaging}{n.pieces ? ` · ${n.pieces} barang` : ""}</p>
-              {n.note && <p style={{ margin: "2px 0" }}>Catatan: {n.note}</p>}
-              <small className="muted">{n.by ?? "Petugas"} · {tanggalWaktu(n.at)}</small>
-              {n.photos > 0 && <div className="inspfotos">{Array.from({ length: n.photos }, (_, i) => (
-                <a key={i} href={`/app/foto/${n.id}/${i + 1}`} target="_blank" rel="noopener noreferrer"><img src={`/app/foto/${n.id}/${i + 1}`} alt={`Foto ${i + 1} ${STAGE_LABEL[n.stage]}`} loading="lazy" width="96" height="96" /></a>
-              ))}</div>}
+        {atMine && ["AT_ORIGIN_HUB", "SORTED_INVOICED"].includes(s.status) && !s.manifest && ["WAREHOUSE", "HUB_MANAGER"].includes(role) && (() => {
+          const sudah = s.items.filter((x) => x.weightKg != null).length;
+          const belum = s.items.find((x) => x.weightKg == null) ?? s.items[0];
+          return (
+            <div className="card">
+              <h2>{s.status === "SORTED_INVOICED" ? "Perbaiki data timbang" : "Timbang barang"}</h2>
+              <p className="muted" style={{ marginTop: 0 }}>{sudah} dari {s.items.length} barang sudah ditimbang. Pindai barcode tiap barang, isi berat dan ukurannya. Resi otomatis Sudah ditimbang bila semua barang tercatat.</p>
+              {role === "WAREHOUSE" && belum
+                ? <Link className="btn" href={`/app/timbang?kode=${encodeURIComponent(belum.barcode)}`}><Icon name="scan" size={20} /> {sudah === 0 ? "Mulai menimbang" : s.status === "SORTED_INVOICED" ? "Perbaiki data timbang" : "Lanjut menimbang"}</Link>
+                : <p className="hint" style={{ margin: 0 }}>Penimbangan dilakukan staf gudang dengan memindai barcode barang.</p>}
+            </div>
+          );
+        })()}
+
+        {role === "MITRA_POS" && isOrigin && !["CREATED", "PICKED_UP", "AT_ORIGIN_HUB", "CANCELLED", "EXCEPTION"].includes(s.status) && (!s.invoice || s.invoice.status !== "PAID") && (() => {
+          const aktual = s.items.reduce((a, x) => a + Number(x.weightKg ?? 0), 0), cm3 = s.items.reduce((a, x) => a + Number(x.lCm ?? 0) * Number(x.wCm ?? 0) * Number(x.hCm ?? 0), 0);
+          const div = s.mode === "UDARA" ? 6000 : 4000;
+          return <InvoiceForm id={s.id} aktualKg={aktual} volumeKg={Math.round((cm3 / div) * 100) / 100} volumeM3={Math.round((cm3 / 1e6) * 10000) / 10000} ada={!!s.invoice} judul={s.invoice ? "Ubah invoice" : "Buat invoice"} />;
+        })()}
+
+        {s.manifest && (
+          <Link href={`/app/manifest/${s.manifest.id}`} className="card lift manifestlink">
+            <span className="ic"><Icon name="layers" size={22} /></span>
+            <span><b>Ada di manifest</b><br /><code style={{ fontSize: 12.5, wordBreak: "break-all" }}>{s.manifest.code}</code></span>
+            <Icon name="arrow" size={20} />
+          </Link>
+        )}
+        {action?.kind === "manifest" && (
+          <div className="card banner"><b>Langkah berikutnya lewat manifest</b>
+            <p className="muted" style={{ margin: "6px 0 10px" }}>{action.hint}</p>
+            <Link className="btn" href={s.manifest ? `/app/manifest/${s.manifest.id}` : "/app/manifest"}><Icon name="layers" size={20} /> {action.label}</Link></div>
+        )}
+        {action?.kind === "pod" && <PodForm id={s.id} action={catatTerima} defaultName={s.receiverName} />}
+
+        {atMine && ["ARRIVED_DEST_PORT", "AT_DEST_HUB", "OUT_FOR_DELIVERY"].includes(s.status) && ["WAREHOUSE", "HUB_MANAGER", "DRIVER"].includes(role ?? "") && !s.inspections.some((i) => i.stage === "DEST_HUB") && (
+          <details className="card destlapor"><summary><Icon name="camera" size={20} /> Laporkan kondisi barang di sini</summary>
+            <KondisiForm id={s.id} stage="DEST_HUB" action={periksa} pieces={s.items.length} title="Kondisi barang di kota tujuan" hint="Isi bila ada kerusakan, atau sebagai bukti barang tiba dengan baik. Foto boleh kosong kalau kondisinya baik." button="Simpan laporan kondisi" />
+          </details>
+        )}
+        {s.iAmHolder && directory.length > 0 && s.status !== "DELIVERED" && (
+          <form action={serahkan} className="card">
+            <h2>Serahkan barang ke petugas lain</h2>
+            <input type="hidden" name="id" value={s.id} />
+            <label className="f" htmlFor="ke">Diserahkan kepada</label>
+            <select id="ke" name="ke" required defaultValue="">
+              <option value="" disabled>Pilih petugas…</option>
+              {directory.map((u) => <option key={u.id} value={u.id}>{u.name} — {ROLE_LABEL[u.role] ?? u.role}{u.branchName ? ` (${u.branchName})` : ""}</option>)}
+            </select>
+            <p className="hint">Penerima harus menekan tombol terima di HP-nya. Sebelum itu, barang masih tanggung jawab Anda.</p>
+            <SubmitButton className="btn ghost" steps={["Memeriksa penerima…", "Mengirim permintaan serah terima…"]}>Serahkan barang</SubmitButton>
+          </form>
+        )}
+        {pending && !pendingToMe && (
+          <div className="banner">Menunggu {pending.toName} menekan tombol terima.</div>
+        )}
+
+        <KendalaPanel shipmentId={s.id} role={atMine ? role : "VIEW"} status={s.status} />
+        <TeruskanPanel id={s.id} status={s.status} role={role} branchName={me.data.branchName ?? null} destName={s.dest.name} legs={s.legs ?? []}
+          hubs={["MITRA_POS", "HUB_MANAGER"].includes(role) && s.status === "AT_DEST_HUB" ? (await staffRpc<{ id: string; name: string; city: string }[]>("staff_dest_hubs")).data ?? [] : []} />
+        <TutupResiPanel s={s} role={role} branchName={me.data.branchName ?? null} />
+        <RevisiPanel s={s} role={isOrigin ? role : "VIEW"} />
+        </div>
+        <div className="dkol">
+        {s.details && (s.details.contents || s.details.estWeightKg != null || s.details.declaredValue != null || s.details.packaging || s.details.fragile) && (
+          <div className="card">
+            <h2>Data awal dari Kasir</h2>
+            <dl className="kv" style={{ margin: 0 }}>
+              {s.details.contents && (<><dt>Isi barang</dt><dd>{s.details.contents}{s.details.fragile ? " · rapuh" : ""}</dd></>)}
+              {s.details.packaging && (<><dt>Kemasan</dt><dd>{s.details.packaging}</dd></>)}
+              {s.details.estWeightKg != null && (<><dt>Perkiraan berat total</dt><dd>{Number(s.details.estWeightKg).toLocaleString("id-ID")} kg</dd></>)}
+              {s.details.declaredValue != null && SEES_MONEY.includes(role) && (<><dt>Nilai barang</dt><dd>{rupiah(s.details.declaredValue)}</dd></>)}
+            </dl>
+          </div>
+        )}
+
+        <div className="card">
+          <h2>Barang ({s.items.length})</h2>
+          {s.items.map((it, i) => (
+            <div className="tarif" key={it.barcode}>
+              <div><b>Barang {i + 1}</b><br /><span className="muted" style={{ fontSize: 14 }}>{it.barcode}{it.note ? ` · ${it.note}` : ""}</span></div>
+              <span>{it.weightKg != null ? `${Number(it.weightKg).toLocaleString("id-ID")} kg` : "belum ditimbang"}</span>
             </div>
           ))}
         </div>
-      )}
 
-      {pod && (
-        <div className="card podview">
-          <h2>Bukti terima</h2>
-          <dl className="kv">
-            <dt>Diterima oleh</dt><dd>{pod.receiverName}</dd>
-            <dt>Waktu</dt><dd>{tanggalWaktu(pod.signedAt)}</dd>
-            {pod.by && (<><dt>Dicatat oleh</dt><dd>{pod.by}</dd></>)}
-            {pod.lat != null && pod.lng != null && (<><dt>Lokasi</dt><dd><a href={`https://www.google.com/maps?q=${pod.lat},${pod.lng}`} target="_blank" rel="noopener noreferrer">Lihat di peta</a></dd></>)}
-          </dl>
-          <div className="podgrid">
-            <figure><img src={pod.photo} alt={`Foto barang diterima ${pod.receiverName}`} /><figcaption>Foto barang</figcaption></figure>
-            <figure><img className="sigimg" src={pod.signature} alt={`Tanda tangan ${pod.receiverName}`} /><figcaption>Tanda tangan</figcaption></figure>
+        {s.invoice && SEES_MONEY.includes(role) && (
+          <div className="card">
+            <h2>Tagihan</h2>
+            <div className="price">{rupiah(s.invoice.total)}</div>
+            <p className="muted">{s.invoice.invoiceNo} · {s.invoice.status === "PAID" ? "Lunas" : "Belum dibayar"} · jatuh tempo {s.invoice.dueDate}</p>
+            {invId && <Link href={`/app/tagihan/${invId}`} className="btn ghost" style={{ marginBottom: 10 }}>Buka invoice, cetak, dan catat pembayaran</Link>}
+            <p className="hint">Dihitung dari {Number(s.invoice.calc.chargeable).toLocaleString("id-ID")} {s.invoice.calc.unit === "kg" ? "kg" : "m³"} × {rupiah(s.invoice.calc.unitPrice)}
+              {s.invoice.calc.surchargeTotal > 0 ? ` + biaya tambahan ${rupiah(s.invoice.calc.surchargeTotal)}` : ""}.</p>
           </div>
-        </div>
-      )}
+        )}
 
-      {s.iAmHolder && directory.length > 0 && s.status !== "DELIVERED" && (
-        <form action={serahkan} className="card">
-          <h2>Serahkan barang ke petugas lain</h2>
-          <input type="hidden" name="id" value={s.id} />
-          <label className="f" htmlFor="ke">Diserahkan kepada</label>
-          <select id="ke" name="ke" required defaultValue="">
-            <option value="" disabled>Pilih petugas…</option>
-            {directory.map((u) => <option key={u.id} value={u.id}>{u.name} — {ROLE_LABEL[u.role] ?? u.role}{u.branchName ? ` (${u.branchName})` : ""}</option>)}
-          </select>
-          <p className="hint">Penerima harus menekan tombol terima di HP-nya. Sebelum itu, barang masih tanggung jawab Anda.</p>
-          <SubmitButton className="btn ghost" steps={["Memeriksa penerima…", "Mengirim permintaan serah terima…"]}>Serahkan barang</SubmitButton>
-        </form>
-      )}
-      {pending && !pendingToMe && (
-        <div className="banner">Menunggu {pending.toName} menekan tombol terima.</div>
-      )}
-
-      {s.details && (s.details.contents || s.details.estWeightKg != null || s.details.declaredValue != null || s.details.packaging || s.details.fragile) && (
-        <div className="card">
-          <h2>Data awal dari Kasir</h2>
-          <dl className="kv" style={{ margin: 0 }}>
-            {s.details.contents && (<><dt>Isi barang</dt><dd>{s.details.contents}{s.details.fragile ? " · rapuh" : ""}</dd></>)}
-            {s.details.packaging && (<><dt>Kemasan</dt><dd>{s.details.packaging}</dd></>)}
-            {s.details.estWeightKg != null && (<><dt>Perkiraan berat total</dt><dd>{Number(s.details.estWeightKg).toLocaleString("id-ID")} kg</dd></>)}
-            {s.details.declaredValue != null && SEES_MONEY.includes(role) && (<><dt>Nilai barang</dt><dd>{rupiah(s.details.declaredValue)}</dd></>)}
-          </dl>
-        </div>
-      )}
-
-      <div className="card">
-        <h2>Barang ({s.items.length})</h2>
-        {s.items.map((it, i) => (
-          <div className="tarif" key={it.barcode}>
-            <div><b>Barang {i + 1}</b><br /><span className="muted" style={{ fontSize: 14 }}>{it.barcode}{it.note ? ` · ${it.note}` : ""}</span></div>
-            <span>{it.weightKg != null ? `${Number(it.weightKg).toLocaleString("id-ID")} kg` : "belum ditimbang"}</span>
+        {s.inspections.length > 0 && (
+          <div className="card inspview">
+            <h2>Pemeriksaan fisik barang</h2>
+            {s.inspections.map((n) => (
+              <div key={n.id} className={`insp ${isProblem(n) ? "bad" : ""}`}>
+                <div className="insph"><b>{STAGE_LABEL[n.stage]}</b><span className={`pill ${isProblem(n) ? "warn" : "done"}`}>{n.conditions.map((c) => KONDISI_LABEL[c] ?? c).join(", ")}</span></div>
+                <p className="muted" style={{ margin: "2px 0" }}>{n.contents} · {KEMASAN_LABEL[n.packaging] ?? n.packaging}{n.pieces ? ` · ${n.pieces} barang` : ""}</p>
+                {n.note && <p style={{ margin: "2px 0" }}>Catatan: {n.note}</p>}
+                <small className="muted">{n.by ?? "Petugas"} · {tanggalWaktu(n.at)}</small>
+                {n.photos > 0 && <div className="inspfotos">{Array.from({ length: n.photos }, (_, i) => (
+                  <a key={i} href={`/app/foto/${n.id}/${i + 1}`} target="_blank" rel="noopener noreferrer"><img src={`/app/foto/${n.id}/${i + 1}`} alt={`Foto ${i + 1} ${STAGE_LABEL[n.stage]}`} loading="lazy" width="96" height="96" /></a>
+                ))}</div>}
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        )}
 
-      {s.invoice && SEES_MONEY.includes(role) && (
+        {pod && (
+          <div className="card podview">
+            <h2>Bukti terima</h2>
+            <dl className="kv">
+              <dt>Diterima oleh</dt><dd>{pod.receiverName}</dd>
+              <dt>Waktu</dt><dd>{tanggalWaktu(pod.signedAt)}</dd>
+              {pod.by && (<><dt>Dicatat oleh</dt><dd>{pod.by}</dd></>)}
+              {pod.lat != null && pod.lng != null && (<><dt>Lokasi</dt><dd><a href={`https://www.google.com/maps?q=${pod.lat},${pod.lng}`} target="_blank" rel="noopener noreferrer">Lihat di peta</a></dd></>)}
+            </dl>
+            <div className="podgrid">
+              <figure><img src={pod.photo} alt={`Foto barang diterima ${pod.receiverName}`} /><figcaption>Foto barang</figcaption></figure>
+              <figure><img className="sigimg" src={pod.signature} alt={`Tanda tangan ${pod.receiverName}`} /><figcaption>Tanda tangan</figcaption></figure>
+            </div>
+          </div>
+        )}
+
         <div className="card">
-          <h2>Tagihan</h2>
-          <div className="price">{rupiah(s.invoice.total)}</div>
-          <p className="muted">{s.invoice.invoiceNo} · {s.invoice.status === "PAID" ? "Lunas" : "Belum dibayar"} · jatuh tempo {s.invoice.dueDate}</p>
-          {invId && <Link href={`/app/tagihan/${invId}`} className="btn ghost" style={{ marginBottom: 10 }}>Buka invoice, cetak, dan catat pembayaran</Link>}
-          <p className="hint">Dihitung dari {Number(s.invoice.calc.chargeable).toLocaleString("id-ID")} {s.invoice.calc.unit === "kg" ? "kg" : "m³"} × {rupiah(s.invoice.calc.unitPrice)}
-            {s.invoice.calc.surchargeTotal > 0 ? ` + biaya tambahan ${rupiah(s.invoice.calc.surchargeTotal)}` : ""}.</p>
+          <h2>Riwayat</h2>
+          <ol className="tl">
+            {[...s.events].map((e, i) => (
+              <li key={i} className="done"><span className="dot" /><b>{statusLabel(e.status, s.mode) ?? e.status}</b>
+                <small>{tanggalWaktu(e.at)}{e.location ? ` · ${e.location}` : ""}{e.by ? ` · oleh ${e.by}` : ""}</small></li>
+            ))}
+          </ol>
         </div>
-      )}
-
-      <KendalaPanel shipmentId={s.id} role={atMine ? role : "VIEW"} status={s.status} />
-      <TeruskanPanel id={s.id} status={s.status} role={role} branchName={me.data.branchName ?? null} destName={s.dest.name} legs={s.legs ?? []}
-        hubs={["MITRA_POS", "HUB_MANAGER"].includes(role) && s.status === "AT_DEST_HUB" ? (await staffRpc<{ id: string; name: string; city: string }[]>("staff_dest_hubs")).data ?? [] : []} />
-      <TutupResiPanel s={s} role={role} branchName={me.data.branchName ?? null} />
-      <RevisiPanel s={s} role={isOrigin ? role : "VIEW"} />
-
-      <div className="card">
-        <h2>Riwayat</h2>
-        <ol className="tl">
-          {[...s.events].map((e, i) => (
-            <li key={i} className="done"><span className="dot" /><b>{statusLabel(e.status, s.mode) ?? e.status}</b>
-              <small>{tanggalWaktu(e.at)}{e.location ? ` · ${e.location}` : ""}{e.by ? ` · oleh ${e.by}` : ""}</small></li>
-          ))}
-        </ol>
+        </div>
       </div>
-
     </main>
   );
 }

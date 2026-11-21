@@ -192,9 +192,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/baru/page.tsx": {
-    "mtime": 1795266348.6768417,
-    "seen": 1795266524.5320387,
-    "ast_hash": "f303ba598495071b24be91967c9820c5",
+    "mtime": 1795268734.829512,
+    "seen": 1795269667.6011019,
+    "ast_hash": "270f270b1a33f9ee6c118811d06cf590",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/cari/page.tsx": {
@@ -300,9 +300,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/manifest/[id]/page.tsx": {
-    "mtime": 1795266452.138879,
-    "seen": 1795266524.5333195,
-    "ast_hash": "ae51c78d4f23cec42e28b3cc8225a095",
+    "mtime": 1795269398.977157,
+    "seen": 1795269667.6011362,
+    "ast_hash": "a03caff74674a49d4f1d4d07bb83a8a4",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/manifest/actions.ts": {
@@ -312,15 +312,15 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/manifest/baru/page.tsx": {
-    "mtime": 1795266452.1383162,
-    "seen": 1795266524.5334346,
-    "ast_hash": "7461f61074af252fb75b1ea94be1cf48",
+    "mtime": 1795269467.7962897,
+    "seen": 1795269667.601141,
+    "ast_hash": "38e102ec81f845e9e5d7136134505f26",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/manifest/page.tsx": {
-    "mtime": 1795266452.1385293,
-    "seen": 1795266524.5334375,
-    "ast_hash": "07c0c5adbcf78802f86afcfbada50642",
+    "mtime": 1795269398.9773958,
+    "seen": 1795269667.6011417,
+    "ast_hash": "fce3b63c9e0aaa62cd8a248c7be90dba",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/mitra/page.tsx": {
@@ -378,9 +378,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/resi/[id]/page.tsx": {
-    "mtime": 1795266386.932019,
-    "seen": 1795266524.5339406,
-    "ast_hash": "d2c784ecb488c2a9082db082635c985f",
+    "mtime": 1795269291.2246063,
+    "seen": 1795269667.6011581,
+    "ast_hash": "7639943273f9c4bd8e53346b3b876fa5",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/ringkasan/page.tsx": {
@@ -750,9 +750,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/StaffHome.tsx": {
-    "mtime": 1795258113.6537545,
-    "seen": 1795258185.754237,
-    "ast_hash": "afa2358c8c4261c7450a9d8d4abbe258",
+    "mtime": 1795269110.7822998,
+    "seen": 1795269667.6012836,
+    "ast_hash": "92aaf9efc4e52011f5d6b49c753b0751",
     "semantic_hash": ""
   },
   "apps/web/src/components/StaffShell.tsx": {
@@ -924,9 +924,9 @@
     "semantic_hash": ""
   },
   "e2e/flow.cjs": {
-    "mtime": 1795266465.622609,
-    "seen": 1795266524.540109,
-    "ast_hash": "b4da05da770916a6f1846ab5240b3818",
+    "mtime": 1795269205.8636026,
+    "seen": 1795269667.6014,
+    "ast_hash": "e9eee1ef10fb7ac735ceb69930da0892",
     "semantic_hash": ""
   },
   "e2e/kamera.cjs": {
@@ -1920,15 +1920,15 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/HubDashboard.tsx": {
-    "mtime": 1795258113.6499252,
-    "seen": 1795258185.7529342,
-    "ast_hash": "5a1be3433a746d189037d08f0144a527",
+    "mtime": 1795269122.0307157,
+    "seen": 1795269667.6012337,
+    "ast_hash": "e878e5282b1938f967f05169515d764e",
     "semantic_hash": ""
   },
   "apps/web/src/components/PeranDashboard.tsx": {
-    "mtime": 1795265872.87539,
-    "seen": 1795265975.8453968,
-    "ast_hash": "db40ed06158e76356342fb35bc8230a4",
+    "mtime": 1795269205.8622215,
+    "seen": 1795269667.6012704,
+    "ast_hash": "35b5119edd8cc6652788a0f6b7fad2a4",
     "semantic_hash": ""
   },
   "apps/web/src/components/TargetForm.tsx": {
@@ -8592,15 +8592,15 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/DataKendaraan.tsx": {
-    "mtime": 1795244015.1971695,
-    "seen": 1795245335.0396936,
-    "ast_hash": "10eb239756e9b953e7b28e4f8b325683",
+    "mtime": 1795268634.3176026,
+    "seen": 1795269667.6012008,
+    "ast_hash": "0d5a23750850f2b996f0c4a38cf50d90",
     "semantic_hash": ""
   },
   "apps/web/src/components/WilayahField.tsx": {
-    "mtime": 1795244015.1935706,
-    "seen": 1795245335.0408885,
-    "ast_hash": "f5492326f7300a4fa67fdad91a66b5bf",
+    "mtime": 1795268634.3030312,
+    "seen": 1795269667.6012983,
+    "ast_hash": "5e56af657a44abbf756e2c02e12f356b",
     "semantic_hash": ""
   },
   "db/migrations/038_revisi_resi.sql": {
@@ -8757,6 +8757,12 @@
     "mtime": 1795268316.6062713,
     "seen": 1795268319.50373,
     "ast_hash": "e722936248b72ae695d1f9b5bc8b552f",
+    "semantic_hash": ""
+  },
+  "apps/web/src/components/StatRow.tsx": {
+    "mtime": 1795268975.030295,
+    "seen": 1795269667.6012862,
+    "ast_hash": "cf4c75818d7a04a79daaffea3765f90b",
     "semantic_hash": ""
   },
   "package-lock.json": {

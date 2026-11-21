@@ -2,6 +2,7 @@ import Link from "next/link";
 import { STATUS_LABEL, type AnyStatus, ROLE_LABEL } from "@kamil/core";
 import Icon from "./Icon";
 import { Spark } from "./Charts";
+import StatRow from "./StatRow";
 import { rupiah, waLink } from "@/lib/brand";
 import { waNumber } from "@/lib/publicRpc";
 
@@ -35,6 +36,12 @@ export default function HubDashboard({ d, pesanOwner }: { d: HubData; pesanOwner
   return (
     <section className="hub stack" aria-label="Dashboard manajer gudang">
       <h1 className="sr-only">Dashboard {d.cabang}</h1>
+      <StatRow items={[
+        { ikon: "plus", n: d.hari.resiBaru, label: "Resi baru hari ini" },
+        { ikon: "down", n: d.hari.diterima, label: "Diterima gudang hari ini" },
+        { ikon: "truck", n: d.hari.dimuat, label: "Dimuat hari ini" },
+        { ikon: "check", n: d.hari.terkirim, label: "Sampai ke penerima hari ini" },
+      ]} />
       <div className="hubhead card">
         <div><small>Gudang</small><b>{d.cabang}</b></div>
         <div className={`hubalert ${perhatian ? "warn" : "ok"}`}><Icon name={perhatian ? "clock" : "check"} size={18} /> {perhatian ? `${perhatian} hal perlu perhatian` : "Semua terkendali"}</div>
@@ -46,6 +53,48 @@ export default function HubDashboard({ d, pesanOwner }: { d: HubData; pesanOwner
       </nav>
 
       <div className="hubgrid">
+        {/* 3. Barang mengendap */}
+        <article className={`card hubcard span2 ${d.mengendap.length ? "flag" : ""}`}>
+          <header><span className="hi warm"><Icon name="clock" size={20} /></span><h2>Barang mengendap</h2><span className="pill">{d.mengendap.length}</span></header>
+          {d.mengendap.length === 0 ? <p className="muted">Tidak ada barang diam lebih dari 24 jam.</p> : (
+            <ul className="rows">{d.mengendap.map((m) => {
+              const wa = waNumber(m.receiverPhone);
+              return (
+                <li key={m.id}><Link href={`/app/resi/${m.id}`}><b>{m.resiNo}</b><small>{STATUS_LABEL[m.status] ?? m.status} · {m.receiverName}</small></Link><span className="age">{jam(m.jam)}</span>
+                  {wa && <a className="mini" href={`https://wa.me/${wa}?text=${encodeURIComponent(`Halo ${m.receiverName.split(" ")[0]}, kami dari Kamil Logistik. Barang dengan resi ${m.resiNo} masih ada di gudang kami. Boleh kami konfirmasi jadwal pengantaran atau pengambilannya?`)}`} target="_blank" rel="noopener noreferrer" aria-label={`Chat penerima ${m.resiNo}`}><Icon name="chat" size={16} /></a>}
+                </li>);
+            })}</ul>
+          )}
+        </article>
+
+        {/* 5. Selisih manifest */}
+        <article className={`card hubcard ${d.selisih.length ? "flag" : ""}`}>
+          <header><span className="hi warm"><Icon name="shield" size={20} /></span><h2>Selisih manifest</h2><span className="pill">{d.selisih.length}</span></header>
+          {d.selisih.length === 0 ? <p className="muted">Tidak ada selisih terbuka.</p> : <ul className="rows">{d.selisih.map((s) => <li key={s.id}><Link href={`/app/manifest/${s.manifestId}`}><b>{s.code}</b><small>seharusnya {s.expected}, ditemukan {s.found}</small></Link></li>)}</ul>}
+        </article>
+
+        {/* 6. Serah terima macet */}
+        <article className={`card hubcard ${d.serah.length ? "flag" : ""}`}>
+          <header><span className="hi warm"><Icon name="swap" size={20} /></span><h2>Serah terima macet</h2><span className="pill">{d.serah.length}</span></header>
+          {d.serah.length === 0 ? <p className="muted">Semua serah terima sudah diterima.</p> : <ul className="rows">{d.serah.map((s) => <li key={s.id}><Link href={`/app/resi/${s.shipmentId}`}><b>{s.resiNo}</b><small>{s.dari} → {s.ke}</small></Link><span className="age">{jam(s.jam)}</span></li>)}</ul>}
+        </article>
+
+        {/* 8. Pesanan jemput */}
+        <article className={`card hubcard ${d.jemput.baru ? "flag" : ""}`}>
+          <header><span className="hi warm"><Icon name="truck" size={20} /></span><h2>Pesanan jemput website</h2></header>
+          <p style={{ margin: 0 }}><b className="big">{d.jemput.baru}</b><small className="muted"> belum diproses{d.jemput.baru ? ` · tertua ${jam(d.jemput.tertuaJam)}` : ""}</small></p>
+          <Link href="/app/jemput" className="btn ghost sm" style={{ marginTop: 8 }}>Buka pesanan jemput</Link>
+        </article>
+
+        {/* 4. Agenda manifest */}
+        <article className="card hubcard span2">
+          <header><span className="hi"><Icon name="ship" size={20} /></span><h2>Agenda manifest</h2><Link href="/app/manifest" className="more">Semua</Link></header>
+          <div className="agenda">
+            <div><h3>Berangkat dari sini</h3>{d.agenda.berangkat.length === 0 ? <p className="muted">Belum ada yang dijadwalkan.</p> : <ul className="rows">{d.agenda.berangkat.map((a) => <li key={a.id}><Link href={`/app/manifest/${a.id}`}><b>{a.code}</b><small>ke {a.kota} · {STMAN[a.status] ?? a.status} · {wkt(a.waktu)}</small></Link></li>)}</ul>}</div>
+            <div><h3>Tiba di sini</h3>{d.agenda.tiba.length === 0 ? <p className="muted">Tidak ada muatan menuju gudang ini.</p> : <ul className="rows">{d.agenda.tiba.map((a) => <li key={a.id}><Link href={`/app/manifest/${a.id}`}><b>{a.code}</b><small>dari {a.kota} · {STMAN[a.status] ?? a.status} · {wkt(a.waktu)}</small></Link></li>)}</ul>}</div>
+          </div>
+        </article>
+
         {/* 1. Papan gudang */}
         <article className="card hubcard span2">
           <header><span className="hi"><Icon name="layers" size={20} /></span><h2>Papan gudang</h2><b className="big">{totalGudang}<small> barang · {kgGudang.toFixed(1)} kg</small></b></header>
@@ -63,53 +112,11 @@ export default function HubDashboard({ d, pesanOwner }: { d: HubData; pesanOwner
           <div className="sparkbox"><Spark values={d.target.tren.map((t) => t.n)} color="var(--teal)" /></div>
         </article>
 
-        {/* 3. Barang mengendap */}
-        <article className={`card hubcard span2 ${d.mengendap.length ? "flag" : ""}`}>
-          <header><span className="hi warm"><Icon name="clock" size={20} /></span><h2>Barang mengendap</h2><span className="pill">{d.mengendap.length}</span></header>
-          {d.mengendap.length === 0 ? <p className="muted">Tidak ada barang diam lebih dari 24 jam.</p> : (
-            <ul className="rows">{d.mengendap.map((m) => {
-              const wa = waNumber(m.receiverPhone);
-              return (
-                <li key={m.id}><Link href={`/app/resi/${m.id}`}><b>{m.resiNo}</b><small>{STATUS_LABEL[m.status] ?? m.status} · {m.receiverName}</small></Link><span className="age">{jam(m.jam)}</span>
-                  {wa && <a className="mini" href={`https://wa.me/${wa}?text=${encodeURIComponent(`Halo ${m.receiverName.split(" ")[0]}, kami dari Kamil Logistik. Barang dengan resi ${m.resiNo} masih ada di gudang kami. Boleh kami konfirmasi jadwal pengantaran atau pengambilannya?`)}`} target="_blank" rel="noopener noreferrer" aria-label={`Chat penerima ${m.resiNo}`}><Icon name="chat" size={16} /></a>}
-                </li>);
-            })}</ul>
-          )}
-        </article>
-
-        {/* 4. Agenda manifest */}
-        <article className="card hubcard span2">
-          <header><span className="hi"><Icon name="ship" size={20} /></span><h2>Agenda manifest</h2><Link href="/app/manifest" className="more">Semua</Link></header>
-          <div className="agenda">
-            <div><h3>Berangkat dari sini</h3>{d.agenda.berangkat.length === 0 ? <p className="muted">Belum ada yang dijadwalkan.</p> : <ul className="rows">{d.agenda.berangkat.map((a) => <li key={a.id}><Link href={`/app/manifest/${a.id}`}><b>{a.code}</b><small>ke {a.kota} · {STMAN[a.status] ?? a.status} · {wkt(a.waktu)}</small></Link></li>)}</ul>}</div>
-            <div><h3>Tiba di sini</h3>{d.agenda.tiba.length === 0 ? <p className="muted">Tidak ada muatan menuju gudang ini.</p> : <ul className="rows">{d.agenda.tiba.map((a) => <li key={a.id}><Link href={`/app/manifest/${a.id}`}><b>{a.code}</b><small>dari {a.kota} · {STMAN[a.status] ?? a.status} · {wkt(a.waktu)}</small></Link></li>)}</ul>}</div>
-          </div>
-        </article>
-
-        {/* 5. Selisih manifest */}
-        <article className={`card hubcard ${d.selisih.length ? "flag" : ""}`}>
-          <header><span className="hi warm"><Icon name="shield" size={20} /></span><h2>Selisih manifest</h2><span className="pill">{d.selisih.length}</span></header>
-          {d.selisih.length === 0 ? <p className="muted">Tidak ada selisih terbuka.</p> : <ul className="rows">{d.selisih.map((s) => <li key={s.id}><Link href={`/app/manifest/${s.manifestId}`}><b>{s.code}</b><small>seharusnya {s.expected}, ditemukan {s.found}</small></Link></li>)}</ul>}
-        </article>
-
-        {/* 6. Serah terima macet */}
-        <article className={`card hubcard ${d.serah.length ? "flag" : ""}`}>
-          <header><span className="hi warm"><Icon name="swap" size={20} /></span><h2>Serah terima macet</h2><span className="pill">{d.serah.length}</span></header>
-          {d.serah.length === 0 ? <p className="muted">Semua serah terima sudah diterima.</p> : <ul className="rows">{d.serah.map((s) => <li key={s.id}><Link href={`/app/resi/${s.shipmentId}`}><b>{s.resiNo}</b><small>{s.dari} → {s.ke}</small></Link><span className="age">{jam(s.jam)}</span></li>)}</ul>}
-        </article>
-
         {/* 7. Piutang cabang */}
         <article className="card hubcard">
           <header><span className="hi"><Icon name="cash" size={20} /></span><h2>Piutang cabang</h2><Link href="/app/tagihan" className="more">Tagihan</Link></header>
           <p style={{ margin: 0 }}><b className="big">{rupiah(d.piutang.belumLunas)}</b><small className="muted"> {d.piutang.lembar} tagihan belum lunas</small></p>
           <p className={d.piutang.lembarLewat ? "down" : "muted"} style={{ margin: "4px 0 0", fontWeight: 700 }}>{d.piutang.lembarLewat ? `${rupiah(d.piutang.jatuhTempo)} lewat jatuh tempo (${d.piutang.lembarLewat} tagihan, terlama ${d.piutang.terlamaHari} hari)` : "Tidak ada yang lewat jatuh tempo."}</p>
-        </article>
-
-        {/* 8. Pesanan jemput */}
-        <article className={`card hubcard ${d.jemput.baru ? "flag" : ""}`}>
-          <header><span className="hi warm"><Icon name="truck" size={20} /></span><h2>Pesanan jemput website</h2></header>
-          <p style={{ margin: 0 }}><b className="big">{d.jemput.baru}</b><small className="muted"> belum diproses{d.jemput.baru ? ` · tertua ${jam(d.jemput.tertuaJam)}` : ""}</small></p>
-          <Link href="/app/jemput" className="btn ghost sm" style={{ marginTop: 8 }}>Buka pesanan jemput</Link>
         </article>
 
         {/* 9. Kinerja tim */}
@@ -123,7 +130,6 @@ export default function HubDashboard({ d, pesanOwner }: { d: HubData; pesanOwner
         {/* 10. Ringkasan shift ke WhatsApp */}
         <article className="card hubcard span2 shift">
           <header><span className="hi"><Icon name="chat" size={20} /></span><h2>Laporan akhir shift</h2></header>
-          <div className="shiftnums"><div><b>{d.hari.resiBaru}</b><small>resi baru</small></div><div><b>{d.hari.diterima}</b><small>diterima</small></div><div><b>{d.hari.dimuat}</b><small>dimuat</small></div><div><b>{d.hari.terkirim}</b><small>sampai</small></div></div>
           <a className="btn" href={pesanOwner ? `https://wa.me/${pesanOwner}?text=${encodeURIComponent(ringkas)}` : waLink(ringkas)} target="_blank" rel="noopener noreferrer"><Icon name="chat" size={20} /> Kirim ringkasan ke Pemilik</a>
           <p className="hint" style={{ margin: "6px 0 0" }}>Pesan sudah terisi angka hari ini. Tinggal tekan kirim di WhatsApp.</p>
         </article>

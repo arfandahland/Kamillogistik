@@ -1120,10 +1120,10 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
       ok(`Z ${label}: satu judul utama dan tanpa geser samping`, (await a.page.locator("h1").count()) >= 1 && !(await a.page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1)));
       return a;
     };
-    const kas = await cek("kasir@uji.id", PASS, "kasir", 6, ["Kas hari ini", "Piutang cabang", "Kirim setoran ke Pemilik"]); if (kas) await kas.ctx.close();
-    const kur = await cek("kurir@uji.id", PASS, "kurir", 5, ["Barang yang saya bawa", "Menunggu diterima", "7 hari terakhir"]); if (kur) await kur.ctx.close();
-    const gud = await cek("gudang@uji.id", PASS, "gudang", 5, ["Isi gudang", "Antrean timbang", "Hasil kerja saya hari ini"]); if (gud) await gud.ctx.close();
-    const sop = await cek("sopir@uji.id", PASS, "sopir", 4, ["Muatan saya", "Riwayat perjalanan"]); if (sop) await sop.ctx.close();
+    const kas = await cek("kasir@uji.id", PASS, "kasir", 4, ["Kas hari ini", "Piutang cabang", "Kirim setoran ke Pemilik"]); if (kas) await kas.ctx.close();
+    const kur = await cek("kurir@uji.id", PASS, "kurir", 3, ["Barang yang saya bawa", "Menunggu diterima", "7 hari terakhir"]); if (kur) await kur.ctx.close();
+    const gud = await cek("gudang@uji.id", PASS, "gudang", 4, ["Di gudang", "Antrean timbang", "Hasil kerja saya hari ini"]); if (gud) await gud.ctx.close();
+    const sop = await cek("sopir@uji.id", PASS, "sopir", 2, ["Muatan saya", "Riwayat perjalanan"]); if (sop) await sop.ctx.close();
     const kn = await cek("konten.uji@uji.id", "Sandi2026a", "konten", 2, ["Slider beranda", "Ulasan bagus"]); if (kn) await kn.ctx.close();
     const ow = await cek("owner@uji.id", "Pemilik2026x", "owner", 6, ["Pusat peringatan", "Proyeksi omzet bulan ini", "Perbandingan cabang", "Kesehatan sistem"]);
     if (ow) {

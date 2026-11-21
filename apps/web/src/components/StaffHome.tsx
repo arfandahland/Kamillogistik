@@ -28,7 +28,7 @@ export default function StaffHome({ rows, stats, pending, tab, q, canCreate, err
   const buatDiSini = canCreate && !hubMode; // di dashboard cabang, tombol ini sudah ada di menu
   const hasSide = buatDiSini || pending.length > 0;
   return (
-    <main className="wrap stack home">
+    <main className={`wrap stack home ${hubMode ? "dashhome" : ""}`}>
       {!hubMode && <h1 className="sr-only">Beranda petugas</h1>}
       {followup != null && (
         <Link href="/app/tindak-lanjut" className={`homebadge ${followup === 0 ? "zero" : ""}`}>

@@ -21,25 +21,33 @@ export default function WilayahField({ nama = "area", awal, wajib = true, judul 
   const lengkap = p && k && c && d && nm(provs, p) && nm(kabs, k) && nm(kecs, c) && dn;
   const nilai: Area | null = lengkap ? { province: nm(provs, p), regency: nm(kabs, k), district: nm(kecs, c), village: dn, code: d } : null;
   return (
-    <fieldset className="stack" style={{ border: 0, padding: 0, margin: 0 }} data-wilayah>
+    <fieldset className="stack wilayah" style={{ border: 0, padding: 0, margin: 0 }} data-wilayah>
       <legend className="f" style={{ padding: 0 }}>{judul}{wajib ? "" : " (boleh kosong)"}</legend>
       <input type="hidden" name={nama} value={nilai ? JSON.stringify(nilai) : ""} />
-      <label className="f" htmlFor={`${nama}-prov`}>Provinsi</label>
-      <select id={`${nama}-prov`} value={p} required={wajib} onChange={(e) => { setP(e.target.value); setK(""); setC(""); setD(""); }}>
+      <div className="rbf">
+        <label className="f" htmlFor={`${nama}-prov`}>Provinsi</label>
+        <select id={`${nama}-prov`} value={p} required={wajib} onChange={(e) => { setP(e.target.value); setK(""); setC(""); setD(""); }}>
         <option value="">Pilih provinsi…</option>{provs.map(([v, t]) => <option key={v} value={v}>{t}</option>)}
       </select>
-      <label className="f" htmlFor={`${nama}-kab`}>Kabupaten atau kota</label>
-      <select id={`${nama}-kab`} value={k} required={wajib} disabled={!p} onChange={(e) => { setK(e.target.value); setC(""); setD(""); }}>
+      </div>
+      <div className="rbf">
+        <label className="f" htmlFor={`${nama}-kab`}>Kabupaten atau kota</label>
+        <select id={`${nama}-kab`} value={k} required={wajib} disabled={!p} onChange={(e) => { setK(e.target.value); setC(""); setD(""); }}>
         <option value="">Pilih kabupaten atau kota…</option>{kabs.map(([v, t]) => <option key={v} value={v}>{t}</option>)}
       </select>
-      <label className="f" htmlFor={`${nama}-kec`}>Kecamatan</label>
-      <select id={`${nama}-kec`} value={c} required={wajib} disabled={!k} onChange={(e) => { setC(e.target.value); setD(""); }}>
+      </div>
+      <div className="rbf">
+        <label className="f" htmlFor={`${nama}-kec`}>Kecamatan</label>
+        <select id={`${nama}-kec`} value={c} required={wajib} disabled={!k} onChange={(e) => { setC(e.target.value); setD(""); }}>
         <option value="">Pilih kecamatan…</option>{kecs.map(([v, t]) => <option key={v} value={v}>{t}</option>)}
       </select>
-      <label className="f" htmlFor={`${nama}-desa`}>Kelurahan atau desa</label>
-      <select id={`${nama}-desa`} value={d} required={wajib} disabled={!c} onChange={(e) => setD(e.target.value)}>
+      </div>
+      <div className="rbf">
+        <label className="f" htmlFor={`${nama}-desa`}>Kelurahan atau desa</label>
+        <select id={`${nama}-desa`} value={d} required={wajib} disabled={!c} onChange={(e) => setD(e.target.value)}>
         <option value="">Pilih kelurahan atau desa…</option>{desas.filter((x) => x[2] === c).map(([v, t]) => <option key={v} value={v}>{t}</option>)}
       </select>
+      </div>
       {err && <div className="err" role="alert">{err}</div>}
     </fieldset>
   );

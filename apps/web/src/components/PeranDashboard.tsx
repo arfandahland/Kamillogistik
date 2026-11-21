@@ -3,6 +3,7 @@ import { STATUS_LABEL, type AnyStatus, ROLE_LABEL } from "@kamil/core";
 import Icon from "./Icon";
 import { Spark } from "./Charts";
 import TargetForm from "./TargetForm";
+import StatRow from "./StatRow";
 import { hpTampil, rupiah, waLink } from "@/lib/brand";
 import { waNumber } from "@/lib/publicRpc";
 
@@ -89,28 +90,28 @@ export function KasirDash({ d }: { d: KasirData }) {
   return (
     <section className="hub stack wrap" aria-label="Dashboard kasir">
       <h1 className="sr-only">Dashboard kasir {d.cabang}</h1>
+      <StatRow items={[
+        { ikon: "box", n: d.hariIni.resi, label: "Resi dibuat hari ini" },
+        { ikon: "file", n: rupiah(d.hariIni.omzet).replace("Rp", ""), label: "Tagihan hari ini (Rp)" },
+        { ikon: "cash", n: rupiah(total).replace("Rp", ""), label: "Uang masuk hari ini (Rp)" },
+        { ikon: "clock", n: rupiah(d.piutang.total).replace("Rp", ""), label: "Piutang cabang (Rp)", sub: d.piutang.lewat ? `${d.piutang.lewat} tagihan lewat tempo` : `${d.piutang.lembar} tagihan`, href: "/app/tagihan", warm: d.piutang.lewat > 0 },
+      ]} />
       <nav className="hubquick two" aria-label="Aksi cepat"><Link href="/app/jemput"><Icon name="truck" size={22} /><span>Jemput{d.jemputBaru ? ` (${d.jemputBaru})` : ""}</span></Link><Link href="/app/serah"><Icon name="swap" size={22} /><span>Serah terima</span></Link></nav>
       <div className="hubgrid">
-        <Kartu ikon="cash" judul="Kas hari ini" span>
-          <div className="shiftnums"><Angka n={d.hariIni.resi} l="resi dibuat" /><Angka n={rupiah(d.hariIni.omzet).replace("Rp", "")} l="tagihan Rp" /><Angka n={rupiah(d.hariIni.tunai).replace("Rp", "")} l="tunai Rp" /><Angka n={rupiah(d.hariIni.transfer).replace("Rp", "")} l="transfer Rp" /></div>
-          <a className="btn" href={waLink(ringkas)} target="_blank" rel="noopener noreferrer"><Icon name="chat" size={20} /> Kirim setoran ke Pemilik</a>
-        </Kartu>
-        <Kartu ikon="chart" judul="Bulan ini">
-          <p style={{ margin: 0 }}><b className="big">{d.bulanIni.resi}</b><small className="muted"> resi · tagihan {rupiah(d.bulanIni.omzet)}</small></p>
-          <p style={{ margin: 0 }}>Komisi terhitung: <b>{rupiah(d.bulanIni.komisi)}</b></p>
-          <div className="sparkbox"><Spark values={d.tren.map((t) => t.n)} color="var(--teal)" /></div>
-        </Kartu>
-        <Kartu ikon="file" judul="Piutang cabang" flag={d.piutang.lewat > 0}>
-          <p style={{ margin: 0 }}><b className="big">{rupiah(d.piutang.total)}</b><small className="muted"> {d.piutang.lembar} tagihan</small></p>
-          <p className={d.piutang.lewat ? "down" : "muted"} style={{ margin: 0, fontWeight: 700 }}>{d.piutang.lewat ? `${d.piutang.lewat} tagihan lewat jatuh tempo` : "Tidak ada yang lewat tempo."}</p>
-        </Kartu>
-        <Kartu ikon="box" judul="Menunggu ditimbang atau dibuatkan invoice" span flag={d.perluTimbang.length > 0}>
+        <Kartu ikon="box" judul="Menunggu ditimbang atau dibuatkan invoice" flag={d.perluTimbang.length > 0} aksi={<span className="pill">{d.perluTimbang.length}</span>}>
           {d.perluTimbang.length === 0 ? <Kosong t="Semua resi sudah diproses." /> : <ul className="rows">{d.perluTimbang.map((r) => <li key={r.id}><Link href={`/app/resi/${r.id}`}><b>{r.resiNo}</b><small>{STATUS_LABEL[r.status] ?? r.status} · {r.pengirim}</small></Link></li>)}</ul>}
         </Kartu>
-        <Kartu ikon="users" judul="Pelanggan langganan" span>
+        <Kartu ikon="cash" judul="Kas hari ini">
+          <dl className="infogrid"><div><dt>Tunai</dt><dd>{rupiah(d.hariIni.tunai)}</dd></div><div><dt>Transfer</dt><dd>{rupiah(d.hariIni.transfer)}</dd></div></dl>
+          <a className="btn" href={waLink(ringkas)} target="_blank" rel="noopener noreferrer"><Icon name="chat" size={20} /> Kirim setoran ke Pemilik</a>
+        </Kartu>
+        <Kartu ikon="users" judul="Pelanggan langganan">
           {d.pelangganLangganan.length === 0 ? <Kosong t="Belum ada pelanggan yang kirim 2 kali atau lebih dalam 60 hari." /> : <ul className="rows">{d.pelangganLangganan.map((p) => { const w = waNumber(p.hp); return <li key={p.nama}><span><b>{p.nama}</b><small>{p.resi} resi · {hpTampil(p.hp)}</small></span>{w && <a className="mini" href={`https://wa.me/${w}?text=${encodeURIComponent(`Halo ${p.nama.split(" ")[0]}, terima kasih sudah langganan kirim barang di Kamil Logistik. Ada kiriman baru yang bisa kami bantu?`)}`} target="_blank" rel="noopener noreferrer" aria-label={`Chat ${p.nama}`}><Icon name="chat" size={16} /></a>}</li>; })}</ul>}
         </Kartu>
-        <Kartu ikon="check" judul="Kepuasan pelanggan"><p style={{ margin: 0 }}><b className="big">{d.rating.jumlah && d.rating.rata ? `${String(d.rating.rata).replace(".", ",")}/5` : "belum ada"}</b></p><p className="hint" style={{ margin: 0 }}>{d.rating.jumlah} penilaian untuk resi dari cabang Anda.</p></Kartu>
+        <Kartu ikon="chart" judul="Bulan ini">
+          <dl className="infogrid"><div><dt>Resi dibuat</dt><dd>{d.bulanIni.resi}</dd></div><div><dt>Tagihan</dt><dd>{rupiah(d.bulanIni.omzet)}</dd></div><div><dt>Komisi terhitung</dt><dd>{rupiah(d.bulanIni.komisi)}</dd></div><div><dt>Kepuasan pelanggan</dt><dd>{d.rating.jumlah && d.rating.rata ? `${String(d.rating.rata).replace(".", ",")}/5` : "belum ada"}<small>{d.rating.jumlah} penilaian</small></dd></div></dl>
+          <div className="sparkbox"><Spark values={d.tren.map((t) => t.n)} color="var(--teal)" /></div>
+        </Kartu>
       </div>
     </section>
   );
@@ -126,18 +127,25 @@ export function KurirDash({ d }: { d: KurirData }) {
   return (
     <section className="hub stack wrap" aria-label="Dashboard kurir">
       <h1 className="sr-only">Dashboard kurir</h1>
+      <StatRow items={[
+        { ikon: "truck", n: d.dibawa.length, label: "Di tangan saya" },
+        { ikon: "swap", n: d.menunggu, label: "Menunggu diterima", sub: d.menunggu > 0 ? "Ketuk untuk terima" : undefined, href: "/app/serah", warm: d.menunggu > 0 },
+        { ikon: "box", n: d.hariIni.diantar, label: "Diantar hari ini" },
+        { ikon: "pin", n: d.hariIni.dijemput, label: "Dijemput hari ini" },
+      ]} />
       <div className="hubgrid">
-        <Kartu ikon="truck" judul="Barang yang saya bawa" span flag={d.dibawa.length > 0} aksi={<span className="pill">{d.dibawa.length}</span>}>
+        <Kartu ikon="truck" judul="Barang yang saya bawa" flag={d.dibawa.length > 0} aksi={<span className="pill">{d.dibawa.length}</span>}>
           {d.dibawa.length === 0 ? <Kosong t="Belum ada barang di tangan Anda." /> : (
             <ul className="rows">{d.dibawa.map((r) => { const tujuan = r.alamat ?? r.alamatJemput; const w = waNumber(r.hpPenerima); return (
               <li key={r.id}><Link href={`/app/resi/${r.id}`}><b>{r.resiNo}</b><small>{STATUS_LABEL[r.status] ?? r.status} · {r.penerima}{tujuan ? ` · ${tujuan}` : ""}</small></Link>
                 {tujuan && <a className="mini" href={peta(tujuan)} target="_blank" rel="noopener noreferrer" aria-label={`Buka peta ${r.resiNo}`}><Icon name="pin" size={16} /></a>}
                 {w && <a className="mini" href={`https://wa.me/${w}?text=${encodeURIComponent(`Halo ${r.penerima.split(" ")[0]}, kurir Kamil Logistik membawa kiriman resi ${r.resiNo}. Boleh dipastikan alamat dan waktu Anda ada di lokasi?`)}`} target="_blank" rel="noopener noreferrer" aria-label={`Chat penerima ${r.resiNo}`}><Icon name="chat" size={16} /></a>}</li>); })}</ul>)}
         </Kartu>
-        <Kartu ikon="swap" judul="Menunggu diterima" flag={d.menunggu > 0}><p style={{ margin: 0 }}><b className="big">{d.menunggu}</b><small className="muted"> barang diserahkan ke Anda</small></p>{d.menunggu > 0 && <Link className="btn sm" href="/app/serah">Terima sekarang</Link>}</Kartu>
-        <Kartu ikon="check" judul="Hari ini"><div className="shiftnums three"><Angka n={d.hariIni.dijemput} l="dijemput" /><Angka n={d.hariIni.diantar} l="diantar" /><Angka n={d.hariIni.langkah} l="langkah" /></div></Kartu>
-        <Kartu ikon="chart" judul="7 hari terakhir"><p style={{ margin: 0 }}><b className="big">{d.minggu.diantar}</b><small className="muted"> diantar · {d.minggu.dijemput} dijemput</small></p><div className="sparkbox"><Spark values={d.tren.map((t) => t.n)} color="var(--teal)" /></div></Kartu>
-        <Kartu ikon="clock" judul="Aktivitas terakhir" span>{d.terakhir.length === 0 ? <Kosong t="Belum ada aktivitas." /> : <ul className="rows">{d.terakhir.map((t, i) => <li key={i}><span><b>{t.resiNo}</b><small>{STATUS_LABEL[t.status] ?? t.status}</small></span><span className="age" style={{ color: "var(--muted)", background: "var(--card)" }}>{wkt(t.waktu)}</span></li>)}</ul>}</Kartu>
+        <Kartu ikon="chart" judul="7 hari terakhir">
+          <dl className="infogrid tiga"><div><dt>Diantar</dt><dd>{d.minggu.diantar}</dd></div><div><dt>Dijemput</dt><dd>{d.minggu.dijemput}</dd></div><div><dt>Langkah hari ini</dt><dd>{d.hariIni.langkah}</dd></div></dl>
+          <div className="sparkbox"><Spark values={d.tren.map((t) => t.n)} color="var(--teal)" /></div>
+        </Kartu>
+        <Kartu ikon="clock" judul="Aktivitas terakhir">{d.terakhir.length === 0 ? <Kosong t="Belum ada aktivitas." /> : <ul className="rows">{d.terakhir.map((t, i) => <li key={i}><span><b>{t.resiNo}</b><small>{STATUS_LABEL[t.status] ?? t.status}</small></span><span className="age" style={{ color: "var(--muted)", background: "var(--card)" }}>{wkt(t.waktu)}</span></li>)}</ul>}</Kartu>
       </div>
     </section>
   );
@@ -152,15 +160,19 @@ export function GudangDash({ d }: { d: GudangData }) {
   return (
     <section className="hub stack wrap" aria-label="Dashboard staf gudang">
       <h1 className="sr-only">Dashboard staf gudang {d.cabang}</h1>
+      <StatRow items={[
+        { ikon: "layers", n: d.diGudang, label: "Di gudang" },
+        { ikon: "scale", n: d.antreanTimbang.length, label: "Menunggu timbang", href: "/app/timbang", warm: d.antreanTimbang.length > 0 },
+        { ikon: "box", n: d.antreanMuat, label: "Siap dimuat" },
+        { ikon: "down", n: d.menungguBongkar, label: "Menunggu bongkar" },
+      ]} />
       <div className="hubgrid">
-        <Kartu ikon="layers" judul="Isi gudang" span><div className="shiftnums"><Angka n={d.diGudang} l="di gudang" /><Angka n={d.antreanTimbang.length} l="menunggu timbang" /><Angka n={d.antreanMuat} l="siap dimuat" /><Angka n={d.menungguBongkar} l="menunggu bongkar" /></div></Kartu>
-        <Kartu ikon="box" judul="Antrean timbang" span flag={d.antreanTimbang.length > 0} aksi={<span className="pill">{d.antreanTimbang.length}</span>}>
+        <Kartu ikon="box" judul="Antrean timbang" flag={d.antreanTimbang.length > 0} aksi={<span className="pill">{d.antreanTimbang.length}</span>}>
           {d.antreanTimbang.length === 0 ? <Kosong t="Tidak ada barang yang menunggu ditimbang." /> : <ul className="rows">{d.antreanTimbang.map((r) => <li key={r.id}><Link href={`/app/resi/${r.id}`}><b>{r.resiNo}</b><small>dari {r.pengirim}</small></Link><span className="age">{jam(r.jam)}</span></li>)}</ul>}
         </Kartu>
-        <Kartu ikon="ship" judul="Manifest sedang disiapkan" span>{d.manifestHariIni.length === 0 ? <Kosong t="Belum ada manifest yang disiapkan." /> : <ul className="rows">{d.manifestHariIni.map((m) => <li key={m.id}><Link href={`/app/manifest/${m.id}`}><b>{m.code}</b><small>ke {m.kota} · {m.status === "SEALED" ? "Siap berangkat" : "Sedang diisi"}</small></Link></li>)}</ul>}</Kartu>
-        <Kartu ikon="chart" judul="Hasil kerja saya hari ini"><div className="shiftnums three"><Angka n={d.hariIni.langkah} l="langkah" /><Angka n={d.hariIni.ditimbang} l="ditimbang" /><Angka n={d.hariIni.dimuat} l="dimuat" /></div><div className="sparkbox"><Spark values={d.tren.map((t) => t.n)} color="var(--teal)" /></div></Kartu>
-        <Kartu ikon="shield" judul="Selisih manifest" flag={d.selisih > 0}><p style={{ margin: 0 }}><b className="big">{d.selisih}</b><small className="muted"> terbuka</small></p>{d.selisih > 0 && <p className="hint" style={{ margin: 0 }}>Beri tahu kepala gudang untuk menyelesaikannya.</p>}</Kartu>
-      </div>
+        <Kartu ikon="ship" judul="Manifest sedang disiapkan">{d.manifestHariIni.length === 0 ? <Kosong t="Belum ada manifest yang disiapkan." /> : <ul className="rows">{d.manifestHariIni.map((m) => <li key={m.id}><Link href={`/app/manifest/${m.id}`}><b>{m.code}</b><small>ke {m.kota} · {m.status === "SEALED" ? "Siap berangkat" : "Sedang diisi"}</small></Link></li>)}</ul>}</Kartu>
+        <Kartu ikon="chart" judul="Hasil kerja saya hari ini"><dl className="infogrid tiga"><div><dt>Langkah</dt><dd>{d.hariIni.langkah}</dd></div><div><dt>Ditimbang</dt><dd>{d.hariIni.ditimbang}</dd></div><div><dt>Dimuat</dt><dd>{d.hariIni.dimuat}</dd></div></dl><div className="sparkbox"><Spark values={d.tren.map((t) => t.n)} color="var(--teal)" /></div></Kartu>
+        <Kartu ikon="shield" judul="Selisih manifest" flag={d.selisih > 0}><p style={{ margin: 0 }}><b className="big">{d.selisih}</b><small className="muted"> terbuka</small></p>{d.selisih > 0 && <p className="hint" style={{ margin: 0 }}>Beri tahu kepala gudang untuk menyelesaikannya.</p>}</Kartu>      </div>
     </section>
   );
 }
@@ -175,13 +187,17 @@ export function SopirDash({ d }: { d: SopirData }) {
   return (
     <section className="hub stack wrap" aria-label="Dashboard sopir">
       <h1 className="sr-only">Dashboard sopir kontainer</h1>
+      <StatRow items={[
+        { ikon: "truck", n: d.aktif.length, label: "Muatan saya" },
+        { ikon: "swap", n: d.menunggu, label: "Menunggu diterima", sub: d.menunggu > 0 ? "Buka muatan untuk terima" : undefined, warm: d.menunggu > 0 },
+        { ikon: "box", n: d.aktif.reduce((a, m) => a + m.resi, 0), label: "Resi di muatan saya" },
+        { ikon: "check", n: d.selesai30, label: "Selesai 30 hari terakhir" },
+      ]} />
       <div className="hubgrid">
-        <Kartu ikon="truck" judul="Muatan saya" span flag={d.aktif.length > 0} aksi={<span className="pill">{d.aktif.length}</span>}>
+        <Kartu ikon="truck" judul="Muatan saya" flag={d.aktif.length > 0} aksi={<span className="pill">{d.aktif.length}</span>}>
           {d.aktif.length === 0 ? <Kosong t="Tidak ada muatan aktif." /> : <ul className="rows">{d.aktif.map((m) => <li key={m.id}><Link href={`/app/manifest/${m.id}`}><b>{m.code}{m.menunggu ? " · menunggu Anda terima" : ""}</b><small>{m.asal} → {m.tujuan} · {STM[m.status] ?? m.status} · {m.resi} resi{m.kontainer ? ` · ${m.kontainer}` : ""}{m.segel ? ` · segel ${m.segel}` : ""}</small><small>Berangkat {wkt(m.berangkat)} · tiba {wkt(m.eta)}</small></Link></li>)}</ul>}
         </Kartu>
-        <Kartu ikon="swap" judul="Menunggu diterima" flag={d.menunggu > 0}><p style={{ margin: 0 }}><b className="big">{d.menunggu}</b><small className="muted"> manifest</small></p></Kartu>
-        <Kartu ikon="check" judul="Perjalanan selesai (30 hari)"><p style={{ margin: 0 }}><b className="big">{d.selesai30}</b></p></Kartu>
-        <Kartu ikon="clock" judul="Riwayat perjalanan" span>{d.riwayat.length === 0 ? <Kosong t="Belum ada perjalanan selesai." /> : <ul className="rows">{d.riwayat.map((r) => <li key={r.code}><span><b>{r.code}</b><small>{r.asal} → {r.tujuan}</small></span><span className="age" style={{ color: "var(--muted)", background: "var(--card)" }}>{wkt(r.selesai)}</span></li>)}</ul>}</Kartu>
+        <Kartu ikon="clock" judul="Riwayat perjalanan">{d.riwayat.length === 0 ? <Kosong t="Belum ada perjalanan selesai." /> : <ul className="rows">{d.riwayat.map((r) => <li key={r.code}><span><b>{r.code}</b><small>{r.asal} → {r.tujuan}</small></span><span className="age" style={{ color: "var(--muted)", background: "var(--card)" }}>{wkt(r.selesai)}</span></li>)}</ul>}</Kartu>
       </div>
     </section>
   );
