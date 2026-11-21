@@ -924,9 +924,9 @@
     "semantic_hash": ""
   },
   "e2e/flow.cjs": {
-    "mtime": 1795252956.3929927,
-    "seen": 1795253053.7464623,
-    "ast_hash": "3492dabf80ff52ccc8f66a05788a70d4",
+    "mtime": 1795253747.2369065,
+    "seen": 1795253790.5332782,
+    "ast_hash": "8ce4e9dfc232dc029d8e0afc9ef2157a",
     "semantic_hash": ""
   },
   "e2e/kamera.cjs": {
@@ -8634,9 +8634,9 @@
     "semantic_hash": ""
   },
   "db/test/revisi_resi.sql": {
-    "mtime": 1795243961.9642923,
-    "seen": 1795245449.9432616,
-    "ast_hash": "",
+    "mtime": 1795252941.3737404,
+    "seen": 1795253790.5332685,
+    "ast_hash": "8846e1f7c33ec78b967c0474bb274b32",
     "semantic_hash": ""
   },
   "apps/web/src/components/TutupResiPanel.tsx": {
@@ -8715,6 +8715,12 @@
     "mtime": 1795252193.8493054,
     "seen": 1795253053.7459693,
     "ast_hash": "045cf0e35595c7e8cb96489810df47ec",
+    "semantic_hash": ""
+  },
+  "db/migrations/045_owner_superadmin_koreksi.sql": {
+    "mtime": 1795252941.3557115,
+    "seen": 1795253790.5332365,
+    "ast_hash": "ff54cb642bfdd47550048fb4605fe54e",
     "semantic_hash": ""
   },
   "package-lock.json": {
