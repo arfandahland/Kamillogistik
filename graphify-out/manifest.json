@@ -186,9 +186,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/akun/page.tsx": {
-    "mtime": 1795310832.136427,
-    "seen": 1795310843.8984098,
-    "ast_hash": "465751257db3863093010cb86d50c18c",
+    "mtime": 1795338096.7819316,
+    "seen": 1795338167.672495,
+    "ast_hash": "00a3594b73e4889537498cf75d89eabc",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/baru/page.tsx": {
@@ -756,9 +756,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/StaffShell.tsx": {
-    "mtime": 1795333282.31984,
-    "seen": 1795333664.1857257,
-    "ast_hash": "cb75bc28daf156cc26cc6b152cfd908c",
+    "mtime": 1795338096.7815275,
+    "seen": 1795338167.6727128,
+    "ast_hash": "b875a9776baab1554eebfaddc9578ee4",
     "semantic_hash": ""
   },
   "apps/web/src/components/SubmitButton.tsx": {
@@ -924,9 +924,9 @@
     "semantic_hash": ""
   },
   "e2e/flow.cjs": {
-    "mtime": 1795336539.398957,
-    "seen": 1795336584.7134993,
-    "ast_hash": "b647cb323f3a6abe6eed3f1b5793dbbf",
+    "mtime": 1795338123.7812736,
+    "seen": 1795338167.6729198,
+    "ast_hash": "8f02bcf2bebf83486dc0163b4b135a27",
     "semantic_hash": ""
   },
   "e2e/kamera.cjs": {
@@ -8838,9 +8838,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/mv/alokasi/page.tsx": {
-    "mtime": 1795334985.6122644,
-    "seen": 1795335067.2457182,
-    "ast_hash": "a769a31043612f17a2b4164990de674d",
+    "mtime": 1795338027.1237333,
+    "seen": 1795338167.6725612,
+    "ast_hash": "0d542f728e34e0e6455cde47c8199884",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/mv/dokumen/[id]/route.ts": {
@@ -8985,6 +8985,24 @@
     "mtime": 1795334948.6049726,
     "seen": 1795336584.713477,
     "ast_hash": "e38f1aa0d247b6d65bc506421ee2445d",
+    "semantic_hash": ""
+  },
+  "apps/web/src/components/PanduanAwal.tsx": {
+    "mtime": 1795338096.7669353,
+    "seen": 1795338167.6726904,
+    "ast_hash": "154a6b69a7865f8cbc310f4061273d5c",
+    "semantic_hash": ""
+  },
+  "apps/web/src/components/TombolPanduan.tsx": {
+    "mtime": 1795338096.7684848,
+    "seen": 1795338167.6727235,
+    "ast_hash": "73965b91dbd7735f77d40b586ea61ce6",
+    "semantic_hash": ""
+  },
+  "apps/web/src/lib/panduanAwal.ts": {
+    "mtime": 1795338096.765596,
+    "seen": 1795338167.6727452,
+    "ast_hash": "5964102ecc0269a55a6ecba46576091e",
     "semantic_hash": ""
   },
   "package-lock.json": {
