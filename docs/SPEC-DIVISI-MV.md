@@ -59,14 +59,16 @@ Fungsi `can_see(shipment)` (migrasi 028) mengizinkan Kepala gudang, Staf gudang,
 
 Ini memakai logika yang sudah ada di `_lokasi_resi` (migrasi 046), sehingga tidak ada konsep baru.
 
-**[DIPUTUSKAN 2]** Tim memilih **B**: cabang tujuan **tidak melihat** resi sebelum barang tiba. Aturan akhir:
+**[DIPUTUSKAN 2, DIREVISI]** Tim awalnya memilih opsi B (menyembunyikan), lalu merevisinya: resi lintas cabang **tetap boleh dilihat**, tetapi harus **dipisahkan dengan jelas** menurut arahnya di semua akun cabang. Keputusan akhir (sudah dibangun, migrasi 049):
 
-| Tahap resi | Cabang yang melihat |
+| Kelompok | Arti untuk cabang saya |
 |---|---|
-| Sebelum tiba | Hanya cabang asal (atau lokasi leg saat ini, memakai `_lokasi_resi`) |
-| Setelah tiba di tujuan | Cabang tujuan melihat penuh. Cabang asal tetap melihat hanya baca |
+| **Akan masuk** | Barang menuju cabang ini dan belum tiba |
+| **Di cabang ini** | Barang sedang ada di sini (belum berangkat dari sini, atau sudah tiba di sini) |
+| **Sudah keluar** | Barang dari cabang ini yang sudah berangkat |
+| **Selesai** | Sudah diterima penerima |
 
-Konsekuensi yang perlu diketahui tim: Kepala gudang cabang tujuan tidak lagi mendapat pemberitahuan dini "ada kiriman menuju cabang saya". Bila nanti dibutuhkan, itu bisa ditambah sebagai ringkasan terpisah tanpa membuka data resi.
+Empat kartu penyaring ini muncul di beranda Kepala gudang, Petugas gudang, Kasir, dan CS (angka dihitung dari seluruh daftar, sentuh untuk menyaring, sentuh lagi untuk melepas). Setiap baris resi juga memuat lencana arah, misalnya "Masuk dari Jakarta" atau "Keluar ke Makassar". Siapa yang boleh melihat dan mengerjakan resi **tidak berubah**.
 
 ### 2.3 Matriks akses modul MV
 (`MV` = MV cabang, `MV Master` = semua cabang)
@@ -235,8 +237,8 @@ Setiap fase dirilis terpisah, dengan migrasi diterapkan ke produksi **sebelum** 
 ## 9. Checklist pengujian
 
 **Isolasi data (wajib lolos sebelum rilis fase 2)**
-1. Kepala gudang Surabaya **tidak** melihat resi Makassar → Surabaya selama barang belum tiba (opsi B).
-2. Setelah resi tiba di Surabaya, Kepala gudang Surabaya melihat penuh, sedangkan Makassar hanya baca.
+1. Kepala gudang Surabaya melihat resi Makassar → Surabaya di kelompok **Akan masuk** selama barang belum tiba, dan di **Di cabang ini** setelah tiba.
+2. Untuk Makassar, resi yang sama tampil di **Di cabang ini** sebelum berangkat, **Sudah keluar** setelah berangkat, dan **Selesai** setelah diterima.
 3. MV Jakarta tidak melihat alokasi, HPP, dan dokumen cabang Makassar dan Surabaya.
 4. MV Master melihat dan mengelola ketiga cabang; MV cabang melihat penjualan cabang lain tetapi tidak melihat alokasi, HPP, dan dokumen cabang lain.
 5. Penjualan Jakarta, Makassar, Surabaya terpisah, dan angkanya sama dengan laporan Finance.
@@ -272,7 +274,7 @@ Setiap fase dirilis terpisah, dengan migrasi diterapkan ke produksi **sebelum** 
 
 **Sudah diputuskan**
 1. MV cabang boleh melihat penjualan semua cabang, hanya baca, dengan pengelompokan dan filter pintar (2.4).
-2. Visibilitas lintas cabang: **opsi B** (cabang tujuan melihat setelah barang tiba).
+2. Visibilitas lintas cabang: tetap terlihat, dipisah menjadi Akan masuk, Di cabang ini, Sudah keluar, Selesai (dibangun).
 3. Dua peran: **MV** (cabang) dan **MV Master** (semua cabang, memverifikasi vendor).
 
 **Masih menunggu jawaban tim**

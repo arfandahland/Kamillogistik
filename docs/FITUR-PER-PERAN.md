@@ -134,3 +134,23 @@ Fitur lintas peran yang dibangun putaran ini: pesan jemput online, klaim dan kel
 - 🆕 **Timbang cepat (Staf gudang):** pindai barcode tiap barang, layar memuat data awal dari Kasir, isi berat dan ukuran barang itu, simpan, lalu pindai berikutnya. Resi otomatis "Sudah ditimbang" bila semua barang tercatat. Pindai barang di gudang asal langsung membuka layar timbang.
 - 🆕 **Data awal resi (Kasir):** isi barang (wajib), kemasan, perkiraan berat, nilai barang, rapuh. Terbaca semua peran terkait dan tercetak di label.
 - 🆕 **Pembeda gudang:** Kepala gudang membuat, menyegel, dan menyerahkan manifest serta menyelesaikan kendala dan selisih; Staf gudang menimbang, menambah barang ke manifest dengan pindai, dan membongkar.
+
+## Divisi MV (Mitra Vendor)
+
+Dua peran baru. **MV** terikat satu cabang (Jakarta, Makassar, atau Surabaya). **MV Master** melihat dan mengelola semua cabang dan memverifikasi vendor. Super Admin boleh semuanya; Owner dan Finance hanya membaca (Finance juga mengunci HPP).
+
+| Fitur | MV | MV Master | Finance | Owner | Super Admin |
+|---|---|---|---|---|---|
+| Vendor (lihat, usul) | Ya | Ya | Lihat | Lihat | Ya |
+| Verifikasi vendor | Tidak | Ya | Tidak | Tidak | Ya |
+| Alokasi dan HPP (cabangnya) | Ya | Semua cabang | Lihat, kunci HPP | Lihat | Ya |
+| Buka kunci HPP | Tidak | Ya (alasan wajib) | Tidak | Tidak | Ya |
+| Pemantauan wilayah (darat, udara, laut) | Cabangnya | Semua | Lihat | Lihat | Ya |
+| SJ balik, tanda terima, serah ke Finance | Ya | Ya | Melihat yang diserahkan | Lihat | Ya |
+| Dokumen pengiriman (kamera atau unggah) | Ya | Ya, termasuk pengecualian unggah | Tidak | Lihat | Ya |
+| Manifest udara (CSV atau PDF) | Ya | Ya | Lihat | Lihat | Ya |
+| Penjualan per cabang | Semua cabang, hanya baca | Semua cabang | Ya | Ya | Ya |
+
+Aturan penting: foto serah terima dan kondisi barang wajib dari kamera dalam aplikasi (pengecualian unggah hanya lewat MV Master dengan alasan); foto kamera yang lebih dari 10 menit ditolak; foto yang sama tidak bisa dipakai dua kali. HPP laut dan udara dicatat lewat Biaya manifest, HPP per kiriman hanya untuk darat. Batas SJ balik terlambat 14 hari sejak barang tiba, peringatan pada sisa 7 hari (bisa diubah di tabel pengaturan MV).
+
+Arah barang di akun cabang: kartu **Akan masuk**, **Di cabang ini**, **Sudah keluar**, **Selesai** memisahkan resi lintas cabang di beranda Kepala gudang, Petugas gudang, Kasir, dan CS.
