@@ -358,7 +358,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
 
     console.log("\n[G2] Bukti terima (foto, tanda tangan, lokasi)");
     await kmks.ctx.grantPermissions(["geolocation"]); await kmks.ctx.setGeolocation({ latitude: -5.1477, longitude: 119.4327 });
-    await p.reload({ waitUntil: "networkidle" });
+    await p.reload({ waitUntil: "load" });
     ok("form bukti terima tampil, tombol simpan terkunci sampai lengkap", (await p.locator(".pod").getByText("Lengkapi dulu").count()) === 1 && (await p.getByRole("button", { name: "Simpan bukti terima" }).count()) === 0);
     const jpg = await p.screenshot({ type: "jpeg", quality: 60 });
     await p.setInputFiles('.podpick input[type=file]', { name: "bukti.jpg", mimeType: "image/jpeg", buffer: jpg });
@@ -578,7 +578,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await kartu.getByRole("button", { name: "Tandai sudah dihubungi" }).click();
     await k.waitForSelector(".fcard.done", { timeout: 15000 }).catch(() => {});
     ok("tandai sudah dihubungi: kartu berubah selesai", (await k.locator(".fcard.done", { hasText: antreNo }).count()) === 1);
-    await k.reload({ waitUntil: "networkidle" });
+    await k.reload({ waitUntil: "load" });
     ok("setelah dimuat ulang tetap tercatat dihubungi (masuk 'Sudah dihubungi')", (await k.locator(".fdonebox .fcard", { hasText: antreNo }).count()) === 1);
     // pencarian cepat
     await k.goto(`${BASE}/app/cari?q=${encodeURIComponent("1111 2222")}`, { waitUntil: "networkidle" });
@@ -627,7 +627,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await pp.waitForSelector(".nilai.done", { timeout: 15000 }).catch(() => {});
     ok("nilai dengan 4 angka HP benar tersimpan (terima kasih)", /Terima kasih/.test(await text(pp)));
     await pp.screenshot({ path: `${OUT}/e2e-nilai.png` });
-    await pp.reload({ waitUntil: "networkidle" });
+    await pp.reload({ waitUntil: "load" });
     ok("setelah dimuat ulang: sudah dinilai, form tidak muncul lagi", (await pp.locator("form.nilai").count()) === 0 && /sudah menilai/.test(await text(pp)));
     const html = await (await fetch(`${BASE}/lacak/${resiNo}`)).text();
     ok("halaman lacak memuat meta og:image dan og:title status", /property="og:image"/.test(html) && /og:title" content="Resi KML/.test(html));
