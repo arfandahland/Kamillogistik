@@ -114,9 +114,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/page.tsx": {
-    "mtime": 1795316517.3461134,
-    "seen": 1795316645.815179,
-    "ast_hash": "1f78c5c55e9418af8ac8f29c50b5b055",
+    "mtime": 1795317384.4981751,
+    "seen": 1795317492.21731,
+    "ast_hash": "22573661e446d5e86deb8070ada8a390",
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/panduan/[slug]/page.tsx": {
@@ -474,9 +474,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/layout.tsx": {
-    "mtime": 1795316607.5005765,
-    "seen": 1795316645.8152757,
-    "ast_hash": "84adff5e5faa6183bb7fbc9268763607",
+    "mtime": 1795317384.4983885,
+    "seen": 1795317492.2174127,
+    "ast_hash": "63531db52975689f88e7416061d22676",
     "semantic_hash": ""
   },
   "apps/web/src/app/llms.txt/route.ts": {
@@ -822,9 +822,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/lib/panduan.tsx": {
-    "mtime": 1795316554.2378128,
-    "seen": 1795316645.8153806,
-    "ast_hash": "33e6c09d4f095877070b3810018eb92d",
+    "mtime": 1795317402.5439103,
+    "seen": 1795317492.2176354,
+    "ast_hash": "94aa7468cfd9d6b26d1bb502dface178",
     "semantic_hash": ""
   },
   "apps/web/src/lib/publicRpc.ts": {
@@ -846,9 +846,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/lib/seo.ts": {
-    "mtime": 1795316517.3484952,
-    "seen": 1795316645.8153846,
-    "ast_hash": "529a5531af8464940af9374de68810f4",
+    "mtime": 1795317384.4986892,
+    "seen": 1795317492.2176402,
+    "ast_hash": "d74bee1b25f92eea83a3080bf91d8db0",
     "semantic_hash": ""
   },
   "apps/web/src/lib/site.ts": {
@@ -924,9 +924,9 @@
     "semantic_hash": ""
   },
   "e2e/flow.cjs": {
-    "mtime": 1795316528.8402798,
-    "seen": 1795316645.81547,
-    "ast_hash": "ac6da95349afd72a8cfe49fd041dfa47",
+    "mtime": 1795317408.8731039,
+    "seen": 1795317492.217745,
+    "ast_hash": "796000ef6dd116407287a2dadd1bfba4",
     "semantic_hash": ""
   },
   "e2e/kamera.cjs": {
@@ -1770,15 +1770,15 @@
     "semantic_hash": ""
   },
   "apps/web/src/lib/layanan.ts": {
-    "mtime": 1795316517.3475282,
-    "seen": 1795316645.8153777,
-    "ast_hash": "f0cd29624a113b180fadf3736a46f9d6",
+    "mtime": 1795317384.49738,
+    "seen": 1795317492.2176323,
+    "ast_hash": "9ee94d39d862e1b3e02cd44c9fb8e4bc",
     "semantic_hash": ""
   },
   "apps/web/src/lib/perusahaan.ts": {
-    "mtime": 1795316517.3481674,
-    "seen": 1795316645.8153813,
-    "ast_hash": "a5275a311b42984077e44b5ac0a66800",
+    "mtime": 1795317384.49854,
+    "seen": 1795317492.2176363,
+    "ast_hash": "b952ac2e5b522910d7c31e1f62d589a9",
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/jemput/aksi.ts": {
