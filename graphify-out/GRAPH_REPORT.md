@@ -1,17 +1,17 @@
 # Graph Report - Kamillogistik  (2026-11-22)
 
 ## Corpus Check
-- 1476 files · ~298,557 words
+- 1476 files · ~299,255 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 5 file(s) not represented in the graph (top: (none) 2, .example 1, .ico 1)
 
 ## Summary
-- 1825 nodes · 4905 edges · 100 communities (87 shown, 13 thin omitted)
+- 1825 nodes · 4897 edges · 106 communities (90 shown, 16 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 9 edges (avg confidence: 0.86)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `1d5581b3`
+- Built from commit: `01e6a5a6`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -108,21 +108,27 @@
 - InvoiceForm.tsx
 - scripts
 - ui-ux-designer.md
-- laporan.cjs
+- package.json
+- karir.ts
+- publicRpc.ts
 - Pemindai
+- LamaranKartu.tsx
 - vitest
+- supabaseRepo.test.ts
+- chat.test.ts
+- followup.test.ts
 
 ## God Nodes (most connected - your core abstractions)
 1. `staffRpc()` - 163 edges
 2. `next` - 149 edges
 3. `Icon()` - 118 edges
-4. `BackLink()` - 93 edges
+4. `BackLink()` - 92 edges
 5. `react` - 67 edges
 6. `requireRole()` - 62 edges
 7. `tanggalWaktu()` - 51 edges
 8. `Potong()` - 47 edges
 9. `waLink()` - 45 edges
-10. `SubmitButton()` - 40 edges
+10. `rupiah()` - 40 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `1. Dua jalur masuk dan dua arah` --references--> `nextStatus()`  [INFERRED]
@@ -139,23 +145,23 @@
 ## Import Cycles
 - None detected.
 
-## Communities (100 total, 13 thin omitted)
+## Communities (106 total, 16 thin omitted)
 
 ### Community 1 - "FollowupCard.tsx"
 Cohesion: 0.22
 Nodes (14): tandaiDihubungi(), FollowupCard(), FOLLOWUP_LABEL, FollowupItem, FollowupKind, followupLink(), followupMessage(), rp() (+6 more)
 
 ### Community 2 - "alokasi/page.tsx"
-Cohesion: 0.08
-Nodes (59): Alokasi(), Dok, LANJUT, metadata, MODA, Riwayat, BerandaMV(), metadata (+51 more)
+Cohesion: 0.07
+Nodes (61): metadata, SJDariMV(), Alokasi(), Dok, LANJUT, metadata, MODA, Riwayat (+53 more)
 
 ### Community 3 - "chat.ts"
-Cohesion: 0.16
-Nodes (19): dynamic, POST(), angka(), ChatCtx, ChatDeps, ChatReply, CHIPS_AWAL, has() (+11 more)
+Cohesion: 0.15
+Nodes (20): dynamic, POST(), angka(), ChatCtx, ChatDeps, ChatReply, CHIPS_AWAL, has() (+12 more)
 
 ### Community 4 - "Icon.tsx"
-Cohesion: 0.07
-Nodes (47): Kendala(), SJDariMV(), B, BeritaAcara(), dynamic, metadata, CetakManifest(), dynamic (+39 more)
+Cohesion: 0.08
+Nodes (41): B, BeritaAcara(), dynamic, metadata, CetakManifest(), dynamic, M, metadata (+33 more)
 
 ### Community 5 - "(publik)/[slug]/page.tsx"
 Cohesion: 0.11
@@ -170,12 +176,12 @@ Cohesion: 0.21
 Nodes (12): devDependencies, @types/node@^22, @types/react@^19, @types/react-dom@^19, typescript@^5.6.0, typescript, name, private (+4 more)
 
 ### Community 8 - "waNumber"
-Cohesion: 0.14
-Nodes (16): ST, ubahJemput(), ST, ubahKlaim(), usulKlaim(), Jemput, JemputKartu(), LAYANAN (+8 more)
+Cohesion: 0.17
+Nodes (15): ST, ubahJemput(), ST, ubahKlaim(), usulKlaim(), Jemput, JemputKartu(), LAYANAN (+7 more)
 
 ### Community 9 - "tariff.ts"
-Cohesion: 0.10
-Nodes (21): BUSY, nf(), quote(), QuoteBody, Reply, routes(), SERVICE_LABEL, applyRounding() (+13 more)
+Cohesion: 0.14
+Nodes (15): DEMO_ROUTES, applyRounding(), assertPositiveFinite(), calculateTariff(), DEFAULT_VOLUMETRIC_DIVISOR, Dimensions, PieceInput, PricingBasis (+7 more)
 
 ### Community 10 - "KendalaPanel.tsx"
 Cohesion: 0.25
@@ -186,12 +192,12 @@ Cohesion: 0.09
 Nodes (34): geserKonten(), hapusKonten(), Hasil, muatBawaan(), segar(), simpanKonten(), BuktiShowcase(), JENIS (+26 more)
 
 ### Community 12 - "core/package.json"
-Cohesion: 0.13
-Nodes (16): dependencies, zod@^3.23.0, devDependencies, typescript@^5.6.0, vitest@^2.1.0, typescript, main, name (+8 more)
+Cohesion: 0.17
+Nodes (12): dependencies, zod@^3.23.0, main, name, private, scripts, test, typecheck (+4 more)
 
 ### Community 13 - "fake-supabase.mjs"
-Cohesion: 0.05
-Nodes (35): hapusLamaran(), ubahLamaran(), Lamaran, LamaranKartu(), b64(), here, jwt(), pool (+27 more)
+Cohesion: 0.18
+Nodes (6): b64(), here, jwt(), pool, session(), userJson()
 
 ### Community 14 - "manifest/[id]/page.tsx"
 Cohesion: 0.10
@@ -202,12 +208,12 @@ Cohesion: 0.16
 Nodes (13): AutoLabel(), Gerak(), Ctx, NavIndukProvider(), Sidebar(), Tab, Me, StaffShell() (+5 more)
 
 ### Community 16 - "index.ts"
-Cohesion: 0.13
-Nodes (19): POST(), GET(), alt, contentType, dynamic, Og(), size, publicRepo (+11 more)
+Cohesion: 0.09
+Nodes (27): POST(), GET(), alt, contentType, dynamic, Og(), size, publicRepo (+19 more)
 
 ### Community 17 - "PeranDashboard.tsx"
-Cohesion: 0.19
-Nodes (25): Beranda(), KendalaBadge(), Spark(), Angka(), GudangDash(), GudangData, jam(), Kartu() (+17 more)
+Cohesion: 0.20
+Nodes (24): Beranda(), KendalaBadge(), Spark(), Angka(), GudangDash(), GudangData, jam(), Kartu() (+16 more)
 
 ### Community 18 - "korporat/[id]/page.tsx"
 Cohesion: 0.06
@@ -222,16 +228,16 @@ Cohesion: 0.11
 Nodes (17): SITE_URL, jobs, uji, name, on, pull_request, push, branches (+9 more)
 
 ### Community 21 - "tagihan/[id]/page.tsx"
-Cohesion: 0.15
-Nodes (20): Detail, metadata, STATUS, TagihanDetail(), Pratinjau(), dynamic, metadata, PublicInvoice() (+12 more)
+Cohesion: 0.22
+Nodes (14): Detail, metadata, STATUS, TagihanDetail(), Pratinjau(), dynamic, metadata, PublicInvoice() (+6 more)
 
 ### Community 22 - "LamarForm.tsx"
 Cohesion: 0.07
 Nodes (32): JemputHasil, kirimJemput(), s(), kirimLamaran(), LamarHasil, s(), kirimKlaim(), KlaimHasil (+24 more)
 
 ### Community 23 - "seed.ts"
-Cohesion: 0.12
-Nodes (18): Place, Repo, RouteService, ShipmentRecord, TrackEvent, buildEvents(), DEMO_ROUTES, DEMO_SHIPMENTS (+10 more)
+Cohesion: 0.14
+Nodes (17): Place, Repo, RouteService, ShipmentRecord, TrackEvent, buildEvents(), DEMO_SHIPMENTS, ev() (+9 more)
 
 ### Community 24 - "mv/actions.ts"
 Cohesion: 0.29
@@ -242,8 +248,8 @@ Cohesion: 0.12
 Nodes (18): Baru(), metadata, back(), batalkanResi(), FIELD, ubahResi(), CaraMasukField(), DataKendaraan() (+10 more)
 
 ### Community 26 - "StaffHome.tsx"
-Cohesion: 0.16
-Nodes (15): metadata, Semua(), Pratinjau(), ArahKartu(), ArahLencana(), Posisi, POSISI_META, URUT (+7 more)
+Cohesion: 0.15
+Nodes (16): metadata, Semua(), Pratinjau(), ArahKartu(), ArahLencana(), Posisi, POSISI_META, URUT (+8 more)
 
 ### Community 27 - "Panduan untuk Pak Kamil (cukup lewat HP)"
 Cohesion: 0.12
@@ -270,8 +276,8 @@ Cohesion: 0.17
 Nodes (11): Berikutnya, Catatan data (perlu konfirmasi Fase 0), Fitur inti, Fitur tambahan (migrasi 014-018), Identitas visual (dari materi promosi), Kamil Logistik Express, Keamanan dan uji penetrasi, Pricelist dan data (+3 more)
 
 ### Community 33 - "staffRpc"
-Cohesion: 0.10
-Nodes (11): GET(), metadata, Konten(), metadata, BaruManifest(), metadata, dynamic, metadata (+3 more)
+Cohesion: 0.09
+Nodes (14): GET(), Konten(), metadata, BaruManifest(), metadata, dynamic, metadata, TT (+6 more)
 
 ### Community 34 - "compilerOptions"
 Cohesion: 0.18
@@ -282,8 +288,8 @@ Cohesion: 0.60
 Nodes (3): f(), HitungVolume(), n()
 
 ### Community 36 - "chat.ts"
-Cohesion: 0.10
-Nodes (27): KodeResi(), Pemindai, PemindaiPublik(), BULAN, CaraMasuk, explainResi(), formatResi(), isManifestCode() (+19 more)
+Cohesion: 0.11
+Nodes (25): KodeResi(), Pemindai, PemindaiPublik(), BULAN, CaraMasuk, explainResi(), formatResi(), isManifestCode() (+17 more)
 
 ### Community 37 - "skenario.sh"
 Cohesion: 0.33
@@ -379,7 +385,7 @@ Nodes (9): Lamaran(), metadata, aturPosisi(), D, lama(), metadata, Rekrutmen(), 
 
 ### Community 69 - "next"
 Cohesion: 0.10
-Nodes (23): Catatan(), metadata, NAMA, Row, JemputAntrean(), metadata, metadata, Row (+15 more)
+Nodes (24): Catatan(), metadata, NAMA, Row, JemputAntrean(), metadata, Kendala(), metadata (+16 more)
 
 ### Community 70 - "[jenis]/route.ts"
 Cohesion: 0.36
@@ -442,8 +448,8 @@ Cohesion: 0.27
 Nodes (8): ST, ubahCalonMitra(), CalonMitra(), metadata, CalonMitra, CalonMitraKartu(), JENIS, STATUS_MITRA
 
 ### Community 87 - "kamera.cjs"
-Cohesion: 0.22
-Nodes (5): { chromium, devices }, PAGES, bwip, { chromium }, fs
+Cohesion: 0.15
+Nodes (11): { chromium, devices }, PAGES, bwip, { chromium }, fs, { chromium }, data, esc() (+3 more)
 
 ### Community 88 - "FormModal.tsx"
 Cohesion: 0.16
@@ -477,37 +483,49 @@ Nodes (5): scripts, build, dev, start, typecheck
 Cohesion: 0.40
 Nodes (4): Aturan tetap proyek, Cara bekerja, Sistem tata letak (pakai ulang, jangan membuat gaya baru tanpa alasan), Yang kamu hindari
 
-### Community 99 - "laporan.cjs"
-Cohesion: 0.38
-Nodes (6): { chromium }, data, esc(), fs, img(), sections
+### Community 97 - "package.json"
+Cohesion: 0.15
+Nodes (13): devDependencies, pg@^8.23.1, name, private, scripts, build, dev, e2e (+5 more)
+
+### Community 98 - "karir.ts"
+Cohesion: 0.20
+Nodes (11): HRD_WA, HRD_WA_TAMPIL, KELOMPOK_POSISI, LABEL_STATUS_LAMARAN, pesanKeHrd(), pesanKePelamar(), Posisi, POSISI (+3 more)
+
+### Community 99 - "publicRpc.ts"
+Cohesion: 0.22
+Nodes (7): dynamic, LBL, metadata, P, Portal(), publicRpcCached(), statusLabel()
 
 ### Community 100 - "Pemindai"
 Cohesion: 0.20
 Nodes (6): @zxing/library@^0.23.0, bunyi(), HINTS, Pemindai(), Props, @zxing/library
 
-### Community 104 - "vitest"
-Cohesion: 0.08
-Nodes (5): deps, repo, base, routesJson, vitest
+### Community 101 - "LamaranKartu.tsx"
+Cohesion: 0.52
+Nodes (5): hapusLamaran(), ubahLamaran(), Lamaran, LamaranKartu(), STATUS_LAMARAN
+
+### Community 102 - "vitest"
+Cohesion: 0.29
+Nodes (5): devDependencies, typescript@^5.6.0, vitest@^2.1.0, typescript, vitest
 
 ## Knowledge Gaps
 - **9 isolated node(s):** `../../tsconfig.base.json`, `NODE_PATH`, `SITE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_URL` (+4 more)
   These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 696 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **13 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **16 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `next` connect `next` to `FollowupCard.tsx`, `alokasi/page.tsx`, `chat.ts`, `Icon.tsx`, `(publik)/[slug]/page.tsx`, `web/package.json`, `waNumber`, `KendalaPanel.tsx`, `konten/actions.ts`, `fake-supabase.mjs`, `manifest/[id]/page.tsx`, `StaffShell.tsx`, `index.ts`, `PeranDashboard.tsx`, `korporat/[id]/page.tsx`, `lib/seo.ts`, `tagihan/[id]/page.tsx`, `LamarForm.tsx`, `mv/actions.ts`, `RevisiPanel.tsx`, `StaffHome.tsx`, `OwnerDashboard.tsx`, `brand.ts`, `staffRpc`, `chat.ts`, `SubmitButton`, `udara/page.tsx`, `brand.ts`, `index.ts`, `requireRole`, `(publik)/page.tsx`, `[resi]/page.tsx`, `resi/[id]/page.tsx`, `server.ts`, `HubDashboard.tsx`, `rekrutmen/page.tsx`, `dependencies`, `ringkasan/page.tsx`, `Icon`, `Calculator.tsx`, `timbang/actions.ts`, `pegawai/page.tsx`, `calon-mitra/page.tsx`, `FormModal.tsx`, `src/app/layout.tsx`, `app/app/layout.tsx`, `middleware.ts`?**
-  _High betweenness centrality (0.163) - this node is a cross-community bridge._
+- **Why does `next` connect `next` to `FollowupCard.tsx`, `alokasi/page.tsx`, `chat.ts`, `Icon.tsx`, `(publik)/[slug]/page.tsx`, `web/package.json`, `waNumber`, `KendalaPanel.tsx`, `konten/actions.ts`, `manifest/[id]/page.tsx`, `StaffShell.tsx`, `index.ts`, `PeranDashboard.tsx`, `korporat/[id]/page.tsx`, `lib/seo.ts`, `tagihan/[id]/page.tsx`, `LamarForm.tsx`, `mv/actions.ts`, `RevisiPanel.tsx`, `StaffHome.tsx`, `OwnerDashboard.tsx`, `brand.ts`, `staffRpc`, `chat.ts`, `SubmitButton`, `udara/page.tsx`, `brand.ts`, `index.ts`, `requireRole`, `(publik)/page.tsx`, `[resi]/page.tsx`, `resi/[id]/page.tsx`, `server.ts`, `HubDashboard.tsx`, `rekrutmen/page.tsx`, `dependencies`, `ringkasan/page.tsx`, `Icon`, `Calculator.tsx`, `timbang/actions.ts`, `pegawai/page.tsx`, `calon-mitra/page.tsx`, `FormModal.tsx`, `src/app/layout.tsx`, `app/app/layout.tsx`, `middleware.ts`, `publicRpc.ts`, `LamaranKartu.tsx`?**
+  _High betweenness centrality (0.135) - this node is a cross-community bridge._
 - **What connects `../../tsconfig.base.json`, `NODE_PATH`, `SITE_URL` to the rest of the system?**
   _9 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `alokasi/page.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.07544757033248081 - nodes in this community are weakly interconnected._
-- **Why does `staffRpc()` connect `staffRpc` to `FollowupCard.tsx`, `alokasi/page.tsx`, `Icon.tsx`, `waNumber`, `KendalaPanel.tsx`, `konten/actions.ts`, `fake-supabase.mjs`, `manifest/[id]/page.tsx`, `PeranDashboard.tsx`, `korporat/[id]/page.tsx`, `tagihan/[id]/page.tsx`, `mv/actions.ts`, `RevisiPanel.tsx`, `StaffHome.tsx`, `OwnerDashboard.tsx`, `SubmitButton`, `udara/page.tsx`, `requireRole`, `resi/[id]/page.tsx`, `server.ts`, `rekrutmen/page.tsx`, `next`, `[jenis]/route.ts`, `ringkasan/page.tsx`, `unduh/route.ts`, `timbang/actions.ts`, `pegawai/page.tsx`, `calon-mitra/page.tsx`, `app/app/layout.tsx`?**
-  _High betweenness centrality (0.062) - this node is a cross-community bridge._
+  _Cohesion score 0.07120500782472614 - nodes in this community are weakly interconnected._
+- **Why does `staffRpc()` connect `staffRpc` to `FollowupCard.tsx`, `alokasi/page.tsx`, `Icon.tsx`, `waNumber`, `KendalaPanel.tsx`, `konten/actions.ts`, `manifest/[id]/page.tsx`, `PeranDashboard.tsx`, `korporat/[id]/page.tsx`, `tagihan/[id]/page.tsx`, `mv/actions.ts`, `RevisiPanel.tsx`, `StaffHome.tsx`, `OwnerDashboard.tsx`, `SubmitButton`, `udara/page.tsx`, `requireRole`, `resi/[id]/page.tsx`, `server.ts`, `rekrutmen/page.tsx`, `next`, `[jenis]/route.ts`, `ringkasan/page.tsx`, `unduh/route.ts`, `timbang/actions.ts`, `pegawai/page.tsx`, `calon-mitra/page.tsx`, `app/app/layout.tsx`, `LamaranKartu.tsx`?**
+  _High betweenness centrality (0.060) - this node is a cross-community bridge._
 - **Should `Icon.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.06927551560021153 - nodes in this community are weakly interconnected._
-- **Why does `react` connect `react` to `FollowupCard.tsx`, `alokasi/page.tsx`, `Icon.tsx`, `web/package.json`, `waNumber`, `KendalaPanel.tsx`, `konten/actions.ts`, `fake-supabase.mjs`, `manifest/[id]/page.tsx`, `StaffShell.tsx`, `lib/seo.ts`, `tagihan/[id]/page.tsx`, `LamarForm.tsx`, `RevisiPanel.tsx`, `OwnerDashboard.tsx`, `brand.ts`, `staffRpc`, `HitungVolume.tsx`, `chat.ts`, `SubmitButton`, `udara/page.tsx`, `index.ts`, `(publik)/page.tsx`, `[resi]/page.tsx`, `server.ts`, `HubDashboard.tsx`, `publicView.ts`, `KondisiForm.tsx`, `rekrutmen/page.tsx`, `next`, `dependencies`, `Icon`, `Calculator.tsx`, `LabelStudio.tsx`, `calon-mitra/page.tsx`, `FormModal.tsx`, `src/app/layout.tsx`, `InvoiceForm.tsx`, `Pemindai`?**
-  _High betweenness centrality (0.050) - this node is a cross-community bridge._
+  _Cohesion score 0.08013468013468013 - nodes in this community are weakly interconnected._
+- **Why does `Icon()` connect `Icon` to `FollowupCard.tsx`, `alokasi/page.tsx`, `Icon.tsx`, `(publik)/[slug]/page.tsx`, `KendalaPanel.tsx`, `konten/actions.ts`, `manifest/[id]/page.tsx`, `StaffShell.tsx`, `PeranDashboard.tsx`, `korporat/[id]/page.tsx`, `lib/seo.ts`, `tagihan/[id]/page.tsx`, `RevisiPanel.tsx`, `StaffHome.tsx`, `OwnerDashboard.tsx`, `brand.ts`, `staffRpc`, `chat.ts`, `SubmitButton`, `udara/page.tsx`, `brand.ts`, `requireRole`, `(publik)/page.tsx`, `[resi]/page.tsx`, `server.ts`, `HubDashboard.tsx`, `publicView.ts`, `KondisiForm.tsx`, `next`, `ringkasan/page.tsx`, `Calculator.tsx`, `pegawai/page.tsx`, `react`, `LabelStudio.tsx`, `FormModal.tsx`, `publicRpc.ts`, `Pemindai`?**
+  _High betweenness centrality (0.045) - this node is a cross-community bridge._
 - **Should `(publik)/[slug]/page.tsx` be split into smaller, more focused modules?**
   _Cohesion score 0.10823311748381129 - nodes in this community are weakly interconnected._
