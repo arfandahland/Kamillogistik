@@ -1476,6 +1476,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
 
     const mv = await login(browser, "mv.jkt@uji.id", "Sandi2026a", { width: 390, height: 844 });
     await mv.page.waitForURL(/\/app\/mv/, { timeout: 15000 }).catch(() => {});
+    await mv.page.waitForSelector("text=Vendor aktif", { timeout: 15000 }).catch(() => {});
     ok("AO4 akun MV langsung masuk ke beranda Divisi MV dengan kartu angka", /\/app\/mv/.test(mv.page.url()) && /Vendor aktif/.test(await text(mv.page)) && /SJ terlambat/.test(await text(mv.page)));
     ok("AO5 menu bawah MV: Alokasi, Pantau, SJ", (await mv.page.locator(".tabbar a[href='/app/mv/alokasi'], nav a[href='/app/mv/alokasi']").count()) >= 1 && (await mv.page.locator("a[href='/app/mv/sj']").count()) >= 1);
     await mv.page.goto(`${BASE}/app/mv/vendor`, { waitUntil: "networkidle" });
@@ -1544,6 +1545,38 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await fn.page.goto(`${BASE}/app/keuangan/sj`, { waitUntil: "networkidle" });
     ok("AO19 halaman SJ dari MV untuk Finance terbuka", /keuangan\/sj/.test(fn.page.url()) && !/Terjadi kesalahan/.test(await text(fn.page)));
     await fn.ctx.close();
+  }
+
+  // ===== Panduan awal per peran =====
+  console.log("\n[AP] Panduan awal di dalam aplikasi");
+  {
+    const ks = await login(browser, "kasir@uji.id", PASS, { width: 390, height: 844 });
+    await ks.page.goto(`${BASE}/app`, { waitUntil: "networkidle" }); await ks.page.waitForTimeout(1500);
+    ok("AP1 panduan tidak muncul sendiri pada mesin uji otomatis (hanya dengan ?tur=1)", (await ks.page.locator(".tur").count()) === 0);
+    await ks.page.goto(`${BASE}/app?tur=1`, { waitUntil: "networkidle" });
+    await ks.page.waitForSelector(".tur", { timeout: 10000 }).catch(() => {});
+    ok("AP2 panduan awal Kasir muncul sebagai kartu kecil dengan sapaan sesuai peran", /Langkah 1 dari/.test(await ks.page.locator(".tur").innerText().catch(() => "")) && /Selamat datang, Kasir/.test(await ks.page.locator(".tur").innerText().catch(() => "")));
+    ok("AP3 kartu panduan tidak menutupi seluruh layar (bukan jendela penghalang)", await ks.page.evaluate(() => { const r = document.querySelector(".tur").getBoundingClientRect(); return r.height < innerHeight * 0.5 && r.width <= innerWidth; }));
+    await ks.page.getByRole("button", { name: "Berikutnya" }).click();
+    ok("AP4 langkah berikutnya menjelaskan Resi baru dan menyorot menunya", /Buat resi baru/.test(await ks.page.locator(".tur").innerText()) && (await ks.page.locator(".tur-sorot").count()) >= 1);
+    let n = 0; while ((await ks.page.getByRole("button", { name: "Berikutnya" }).count()) > 0 && n++ < 12) await ks.page.getByRole("button", { name: "Berikutnya" }).click();
+    ok("AP5 langkah terakhir menjelaskan Akun dan tombolnya menjadi Selesai", /Akun dan absen/.test(await ks.page.locator(".tur").innerText()) && (await ks.page.getByRole("button", { name: "Selesai" }).count()) === 1);
+    await ks.page.getByRole("button", { name: "Selesai" }).click();
+    ok("AP6 setelah Selesai kartu hilang dan sorotan dilepas", (await ks.page.locator(".tur").count()) === 0 && (await ks.page.locator(".tur-sorot").count()) === 0);
+    await ks.page.goto(`${BASE}/app/akun`, { waitUntil: "networkidle" });
+    await ks.page.getByRole("button", { name: "Lihat panduan penggunaan" }).click();
+    await ks.page.waitForSelector(".tur", { timeout: 8000 }).catch(() => {});
+    ok("AP7 tombol Lihat panduan penggunaan di Akun membuka panduan lagi", (await ks.page.locator(".tur").count()) === 1);
+    await ks.page.locator(".turx").click();
+    ok("AP8 panduan bisa ditutup dengan tombol silang", (await ks.page.locator(".tur").count()) === 0);
+    await ks.ctx.close();
+    for (const [email, pass, sapa, awal] of [["mv.jkt@uji.id", "Sandi2026a", "Selamat datang, MV", "/app/mv"], ["finance@uji.id", PASS, "Selamat datang, Finance", "/app/keuangan"], ["gudang@uji.id", PASS, "Selamat datang, Petugas gudang", "/app"], ["manajer@uji.id", PASS, "Selamat datang, Kepala gudang", "/app"]]) {
+      const u = await login(browser, email, pass, { width: 390, height: 844 });
+      await u.page.goto(`${BASE}${awal}?tur=1`, { waitUntil: "load" }); await u.page.waitForURL(/\/app/, { timeout: 15000 }).catch(() => {});
+      await u.page.waitForSelector(".tur", { timeout: 12000 }).catch(() => {});
+      ok(`AP9 panduan awal ${email.split("@")[0]} memuat sapaan peran`, (await u.page.locator(".tur").innerText().catch(() => "")).includes(sapa.replace("Selamat datang, ", "Selamat datang, ")), await u.page.locator(".tur").innerText().catch(() => "").then((t) => t.slice(0, 60)));
+      await u.ctx.close();
+    }
   }
 
   await browser.close();

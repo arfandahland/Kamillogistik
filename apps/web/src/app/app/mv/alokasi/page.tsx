@@ -57,7 +57,7 @@ export default async function Alokasi({ searchParams }: { searchParams: Promise<
           <span><span className="pill">{statusTeks}</span></span></span>}>
         <div id={`r-${x.shipmentId}`} />
         <Link href={`/app/resi/${x.shipmentId}`} className="btn ghost mvbuka"><Icon name="file" size={18} /> Buka resi</Link>
-        {tulis && !a?.locked && !(a && ["BERANGKAT", "TIBA", "SELESAI"].includes(a.status)) && (
+        {tulis && !a?.locked && !(a && ["BERANGKAT", "TIBA", "SELESAI"].includes(a.status)) && !["DELIVERED", "CANCELLED"].includes(x.shipStatus) && (
           <form action={simpanAlokasi} className="mvform mvkotak">
             <b>Vendor atau armada</b>
             <input type="hidden" name="back" value={back} /><input type="hidden" name="shipment" value={x.shipmentId} />

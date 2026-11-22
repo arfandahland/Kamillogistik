@@ -8,8 +8,9 @@ import AutoLabel from "./AutoLabel";
 import { keluar } from "@/app/app/actions";
 import { initials, sapaan } from "@/lib/ui";
 import { NavIndukProvider } from "./NavInduk";
+import PanduanAwal from "./PanduanAwal";
 
-export type Me = { name: string; role: string; branchName: string | null };
+export type Me = { userId?: string; name: string; role: string; branchName: string | null };
 
 export default function StaffShell({ me, pending, children, forceFull }: { me: Me; pending: number; children: React.ReactNode; forceFull?: boolean }) {
   const owner = OWNER_VIEW.includes(me.role);
@@ -92,6 +93,7 @@ export default function StaffShell({ me, pending, children, forceFull }: { me: M
         {children}
         <Gerak />
         <AutoLabel />
+        {me.userId && <PanduanAwal userId={me.userId} role={me.role} />}
       </div>
       <TabBar tabs={tabs} />
     </div>

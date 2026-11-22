@@ -5,6 +5,7 @@ import Icon from "@/components/Icon";
 import { staffRpc } from "@/lib/supabase/server";
 import AbsenKartu from "@/components/AbsenKartu";
 import SubmitButton from "@/components/SubmitButton";
+import TombolPanduan from "@/components/TombolPanduan";
 import { keluar } from "../actions";
 import { ubahProfil } from "./actions";
 
@@ -68,8 +69,9 @@ export default async function Akun({ searchParams }: { searchParams: Promise<{ e
           {absen && <AbsenKartu />}
 
           <section className="card" aria-labelledby="h-aman">
-            <h2 className="cardh" id="h-aman">Keamanan</h2>
+            <h2 className="cardh" id="h-aman">Keamanan dan bantuan</h2>
             <div className="akunaksi">
+              <TombolPanduan />
               <Link href="/app/sandi" className="btn ghost"><Icon name="key" size={20} /> Ganti kata sandi</Link>
               <form action={keluar}><button className="btn ghost" style={{ borderColor: "var(--danger)", color: "var(--danger)" }}><Icon name="out" size={20} /> Keluar</button></form>
             </div>

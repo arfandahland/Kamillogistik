@@ -1663,3 +1663,23 @@ a.tile:nth-child(2n)::after { animation-delay: 1.5s; } a.tile:nth-child(3n)::aft
 @media print { .mvfoto, .mvfilter { display: none !important; } }
 .mvbuka { margin: 0 0 10px; width: fit-content; min-height: 40px; padding: 0 14px; }
 .mvtrk-a a.mvno { text-decoration: none; color: inherit; }
+
+/* ===== Panduan awal (kartu kecil per peran) ===== */
+.tur { position: fixed; z-index: 250; left: 12px; right: 12px; bottom: calc(92px + env(safe-area-inset-bottom)); max-width: 420px; margin: 0 auto; padding: 14px 16px 12px; border-radius: 20px; background: linear-gradient(160deg, #fff, #eafaf5); border: 2px solid var(--teal-400, #3fc1a5); box-shadow: 0 18px 44px rgba(6, 35, 30, .35); animation: turmasuk .45s var(--ease) both; }
+@media (min-width: 900px) { .tur { left: auto; right: 24px; bottom: 24px; width: 380px; margin: 0; } }
+.turhead { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+.turno { font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--teal-dark, #0b4d42); }
+.turx { width: 32px; height: 32px; border-radius: 50%; border: 0; background: rgba(15, 107, 90, .1); color: var(--teal-dark, #0b4d42); display: grid; place-items: center; cursor: pointer; }
+.turjudul { display: block; font-size: 17px; line-height: 1.25; margin: 2px 0 4px; }
+.turteks { margin: 0 0 10px; font-size: 14.5px; line-height: 1.45; color: #2c4a44; }
+.turdots { display: flex; gap: 6px; margin-bottom: 10px; } .turdots i { width: 8px; height: 8px; border-radius: 99px; background: #cfe3de; transition: width .25s var(--ease), background .25s; } .turdots i.pass { background: #7ccdb9; } .turdots i.on { width: 22px; background: var(--teal, #1aa889); }
+.turaksi { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.turnav { display: inline-flex; align-items: center; gap: 12px; margin-left: auto; }
+.turlink { border: 0; background: none; color: var(--muted); font-weight: 700; font-size: 14px; cursor: pointer; padding: 8px 4px; }
+.tur .btn { min-height: 42px; padding: 0 16px; font-size: 14.5px; width: auto; }
+@keyframes turmasuk { from { opacity: 0; transform: translateY(16px) scale(.97); } to { opacity: 1; transform: none; } }
+.tur-sorot { position: relative; z-index: 240; outline: 3px solid #ffb347; outline-offset: 3px; border-radius: 14px; animation: tursorot 1.4s ease-in-out infinite; }
+@keyframes tursorot { 0%, 100% { box-shadow: 0 0 0 0 rgba(255, 179, 71, .55); } 50% { box-shadow: 0 0 0 10px rgba(255, 179, 71, 0); } }
+@media (prefers-reduced-motion: reduce) { .tur, .tur-sorot { animation: none !important; } }
+@media print { .tur { display: none !important; } }
+.akunaksi > button:first-child { grid-column: 1 / -1; }
