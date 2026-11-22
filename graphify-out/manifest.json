@@ -924,9 +924,9 @@
     "semantic_hash": ""
   },
   "e2e/flow.cjs": {
-    "mtime": 1795338123.7812736,
-    "seen": 1795338167.6729198,
-    "ast_hash": "8f02bcf2bebf83486dc0163b4b135a27",
+    "mtime": 1795339257.8881524,
+    "seen": 1795339401.1791246,
+    "ast_hash": "6d177ac3571b2a6ce16a951859ef68fd",
     "semantic_hash": ""
   },
   "e2e/kamera.cjs": {
@@ -9003,6 +9003,18 @@
     "mtime": 1795338096.765596,
     "seen": 1795338167.6727452,
     "ast_hash": "5964102ecc0269a55a6ecba46576091e",
+    "semantic_hash": ""
+  },
+  "docs/panduan-penggunaan.html": {
+    "mtime": 1795338215.635937,
+    "seen": 1795339401.179222,
+    "ast_hash": "85f5d19e50cc81906cedea9e264c3014",
+    "semantic_hash": ""
+  },
+  "docs/PANDUAN-PENGGUNAAN-APLIKASI.pdf": {
+    "mtime": 1795338216.0322812,
+    "seen": 1795339401.1792278,
+    "ast_hash": "b6dee94d74d973a1a8cc1e50dfd39f1d",
     "semantic_hash": ""
   },
   "package-lock.json": {
