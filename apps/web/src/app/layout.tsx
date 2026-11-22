@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { SITE_URL } from "@/lib/site";
 import NavProgress from "@/components/NavProgress";
+import CariPilih from "@/components/CariPilih";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -23,7 +24,7 @@ export const viewport: Viewport = { width: "device-width", initialScale: 1, them
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="id">
-      <body><NavProgress />{children}</body>
+      <body><NavProgress /><CariPilih />{children}</body>
     </html>
   );
 }

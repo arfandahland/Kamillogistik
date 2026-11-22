@@ -24,7 +24,7 @@ export default async function BaruManifest({ searchParams }: { searchParams: Pro
           <h2 className="tbjudul"><span className="tbno">1</span> Tujuan dan jalur</h2>
           <div className="rbf">
             <label className="f" htmlFor="tujuan">Tujuan</label>
-            <select id="tujuan" name="tujuan" required defaultValue="">
+            <select id="tujuan" name="tujuan" required defaultValue="" data-cari>
               <option value="" disabled>Pilih kota tujuan…</option>
               {tujuan.map((t) => <option key={t.code} value={t.code}>{t.city} ({t.code})</option>)}
             </select>

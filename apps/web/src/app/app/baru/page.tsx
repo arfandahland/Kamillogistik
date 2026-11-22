@@ -39,7 +39,7 @@ export default async function Baru({ searchParams }: { searchParams: Promise<{ e
               <div className="rbrow r32">
                 <div className="rbf">
                   <label className="f" htmlFor="tujuan">Gudang tujuan</label>
-                  <select id="tujuan" name="tujuan" required defaultValue="">
+                  <select id="tujuan" name="tujuan" required defaultValue="" data-cari>
                     <option value="" disabled>Pilih gudang tujuan</option>
                     {tujuan.map((t) => <option key={t.id} value={t.id}>{t.city} · {t.name}</option>)}
                   </select>

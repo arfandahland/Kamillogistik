@@ -85,7 +85,7 @@ export default function Calculator({ routes, initialOrigin, initialDest }: { rou
         </div>
         <div>
           <label className="f" htmlFor="tujuan">Ke kota</label>
-          <select id="tujuan" value={destOk} onChange={(e) => { setDest(e.target.value); setSlug(""); setRes(null); }}>
+          <select id="tujuan" data-cari value={destOk} onChange={(e) => { setDest(e.target.value); setSlug(""); setRes(null); }}>
             {dests.map(([c, n]) => <option key={c} value={c}>{n}</option>)}
           </select>
         </div>
