@@ -12,9 +12,9 @@
     "semantic_hash": ""
   },
   "apps/web/next.config.mjs": {
-    "mtime": 1795214483.3900967,
-    "seen": 1795214549.5649366,
-    "ast_hash": "9023dcba0990754ff16cfdb71a6c5210",
+    "mtime": 1795322187.2844493,
+    "seen": 1795322303.218189,
+    "ast_hash": "9a4df5501faaecb43072fed0ffbdffa6",
     "semantic_hash": ""
   },
   "apps/web/package.json": {
@@ -54,9 +54,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/kebijakan-privasi/page.tsx": {
-    "mtime": 1795087685.2314117,
-    "seen": 1795104170.4403436,
-    "ast_hash": "03a1ab8307ed16f46acf1adf16ce9463",
+    "mtime": 1795322187.284784,
+    "seen": 1795322303.2195423,
+    "ast_hash": "8e15dc5d7255c943c4874027fc32a821",
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/kontak/page.tsx": {
@@ -96,9 +96,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/layout.tsx": {
-    "mtime": 1795320428.2332222,
-    "seen": 1795320517.0080004,
-    "ast_hash": "5ed15eb6909ffa3d68c54899c36c9249",
+    "mtime": 1795322187.2840135,
+    "seen": 1795322303.2195554,
+    "ast_hash": "4d03d3dda79e53d060ef43b99fd62629",
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/ongkir/loading.tsx": {
@@ -924,9 +924,9 @@
     "semantic_hash": ""
   },
   "e2e/flow.cjs": {
-    "mtime": 1795320482.096582,
-    "seen": 1795320517.0083342,
-    "ast_hash": "7af90f86b121d5c81c1de8017a5a73f3",
+    "mtime": 1795322207.3544962,
+    "seen": 1795322303.2199035,
+    "ast_hash": "527c515583338b5793663e34fd00b265",
     "semantic_hash": ""
   },
   "e2e/kamera.cjs": {
@@ -8805,6 +8805,12 @@
     "mtime": 1795316488.239504,
     "seen": 1795316645.8155386,
     "ast_hash": "a82faa95b02878db4537e4ab489f68f1",
+    "semantic_hash": ""
+  },
+  "apps/web/src/components/GoogleTag.tsx": {
+    "mtime": 1795322187.267708,
+    "seen": 1795322303.2197132,
+    "ast_hash": "a074fcdd168e8c0746c80466bab4ee31",
     "semantic_hash": ""
   },
   "package-lock.json": {
