@@ -620,8 +620,8 @@ details.admitem .admbody { padding: 4px 18px 18px; border-top: 1px dashed var(--
   background: radial-gradient(ellipse 62% 44% at 50% 50%, transparent 62%, rgba(3, 20, 17, .55) 100%); }
 .camovr::before { content: ""; position: absolute; inset: 18% 11%; border-radius: 22px; box-shadow: 0 0 0 100vmax rgba(3, 20, 17, .38); }
 .corner { position: absolute; width: 34px; height: 34px; border: 4px solid #3df5b4; filter: drop-shadow(0 0 6px rgba(61, 245, 180, .8)); }
-.corner.tl { top: 18%; left: 11%; border-right: 0; border-bottom: 0; border-top-left-radius: 20px; } .corner.tr { top: 18%; right: 11%; border-left: 0; border-bottom: 0; border-top-right-radius: 20px; }
-.corner.bl { bottom: 18%; left: 11%; border-right: 0; border-top: 0; border-bottom-left-radius: 20px; } .corner.br { bottom: 18%; right: 11%; border-left: 0; border-top: 0; border-bottom-right-radius: 20px; }
+.corner.c-tl { top: 18%; left: 11%; border-right: 0; border-bottom: 0; border-top-left-radius: 20px; } .corner.c-tr { top: 18%; right: 11%; border-left: 0; border-bottom: 0; border-top-right-radius: 20px; }
+.corner.c-bl { bottom: 18%; left: 11%; border-right: 0; border-top: 0; border-bottom-left-radius: 20px; } .corner.c-br { bottom: 18%; right: 11%; border-left: 0; border-top: 0; border-bottom-right-radius: 20px; }
 .laser { position: absolute; left: 13%; right: 13%; height: 3px; border-radius: 3px; background: linear-gradient(90deg, transparent, #3df5b4, transparent); box-shadow: 0 0 14px 2px rgba(61, 245, 180, .75); animation: laser 2.2s ease-in-out infinite alternate; }
 @keyframes laser { from { top: 22%; } to { top: 78%; } }
 .camnote { position: absolute; left: 12px; right: 12px; bottom: 14px; z-index: 4; display: grid; gap: 4px; justify-items: center; text-align: center; padding: 12px 14px; border-radius: 16px; color: #fff; background: rgba(6, 35, 30, .82); backdrop-filter: blur(6px); font-size: 14px; }

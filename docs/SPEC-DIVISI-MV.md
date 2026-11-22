@@ -8,7 +8,7 @@ Dokumen ini dibuat dari kondisi aplikasi yang sudah berjalan (migrasi 001–048)
 
 | Hal | Kondisi sekarang | Usulan |
 |---|---|---|
-| Peran MV | Belum ada | Peran baru `MV`, tersedia di Jakarta, Makassar, Surabaya |
+| Peran MV | Belum ada | Dua peran baru: `MV` (per cabang: Jakarta, Makassar, Surabaya) dan `MV_MASTER` (semua cabang) |
 | Master vendor | Belum ada. Nama vendor hanya teks bebas di biaya manifest | Tabel `vendors` + tarif rute vendor |
 | HPP | Belum ada per kiriman. Ada biaya per manifest (kapal, armada, pelabuhan, bongkar muat) | HPP per alokasi kiriman, dengan riwayat perubahan |
 | Surat Jalan balik | Surat jalan manifest bisa dicetak, tapi belum ada pelacakan SJ balik | Modul SJ balik + tanda terima + serah ke Finance |
@@ -24,14 +24,14 @@ Prinsip rancangan: **semua tambahan bersifat aditif** (tabel dan fungsi baru). A
 
 Divisi MV mengelola kerja sama dan biaya vendor, menentukan alokasi dan HPP pengiriman, memantau pengiriman vendor maupun armada internal, mengelola dokumentasi dan Surat Jalan balik sampai diserahkan ke Finance, dan memantau penjualan per cabang sesuai hak akses.
 
-**Level akun MV (satu peran, dua cakupan):**
+**Dua peran (keputusan tim: MV dan MV Master):**
 
-| Cakupan | Cara diatur | Boleh |
+| Peran | Cakupan | Boleh |
 |---|---|---|
-| MV cabang | `branch_id` = Jakarta, Makassar, atau Surabaya | Mengelola alokasi, HPP, SJ, dan dokumen **cabangnya** |
-| MV pusat | `branch_id` kosong | Melihat semua cabang, tanpa mengubah milik cabang lain kecuali diizinkan |
+| `MV` (MV cabang) | Terikat satu cabang: Jakarta, Makassar, atau Surabaya | Mengelola alokasi, HPP, SJ, dan dokumen **cabangnya**. Mengusulkan vendor baru. Melihat penjualan semua cabang (hanya baca, lihat 2.4) |
+| `MV_MASTER` (Super MV) | Semua cabang | Melihat dan mengelola semua cabang, **memverifikasi vendor**, menyetujui pengecualian (unggah tanpa kamera), mengunci dan membuka HPP |
 
-**[KEPUTUSAN 1]** Apakah MV cabang boleh melihat data penjualan cabang lain (hanya baca), atau hanya cabangnya? Usulan: MV cabang hanya cabangnya, MV pusat semua cabang.
+**[DIPUTUSKAN 1]** MV cabang boleh melihat penjualan cabang lain, hanya baca. Data harus tertata rapi dan tidak tercampur: lihat 2.4 (filter pintar).
 
 Pembuatan akun mengikuti aturan yang sama dengan peran lain: hanya Super Admin yang membuat akun (kolom peran di `employee_profiles` diperluas).
 
@@ -59,21 +59,34 @@ Fungsi `can_see(shipment)` (migrasi 028) mengizinkan Kepala gudang, Staf gudang,
 
 Ini memakai logika yang sudah ada di `_lokasi_resi` (migrasi 046), sehingga tidak ada konsep baru.
 
-**[KEPUTUSAN 2]** Pilih salah satu:
-- **A (disarankan):** aturan tiga tahap di atas.
-- **B:** cabang tujuan tidak pernah melihat sebelum barang tiba.
-- **C:** tetap seperti sekarang (asal atau tujuan), dengan filter tampilan "Tanggung jawab saya" saja.
+**[DIPUTUSKAN 2]** Tim memilih **B**: cabang tujuan **tidak melihat** resi sebelum barang tiba. Aturan akhir:
+
+| Tahap resi | Cabang yang melihat |
+|---|---|
+| Sebelum tiba | Hanya cabang asal (atau lokasi leg saat ini, memakai `_lokasi_resi`) |
+| Setelah tiba di tujuan | Cabang tujuan melihat penuh. Cabang asal tetap melihat hanya baca |
+
+Konsekuensi yang perlu diketahui tim: Kepala gudang cabang tujuan tidak lagi mendapat pemberitahuan dini "ada kiriman menuju cabang saya". Bila nanti dibutuhkan, itu bisa ditambah sebagai ringkasan terpisah tanpa membuka data resi.
 
 ### 2.3 Matriks akses modul MV
+(`MV` = MV cabang, `MV Master` = semua cabang)
 
-| Data | MV cabang | MV pusat | Kepala gudang | Finance | Owner | Super Admin |
+| Data | MV | MV Master | Kepala gudang | Finance | Owner | Super Admin |
 |---|---|---|---|---|---|---|
-| Master vendor | Lihat, usul vendor baru | Kelola, verifikasi | Tidak | Lihat | Lihat | Kelola |
+| Master vendor | Lihat, usul vendor baru | Kelola, **verifikasi** | Tidak | Lihat | Lihat | Kelola |
 | Alokasi dan HPP | Cabangnya | Semua | Tidak (biaya manifest tetap seperti sekarang) | Lihat semua | Lihat | Semua |
 | Tracking per wilayah | Cabangnya | Semua | Resi yang menjadi tanggung jawabnya | Tidak | Lihat | Semua |
 | Dokumentasi pengiriman | Cabangnya | Semua | Hanya foto yang ia ambil | Tidak | Lihat | Semua |
 | SJ balik | Cabangnya | Semua | Tidak | Lihat yang sudah diserahkan | Lihat | Semua |
-| Penjualan per cabang | Sesuai KEPUTUSAN 1 (hanya baca) | Semua (hanya baca) | Tidak | Semua | Semua | Semua |
+| Penjualan per cabang | Semua cabang, hanya baca, terkelompok (2.4) | Semua cabang, hanya baca | Tidak | Semua | Semua | Semua |
+
+### 2.4 Penjualan per cabang: terkelompok dan filter pintar
+Data penjualan tidak dicampur dalam satu daftar. Tampilannya:
+- **Tiga kartu ringkasan** (Jakarta, Makassar, Surabaya), masing-masing dengan angka sendiri. Cabang MV yang login tampil pertama dan diberi tanda.
+- **Filter pintar** yang diingat per pengguna: cabang (chip satu-satu atau gabungan), rentang tanggal (hari ini, minggu ini, bulan ini, kustom), moda (darat, laut, udara), wilayah tujuan, dan status tagihan. Filter aktif tampil sebagai chip yang bisa dilepas.
+- **Pengelompokan:** per cabang, lalu per moda, lalu per wilayah. Tiap kelompok bisa dilipat. Tidak ada satu tabel besar berisi semua cabang.
+- **Mode "Cabang saya" sebagai bawaan**, dan mode "Bandingkan cabang" yang menampilkan tiga kolom berdampingan.
+- Hanya angka dan nomor resi (tanpa data pribadi pengirim dan penerima) untuk cabang lain, karena MV cabang hanya perlu membaca penjualannya, bukan mengurus kirimannya.
 
 Semua akses lewat fungsi RPC `SECURITY DEFINER` dengan `require_role` dan filter cabang. Tabel baru ditutup untuk akses langsung (`REVOKE ALL`), mengikuti pola migrasi yang ada.
 
@@ -126,7 +139,7 @@ Catatan teknis: di web, atribut `capture` tidak bisa memaksa kamera karena sebag
 | Foto kondisi barang saat tiba | **Kamera dalam aplikasi saja** | Bukti untuk klaim |
 | Foto Surat Jalan balik (hasil tanda tangan penerima) | **Kamera atau unggah** (unggah wajib diberi tanda `UPLOAD`) | Dokumen sering datang dari vendor lewat WhatsApp |
 | Manifest udara | **Unggah saja** (PDF, XLSX, CSV) | Berasal dari maskapai atau agen |
-| Foto di lokasi tanpa sinyal kamera (pelabuhan) | Unggah diizinkan dengan **alasan wajib** dan perlu persetujuan MV pusat | Ada situasi nyata di lapangan |
+| Foto di lokasi tanpa sinyal kamera (pelabuhan) | Unggah diizinkan dengan **alasan wajib** dan perlu persetujuan MV Master | Ada situasi nyata di lapangan |
 
 **Validasi umum (semua jalur):**
 - Daftar jenis file yang diizinkan (jpeg, png, pdf, xlsx, csv), pengecekan isi file (bukan hanya ekstensi), batas ukuran 10 MB.
@@ -134,7 +147,7 @@ Catatan teknis: di web, atribut `capture` tidak bisa memaksa kamera karena sebag
 - Simpan metadata: sumber (`KAMERA`/`UNGGAH`), waktu server, koordinat bila diizinkan, `sha256`, pengunggah. Foto kamera dengan waktu ambil lebih lama dari batas (misal 10 menit) ditolak.
 - Dokumen berstatus `UPLOAD` ditampilkan berbeda di daftar agar mudah diperiksa.
 
-**[KEPUTUSAN 3]** Setujui tabel aturan di atas, atau tentukan jenis dokumen mana yang harus kamera-saja.
+**[BELUM DIJAWAB 3]** Tim belum menjawab. Untuk sementara saya anggap **tabel di atas disetujui** (kamera-saja untuk foto serah terima dan foto kondisi barang; kamera atau unggah untuk SJ balik; unggah saja untuk manifest udara). Mohon konfirmasi atau ubah.
 
 ---
 
@@ -189,7 +202,7 @@ Semua tabel baru, tanpa mengubah tabel lama kecuali dua kolom opsional.
 ## 7. Alur status
 
 **Alokasi (darat):**
-`DRAFT` → `VENDOR_DIPILIH` → `HPP_DIISI` → `BERANGKAT` → `TIBA` → `SELESAI`. Dari `HPP_DIISI` bisa kembali ke `VENDOR_DIPILIH` selama belum `BERANGKAT`. Setelah `SELESAI`, perubahan HPP hanya oleh MV pusat dengan alasan.
+`DRAFT` → `VENDOR_DIPILIH` → `HPP_DIISI` → `BERANGKAT` → `TIBA` → `SELESAI`. Dari `HPP_DIISI` bisa kembali ke `VENDOR_DIPILIH` selama belum `BERANGKAT`. Setelah `SELESAI`, perubahan HPP hanya oleh MV Master dengan alasan.
 
 **Surat Jalan balik:**
 `BELUM_KEMBALI` → `DALAM_PERJALANAN_BALIK` → `DITERIMA_MV` → `DISERAHKAN_FINANCE`. Cabang samping: `BERMASALAH` atau `HILANG` (wajib catatan) yang bisa kembali ke alur normal bila ditemukan. Tanda terima dibuat pada `DITERIMA_MV` dan `DISERAHKAN_FINANCE`.
@@ -206,8 +219,8 @@ Setiap fase dirilis terpisah, dengan migrasi diterapkan ke produksi **sebelum** 
 
 | Fase | Isi | Risiko ke alur berjalan |
 |---|---|---|
-| 0 | Keputusan 1–3 dan data awal: daftar vendor, daftar akun MV per cabang | Tidak ada |
-| 1 | Peran `MV`, master vendor, `tracking_regions`, menu dan halaman MV kosong | Rendah (aditif) |
+| 0 | Jawaban butir 4–6 dan data awal: daftar vendor, daftar akun MV dan MV Master | Tidak ada |
+| 1 | Peran `MV` dan `MV_MASTER`, master vendor, `tracking_regions`, menu dan halaman MV kosong | Rendah (aditif) |
 | 2 | **Perbaikan isolasi data** (bagian 2.2) | **Sedang**: mengubah apa yang dilihat Kepala gudang. Dirilis tersendiri dengan tes khusus |
 | 3 | Alokasi, pemilihan vendor, HPP, riwayat, tracking darat | Rendah |
 | 4 | SJ balik, tanda terima, serah terima ke Finance, halaman Finance "SJ dari MV" | Rendah |
@@ -222,10 +235,10 @@ Setiap fase dirilis terpisah, dengan migrasi diterapkan ke produksi **sebelum** 
 ## 9. Checklist pengujian
 
 **Isolasi data (wajib lolos sebelum rilis fase 2)**
-1. Kepala gudang Surabaya **tidak** melihat resi Makassar → Surabaya sebelum aturan tahapnya mengizinkan.
+1. Kepala gudang Surabaya **tidak** melihat resi Makassar → Surabaya selama barang belum tiba (opsi B).
 2. Setelah resi tiba di Surabaya, Kepala gudang Surabaya melihat penuh, sedangkan Makassar hanya baca.
 3. MV Jakarta tidak melihat alokasi, HPP, dan dokumen cabang Makassar dan Surabaya.
-4. MV pusat melihat ketiga cabang tetapi tidak bisa mengubah milik cabang lain tanpa izin.
+4. MV Master melihat dan mengelola ketiga cabang; MV cabang melihat penjualan cabang lain tetapi tidak melihat alokasi, HPP, dan dokumen cabang lain.
 5. Penjualan Jakarta, Makassar, Surabaya terpisah, dan angkanya sama dengan laporan Finance.
 6. Panggilan langsung ke fungsi tanpa peran MV ditolak; tabel tidak bisa dibaca langsung.
 7. Kasir, Sopir, dan HRD tidak mendapat akses menu MV.
@@ -257,12 +270,15 @@ Setiap fase dirilis terpisah, dengan migrasi diterapkan ke produksi **sebelum** 
 
 ## 10. Keputusan yang dibutuhkan dari tim
 
-1. **Cakupan MV cabang:** hanya cabangnya, atau boleh melihat penjualan cabang lain (hanya baca)?
-2. **Aturan visibilitas resi lintas cabang:** A (disarankan), B, atau C (bagian 2.2).
-3. **Aturan dokumentasi:** setujui tabel bagian 4 atau tentukan yang harus kamera-saja.
-4. **Daftar awal vendor** dan siapa yang berhak memverifikasinya (MV pusat saja?).
-5. **Batas waktu SJ balik:** berapa hari sejak tiba sampai SJ dianggap terlambat?
-6. **Satu atau dua level akun MV:** cukup satu peran dengan cakupan cabang atau pusat (disarankan)?
+**Sudah diputuskan**
+1. MV cabang boleh melihat penjualan semua cabang, hanya baca, dengan pengelompokan dan filter pintar (2.4).
+2. Visibilitas lintas cabang: **opsi B** (cabang tujuan melihat setelah barang tiba).
+3. Dua peran: **MV** (cabang) dan **MV Master** (semua cabang, memverifikasi vendor).
+
+**Masih menunggu jawaban tim**
+4. **Aturan dokumentasi:** konfirmasi tabel bagian 4 (sementara dianggap disetujui).
+5. **Daftar awal vendor:** nama, jenis, rute. Verifikator: usulan **MV Master**.
+6. **Batas SJ balik terlambat:** usulan 14 hari sejak barang tiba, berubah warna kuning pada hari ke-7. Mohon konfirmasi angkanya.
 
 ---
 

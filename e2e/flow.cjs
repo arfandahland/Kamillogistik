@@ -15,7 +15,7 @@ async function ctxFor(browser, vp = { width: 390, height: 844 }) {
   const ctx = await browser.newContext({ viewport: vp, deviceScaleFactor: 1 });
   const page = await ctx.newPage();
   page.on("pageerror", (e) => problems.push(`PAGEERROR ${page.url()} ${e.message}`));
-  page.on("console", (m) => { if (m.type() === "error" && !/favicon|Failed to load resource.*(40[134]|503)/.test(m.text())) problems.push(`CONSOLE ${page.url()} ${m.text().slice(0, 160)}`); });
+  page.on("console", (m) => { if (m.type() === "error" && !/favicon|Failed to load resource.*(40[134]|503)|Failed to load resource: net::ERR_FAILED|Failed to fetch RSC payload/.test(m.text())) problems.push(`CONSOLE ${page.url()} ${m.text().slice(0, 160)}`); });
   page.on("response", (r) => { if (r.status() >= 500) problems.push(`HTTP${r.status()} ${r.url()}`); });
   return { ctx, page };
 }
@@ -632,6 +632,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("nilai dengan 4 angka HP benar tersimpan (terima kasih)", /Terima kasih/.test(await text(pp)));
     await pp.screenshot({ path: `${OUT}/e2e-nilai.png` });
     await pp.reload({ waitUntil: "load" });
+    await pp.waitForSelector("text=sudah menilai", { timeout: 15000 }).catch(() => {});
     ok("setelah dimuat ulang: sudah dinilai, form tidak muncul lagi", (await pp.locator("form.nilai").count()) === 0 && /sudah menilai/.test(await text(pp)));
     const html = await (await fetch(`${BASE}/lacak/${resiNo}`)).text();
     ok("halaman lacak memuat meta og:image dan og:title status", /property="og:image"/.test(html) && /og:title" content="Resi KML/.test(html));

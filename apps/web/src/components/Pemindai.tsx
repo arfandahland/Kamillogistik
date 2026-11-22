@@ -117,7 +117,7 @@ export default function Pemindai({ onKode, langsung, terus, petunjuk }: Props) {
       <div className={`cam ${kilat ? "flash" : ""} ${status}`}>
         <video ref={video} muted playsInline autoPlay aria-label="Pratinjau kamera" />
         <div className="camovr" aria-hidden="true">
-          <span className="corner tl" /><span className="corner tr" /><span className="corner bl" /><span className="corner br" />
+          <span className="corner c-tl" /><span className="corner c-tr" /><span className="corner c-bl" /><span className="corner c-br" />
           {status === "siap" && !mencari && <span className="laser" />}
         </div>
         {status === "mulai" && <div className="camnote"><span className="spin" /> Membuka kamera…</div>}
