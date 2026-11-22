@@ -1084,6 +1084,10 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("Y1 Manajer Gudang bisa masuk", mg.loggedIn);
     const p = mg.page; await p.goto(`${BASE}/app`, { waitUntil: "networkidle" }); await p.waitForTimeout(700);
     ok("Y2 beranda menampilkan 10 kartu dashboard dan satu judul utama", (await p.locator(".hubcard").count()) === 10 && (await p.locator("h1").count()) === 1);
+    ok("AN1 beranda cabang menampilkan 4 kartu arah barang (akan masuk, di cabang ini, sudah keluar, selesai)", (await p.locator(".arahkartu").count()) === 4 && /Akan masuk/.test(await p.locator(".arahbar").innerText()) && /Sudah keluar/.test(await p.locator(".arahbar").innerText()));
+    await p.locator(".arahkartu.masuk").click(); await p.waitForURL(/a=MASUK/, { timeout: 15000 }); await p.waitForSelector(".arahkartu.on", { timeout: 15000 });
+    ok("AN2 menyentuh kartu Akan masuk menyaring daftar dan menandai kartunya", /a=MASUK/.test(p.url()) && (await p.locator(".arahkartu.on").count()) === 1 && (await p.locator("a.card.resi:not(:has(.arahchip.masuk))").count()) === 0);
+    await p.goto(`${BASE}/app`, { waitUntil: "networkidle" }); await p.waitForTimeout(500);
     const kepala = await p.locator(".hubhead").innerText();
     ok("Y3 dashboard terkunci ke Gudang Jakarta dan menampilkan status perhatian", /Gudang Jakarta/.test(kepala) && /(terkendali|perlu perhatian)/.test(kepala), kepala.replace(/\n/g, " "));
     const aksi = await p.$$eval(".hubquick a", (as) => as.map((a) => a.getAttribute("href")));

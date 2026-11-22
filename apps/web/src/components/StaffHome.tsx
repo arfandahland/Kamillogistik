@@ -4,8 +4,9 @@ import { STATUS_LABEL, type AnyStatus } from "@kamil/core";
 import Icon from "./Icon";
 import { tanggalWaktu } from "@/lib/brand";
 import { statusMeta } from "@/lib/ui";
+import ArahKartu, { ArahLencana } from "./ArahKartu";
 
-export type Row = { id: string; resiNo: string; status: AnyStatus; origin: string; dest: string; senderName: string; receiverName: string; createdAt: string; mine: boolean };
+export type Row = { id: string; resiNo: string; status: AnyStatus; origin: string; dest: string; senderName: string; receiverName: string; createdAt: string; mine: boolean; arah?: string | null; posisi?: string | null; lawan?: string | null };
 export type Pending = { id: string; shipmentId: string; resiNo: string; fromName: string };
 export type Stats = { aktif: number; menunggu: number; selesai: number; dipegang: number };
 
@@ -23,7 +24,8 @@ function Stat({ icon, n, label, warm, dx }: { icon: string; n: number; label: st
   );
 }
 
-export default function StaffHome({ rows, stats, pending, tab, q, canCreate, error, hideStats, basePath = "/app", title = "Tugas hari ini", more, followup, hubMode, hideList }: {
+export default function StaffHome({ rows, stats, pending, tab, q, canCreate, error, hideStats, basePath = "/app", title = "Tugas hari ini", more, followup, hubMode, hideList, arah }: {
+  arah?: { semua: Row[]; sel: string; href: (k: string) => string };
   rows: Row[]; stats: Stats; pending: Pending[]; tab: string; q: string; canCreate: boolean; error?: string | null; hideStats?: boolean; basePath?: string; title?: string; more?: string | null; followup?: number | null; hubMode?: boolean; hideList?: boolean;
 }) {
   const buatDiSini = canCreate && !hubMode; // di dashboard cabang, tombol ini sudah ada di menu
@@ -67,6 +69,7 @@ export default function StaffHome({ rows, stats, pending, tab, q, canCreate, err
           {hideStats && !hubMode
             ? <div className="pghead"><div><h1>{title}</h1><p className="muted">Semua resi dari seluruh cabang. Ketuk satu resi untuk melihat rinciannya.</p></div></div>
             : <h2 style={{ margin: "6px 2px -4px" }}>{title}</h2>}
+          {arah && arah.semua.some((r) => r.posisi) && <ArahKartu rows={arah.semua} sel={arah.sel} href={arah.href} />}
           <form className="card searchcard">
             <Icon name="search" size={20} className="ico sicon" />
             <input name="q" defaultValue={q} placeholder="Cari nomor resi atau nama" enterKeyHint="search" aria-label="Cari" />
@@ -87,6 +90,7 @@ export default function StaffHome({ rows, stats, pending, tab, q, canCreate, err
                   <span className={`ic ${m.tone}`}><Icon name={m.icon} size={24} /></span>
                   <span className="meta">
                     <span className="toprow"><b className="no">{r.resiNo}</b><span className={`pill ${m.pill}`}>{STATUS_LABEL[r.status] ?? r.status}</span></span>
+                    <ArahLencana posisi={r.posisi} lawan={r.lawan} />
                     <small>{r.origin} → {r.dest} · untuk {r.receiverName}</small>
                     <small>{tanggalWaktu(r.createdAt)}{r.mine ? " · di tangan Anda" : ""}</small>
                     <span className="prog" style={{ display: "block" }}><i style={{ width: `${m.pct}%` }} /></span>

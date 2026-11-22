@@ -13,7 +13,7 @@ function KendalaBadge({ n }: { n: number }) {
   return <div className="wrap" style={{ paddingBottom: 0 }}><Link href="/app/kendala" className="homebadge"><span className="n">{n}</span><span className="t"><b>Kendala pengiriman terbuka</b><small>Salah sortir, rusak, gagal kirim, retur, atau ditahan</small></span><Icon name="arrow" size={22} /></Link></div>;
 }
 
-export default async function Beranda({ searchParams }: { searchParams: Promise<{ s?: string; q?: string; n?: string }> }) {
+export default async function Beranda({ searchParams }: { searchParams: Promise<{ s?: string; q?: string; n?: string; a?: string }> }) {
   const sp = await searchParams;
   const who = (await getMe()).data;
   if (who?.role === "HRD") redirect("/app/rekrutmen");
@@ -24,7 +24,8 @@ export default async function Beranda({ searchParams }: { searchParams: Promise<
     return <><KendalaBadge n={Number(kn.data ?? 0)} /><OwnerDashboard initial={o.data} initialError={o.error} sisip={ins.data ? <OwnerInsights d={ins.data} /> : null} /></>;
   }
   const peran = who?.role;
-  const tab = TABS.find((t) => t.k === sp.s)?.k ?? "aktif";
+  const arahSel = ["MASUK", "DI_SINI", "KELUAR", "SELESAI"].includes(sp.a ?? "") ? (sp.a as string) : "";
+  const tab = TABS.find((t) => t.k === sp.s)?.k ?? (arahSel ? "semua" : "aktif");
   const q = (sp.q ?? "").trim();
   const n = Math.min(100, Math.max(30, Number(sp.n) || 30)); // baris yang ditampilkan (HTML lebih ringan di HP)
   const hasQueue = peran !== undefined && ["HUB_MANAGER", "MITRA_POS", "WAREHOUSE", "CS_SALES"].includes(peran);
@@ -44,17 +45,18 @@ export default async function Beranda({ searchParams }: { searchParams: Promise<
   const punyaDash = !!(hub?.data || kas?.data || kur?.data || gud?.data || sop?.data);
   const all = list.data ?? [];
   const aktif = (STATUS_GROUPS.aktif as readonly string[]);
-  const rows = all.filter((r) => (tab === "semua" ? true : (STATUS_GROUPS[tab] as readonly string[]).includes(r.status)));
+  const rows = all.filter((r) => (tab === "semua" ? true : (STATUS_GROUPS[tab] as readonly string[]).includes(r.status)) && (!arahSel || r.posisi === arahSel));
+  const arahHref = (k: string) => `/app?${new URLSearchParams({ ...(k ? { a: k } : {}), ...(sp.s ? { s: sp.s } : {}), ...(q ? { q } : {}) })}`;
   return (
     <>
     <KendalaBadge n={Number(kn?.data ?? 0)} />
     {hub?.data && <div className="wrap hubwrap"><HubDashboard d={hub.data} /></div>}
     {kas?.data && <KasirDash d={kas.data} />}{kur?.data && <KurirDash d={kur.data} />}{gud?.data && <GudangDash d={gud.data} />}{sop?.data && <SopirDash d={sop.data} />}
     {hub?.error && <div className="wrap"><div className="err">{hub.error}</div></div>}
-    <StaffHome rows={rows.slice(0, n)} more={rows.length > n ? `/app?${new URLSearchParams({ ...(tab !== "aktif" ? { s: tab } : {}), ...(q ? { q } : {}), n: String(n + 30) })}` : null} pending={pend.data ?? []}
+    <StaffHome rows={rows.slice(0, n)} more={rows.length > n ? `/app?${new URLSearchParams({ ...(tab !== "aktif" ? { s: tab } : {}), ...(q ? { q } : {}), ...(arahSel ? { a: arahSel } : {}), n: String(n + 30) })}` : null} pending={pend.data ?? []}
       stats={{ aktif: all.filter((r) => aktif.includes(r.status)).length, menunggu: (pend.data ?? []).length,
         selesai: all.filter((r) => r.status === "DELIVERED").length, dipegang: all.filter((r) => r.mine).length }}
-      followup={fq?.data ? fq.data.count : null} tab={tab} q={q} canCreate={!!me.data && CAN_CREATE_ORDER.includes(me.data.role)} error={list.error} hubMode={punyaDash} hideStats={punyaDash || peran === "CS_SALES"} title={peran === "CS_SALES" ? "Resi cabang" : punyaDash ? "Daftar resi" : "Tugas hari ini"} hideList={peran === "CONTAINER_DRIVER"} />
+      followup={fq?.data ? fq.data.count : null} tab={tab} q={q} canCreate={!!me.data && CAN_CREATE_ORDER.includes(me.data.role)} error={list.error} arah={{ semua: all, sel: arahSel, href: arahHref }} hubMode={punyaDash} hideStats={punyaDash || peran === "CS_SALES"} title={peran === "CS_SALES" ? "Resi cabang" : punyaDash ? "Daftar resi" : "Tugas hari ini"} hideList={peran === "CONTAINER_DRIVER"} />
     </>
   );
 }

@@ -231,3 +231,36 @@ SELECT t.fails($$select public.my_profile_update('Nama Sah', '123')$$, 'tidak va
 SELECT t.as_user('00000000-0000-0000-0000-00000000000c');   -- kepala gudang: nomor yang sama sudah dipakai kasir
 SELECT t.fails($$select public.my_profile_update('Kepala Gudang', '081234567001')$$, 'sudah dipakai');
 SELECT 'profil_saya OK' AS hasil;
+-- 049: arah barang per cabang (MASUK, DI_SINI, KELUAR, SELESAI)
+RESET ROLE;
+SELECT t.as_user('00000000-0000-0000-0000-000000000002');   -- kasir Jakarta
+DO $$ DECLARE a jsonb; BEGIN
+  a := public.create_shipment('jakarta-makassar-port-to-door-kg','Pengirim Arah','0811','Penerima Arah','0822','Makassar',1,NULL,NULL,'DROPOFF');
+  PERFORM set_config('t.arah', a->>'id', false);
+END $$;
+CREATE OR REPLACE FUNCTION pg_temp.posisi_saya() RETURNS text LANGUAGE sql AS $$
+  SELECT x->>'posisi' FROM jsonb_array_elements(public.staff_list_shipments(NULL, NULL, 100)) x WHERE x->>'id' = current_setting('t.arah');
+$$;
+SELECT t.as_user('00000000-0000-0000-0000-00000000000c');   -- kepala gudang Jakarta: barang masih di sini
+DO $$ BEGIN ASSERT pg_temp.posisi_saya() = 'DI_SINI', 'Jakarta: baru dibuat = di sini, dapat ' || coalesce(pg_temp.posisi_saya(), 'NULL'); END $$;
+SELECT t.as_user('00000000-0000-0000-0000-00000000000b');   -- kepala gudang Makassar: barang akan masuk
+DO $$ BEGIN ASSERT pg_temp.posisi_saya() = 'MASUK', 'Makassar: akan masuk, dapat ' || coalesce(pg_temp.posisi_saya(), 'NULL'); END $$;
+RESET ROLE;
+UPDATE public.shipments SET status = 'IN_TRANSIT_SEA' WHERE id = current_setting('t.arah')::uuid;
+SELECT t.as_user('00000000-0000-0000-0000-00000000000c');
+DO $$ BEGIN ASSERT pg_temp.posisi_saya() = 'KELUAR', 'Jakarta: sudah berangkat = keluar'; END $$;
+SELECT t.as_user('00000000-0000-0000-0000-00000000000b');
+DO $$ BEGIN ASSERT pg_temp.posisi_saya() = 'MASUK', 'Makassar: masih di laut = akan masuk'; END $$;
+RESET ROLE;
+UPDATE public.shipments SET status = 'AT_DEST_HUB' WHERE id = current_setting('t.arah')::uuid;
+SELECT t.as_user('00000000-0000-0000-0000-00000000000c');
+DO $$ BEGIN ASSERT pg_temp.posisi_saya() = 'KELUAR', 'Jakarta: sudah tiba di tujuan, bagi Jakarta tetap keluar'; END $$;
+SELECT t.as_user('00000000-0000-0000-0000-00000000000b');
+DO $$ BEGIN ASSERT pg_temp.posisi_saya() = 'DI_SINI', 'Makassar: sudah tiba = di sini'; END $$;
+RESET ROLE;
+UPDATE public.shipments SET status = 'DELIVERED' WHERE id = current_setting('t.arah')::uuid;
+SELECT t.as_user('00000000-0000-0000-0000-00000000000b');
+DO $$ BEGIN ASSERT pg_temp.posisi_saya() = 'SELESAI', 'Makassar: selesai'; END $$;
+SELECT t.as_user('00000000-0000-0000-0000-000000000001');   -- Super Admin tidak terikat cabang: tanpa arah
+DO $$ BEGIN ASSERT pg_temp.posisi_saya() IS NULL, 'Super Admin tidak punya arah'; END $$;
+SELECT 'arah_barang OK' AS hasil;
