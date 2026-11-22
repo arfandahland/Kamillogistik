@@ -8,7 +8,7 @@ import RuteFilter from "@/components/RuteFilter";
 export const revalidate = 300;
 export const metadata: Metadata = {
   title: "Daftar Rute dan Tarif Ekspedisi",
-  description: "Semua rute pengiriman Kamil Logistik beserta tarif, estimasi hari, dan jadwal keberangkatan: seluruh Sulawesi dari Jakarta, serta Papua dan Maluku dari Makassar.",
+  description: "Semua rute pengiriman Kamil Logistik beserta tarif, estimasi hari, dan jadwal keberangkatan: dari Jakarta, Makassar, dan Surabaya ke seluruh Indonesia: Jawa, Sumatera, Kalimantan, Sulawesi, Maluku, dan Papua.",
   alternates: { canonical: "/ekspedisi" },
 };
 

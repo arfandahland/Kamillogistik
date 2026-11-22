@@ -18,11 +18,11 @@ import { waLink } from "@/lib/brand";
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: { absolute: "Ekspedisi Jakarta–Makassar Murah, Kirim Barang ke Sulawesi" },
-  description: "Kirim barang dari Jakarta ke seluruh Sulawesi, dan dari Makassar ke Papua dan Maluku, dengan tarif transparan. Hitung ongkir sendiri, pantau barang lewat nomor resi tanpa login, terima invoice resmi.",
+  title: { absolute: "Kamil Logistik: Jasa Ekspedisi & Cargo Murah ke Seluruh Indonesia" },
+  description: "Jasa ekspedisi dan cargo darat, laut, udara ke seluruh Indonesia: Jawa, Sumatera, Kalimantan, Sulawesi, Maluku, Papua. Tarif transparan, hitung ongkir sendiri, lacak resi tanpa login, invoice resmi.",
   alternates: { canonical: "/" },
-  openGraph: { type: "website", locale: "id_ID", siteName: "Kamil Logistik", title: "Kirim Barang ke Seluruh Sulawesi, Murah dan Bisa Dipantau", description: "Hitung ongkir sendiri, pantau barang lewat nomor resi, terima invoice resmi.", images: ["/og.png"] },
-  twitter: { card: "summary_large_image", images: ["/og.png"] },
+  openGraph: { type: "website", locale: "id_ID", siteName: "Kamil Logistik", title: "Kamil Logistik: Kirim Barang ke Seluruh Indonesia, Murah dan Bisa Dipantau", description: "Cargo darat, laut, dan udara. Tarif transparan, hitung ongkir sendiri, lacak resi tanpa login.", images: ["/og.png"] },
+  twitter: { card: "summary_large_image", title: "Kamil Logistik: Kirim Barang ke Seluruh Indonesia", description: "Cargo darat, laut, dan udara. Tarif transparan, lacak resi tanpa login.", images: ["/og.png"] },
 };
 
 const LAYANAN = [
@@ -55,7 +55,7 @@ export default async function Home() {
   const kotaTujuan = [...new Set(semua.map((p) => p.destCity))].slice(0, 40);
   const pairs = [...semua.filter((p) => UNGGULAN.includes(p.slug)).sort((a, b) => UNGGULAN.indexOf(a.slug) - UNGGULAN.indexOf(b.slug)), ...semua.filter((p) => !UNGGULAN.includes(p.slug))].slice(0, 6);
   const slides: Slide[] = [
-    { id: "laut", judul: "Darat dan laut ke seluruh Sulawesi", teks: "Dari Jakarta ke puluhan kota di Sulawesi, dan dari Makassar ke Papua dan Maluku. Tarif jelas, estimasi hari tertera.", label: "Lihat rute dan tarif", href: "/ekspedisi", art: <IlKapal /> },
+    { id: "laut", judul: "Darat dan laut ke seluruh Indonesia", teks: "Dari Jakarta, Makassar, dan Surabaya ke kota-kota di Jawa, Sumatera, Kalimantan, Sulawesi, Maluku, dan Papua. Tarif jelas, estimasi hari tertera.", label: "Lihat rute dan tarif", href: "/ekspedisi", art: <IlKapal /> },
     { id: "udara", judul: "Butuh cepat? Lewat udara", teks: "Kargo udara Jakarta–Makassar dengan perhitungan berat volume khusus udara. Tanyakan tarif ke tim kami.", label: "Tanya kargo udara", href: waLink("Halo Kamil Logistik, saya mau tanya kargo udara."), art: <IlPesawat /> },
     { id: "jemput", judul: "Dijemput atau antar sendiri", teks: "Kurir kami menjemput ke alamat, atau bawa sendiri ke gudang tanpa biaya jemput.", label: "Cara kirim barang", href: "/panduan/cara-kirim-barang-dari-jakarta-ke-sulawesi", art: <IlTruk /> },
     { id: "lacak", judul: "Lacak dengan kode atau kamera", teks: "Kode resi bisa dibaca: asal, tujuan, tanggal, dan jam. Atau pindai QR di struk.", label: "Cek resi sekarang", href: "/lacak", art: <IlScan /> },
@@ -68,7 +68,7 @@ export default async function Home() {
         <div className="wrap herogrid">
           <div className="herotext">
             <span className="badge"><Icon name="shield" size={16} /> #BestPriceBestService</span>
-            <h1>Kirim barang ke seluruh Sulawesi, murah dan bisa dipantau</h1>
+            <h1>Kirim barang ke seluruh Indonesia, murah dan bisa dipantau</h1>
             <p>Darat, laut, dan udara. Dijemput atau antar sendiri. Tahu persis barang Anda sudah sampai mana.</p>
             <div className="herocta">
               <Link href="/ongkir" className="btn shine"><Icon name="calc" size={22} /> Hitung ongkir</Link>

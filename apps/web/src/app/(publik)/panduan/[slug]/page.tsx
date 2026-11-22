@@ -32,7 +32,7 @@ export default async function Artikel({ params }: { params: Promise<{ slug: stri
   const ld = {
     "@context": "https://schema.org", "@type": "Article", headline: a.heading, description: a.description, inLanguage: "id-ID",
     datePublished: a.updated, dateModified: a.updated, mainEntityOfPage: abs(`/panduan/${a.slug}`), image: abs("/og.png"),
-    author: { "@type": "Organization", name: "Kamil Logistik Express" }, publisher: { "@type": "Organization", name: "Kamil Logistik Express", logo: { "@type": "ImageObject", url: abs("/icon-512.png") } },
+    author: { "@type": "Organization", name: "Kamil Logistik Express" }, publisher: { "@type": "Organization", name: "Kamil Logistik Express", logo: { "@type": "ImageObject", url: abs("/logo-square.png"), width: 512, height: 512 } },
   };
   return (
     <main className="wrap section stack">

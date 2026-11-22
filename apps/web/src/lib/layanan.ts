@@ -16,7 +16,7 @@ export const LAYANAN: Layanan[] = [
   {
     slug: "cargo-laut", judul: "Pengiriman Cargo Laut", kategori: "Laut", icon: "ship",
     ringkas: "Cargo kering, cair, kontainer, oversize, mudah rusak, dan barang berbahaya lewat laut.",
-    judulSeo: "Jasa Pengiriman Cargo Laut Jakarta, Makassar, Sulawesi dan Indonesia Timur", deskSeo: "Jasa cargo laut Kamil Logistik: dry cargo, liquid cargo, container, oversize, perishable, dan hazardous cargo ke Sulawesi, Maluku, dan Papua. Tarif jelas, resi bisa dilacak.",
+    judulSeo: "Jasa Pengiriman Cargo Laut ke Seluruh Indonesia: Jakarta, Makassar, Surabaya", deskSeo: "Jasa cargo laut Kamil Logistik: dry cargo, liquid cargo, container, oversize, perishable, dan hazardous cargo ke seluruh Indonesia, dari Jawa hingga Sulawesi, Maluku, dan Papua. Tarif jelas, resi bisa dilacak.",
     intro: ["Cargo laut cocok untuk barang berat atau dalam jumlah banyak yang tidak mengejar kecepatan. Biayanya lebih hemat dibanding udara, dan kapasitasnya besar.", "Kamil Logistik melayani pengiriman laut dari Jakarta dan Makassar ke berbagai kota di Sulawesi, Maluku, dan Papua, termasuk barang dengan penanganan khusus."],
     daftarJudul: "Jenis cargo laut yang kami layani", daftar: ["Dry cargo (barang kering umum)", "Liquid cargo (barang cair)", "Container cargo (kontainer)", "Oversize cargo dan heavy equipment cargo", "Perishable cargo (barang mudah rusak atau butuh penanganan cepat)", "Hazardous cargo (barang berbahaya, dengan aturan khusus)"],
     tips: ["Kemas dengan kardus berlapis atau kayu untuk barang berat, karena perjalanan laut melewati banyak bongkar muat.", "Beri label nama dan kota tujuan yang jelas pada tiap kemasan.", "Barang berbahaya atau mudah rusak wajib dikonsultasikan lebih dulu ke tim kami."],
@@ -56,7 +56,7 @@ export const LAYANAN: Layanan[] = [
   {
     slug: "kirim-kendaraan", judul: "Kirim Kendaraan: Motor, Mobil, Truk, Bus", kategori: "Khusus", icon: "truck",
     ringkas: "Mobil pribadi dan klasik, motor, truk, bus, termasuk kendaraan perusahaan dan tambang.",
-    judulSeo: "Jasa Kirim Motor dan Mobil Antar Pulau: Makassar, Sulawesi, Jakarta", deskSeo: "Kirim kendaraan lewat Kamil Logistik: mobil pribadi, mobil klasik, motor, truk, dan bus. Aman, terdokumentasi, bisa dilacak.",
+    judulSeo: "Jasa Kirim Motor dan Mobil Antar Pulau ke Seluruh Indonesia", deskSeo: "Kirim kendaraan lewat Kamil Logistik: mobil pribadi, mobil klasik, motor, truk, dan bus. Aman, terdokumentasi, bisa dilacak.",
     intro: ["Kami melayani pengiriman kendaraan, baik kendaraan pribadi, kendaraan perusahaan atau lembaga, maupun kendaraan tambang.", "Kondisi kendaraan didokumentasikan dengan foto saat diterima sehingga ada bukti yang sama bagi pengirim dan penerima."],
     daftarJudul: "Kendaraan yang bisa dikirim", daftar: ["Mobil pribadi dan mobil klasik", "Motor", "Truk dan bus", "Kendaraan perusahaan atau lembaga", "Kendaraan tambang"],
     tips: ["Bersihkan kendaraan dan keluarkan barang pribadi dari dalamnya.", "Foto kondisi kendaraan dari semua sisi sebelum diserahkan.", "Tanyakan dokumen yang diminta untuk jenis kendaraan Anda sebelum hari pengiriman."],

@@ -438,4 +438,67 @@ export const ARTIKEL: Artikel[] = [
       <p>Kamil Logistik melayani sewa kontainer sesuai kebutuhan, lihat <Link href="/layanan/sewa-kontainer">penyewaan kontainer (LCL dan FCL)</Link>. Tarif per rute ada di <Link href="/ekspedisi">rute dan tarif</Link>, dan tim siap membantu menghitung pilihan terbaik lewat <Link href="/kontak">halaman Kontak</Link>.</p>
     </>),
   },
+  {
+    slug: "ekspedisi-murah-ke-seluruh-indonesia",
+    title: "Ekspedisi Murah ke Seluruh Indonesia: Cara Memilih Jasa Cargo",
+    heading: "Ekspedisi murah ke seluruh Indonesia: cara memilih jasa cargo yang tepat",
+    description: "Cara memilih jasa ekspedisi dan cargo murah untuk kirim barang antar pulau ke seluruh Indonesia: bandingkan tarif, estimasi, pelacakan resi, dan keamanan barang.",
+    updated: "2026-11-22",
+    body: () => (<>
+      <p>Mengirim barang antar pulau berbeda dengan kirim dalam satu kota. Jaraknya jauh, rutenya bisa lewat darat, laut, atau udara, dan harganya sangat bergantung pada cara menghitungnya. Berikut hal yang perlu Anda bandingkan sebelum memilih jasa ekspedisi.</p>
+      <h2>1. Tarif yang transparan</h2>
+      <p>Pilih ekspedisi yang menjelaskan cara hitungnya: per kilogram atau per meter kubik, serta mana yang dipakai bila beratnya berbeda dengan ukurannya. Di Kamil Logistik, Anda bisa <Link href="/ongkir">menghitung ongkir sendiri</Link> tanpa daftar akun.</p>
+      <h2>2. Pilihan darat, laut, dan udara</h2>
+      <p>Cargo laut hemat untuk barang berat dan banyak, cargo udara untuk yang mendesak, dan cargo darat untuk antar kota di satu pulau. Lihat <Link href="/layanan">semua layanan</Link> untuk mencocokkan kebutuhan Anda.</p>
+      <h2>3. Resi yang bisa dilacak</h2>
+      <p>Barang yang menyeberang pulau butuh pemantauan. Pastikan ada nomor resi dan halaman <Link href="/lacak">cek resi</Link> yang bisa dibuka kapan saja, serta tim yang menjawab bila ada kendala.</p>
+      <h2>4. Jaringan gudang dan jangkauan</h2>
+      <p>Jaringan gudang yang jelas mengurangi risiko barang tertahan. Kamil Logistik memiliki gudang di Jakarta, Makassar, dan Surabaya, dan melayani pengiriman ke seluruh Indonesia. Untuk tujuan yang belum tercantum di <Link href="/ekspedisi">daftar rute</Link>, tanyakan langsung lewat WhatsApp.</p>
+      <h2>5. Kemasan dan jenis barang</h2>
+      <p>Baca <Link href="/panduan/cara-packing-barang-cargo-laut">panduan packing</Link> dan <Link href="/panduan/barang-yang-boleh-dan-tidak-boleh-dikirim-lewat-cargo">daftar barang yang boleh dikirim</Link> agar barang aman sampai tujuan.</p>
+      <h2>Catatan</h2>
+      <p>Tarif belum termasuk asuransi, pajak yang berlaku, serta bongkar muat di lokasi. Lihat <Link href="/syarat">syarat dan ketentuan</Link>.</p>
+    </>),
+  },
+  {
+    slug: "kirim-barang-ke-kalimantan-dan-sumatera",
+    title: "Kirim Barang ke Kalimantan dan Sumatera: Panduan Cargo Antar Pulau",
+    heading: "Kirim barang ke Kalimantan dan Sumatera: panduan cargo antar pulau",
+    description: "Panduan kirim barang ke Kalimantan, Sumatera, dan Jawa lewat cargo: pilihan darat, laut, udara, cara hitung ongkir, packing, dan melacak resi.",
+    updated: "2026-11-22",
+    body: () => (<>
+      <p>Pengiriman ke Kalimantan dan Sumatera umumnya melewati laut, sehingga cara menghitung dan mengemas barang sangat menentukan biaya dan keamanannya.</p>
+      <h2>Langkah singkat</h2>
+      <ol>
+        <li>Hitung perkiraan biaya di <Link href="/ongkir">kalkulator ongkir</Link>. Untuk tujuan yang belum tercantum, hubungi tim lewat WhatsApp.</li>
+        <li>Siapkan kemasan yang kuat dan tulis nama serta nomor HP penerima.</li>
+        <li>Barang dijemput atau diantar ke gudang, lalu ditimbang. Berat pasti menentukan biaya akhir.</li>
+        <li>Simpan nomor resi dan <Link href="/lacak">pantau posisi barang</Link> sampai diterima.</li>
+      </ol>
+      <h2>Darat, laut, atau udara?</h2>
+      <p>Barang berat dan banyak lebih hemat lewat laut. Barang mendesak atau bernilai tinggi lebih cocok lewat udara. Pelajari <Link href="/panduan/berapa-lama-kirim-barang-lewat-cargo-laut">lama pengiriman cargo laut</Link> agar jadwal Anda tepat.</p>
+      <h2>Kendaraan dan barang besar</h2>
+      <p>Untuk motor, mobil, atau alat berat, baca <Link href="/panduan/cara-kirim-motor-dan-mobil-antar-pulau">kirim motor dan mobil antar pulau</Link> dan <Link href="/panduan/cara-kirim-alat-berat-antar-pulau">kirim alat berat</Link>.</p>
+    </>),
+  },
+  {
+    slug: "cara-kirim-barang-antar-pulau-dari-jawa",
+    title: "Cara Kirim Barang Antar Pulau dari Jawa: Jakarta dan Surabaya",
+    heading: "Cara kirim barang antar pulau dari Jawa lewat Jakarta dan Surabaya",
+    description: "Kirim barang dari Jakarta atau Surabaya ke luar Jawa: Sulawesi, Kalimantan, Sumatera, Maluku, dan Papua. Alur, biaya, packing, dan pelacakan resi.",
+    updated: "2026-11-22",
+    body: () => (<>
+      <p>Jakarta dan Surabaya adalah pintu keluar utama barang dari Jawa ke pulau lain. Kamil Logistik memiliki gudang di kedua kota ini, serta di Makassar, sehingga barang dapat dihubungkan ke berbagai pulau.</p>
+      <h2>Alur pengiriman</h2>
+      <ol>
+        <li><b>Hubungi atau minta jemput.</b> Gunakan <Link href="/jemput">pesan jemput online</Link> atau antar sendiri ke gudang.</li>
+        <li><b>Barang ditimbang.</b> Per barang, sehingga berat tertagih jelas.</li>
+        <li><b>Resi dan invoice diterbitkan.</b> Anda menerima nomor resi untuk dilacak.</li>
+        <li><b>Diangkut lewat laut atau udara</b> sesuai layanan yang dipilih, lalu sampai di gudang tujuan.</li>
+        <li><b>Diantar atau diambil</b> sesuai pilihan door-to-door atau port-to-port. Baca <Link href="/panduan/door-to-door-port-to-door-atau-port-to-port">perbedaannya</Link>.</li>
+      </ol>
+      <h2>Mulai dari mana?</h2>
+      <p>Lihat <Link href="/ekspedisi">rute dan tarif</Link>, atau langsung <Link href="/ongkir">hitung ongkir</Link>. Pengiriman rutin untuk toko online dibahas di <Link href="/panduan/kirim-barang-online-shop-umkm-ke-sulawesi">panduan UMKM</Link>.</p>
+    </>),
+  },
 ];

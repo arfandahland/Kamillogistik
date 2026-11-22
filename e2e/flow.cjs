@@ -74,7 +74,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
   {
     const { ctx, page } = await ctxFor(browser);
     await page.goto(BASE, { waitUntil: "networkidle" });
-    ok("beranda memuat judul utama", /Kirim barang ke seluruh Sulawesi/.test(await text(page)));
+    ok("beranda memuat judul utama", /Kirim barang ke seluruh Indonesia/.test(await text(page)));
     ok("beranda: tombol Masuk di header", (await page.locator("a.masukbtn").count()) === 1);
     ok("beranda: data terstruktur valid", (await page.evaluate(() => [...document.querySelectorAll('script[type="application/ld+json"]')].every((s) => { try { JSON.parse(s.textContent); return true; } catch { return false; } }))));
     await noOverflow(page, "beranda");

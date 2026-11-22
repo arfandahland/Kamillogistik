@@ -79,7 +79,7 @@ export default function Tentang() {
         <h2 id="jejak" className="sech">Perjalanan kami</h2>
         <div className="tl">
           <div><b>3 Agustus {p.tahunBerdiri}</b><p>Akta pendirian {p.namaHukum} ditandatangani di hadapan notaris.</p></div>
-          <div><b>Gudang di tiga kota</b><p>Gudang dan kantor beroperasi di Jakarta, Makassar, dan Surabaya, menghubungkan Jawa, Sulawesi, hingga Papua.</p></div>
+          <div><b>Gudang di tiga kota</b><p>Gudang dan kantor beroperasi di Jakarta, Makassar, dan Surabaya, menghubungkan Sumatera, Jawa, Kalimantan, Sulawesi, hingga Papua.</p></div>
           <div><b>Cargo darat, laut, udara</b><p>Layanan berkembang ke kirim kendaraan, alat berat, sewa kontainer, pindahan, dan pergudangan.</p></div>
           <div><b>2026 · Resi digital</b><p>Kode resi yang bisa dibaca, bukti foto, tanda tangan penerima, dan dashboard pemantauan pemilik.</p></div>
         </div>

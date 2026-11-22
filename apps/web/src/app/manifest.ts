@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Kamil Logistik", short_name: "Kamil", description: "Kirim barang murah ke seluruh Sulawesi dan pantau posisinya.",
+    name: "Kamil Logistik", short_name: "Kamil", description: "Kirim barang murah ke seluruh Indonesia dan pantau posisinya.",
     start_url: "/app", scope: "/", display: "standalone", orientation: "portrait", lang: "id",
     background_color: "#05261f", theme_color: "#072f29",
     icons: [

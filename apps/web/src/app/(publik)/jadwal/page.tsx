@@ -9,7 +9,7 @@ import { waLink } from "@/lib/brand";
 export const revalidate = 600;
 export const metadata: Metadata = {
   title: "Jadwal Keberangkatan Ekspedisi dan Estimasi Lama Kirim per Rute",
-  description: "Jadwal keberangkatan dan estimasi lama pengiriman ekspedisi Kamil Logistik per rute: Jakarta, Makassar, dan kota tujuan di Sulawesi, Maluku, dan Papua, lengkap dengan tarif mulai dari.",
+  description: "Jadwal keberangkatan dan estimasi lama pengiriman ekspedisi Kamil Logistik per rute: Jakarta, Makassar, Surabaya, dan kota tujuan di seluruh Indonesia, lengkap dengan tarif mulai dari.",
   alternates: { canonical: "/jadwal" },
 };
 

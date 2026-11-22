@@ -33,7 +33,7 @@ export default function Mitra() {
       <nav aria-label="Jejak halaman" className="crumbs"><Link href="/">Beranda</Link> › <span>Jadi mitra</span></nav>
       <header className="stack">
         <h1 style={{ margin: 0 }}>Jadi mitra Kamil Logistik</h1>
-        <p className="muted" style={{ margin: 0 }}>Terima kiriman di kota Anda, buat resi dan invoice dari HP, dan tumbuh bersama jaringan ekspedisi Jakarta, Sulawesi, Papua, dan Maluku.</p>
+        <p className="muted" style={{ margin: 0 }}>Terima kiriman di kota Anda, buat resi dan invoice dari HP, dan tumbuh bersama jaringan ekspedisi yang menjangkau seluruh Indonesia.</p>
         <p style={{ margin: 0 }}><MitraTombol>Daftar sekarang</MitraTombol></p>
       </header>
       <section aria-labelledby="manfaat">

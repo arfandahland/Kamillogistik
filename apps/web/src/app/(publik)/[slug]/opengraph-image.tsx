@@ -16,7 +16,7 @@ export default async function Og({ params }: { params: Promise<{ slug: string }>
   const pair = all.find((p) => p.slug === slug);
   const judul = wil ? `Ekspedisi ke ${wil.wilayah.nama}` : pair ? `${pair.originCity} → ${pair.destCity}` : "Ekspedisi Kamil Logistik";
   const harga = wil ? `Mulai ${priceLabel(wil.termurah.minPrice)}` : pair ? `Mulai ${priceLabel(pair.minPrice)}` : "Tarif transparan";
-  const info = wil ? `${wil.pairs.length} kota tujuan` : pair ? (pair.etaDays ? `Estimasi sekitar ${pair.etaDays} hari` : "Pantau resi tanpa login") : "Seluruh Sulawesi, Papua, Maluku";
+  const info = wil ? `${wil.pairs.length} kota tujuan` : pair ? (pair.etaDays ? `Estimasi sekitar ${pair.etaDays} hari` : "Pantau resi tanpa login") : "Ke seluruh Indonesia";
   return new ImageResponse(
     (
       <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", padding: 64, color: "#fff", background: "linear-gradient(135deg,#06352d,#0f6b5a 60%,#1d8a76)", fontFamily: "sans-serif" }}>
