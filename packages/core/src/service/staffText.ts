@@ -13,6 +13,8 @@ export const ROLE_LABEL: Record<string, string> = {
   DRIVER: "Kurir",
   WAREHOUSE: "Petugas gudang",
   CONTAINER_DRIVER: "Sopir kontainer",
+  MV: "MV (Mitra Vendor)",
+  MV_MASTER: "MV Master",
 };
 
 export const STATUS_LABEL: Record<AnyStatus, string> = {
@@ -91,13 +93,15 @@ export const OWNER_VIEW: readonly string[] = ["SUPER_ADMIN", "OWNER"];
 export const SEES_MONEY = ["SUPER_ADMIN", "OWNER", "HUB_MANAGER", "MITRA_POS", "FINANCE"];
 
 /** Peran yang bisa dipilih saat Pemilik membuat akun baru. Tiga yang terakhir tidak terikat cabang. */
-export const PERAN_BARU = ["DRIVER", "WAREHOUSE", "CONTAINER_DRIVER", "MITRA_POS", "HUB_MANAGER", "HRD", "KONTEN", "FINANCE", "CS_SALES", "OWNER", "SUPER_ADMIN"] as const;
-export const PERAN_TANPA_CABANG = ["HRD", "KONTEN", "FINANCE", "OWNER", "SUPER_ADMIN"] as const;
+export const PERAN_BARU = ["DRIVER", "WAREHOUSE", "CONTAINER_DRIVER", "MITRA_POS", "HUB_MANAGER", "HRD", "KONTEN", "FINANCE", "CS_SALES", "MV", "MV_MASTER", "OWNER", "SUPER_ADMIN"] as const;
+export const PERAN_TANPA_CABANG = ["HRD", "KONTEN", "FINANCE", "MV_MASTER", "OWNER", "SUPER_ADMIN"] as const;
 export const PERAN_KETERANGAN: Record<string, string> = {
   HRD: "Kepegawaian (dokumen, shift, absensi, cuti, rekap) dan Lamaran kerja. Tidak melihat resi maupun keuangan.",
   FINANCE: "Tagihan, pembayaran, komisi, dan laporan keuangan seluruh cabang. Tidak menjalankan langkah resi.",
   CS_SALES: "Memantau resi cabang, tindak lanjut, pesanan jemput, dan mengusulkan ganti rugi klaim. Tidak membuat resi dan tidak melihat uang.",
   KONTEN: "Hanya mengelola foto dan testimoni di website.",
+  MV: "Mengelola vendor, alokasi, HPP, SJ balik, dan dokumen pengiriman cabangnya. Melihat penjualan semua cabang, hanya baca.",
+  MV_MASTER: "Semua tugas MV untuk semua cabang, ditambah memverifikasi vendor yang diusulkan.",
   OWNER: "Hanya memantau: dashboard, semua resi, keuangan, laporan, margin, dan peta. Tidak bisa mengubah data apa pun.",
   SUPER_ADMIN: "Kendali penuh: semua menu, tarif, mitra, petugas, dan konsol koreksi data (alasan wajib, tercatat). Berikan dengan hati-hati.",
 };

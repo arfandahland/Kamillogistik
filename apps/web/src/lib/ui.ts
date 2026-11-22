@@ -24,5 +24,6 @@ export function isActive(path: string, href: string, also: string[] = []): boole
   if (also.some((a) => path === a || path.startsWith(a + "/"))) return true;
   if (href === "/") return path === "/";
   if (href === "/app") return path === "/app" || path.startsWith("/app/resi");
+  if (href === "/app/mv") return path === "/app/mv"; // beranda Divisi MV: tidak ikut menyala di halaman turunannya
   return path === href || path.startsWith(href + "/");
 }

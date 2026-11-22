@@ -55,6 +55,10 @@ export default async function Keuangan({ searchParams }: { searchParams: Promise
           <Link href="/app/tagihan" className="btn ghost" style={{ marginTop: 14 }}>Buka semua tagihan</Link>
         </section>
       </div>
+      <div className="admgrid">
+        <Link href="/app/keuangan/sj" className="card lift admcard"><span className="ic"><Icon name="file" size={26} /></span><span><b>SJ dari MV</b><small>Surat jalan balik yang sudah diserahkan Divisi MV, lengkap dengan tanda terimanya.</small></span><Icon name="arrow" size={20} /></Link>
+        <Link href="/app/mv/alokasi" className="card lift admcard"><span className="ic"><Icon name="truck" size={26} /></span><span><b>HPP vendor</b><small>Biaya angkut darat per resi. Cocokkan dengan tagihan vendor lalu kunci HPP-nya.</small></span><Icon name="arrow" size={20} /></Link>
+      </div>
     </main>
   );
 }

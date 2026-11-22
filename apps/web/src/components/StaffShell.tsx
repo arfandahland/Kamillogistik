@@ -24,12 +24,14 @@ export default function StaffShell({ me, pending, children, forceFull }: { me: M
     ? [{ href: "/app", label: "Beranda", icon: "home" }, { href: "/app/jemput", label: "Jemput", icon: "truck" }, { href: "/app/klaim", label: "Klaim", icon: "shield" }, { href: "/app/akun", label: "Akun", icon: "user" }]
     : me.role === "KONTEN"
     ? [{ href: "/app/konten", label: "Konten", icon: "grid" }, { href: "/app/akun", label: "Akun", icon: "user" }]
+    : me.role === "MV" || me.role === "MV_MASTER"
+    ? [{ href: "/app/mv", label: "Beranda", icon: "home" }, { href: "/app/mv/alokasi", label: "Alokasi", icon: "truck", also: ["/app/mv/vendor"] }, { href: "/app/mv/tracking", label: "Pantau", icon: "pin" }, { href: "/app/mv/sj", label: "SJ", icon: "file", also: ["/app/mv/tanda-terima"] }, { href: "/app/akun", label: "Akun", icon: "user" }]
     : owner
     ? [
         { href: "/app", label: "Pantauan", icon: "chart" },
         { href: "/app/semua", label: "Resi", icon: "list" },
         { href: "/app/keuangan", label: "Keuangan", icon: "cash", also: ["/app/tagihan"] },
-        { href: "/app/kelola", label: "Kelola", icon: "grid", also: ["/app/laporan", "/app/jemput", "/app/klaim", "/app/peta", "/app/ringkasan", "/app/tarif", "/app/keuangan/komisi", "/app/tindak-lanjut", "/app/cari", "/app/mitra", "/app/korporat", "/app/petugas", "/app/tarif", "/app/pengaturan", "/app/kendala", "/app/pegawai", "/app/margin"] },
+        { href: "/app/kelola", label: "Kelola", icon: "grid", also: ["/app/laporan", "/app/jemput", "/app/klaim", "/app/peta", "/app/ringkasan", "/app/tarif", "/app/keuangan/komisi", "/app/tindak-lanjut", "/app/cari", "/app/mitra", "/app/korporat", "/app/petugas", "/app/tarif", "/app/pengaturan", "/app/kendala", "/app/pegawai", "/app/margin", "/app/mv"] },
         { href: "/app/akun", label: "Akun", icon: "user" },
       ]
     : [
@@ -40,7 +42,9 @@ export default function StaffShell({ me, pending, children, forceFull }: { me: M
         ...(finance ? [{ href: "/app/tagihan", label: "Tagihan", icon: "file" }] : [{ href: "/app/serah", label: "Serah terima", icon: "swap", badge: pending }]),
         { href: "/app/akun", label: "Akun", icon: "user" },
       ];
-  const navAll = me.role === "HRD" || me.role === "KONTEN" || me.role === "FINANCE" ? tabs : me.role === "CS_SALES"
+  const navAll = me.role === "HRD" || me.role === "KONTEN" || me.role === "FINANCE" ? tabs : me.role === "MV" || me.role === "MV_MASTER"
+    ? [{ href: "/app/mv", label: "Beranda MV", icon: "home" }, { href: "/app/mv/vendor", label: "Vendor", icon: "users" }, { href: "/app/mv/alokasi", label: "Alokasi dan HPP", icon: "truck" }, { href: "/app/mv/tracking", label: "Pemantauan", icon: "pin" }, { href: "/app/mv/sj", label: "SJ balik", icon: "file", also: ["/app/mv/tanda-terima"] }, { href: "/app/mv/udara", label: "Manifest udara", icon: "plane" }, { href: "/app/mv/penjualan", label: "Penjualan", icon: "chart" }, { href: "/app/akun", label: "Akun", icon: "user" }]
+    : me.role === "CS_SALES"
     ? [...tabs.slice(0, -1), { href: "/app/tindak-lanjut", label: "Perlu dihubungi", icon: "chat" }, { href: "/app/cari", label: "Cari", icon: "search" }, tabs[tabs.length - 1]!]
     : owner
     ? [
@@ -52,6 +56,7 @@ export default function StaffShell({ me, pending, children, forceFull }: { me: M
         { href: "/app/kendala", label: "Kendala pengiriman", icon: "alert" },
         { href: "/app/cari", label: "Cari", icon: "search" },
         { href: "/app/manifest", label: "Manifest", icon: "layers" },
+        { href: "/app/mv", label: "Divisi MV", icon: "truck", also: ["/app/mv/vendor", "/app/mv/alokasi", "/app/mv/tracking", "/app/mv/sj", "/app/mv/udara", "/app/mv/penjualan", "/app/mv/tanda-terima"] },
         { href: "/app/keuangan", label: "Keuangan", icon: "cash" },
         { href: "/app/tagihan", label: "Tagihan", icon: "file" },
         { href: "/app/margin", label: "Margin manifest", icon: "tag" },

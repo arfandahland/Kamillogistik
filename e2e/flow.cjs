@@ -1454,6 +1454,83 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await gd.ctx.close();
   }
 
+  // ===== Divisi MV =====
+  console.log("\n[AO] Divisi MV: peran, vendor, alokasi, pemantauan, penjualan");
+  {
+    const sa = await login(browser, "owner@uji.id", "Pemilik2026x", { width: 390, height: 844 });
+    const buatMv = async (nama, email, peran, cabang) => {
+      await sa.page.goto(`${BASE}/app/petugas`, { waitUntil: "networkidle" });
+      await sa.page.locator("details.admnew summary").click();
+      await sa.page.fill("input[name=nama]", nama); await sa.page.fill("input[name=email]", email); await sa.page.selectOption("select[name=peran]", peran); await sa.page.fill("input[name=sandi]", "Sandi2026a");
+      if (cabang) await selectByText(sa.page, "select[name=cabang]", cabang);
+      await sa.page.locator("details.admnew button[type=submit], details.admnew .btn.green").first().click();
+      await sa.page.waitForSelector(".ok, .err", { timeout: 20000 }).catch(() => {});
+      return (await sa.page.locator(".ok, .err").first().innerText().catch(() => ""));
+    };
+    ok("AO1 Super Admin membuat akun MV cabang Jakarta", /dibuat/.test(await buatMv("MV Jakarta Uji", "mv.jkt@uji.id", "MV", "Jakarta")));
+    ok("AO2 Super Admin membuat akun MV Master tanpa cabang", /dibuat/.test(await buatMv("MV Master Uji", "mv.master@uji.id", "MV_MASTER", "")));
+    ok("AO3 menu samping Super Admin memuat Divisi MV", (await sa.page.locator("a[href='/app/mv']").count()) >= 1);
+    await sa.ctx.close();
+
+    const mv = await login(browser, "mv.jkt@uji.id", "Sandi2026a", { width: 390, height: 844 });
+    await mv.page.waitForURL(/\/app\/mv/, { timeout: 15000 }).catch(() => {});
+    ok("AO4 akun MV langsung masuk ke beranda Divisi MV dengan kartu angka", /\/app\/mv/.test(mv.page.url()) && /Vendor aktif/.test(await text(mv.page)) && /SJ terlambat/.test(await text(mv.page)));
+    ok("AO5 menu bawah MV: Alokasi, Pantau, SJ", (await mv.page.locator(".tabbar a[href='/app/mv/alokasi'], nav a[href='/app/mv/alokasi']").count()) >= 1 && (await mv.page.locator("a[href='/app/mv/sj']").count()) >= 1);
+    await mv.page.goto(`${BASE}/app/mv/vendor`, { waitUntil: "networkidle" });
+    await mv.page.locator("details:has(input[name=nama])").first().locator("summary").click();
+    await mv.page.locator("details[open] input[name=nama]").first().fill("Vendor Laut Uji"); await mv.page.locator("details[open] select[name=jenis]").first().selectOption("LAUT");
+    await mv.page.locator("details[open] input[name=kontak]").first().fill("Pak Laut"); await mv.page.locator("details[open] input[name=telepon]").first().fill("0812 7000 1111");
+    const usul = await act(mv.page, mv.page.getByRole("button", { name: "Simpan vendor" }));
+    ok("AO6 MV mengusulkan vendor baru (status menunggu verifikasi)", !!usul.ok && /Menunggu|Diusulkan|usulan/i.test(await text(mv.page)), JSON.stringify(usul));
+    await mv.page.goto(`${BASE}/app/mv/alokasi?s=BELUM`, { waitUntil: "networkidle" });
+    ok("AO7 vendor yang belum diverifikasi tidak muncul di pilihan alokasi", !/Vendor Laut Uji/.test(await mv.page.locator("select[name=vendor]").first().innerHTML().catch(() => "")));
+    await mv.ctx.close();
+
+    const mm = await login(browser, "mv.master@uji.id", "Sandi2026a", { width: 390, height: 844 });
+    await mm.page.goto(`${BASE}/app/mv/vendor?s=DIUSULKAN`, { waitUntil: "networkidle" });
+    const kartuV = mm.page.locator("details", { hasText: "Vendor Laut Uji" }).first();
+    await kartuV.locator("summary").first().click();
+    const akt = await act(mm.page, kartuV.getByRole("button", { name: "Aktifkan" }).first());
+    ok("AO8 MV Master memverifikasi (mengaktifkan) vendor", !!akt.ok, JSON.stringify(akt));
+    await mm.page.goto(`${BASE}/app/mv/penjualan`, { waitUntil: "networkidle" });
+    ok("AO9 MV Master melihat penjualan terpisah per cabang", /Cabang saya|Jakarta/.test(await text(mm.page)) && /Makassar/.test(await text(mm.page)) && /Surabaya/.test(await text(mm.page)));
+    await mm.ctx.close();
+
+    const mv2 = await login(browser, "mv.jkt@uji.id", "Sandi2026a", { width: 390, height: 844 });
+    await mv2.page.goto(`${BASE}/app/mv/alokasi?m=LAUT`, { waitUntil: "networkidle" });
+    const resiMv = await mv2.page.locator("details").filter({ has: mv2.page.locator("select[name=vendor]") }).count();
+    ok("AO10 MV Jakarta melihat resi laut cabangnya untuk dialokasikan", resiMv >= 1, String(resiMv));
+    const kartuR = mv2.page.locator("details").filter({ has: mv2.page.locator("select[name=vendor]") }).first();
+    await kartuR.locator("summary").first().click();
+    await kartuR.locator("select[name=vendor]").selectOption({ label: /Vendor Laut Uji/ }).catch(async () => { const o = await kartuR.locator("select[name=vendor] option").allTextContents(); await kartuR.locator("select[name=vendor]").selectOption({ index: o.findIndex((t) => /Vendor Laut Uji/.test(t)) }); });
+    const simp = await act(mv2.page, kartuR.getByRole("button", { name: "Simpan pilihan" }));
+    ok("AO11 MV memilih vendor terverifikasi untuk resi laut", !!simp.ok && /Vendor Laut Uji/.test(await text(mv2.page)), JSON.stringify(simp));
+    ok("AO12 resi laut menampilkan catatan HPP dicatat lewat biaya manifest", /HPP laut dan udara dicatat lewat Biaya manifest/.test(await text(mv2.page)));
+    await mv2.page.goto(`${BASE}/app/mv/tracking?m=LAUT`, { waitUntil: "networkidle" });
+    ok("AO13 pemantauan laut memuat wilayah Kalimantan dan Sulawesi Utara", /Kalimantan/.test(await text(mv2.page)) && /Sulawesi Utara/.test(await text(mv2.page)));
+    await mv2.page.goto(`${BASE}/app/mv/tracking?m=DARAT`, { waitUntil: "networkidle" });
+    const tDarat = await text(mv2.page);
+    ok("AO14 pemantauan darat memuat Sumatera, Jawa Tengah, Jawa Timur, Bali, NTB, NTT", ["Sumatera", "Jawa Tengah", "Jawa Timur", "Bali", "Nusa Tenggara Barat", "Nusa Tenggara Timur"].every((w) => new RegExp(w).test(tDarat)));
+    for (const u of ["/app/mv/sj", "/app/mv/udara", "/app/mv/penjualan"]) {
+      await mv2.page.goto(`${BASE}${u}`, { waitUntil: "networkidle" });
+      ok(`AO15 halaman ${u} terbuka tanpa galat`, new RegExp(u).test(mv2.page.url()) && !/Terjadi kesalahan|Application error/.test(await text(mv2.page)));
+    }
+    await mv2.page.goto(`${BASE}/app/mv/penjualan`, { waitUntil: "networkidle" });
+    ok("AO16 penjualan HP tanpa geser samping", await mv2.page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+    await mv2.ctx.close();
+
+    const ks = await login(browser, "kasir@uji.id");
+    await ks.page.goto(`${BASE}/app/mv`, { waitUntil: "networkidle" });
+    ok("AO17 Kasir tidak bisa membuka halaman Divisi MV (dialihkan)", !/\/app\/mv/.test(ks.page.url()));
+    await ks.ctx.close();
+    const fn = await login(browser, "finance@uji.id");
+    await fn.page.goto(`${BASE}/app/keuangan`, { waitUntil: "networkidle" });
+    ok("AO18 Finance melihat kartu SJ dari MV dan HPP vendor di halaman Keuangan", /SJ dari MV/.test(await text(fn.page)) && /HPP vendor/.test(await text(fn.page)));
+    await fn.page.goto(`${BASE}/app/keuangan/sj`, { waitUntil: "networkidle" });
+    ok("AO19 halaman SJ dari MV untuk Finance terbuka", /keuangan\/sj/.test(fn.page.url()) && !/Terjadi kesalahan/.test(await text(fn.page)));
+    await fn.ctx.close();
+  }
+
   await browser.close();
   const fail = results.filter((r) => !r.ok);
   console.log(`\n==== HASIL: ${results.length - fail.length}/${results.length} lolos ====`);
