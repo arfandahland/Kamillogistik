@@ -1474,8 +1474,9 @@ a.tile { display: block; color: inherit; text-decoration: none; }
 @keyframes poinin { to { opacity: 1; transform: none; } }
 
 /* Pilih layanan: ikon berdenyut dan chip bergoyang halus */
-.svcchips li { position: relative; transition: transform .3s var(--ease), box-shadow .3s; animation: chipbob 4.4s ease-in-out infinite; }
-.svcchips li:nth-child(2n) { animation-delay: .6s; } .svcchips li:nth-child(3n) { animation-delay: 1.2s; } .svcchips li:nth-child(5n) { animation-delay: 1.8s; }
+/* PENTING: jangan beri `animation` pada elemen .rv (chip layanan, kartu rute): itu menimpa animasi muncul-saat-digulir dan membuatnya tak terlihat. Gerak dipasang pada isi di dalamnya. */
+.svcchips li { position: relative; transition: transform .3s var(--ease), box-shadow .3s; }
+.svcchips li b { display: inline-block; animation: chipbob 4.4s ease-in-out infinite; } .svcchips li:nth-child(2n) b { animation-delay: .6s; } .svcchips li:nth-child(3n) b { animation-delay: 1.2s; }
 .svcchips li:hover { transform: translateY(-4px) scale(1.03); box-shadow: 0 16px 30px rgba(15, 107, 90, .2); }
 .svcchips .si { position: relative; animation: siwiggle 3.6s ease-in-out infinite; }
 .svcchips .si::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; border: 2px solid rgba(47, 209, 168, .7); animation: siping 2.4s ease-out infinite; }
@@ -1489,12 +1490,11 @@ a.tile { display: block; color: inherit; text-decoration: none; }
 .rtcard::after { content: ""; position: absolute; top: 0; bottom: 0; left: -60%; width: 40%; background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .22), transparent); transform: skewX(-18deg); animation: rtshine 5.5s ease-in-out infinite; pointer-events: none; }
 .rtcard:nth-child(2n)::after { animation-delay: 1.4s; } .rtcard:nth-child(3n)::after { animation-delay: 2.8s; }
 @keyframes rtshine { 0% { left: -60%; } 38%, 100% { left: 130%; } }
-.rtcard { animation: chipbob 5.2s ease-in-out infinite; } .rtcard:nth-child(2n) { animation-delay: .7s; } .rtcard:nth-child(3n) { animation-delay: 1.4s; }
+.rtcard .rt-city { display: inline-block; animation: chipbob 5.2s ease-in-out infinite; } .rtcard:nth-child(2n) .rt-city { animation-delay: .7s; } .rtcard:nth-child(3n) .rt-city { animation-delay: 1.4s; }
 .rt-codes b { animation: rtcode 3s ease-in-out infinite; } .rt-codes b:last-child { animation-delay: 1.5s; }
 @keyframes rtcode { 0%, 100% { text-shadow: 0 0 0 rgba(255, 207, 107, 0); } 50% { text-shadow: 0 0 14px rgba(255, 207, 107, .8); } }
-.rtcard:hover { animation-play-state: paused; }
 .jangkau .card { transition: transform .3s var(--ease), box-shadow .3s; } .jangkau .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
-@media (prefers-reduced-motion: reduce) { .svcchips li, .svcchips .si, .svcchips .si::after, .tile .si, .rtcard, .rtcard::after, .rt-codes b, .ilpulse, .ilgrow, .ilcrane { animation: none !important; } .cpoin li { opacity: 1; transform: none; animation: none !important; } }
+@media (prefers-reduced-motion: reduce) { .svcchips li b, .rtcard .rt-city, .jangkau .card h3::before, .svcchips .si, .svcchips .si::after, .tile .si, .rtcard::after, .rt-codes b, .ilpulse, .ilgrow, .ilcrane { animation: none !important; } .cpoin li { opacity: 1; transform: none; animation: none !important; } }
 
 /* Footer: media sosial di tengah, bulat, dan hidup */
 .footsoc { margin: 16px 0 0 !important; font-size: 12.5px; letter-spacing: .14em; text-transform: uppercase; font-weight: 800; color: #9fe9d6; opacity: .95; }
@@ -1519,3 +1519,17 @@ footer.pub .sosmed a[data-s="tiktok"]:hover { background: #111; box-shadow: -3px
   .appmain .wrap.narrow > .stagger > * { margin: 0; min-width: 0; }
   .appmain .wrap.narrow:has(> .stagger) > details.admnew { max-width: 760px; }
 }
+
+/* Kami kirim apa saja + jangkauan: gerak halus pada isi kartu (bukan pada kartunya) */
+.tile .si { position: relative; animation: sipulse 3s ease-in-out infinite, siwiggle 5s ease-in-out infinite; }
+.tile .si::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; border: 2px solid rgba(47, 209, 168, .55); animation: siping 2.6s ease-out infinite; }
+.bento .tile:nth-child(2n) .si, .bento .tile:nth-child(2n) .si::after { animation-delay: .5s; } .bento .tile:nth-child(3n) .si, .bento .tile:nth-child(3n) .si::after { animation-delay: 1s; }
+a.tile { transition: transform .3s var(--ease), box-shadow .3s; position: relative; overflow: hidden; }
+a.tile:hover { transform: translateY(-5px); box-shadow: 0 18px 36px rgba(15, 107, 90, .22); }
+a.tile::after { content: ""; position: absolute; top: 0; bottom: 0; left: -70%; width: 45%; background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .55), transparent); transform: skewX(-18deg); animation: rtshine 6s ease-in-out infinite; pointer-events: none; }
+a.tile:nth-child(2n)::after { animation-delay: 1.5s; } a.tile:nth-child(3n)::after { animation-delay: 3s; }
+.jangkau .card h3 { display: flex; align-items: center; gap: 8px; }
+.jangkau .card h3::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: #f28c28; box-shadow: 0 0 0 0 rgba(242, 140, 40, .6); animation: pinping 2.4s ease-out infinite; flex: none; }
+.jangkau .card:nth-child(2n) h3::before { animation-delay: .6s; } .jangkau .card:nth-child(3n) h3::before { animation-delay: 1.2s; }
+@keyframes pinping { 0% { box-shadow: 0 0 0 0 rgba(242, 140, 40, .55); } 80%, 100% { box-shadow: 0 0 0 10px rgba(242, 140, 40, 0); } }
+@media (prefers-reduced-motion: reduce) { .tile .si, .tile .si::after, a.tile::after { animation: none !important; } }
