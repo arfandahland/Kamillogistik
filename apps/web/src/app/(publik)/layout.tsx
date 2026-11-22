@@ -36,6 +36,7 @@ export default async function PublikLayout({ children }: { children: React.React
             <p>Berdiri sejak {PERUSAHAAN.tahunBerdiri} · gudang dan kantor di {PERUSAHAAN.kantor.map((k) => k.kota).join(", ")}</p>
             <p><Link href="/kontak">Alamat lengkap</Link> · {PERUSAHAAN.wa.map((w) => w.tampil).join(" / ")}</p>
             <p><a href={`mailto:${PERUSAHAAN.email}`}>{PERUSAHAAN.email}</a></p>
+            <p className="footsoc">Ikuti kami</p>
             <Sosmed />
           </div>
           <small>© {new Date().getFullYear()} Kamil Logistik Express</small>

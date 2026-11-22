@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
 import Link from "next/link";
 import Icon from "./Icon";
 
-export type Slide = { id: string; judul: string; teks: string; label: string; href: string; art: ReactNode };
+export type Slide = { id: string; judul: string; teks: string; label: string; href: string; art: ReactNode; poin?: string[] };
 
 /** Carousel penjelasan layanan: geser jari, panah, titik, atau otomatis tiap 5 detik (berhenti saat disentuh; mati bila pengguna minta gerak dikurangi). */
 export default function HeroCarousel({ slides }: { slides: Slide[] }) {
@@ -38,7 +38,7 @@ export default function HeroCarousel({ slides }: { slides: Slide[] }) {
         {slides.map((s, n) => (
           <article key={s.id} className={`cslide ${n === i ? "on" : ""}`} aria-roledescription="slide" aria-label={`${n + 1} dari ${slides.length}`}>
             <div className="cart">{s.art}</div>
-            <div className="ctext"><h3>{s.judul}</h3><p>{s.teks}</p><Link href={s.href} className="clink">{s.label} <Icon name="arrow" size={16} /></Link></div>
+            <div className="ctext"><h3>{s.judul}</h3><p>{s.teks}</p>{s.poin && <ul className="cpoin">{s.poin.map((x, k) => <li key={x} style={{ "--i": k } as React.CSSProperties}><Icon name="check" size={15} />{x}</li>)}</ul>}<Link href={s.href} className="clink">{s.label} <Icon name="arrow" size={16} /></Link></div>
           </article>
         ))}
       </div>

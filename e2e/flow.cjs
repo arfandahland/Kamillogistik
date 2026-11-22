@@ -787,7 +787,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     const pc0 = await browser.newContext({ viewport: { width: 412, height: 860 } }); const h0 = await pc0.newPage();
     await h0.goto(`${BASE}/`, { waitUntil: "networkidle" });
     ok("S1 beranda menampilkan slider dengan 5 foto bawaan", (await h0.locator(".bs-photo").count()) === 5);
-    ok("S2 semua foto bawaan termuat (bukan rusak)", await h0.evaluate(async () => { const im = [...document.querySelectorAll(".bs-photo")]; await Promise.all(im.map((i) => i.complete ? 0 : new Promise((r) => { i.onload = i.onerror = r; }))); return im.every((i) => i.naturalWidth > 100); }));
+    ok("S2 semua foto bawaan termuat (bukan rusak)", await h0.evaluate(async () => { const im = [...document.querySelectorAll(".bs-photo")]; im.forEach((i) => { i.loading = "eager"; }); await Promise.all(im.map((i) => i.complete ? 0 : new Promise((r) => { i.onload = i.onerror = r; }))); return im.every((i) => i.naturalWidth > 100); }));
     ok("S3 foto bawaan tidak memuat nama domain lama", !/(?<!@)kamillogistikexpress\.id/i.test((await h0.content()).replace(/tiktok\.com\/@kamillogistikexpress\.id/g, "")));
     await pc0.close();
     const ow = await login(browser, "owner@uji.id", "Pemilik2026x", { width: 390, height: 844 });

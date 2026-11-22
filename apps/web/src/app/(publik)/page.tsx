@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import ResiForm from "@/components/ResiForm";
 import HeroCarousel, { type Slide } from "@/components/HeroCarousel";
-import { IlKapal, IlKorporat, IlPesawat, IlScan, IlTruk } from "@/components/Ilustrasi";
+import { IlKapal, IlKorporat, IlPesawat, IlScan, IlTruk, IlPeta, IlMitra, IlKontainer } from "@/components/Ilustrasi";
 import Waves from "@/components/Waves";
 import Icon from "@/components/Icon";
 import JsonLd from "@/components/JsonLd";
@@ -73,7 +73,10 @@ export default async function Home() {
   const kotaTujuan = [...new Set(semua.map((p) => p.destCity))].slice(0, 40);
   const pairs = [...semua.filter((p) => UNGGULAN.includes(p.slug)).sort((a, b) => UNGGULAN.indexOf(a.slug) - UNGGULAN.indexOf(b.slug)), ...semua.filter((p) => !UNGGULAN.includes(p.slug))].slice(0, 6);
   const slides: Slide[] = [
-    { id: "laut", judul: "Darat dan laut ke seluruh Indonesia", teks: "Dari Jakarta, Makassar, dan Surabaya ke kota-kota di Jawa, Sumatera, Kalimantan, Sulawesi, Maluku, dan Papua. Tarif jelas, estimasi hari tertera.", label: "Lihat rute dan tarif", href: "/ekspedisi", art: <IlKapal /> },
+    { id: "laut", judul: "Darat dan laut ke seluruh Indonesia", teks: "Dari Jakarta, Makassar, dan Surabaya ke kota-kota besar di Jawa, Sumatera, Kalimantan, Sulawesi, Maluku, Maluku Utara, Papua, Bali, dan Nusa Tenggara. Tarif jelas, estimasi hari tertera.", label: "Lihat rute dan tarif", href: "/ekspedisi", art: <IlKapal /> },
+    { id: "jangkauan", judul: "Jaringan dari Sabang sampai Merauke", teks: "Gudang di Jakarta, Makassar, dan Surabaya terhubung dengan mitra di berbagai kota. Tanyakan tujuan Anda, kami carikan jalurnya.", label: "Tanya tujuan Anda", href: waLink("Halo Kamil Logistik, saya mau tanya pengiriman ke kota saya."), art: <IlPeta /> },
+    { id: "mitra", judul: "Daftar jadi mitra Kamil Logistik", teks: "Punya gerai atau gudang? Tumbuh bersama jaringan ekspedisi nasional dengan aturan yang terbuka.", poin: ["Komisi per resi, laporan bisa dilihat kapan saja", "Satu tabel tarif untuk semua mitra, tanpa selisih antar kota", "Resi, label, dan invoice langsung dari HP", "Daftar online tanpa biaya, diverifikasi tim kami"], label: "Daftar jadi mitra", href: "/mitra", art: <IlMitra /> },
+    { id: "kirimapa", judul: "Mobil, alat berat, pindahan, sampai stok toko", teks: "Kendaraan, alat berat, pindahan rumah, produk perusahaan, alat kesehatan, dan bahan bangunan. Satu jaringan, satu nomor resi.", label: "Lihat semua layanan", href: "/layanan", art: <IlKontainer /> },
     { id: "udara", judul: "Butuh cepat? Lewat udara", teks: "Kargo udara Jakarta–Makassar dengan perhitungan berat volume khusus udara. Tanyakan tarif ke tim kami.", label: "Tanya kargo udara", href: waLink("Halo Kamil Logistik, saya mau tanya kargo udara."), art: <IlPesawat /> },
     { id: "jemput", judul: "Dijemput atau antar sendiri", teks: "Kurir kami menjemput ke alamat, atau bawa sendiri ke gudang tanpa biaya jemput.", label: "Cara kirim barang", href: "/panduan/cara-kirim-barang-dari-jakarta-ke-sulawesi", art: <IlTruk /> },
     { id: "lacak", judul: "Lacak dengan kode atau kamera", teks: "Kode resi bisa dibaca: asal, tujuan, tanggal, dan jam. Atau pindai QR di struk.", label: "Cek resi sekarang", href: "/lacak", art: <IlScan /> },

@@ -559,4 +559,174 @@ export const ARTIKEL: Artikel[] = [
       <p>Toko dan distributor yang rutin mengirim bisa menanyakan layanan perusahaan: tempo pembayaran, tarif khusus, dan portal untuk melihat resi dan tagihan. Lihat <Link href="/layanan/kirim-bahan-bangunan-dan-stok-toko">layanan kirim bahan bangunan dan stok toko</Link>.</p>
     </>),
   },
+  {
+    slug: "ekspedisi-ke-kalimantan-pontianak-banjarmasin-balikpapan",
+    title: "Ekspedisi ke Kalimantan: Pontianak, Banjarmasin, Balikpapan, Samarinda",
+    heading: "Ekspedisi ke Kalimantan: Pontianak, Banjarmasin, Balikpapan, dan Samarinda",
+    description: "Panduan kirim barang ke kota-kota besar Kalimantan lewat cargo laut dan udara: persiapan, packing, jadwal, dan cara melacak resi.",
+    updated: "2026-11-22",
+    body: () => (<>
+      <p>Panduan kirim barang ke kota-kota besar Kalimantan lewat cargo laut dan udara: persiapan, packing, jadwal, dan cara melacak resi.</p>
+      <h2>Kalimantan, pulau yang luas</h2>
+      <p>Kalimantan terdiri dari beberapa provinsi dengan kota besar seperti Pontianak, Banjarmasin, Balikpapan, Samarinda, Palangkaraya, dan Tarakan. Pengiriman dari Jawa umumnya lewat laut, sehingga waktu tempuh dan jadwal kapal ikut menentukan.</p>
+      <h2>Cara memperkirakan biaya</h2>
+      <p>Gunakan <Link href="/ongkir">kalkulator ongkir</Link> untuk rute yang tersedia. Untuk kota yang belum tercantum, hubungi tim kami lewat WhatsApp dengan menyebut kota tujuan, jenis, dan berat barang.</p>
+      <h2>Tips agar aman</h2>
+      <p>Kemas dengan kuat, tulis nama dan nomor HP penerima, dan simpan nomor resi. Lihat <Link href="/panduan/cara-packing-barang-cargo-laut">panduan packing</Link> dan <Link href="/lacak">cek resi</Link>.</p>
+      <p>Tarif belum termasuk asuransi, pajak yang berlaku, serta bongkar muat di lokasi. Lihat <Link href="/syarat">syarat dan ketentuan</Link>.</p>
+    </>),
+  },
+  {
+    slug: "ekspedisi-jakarta-ke-sumatera-medan-palembang-pekanbaru",
+    title: "Ekspedisi Jakarta ke Sumatera: Medan, Palembang, Pekanbaru, Padang",
+    heading: "Ekspedisi Jakarta ke Sumatera: Medan, Palembang, Pekanbaru, dan Padang",
+    description: "Cara kirim barang dari Jakarta ke kota-kota Sumatera lewat cargo darat, laut, dan udara, lengkap dengan tips biaya, packing, dan pelacakan.",
+    updated: "2026-11-22",
+    body: () => (<>
+      <p>Cara kirim barang dari Jakarta ke kota-kota Sumatera lewat cargo darat, laut, dan udara, lengkap dengan tips biaya, packing, dan pelacakan.</p>
+      <h2>Pilihan jalur</h2>
+      <p>Sumatera terhubung ke Jawa lewat darat dan laut, serta udara untuk barang mendesak. Pilih jalur sesuai berat, nilai, dan jadwal barang Anda. Lihat <Link href="/layanan">semua layanan</Link>.</p>
+      <h2>Menghitung biaya</h2>
+      <p>Biaya bergantung pada berat atau volume dan rutenya. Hitung perkiraan di <Link href="/ongkir">kalkulator ongkir</Link>, lalu konfirmasi ke tim untuk tujuan yang belum tercantum.</p>
+      <h2>Pantau sampai tujuan</h2>
+      <p>Setiap pengiriman memiliki nomor resi yang bisa <Link href="/lacak">dilacak tanpa login</Link>, jadi Anda dan penerima tahu posisi barang.</p>
+      <p>Tarif belum termasuk asuransi, pajak yang berlaku, serta bongkar muat di lokasi. Lihat <Link href="/syarat">syarat dan ketentuan</Link>.</p>
+    </>),
+  },
+  {
+    slug: "kirim-barang-ke-jayapura-sorong-dan-papua-dari-jawa",
+    title: "Kirim Barang ke Papua dari Jawa: Jayapura, Sorong, Manokwari",
+    heading: "Kirim barang ke Papua dari Jawa: Jayapura, Sorong, dan Manokwari",
+    description: "Panduan mengirim barang dari Jawa ke Papua: pilihan laut dan udara, persiapan kemasan, dokumen, dan cara memantau resi sampai tujuan.",
+    updated: "2026-11-22",
+    body: () => (<>
+      <p>Panduan mengirim barang dari Jawa ke Papua: pilihan laut dan udara, persiapan kemasan, dokumen, dan cara memantau resi sampai tujuan.</p>
+      <h2>Jarak jauh, persiapan lebih matang</h2>
+      <p>Papua adalah salah satu tujuan terjauh. Pengiriman biasanya lewat laut dengan transit, atau lewat udara untuk barang mendesak. Karena itu kemasan dan pencatatan harus rapi.</p>
+      <h2>Yang perlu disiapkan</h2>
+      <p>Daftar isi barang, nama dan nomor HP penerima, alamat lengkap sampai kelurahan atau distrik, serta foto kondisi barang. Baca <Link href="/panduan/barang-yang-boleh-dan-tidak-boleh-dikirim-lewat-cargo">barang yang boleh dikirim</Link>.</p>
+      <h2>Dari Makassar</h2>
+      <p>Untuk jalur dari Makassar, baca <Link href="/panduan/kirim-barang-ke-papua-dan-maluku-dari-makassar">kirim barang ke Papua dan Maluku dari Makassar</Link>.</p>
+      <p>Tarif belum termasuk asuransi, pajak yang berlaku, serta bongkar muat di lokasi. Lihat <Link href="/syarat">syarat dan ketentuan</Link>.</p>
+    </>),
+  },
+  {
+    slug: "kirim-barang-ke-maluku-utara-ternate-sofifi",
+    title: "Kirim Barang ke Maluku Utara: Ternate, Tidore, Sofifi",
+    heading: "Kirim barang ke Maluku Utara: Ternate, Tidore, dan Sofifi",
+    description: "Panduan ekspedisi ke Maluku Utara (Ternate, Tidore, Sofifi): persiapan barang, pilihan jalur, tips packing, dan pelacakan resi.",
+    updated: "2026-11-22",
+    body: () => (<>
+      <p>Panduan ekspedisi ke Maluku Utara (Ternate, Tidore, Sofifi): persiapan barang, pilihan jalur, tips packing, dan pelacakan resi.</p>
+      <h2>Kepulauan, jadwal bergantung kapal</h2>
+      <p>Maluku Utara berupa kepulauan, sehingga jadwal pengiriman mengikuti pelayaran. Tanyakan jadwal terbaru sebelum mengirim barang yang dikejar waktu.</p>
+      <h2>Persiapan</h2>
+      <p>Kemas barang rapat, gunakan pelindung untuk barang pecah, dan tulis alamat lengkap penerima. Lihat <Link href="/panduan/cara-packing-barang-cargo-laut">panduan packing</Link>.</p>
+      <h2>Tanya tarif</h2>
+      <p>Hubungi tim lewat WhatsApp dengan menyebut kota tujuan, jenis, dan berat barang. Setelah dikirim, <Link href="/lacak">lacak resi</Link> kapan saja.</p>
+      <p>Tarif belum termasuk asuransi, pajak yang berlaku, serta bongkar muat di lokasi. Lihat <Link href="/syarat">syarat dan ketentuan</Link>.</p>
+    </>),
+  },
+  {
+    slug: "cargo-udara-atau-cargo-laut-mana-yang-cocok",
+    title: "Cargo Udara atau Cargo Laut: Mana yang Cocok untuk Barang Anda?",
+    heading: "Cargo udara atau cargo laut: mana yang cocok untuk barang Anda?",
+    description: "Perbandingan cargo udara dan cargo laut: kecepatan, biaya, jenis barang yang cocok, dan cara memilih sesuai kebutuhan pengiriman antar pulau.",
+    updated: "2026-11-22",
+    body: () => (<>
+      <p>Perbandingan cargo udara dan cargo laut: kecepatan, biaya, jenis barang yang cocok, dan cara memilih sesuai kebutuhan pengiriman antar pulau.</p>
+      <h2>Cargo udara</h2>
+      <p>Lebih cepat, cocok untuk barang mendesak, ringan, atau bernilai tinggi. Biaya per kilo lebih besar. Lihat <Link href="/layanan/cargo-udara">layanan cargo udara</Link>.</p>
+      <h2>Cargo laut</h2>
+      <p>Lebih hemat untuk barang berat atau dalam jumlah banyak, dengan waktu tempuh lebih panjang. Lihat <Link href="/layanan/cargo-laut">layanan cargo laut</Link>.</p>
+      <h2>Cara memilih</h2>
+      <p>Tanyakan tiga hal: seberapa mendesak, seberapa berat atau besar, dan berapa nilai barang. Bila ragu, hitung di <Link href="/ongkir">kalkulator ongkir</Link> atau tanyakan ke tim kami.</p>
+      <p>Tarif belum termasuk asuransi, pajak yang berlaku, serta bongkar muat di lokasi. Lihat <Link href="/syarat">syarat dan ketentuan</Link>.</p>
+    </>),
+  },
+  {
+    slug: "kenapa-pengiriman-barang-terlambat-dan-cara-mengantisipasinya",
+    title: "Kenapa Pengiriman Barang Terlambat dan Cara Mengantisipasinya",
+    heading: "Kenapa pengiriman barang bisa terlambat, dan cara mengantisipasinya",
+    description: "Penyebab umum keterlambatan pengiriman cargo antar pulau (cuaca, jadwal kapal, data alamat) dan langkah yang bisa Anda lakukan agar barang tiba tepat waktu.",
+    updated: "2026-11-22",
+    body: () => (<>
+      <p>Penyebab umum keterlambatan pengiriman cargo antar pulau (cuaca, jadwal kapal, data alamat) dan langkah yang bisa Anda lakukan agar barang tiba tepat waktu.</p>
+      <h2>Penyebab yang sering terjadi</h2>
+      <p>Cuaca laut, jadwal kapal yang berubah, alamat atau nomor penerima yang kurang lengkap, dan barang yang belum siap saat dijemput.</p>
+      <h2>Yang bisa Anda lakukan</h2>
+      <p>Kirim lebih awal, lengkapi alamat sampai kelurahan, pastikan penerima bisa dihubungi, dan simpan nomor resi.</p>
+      <h2>Bila terjadi kendala</h2>
+      <p>Pantau lewat <Link href="/lacak">cek resi</Link> dan hubungi tim kami bila status tidak bergerak. Setiap kendala tercatat di sistem agar bisa ditindaklanjuti.</p>
+      <p>Tarif belum termasuk asuransi, pajak yang berlaku, serta bongkar muat di lokasi. Lihat <Link href="/syarat">syarat dan ketentuan</Link>.</p>
+    </>),
+  },
+  {
+    slug: "dokumen-yang-perlu-disiapkan-saat-kirim-barang",
+    title: "Dokumen yang Perlu Disiapkan Saat Kirim Barang Antar Pulau",
+    heading: "Dokumen yang perlu disiapkan saat kirim barang antar pulau",
+    description: "Daftar dokumen dan data yang sebaiknya disiapkan saat mengirim barang: identitas, daftar isi, dokumen kendaraan, dan bukti kepemilikan.",
+    updated: "2026-11-22",
+    body: () => (<>
+      <p>Daftar dokumen dan data yang sebaiknya disiapkan saat mengirim barang: identitas, daftar isi, dokumen kendaraan, dan bukti kepemilikan.</p>
+      <h2>Untuk barang umum</h2>
+      <p>Nama dan nomor HP pengirim dan penerima, alamat lengkap tujuan, serta daftar isi barang.</p>
+      <h2>Untuk kendaraan dan alat berat</h2>
+      <p>Siapkan identitas pemilik dan data kendaraan seperti nomor polisi, rangka, dan mesin, serta STNK atau dokumen kepemilikan bila ada. Baca <Link href="/panduan/cara-kirim-motor-dan-mobil-antar-pulau">kirim motor dan mobil</Link>.</p>
+      <h2>Untuk perusahaan</h2>
+      <p>Siapkan data perusahaan dan nomor kontak penanggung jawab agar invoice dan tagihan tertib. Lihat <Link href="/layanan/cargo-logistik-bisnis">layanan logistik bisnis</Link>.</p>
+      <p>Tarif belum termasuk asuransi, pajak yang berlaku, serta bongkar muat di lokasi. Lihat <Link href="/syarat">syarat dan ketentuan</Link>.</p>
+    </>),
+  },
+  {
+    slug: "cara-kirim-barang-pecah-belah-dengan-aman",
+    title: "Cara Kirim Barang Pecah Belah Antar Pulau dengan Aman",
+    heading: "Cara kirim barang pecah belah antar pulau dengan aman",
+    description: "Tips mengemas dan mengirim barang pecah belah (kaca, keramik, elektronik) lewat cargo: lapisan pelindung, tanda, dan foto bukti sebelum dikirim.",
+    updated: "2026-11-22",
+    body: () => (<>
+      <p>Tips mengemas dan mengirim barang pecah belah (kaca, keramik, elektronik) lewat cargo: lapisan pelindung, tanda, dan foto bukti sebelum dikirim.</p>
+      <h2>Kemas berlapis</h2>
+      <p>Bungkus tiap barang, beri bantalan di semua sisi, lalu masukkan ke kardus kuat. Pastikan tidak ada ruang kosong yang membuat barang bergeser.</p>
+      <h2>Beri tanda jelas</h2>
+      <p>Tulis nama dan nomor HP penerima, serta tanda barang mudah pecah di luar kardus.</p>
+      <h2>Foto sebelum dikirim</h2>
+      <p>Foto kondisi barang dan kemasan. Kami juga memotret kondisi saat diterima gudang. Lihat <Link href="/panduan/cara-packing-barang-cargo-laut">panduan packing</Link>.</p>
+      <p>Tarif belum termasuk asuransi, pajak yang berlaku, serta bongkar muat di lokasi. Lihat <Link href="/syarat">syarat dan ketentuan</Link>.</p>
+    </>),
+  },
+  {
+    slug: "cara-kirim-elektronik-dan-furnitur-antar-pulau",
+    title: "Cara Kirim Elektronik dan Furnitur Antar Pulau",
+    heading: "Cara kirim elektronik dan furnitur antar pulau lewat cargo",
+    description: "Panduan mengirim barang elektronik dan furnitur: kemasan, perhitungan berat volume, perlindungan, dan pilihan layanan antar kota dan antar pulau.",
+    updated: "2026-11-22",
+    body: () => (<>
+      <p>Panduan mengirim barang elektronik dan furnitur: kemasan, perhitungan berat volume, perlindungan, dan pilihan layanan antar kota dan antar pulau.</p>
+      <h2>Elektronik</h2>
+      <p>Gunakan kardus asli bila ada, tambahkan pelindung sudut, dan jauhkan dari kelembapan. Catat nomor seri untuk arsip Anda.</p>
+      <h2>Furnitur</h2>
+      <p>Barang besar sering terhitung berat volume. Bongkar bila bisa, lapisi sudut, dan hitung ukuran di <Link href="/alat/berat-volumetrik">alat berat volume</Link>.</p>
+      <h2>Pilih layanan</h2>
+      <p>Untuk barang besar atau banyak, tanyakan juga <Link href="/layanan/pindahan-relokasi">pindahan dan relokasi</Link> atau <Link href="/layanan/sewa-kontainer">sewa kontainer</Link>.</p>
+      <p>Tarif belum termasuk asuransi, pajak yang berlaku, serta bongkar muat di lokasi. Lihat <Link href="/syarat">syarat dan ketentuan</Link>.</p>
+    </>),
+  },
+  {
+    slug: "tips-kirim-barang-dagangan-reseller-dan-dropshipper",
+    title: "Tips Kirim Barang Dagangan untuk Reseller dan Dropshipper",
+    heading: "Tips kirim barang dagangan untuk reseller dan dropshipper antar pulau",
+    description: "Strategi reseller dan dropshipper mengirim stok antar pulau: kirim ke gudang tujuan, hitung biaya per paket, dan memakai resi yang bisa dilacak.",
+    updated: "2026-11-22",
+    body: () => (<>
+      <p>Strategi reseller dan dropshipper mengirim stok antar pulau: kirim ke gudang tujuan, hitung biaya per paket, dan memakai resi yang bisa dilacak.</p>
+      <h2>Kirim stok, bukan satuan</h2>
+      <p>Mengirim stok sekaligus ke gudang atau kota tujuan lalu mendistribusikan secara lokal biasanya lebih hemat dibanding mengirim satuan jarak jauh.</p>
+      <h2>Hitung biaya per paket</h2>
+      <p>Bagi total biaya dengan jumlah paket, lalu masukkan ke harga jual. Gunakan <Link href="/ongkir">kalkulator ongkir</Link>.</p>
+      <h2>Pantau semua kiriman</h2>
+      <p>Setiap resi bisa <Link href="/lacak">dilacak</Link> oleh Anda maupun pembeli. Pengiriman rutin? Lihat <Link href="/layanan/cargo-logistik-bisnis">layanan untuk bisnis</Link>.</p>
+      <p>Tarif belum termasuk asuransi, pajak yang berlaku, serta bongkar muat di lokasi. Lihat <Link href="/syarat">syarat dan ketentuan</Link>.</p>
+    </>),
+  },
 ];

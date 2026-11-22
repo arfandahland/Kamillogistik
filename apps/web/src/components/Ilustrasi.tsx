@@ -106,3 +106,54 @@ export function IlKorporat() {
     </Frame>
   );
 }
+
+/** Peta nusantara: kota-kota tujuan berdenyut dari Jakarta. */
+export function IlPeta() {
+  const kota: [number, number, string][] = [[70, 70, "Sumatera"], [120, 150, "Jawa"], [185, 95, "Kalimantan"], [235, 140, "Sulawesi"], [285, 105, "Maluku"], [325, 120, "Papua"], [200, 175, "Nusa Tenggara"]];
+  return (
+    <Frame id="pt" label="Ilustrasi jaringan pengiriman ke seluruh Indonesia">
+      {kota.map(([x, y], i) => <path key={i} d={`M128 150Q${(x + 128) / 2} ${Math.min(y, 150) - 40} ${x} ${y}`} fill="none" stroke="#7ff0d0" strokeWidth="1.6" strokeDasharray="5 6" opacity=".7" className="ildash" />)}
+      {kota.map(([x, y], i) => (
+        <g key={`k${i}`}>
+          <circle cx={x} cy={y} r="9" fill="#3df5b4" opacity=".35" className="ilpulse" style={{ animationDelay: `${i * 0.35}s` }} />
+          <circle cx={x} cy={y} r="5" fill="url(#pt-amb)" /><circle cx={x} cy={y} r="2" fill="#06231e" />
+        </g>
+      ))}
+      <circle cx="128" cy="150" r="12" fill="#ffffff" opacity=".95" /><circle cx="128" cy="150" r="6" fill="#0f6b5a" />
+      <text x="128" y="182" textAnchor="middle" fontSize="11" fontWeight="800" fill="#ffffff">Jakarta</text>
+    </Frame>
+  );
+}
+
+/** Gerai mitra: koin naik, grafik tumbuh. */
+export function IlMitra() {
+  return (
+    <Frame id="mt" label="Ilustrasi gerai mitra dengan penghasilan yang bertumbuh">
+      <rect x="0" y="176" width="360" height="44" fill="#06231e" />
+      <g><rect x="40" y="96" width="120" height="80" rx="6" fill="url(#mt-wh)" /><path d="M32 96h136l-10-30H42z" fill="url(#mt-amb)" /><path d="M62 66l-6 30M92 66l-3 30M122 66l3 30M152 66l6 30" stroke="#fff" strokeWidth="5" opacity=".55" /><rect x="64" y="120" width="32" height="56" rx="3" fill="#0f6b5a" /><rect x="108" y="116" width="38" height="28" rx="3" fill="#7ff0d0" opacity=".7" /></g>
+      <g transform="translate(200 0)">
+        <rect x="6" y="130" width="22" height="46" rx="4" fill="url(#mt-mint)" className="ilgrow" style={{ animationDelay: "0s" }} />
+        <rect x="40" y="108" width="22" height="68" rx="4" fill="url(#mt-mint)" className="ilgrow" style={{ animationDelay: ".25s" }} />
+        <rect x="74" y="84" width="22" height="92" rx="4" fill="url(#mt-amb)" className="ilgrow" style={{ animationDelay: ".5s" }} />
+        <rect x="108" y="56" width="22" height="120" rx="4" fill="url(#mt-amb)" className="ilgrow" style={{ animationDelay: ".75s" }} />
+      </g>
+      <g className="ilfloat"><circle cx="186" cy="64" r="15" fill="url(#mt-amb)" /><text x="186" y="70" textAnchor="middle" fontSize="17" fontWeight="900" fill="#3a2200">Rp</text></g>
+      <g className="ilfloat" style={{ animationDelay: "1.2s" }}><circle cx="330" cy="40" r="11" fill="url(#mt-amb)" opacity=".9" /><text x="330" y="45" textAnchor="middle" fontSize="12" fontWeight="900" fill="#3a2200">Rp</text></g>
+    </Frame>
+  );
+}
+
+/** Kontainer bertumpuk dengan derek: muatan besar, alat berat, kendaraan. */
+export function IlKontainer() {
+  return (
+    <Frame id="kn" label="Ilustrasi kontainer dan derek untuk barang besar">
+      <rect x="0" y="176" width="360" height="44" fill="#06231e" />
+      <path d="M250 176V46h14v130M250 52h96" stroke="#ffcf6b" strokeWidth="6" fill="none" strokeLinecap="round" />
+      <g className="ilcrane"><path d="M300 52v38" stroke="#fff" strokeWidth="2" /><rect x="282" y="90" width="38" height="20" rx="2" fill="url(#kn-amb)" /></g>
+      {[[30, 150, "mint"], [92, 150, "amb"], [154, 150, "mint"], [60, 124, "amb"], [122, 124, "mint"], [92, 98, "mint"]].map(([x, y, c], i) => (
+        <g key={i}><rect x={x as number} y={y as number} width="58" height="24" rx="2" fill={`url(#kn-${c})`} /><path d={`M${(x as number) + 8} ${y}v24M${(x as number) + 20} ${y}v24M${(x as number) + 32} ${y}v24M${(x as number) + 44} ${y}v24`} stroke="#06231e" strokeWidth="1.6" opacity=".35" /></g>
+      ))}
+      <g className="ilslide"><rect x="214" y="150" width="30" height="20" rx="3" fill="#ffffff" /><circle cx="222" cy="174" r="5" fill="#06231e" /><circle cx="238" cy="174" r="5" fill="#06231e" /></g>
+    </Frame>
+  );
+}
