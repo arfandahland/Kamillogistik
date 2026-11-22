@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 
-const TARGET = "main :is(.card, .tile, .fact, .svccard, .routecard, .stat, .jobrow, .admitem, .pgcard, .trustbar, .sech, .rtcard, .svcchips li):not(.rv-skip)";
+const TARGET = "main :is(.card, .tile, .fact, .svccard, .routecard, .stat, .jobrow, .admitem, .pgcard, .trustbar, .sech):not(.rv-skip)";
 
 /**
  * Gerak halus saat menggulir: kartu di bawah layar muncul bertahap ketika terlihat.

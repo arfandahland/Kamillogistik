@@ -123,9 +123,16 @@ export default async function Home() {
 
         <section aria-labelledby="layanan">
           <h2 id="layanan" className="sech">Pilih layanan yang pas</h2>
-          <ul className="svcchips">
-            {LAYANAN.map((l) => <li key={l.t} className="rv"><span className="si"><Icon name={l.icon} size={22} /></span><b>{l.t}</b><small>{l.d}</small><Link href={l.href} className="stretch" aria-label={`Layanan ${l.t}: ${l.d}`} /></li>)}
-          </ul>
+          <div className="marq svcmarq">
+            <ul className="marqtrack svcchips">
+              {[0, 1].map((k) => LAYANAN.map((l, i) => (
+                <li key={`${k}-${l.t}`} className={`svcpill${k ? " dup" : ""}`} style={{ "--h": i * 38 } as React.CSSProperties} aria-hidden={k ? true : undefined}>
+                  <span className="si"><Icon name={l.icon} size={22} /></span><b>{l.t}</b><small>{l.d}</small>
+                  <Link href={l.href} className="stretch" tabIndex={k ? -1 : undefined} aria-label={`Layanan ${l.t}: ${l.d}`} />
+                </li>
+              )))}
+            </ul>
+          </div>
         </section>
 
         <section aria-labelledby="kirimapa">
@@ -149,14 +156,16 @@ export default async function Home() {
         {pairs.length > 0 && (
           <section aria-labelledby="rute">
             <h2 id="rute" className="sech">Rute populer</h2>
-            <div className="rtgrid">
-              {pairs.map((p) => (
-                <Link key={p.slug} href={`/${p.slug}`} className="rtcard rv" aria-label={`Ekspedisi ${p.originCity} ke ${p.destCity}, ${priceLabel(p.minPrice)}`}>
-                  <span className="rt-codes"><b>{p.originCode}</b><i className="rline" aria-hidden="true"><u /></i><b>{p.destCode}</b></span>
-                  <span className="rt-city">{p.originCity} → {p.destCity}</span>
-                  <span className="rt-meta"><em>mulai {priceLabel(p.minPrice)}</em><small>{p.etaDays ? `sekitar ${p.etaDays} hari` : "hubungi kami"}{p.departureNote ? ` · ${p.departureNote}` : ""}</small></span>
-                </Link>
-              ))}
+            <div className="marq rtmarq">
+              <div className="marqtrack rtgrid">
+                {[0, 1].map((k) => pairs.map((p) => (
+                  <Link key={`${k}-${p.slug}`} href={`/${p.slug}`} className={`rtcard${k ? " dup" : ""}`} aria-hidden={k ? true : undefined} tabIndex={k ? -1 : undefined} aria-label={`Ekspedisi ${p.originCity} ke ${p.destCity}, ${priceLabel(p.minPrice)}`}>
+                    <span className="rt-codes"><b>{p.originCode}</b><i className="rline" aria-hidden="true"><u /></i><b>{p.destCode}</b></span>
+                    <span className="rt-city">{p.originCity} → {p.destCity}</span>
+                    <span className="rt-meta"><em>mulai {priceLabel(p.minPrice)}</em><small>{p.etaDays ? `sekitar ${p.etaDays} hari` : "hubungi kami"}{p.departureNote ? ` · ${p.departureNote}` : ""}</small></span>
+                  </Link>
+                )))}
+              </div>
             </div>
             <Link href="/ekspedisi" className="btn ghost" style={{ marginTop: 12 }}>Lihat semua {semua.length} rute</Link>
             <div className="wilchips" aria-label="Tujuan per wilayah">

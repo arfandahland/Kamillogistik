@@ -718,7 +718,7 @@ details.admitem .admbody { padding: 4px 18px 18px; border-top: 1px dashed var(--
 .glowcard h2 { margin-top: 0; }
 /* cara kirim (chip layanan) */
 .svcchips { list-style: none; margin: 0; padding: 0 0 4px; display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; } .svcchips::-webkit-scrollbar { display: none; }
-.svcchips li { flex: 0 0 auto; scroll-snap-align: start; display: grid; grid-template-columns: auto 1fr; column-gap: 10px; align-items: center; padding: 10px 16px 10px 10px; border-radius: 99px; background: linear-gradient(#fff, #fff) padding-box, linear-gradient(135deg, rgba(47, 209, 168, .55), rgba(255, 179, 71, .45)) border-box; border: 1px solid transparent; box-shadow: 0 8px 22px rgba(15, 107, 90, .1); }
+.svcchips li { display: grid; }
 .svcchips .si, .tile .si, .tl2 .si { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; color: #fff; background: linear-gradient(145deg, #2fd1a8, #14806a); box-shadow: 0 0 0 4px rgba(47, 209, 168, .16), 0 8px 18px rgba(20, 128, 106, .3); }
 .svcchips .si { grid-row: span 2; } .svcchips b { font-size: 15px; line-height: 1.1; } .svcchips small { color: var(--muted); font-size: 12.5px; line-height: 1.2; }
 @media (min-width: 900px) { .svcchips { justify-content: center; flex-wrap: wrap; } }
@@ -1533,3 +1533,41 @@ a.tile:nth-child(2n)::after { animation-delay: 1.5s; } a.tile:nth-child(3n)::aft
 .jangkau .card:nth-child(2n) h3::before { animation-delay: .6s; } .jangkau .card:nth-child(3n) h3::before { animation-delay: 1.2s; }
 @keyframes pinping { 0% { box-shadow: 0 0 0 0 rgba(242, 140, 40, .55); } 80%, 100% { box-shadow: 0 0 0 10px rgba(242, 140, 40, 0); } }
 @media (prefers-reduced-motion: reduce) { .tile .si, .tile .si::after, a.tile::after { animation: none !important; } }
+
+/* ===== Slider kapsul: Pilih layanan (geser kiri) dan Rute populer (geser kanan) ===== */
+/* Catatan: elemen di dalam slider TIDAK boleh memakai kelas .rv (animasi gulirnya macet di wadah overflow). */
+@property --ang { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+.marq { overflow: hidden; margin: 0 -16px; padding: 14px 0 18px; -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); }
+.marqtrack { display: flex; width: max-content; gap: 14px; padding: 0 14px 0 0; margin: 0; list-style: none; animation: marqgeser 34s linear infinite; will-change: transform; }
+.rtmarq .marqtrack { animation-name: marqbalik; animation-duration: 46s; gap: 16px; padding-right: 16px; }
+.marq:hover .marqtrack, .marq:focus-within .marqtrack, .marq:active .marqtrack { animation-play-state: paused; }
+@keyframes marqgeser { to { transform: translateX(-50%); } }
+@keyframes marqbalik { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+
+/* kapsul layanan: tepi menyala berputar, ikon berdenyut, naik saat disentuh */
+.svcmarq .svcchips { overflow: visible; }
+.svcpill { flex: 0 0 auto; position: relative; overflow: hidden; display: grid; grid-template-columns: auto 1fr; column-gap: 12px; align-items: center; padding: 12px 22px 12px 12px; min-width: 232px; border-radius: 99px; border: 2px solid transparent;
+  background: linear-gradient(#fff, #fff) padding-box, conic-gradient(from var(--ang), #2fd1a8, #ffcf6b, #4fb5ff, #2fd1a8) border-box; animation: angputar 5s linear infinite; box-shadow: 0 10px 26px rgba(15, 107, 90, .14); transition: transform .3s var(--ease), box-shadow .3s; }
+.svcpill:nth-child(5n+2) { animation-delay: -1s; } .svcpill:nth-child(5n+3) { animation-delay: -2s; } .svcpill:nth-child(5n+4) { animation-delay: -3s; } .svcpill:nth-child(5n) { animation-delay: -4s; }
+@keyframes angputar { to { --ang: 360deg; } }
+.svcpill:hover { transform: translateY(-5px) scale(1.04); box-shadow: 0 20px 38px rgba(15, 107, 90, .28); }
+.svcpill .si { grid-row: span 2; position: relative; filter: hue-rotate(calc(var(--h, 0) * 1deg)); }
+.svcpill b { font-size: 16px; } .svcpill small { font-size: 12.5px; white-space: nowrap; }
+.svcpill::after { content: ""; position: absolute; top: 18%; bottom: 18%; left: -30%; width: 22%; background: linear-gradient(100deg, transparent, rgba(47, 209, 168, .35), transparent); transform: skewX(-18deg); animation: rtshine 4.5s ease-in-out infinite; pointer-events: none; border-radius: 99px; }
+.svcpill:nth-child(2n)::after { animation-delay: 1.2s; } .svcpill:nth-child(3n)::after { animation-delay: 2.4s; }
+
+/* kapsul rute: lebih bulat, kilau, titik perjalanan bergerak, harga berdenyut */
+.rtmarq .rtgrid { overflow: visible; display: flex; scroll-snap-type: none; margin: 0; padding: 0 16px 0 0; }
+.rtmarq .rtcard { flex: 0 0 292px; width: 292px; border-radius: 34px; padding: 16px 22px 16px; gap: 6px; box-shadow: 0 18px 38px rgba(6, 35, 30, .3), inset 0 0 0 1px rgba(255, 255, 255, .12);
+  background: radial-gradient(200px 140px at 100% 0, rgba(255, 179, 71, .42), transparent 70%), radial-gradient(180px 120px at 0 100%, rgba(61, 245, 180, .22), transparent 70%), linear-gradient(150deg, #0a3d34, #0f6b5a 70%, #14806a); }
+.rtmarq .rtcard:hover { transform: translateY(-6px) scale(1.03); }
+.rtmarq .rt-codes b { font-size: 28px; }
+.rtmarq .rline { height: 3px; } .rtmarq .rline u { top: -4px; width: 11px; height: 11px; }
+.rtmarq .rt-meta em { animation: hargadenyut 2.6s ease-in-out infinite; display: inline-block; }
+@keyframes hargadenyut { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.07); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .marqtrack, .svcpill, .svcpill::after, .rtmarq .rt-meta em { animation: none !important; }
+  .marq { overflow-x: auto; -webkit-mask-image: none; mask-image: none; }
+  .svcpill.dup, .rtcard.dup { display: none; }
+}
