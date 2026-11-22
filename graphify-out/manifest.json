@@ -114,9 +114,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/page.tsx": {
-    "mtime": 1795320428.2329633,
-    "seen": 1795320517.0080075,
-    "ast_hash": "bd2965e5a9511711e323cabe34bee514",
+    "mtime": 1795331466.2559724,
+    "seen": 1795331655.0828505,
+    "ast_hash": "62f3f87f024183d29c6e8e289b8429ad",
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/panduan/[slug]/page.tsx": {
@@ -1842,9 +1842,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/Gerak.tsx": {
-    "mtime": 1795329247.6094112,
-    "seen": 1795329308.4005654,
-    "ast_hash": "cfa84ef8b982721e3d8681197ee883ab",
+    "mtime": 1795331466.259352,
+    "seen": 1795331655.0829833,
+    "ast_hash": "29b814b86da87a8730243cddf7dd4633",
     "semantic_hash": ""
   },
   "apps/web/src/components/JemputForm.tsx": {
