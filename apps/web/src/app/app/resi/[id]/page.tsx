@@ -29,7 +29,7 @@ type Detail = {
   handovers: { id: string; state: string; fromName: string; toName: string; toMe: boolean; at: string }[];
   legs?: { seq: number; from: string; to: string; mode: string; note: string | null; at: string }[];
   at?: string | null;
-  details?: { contents: string | null; declaredValue: number | null; estWeightKg: number | null; packaging: string | null; fragile: boolean } | null;
+  details?: { contents: string | null; declaredValue: number | null; estWeightKg: number | null; packaging: string | null; fragile: boolean; extra?: { jadwalJemput?: string; waktuJemput?: string; asuransi?: boolean; caraBayar?: string; refPelanggan?: string } } | null;
   closed?: { at: string; byName: string | null; note: string | null; proofUrl: string | null; senderPhone: string | null } | null;
   invoice: { invoiceNo: string; total: number; status: string; dueDate: string; calc: any } | null;
 };
@@ -195,13 +195,16 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
         <RevisiPanel s={s} role={isOrigin ? role : "VIEW"} />
         </div>
         <div className="dkol">
-        {s.details && (s.details.contents || s.details.estWeightKg != null || s.details.declaredValue != null || s.details.packaging || s.details.fragile) && (
+        {s.details && (s.details.contents || s.details.estWeightKg != null || (s.details.extra && Object.keys(s.details.extra).length > 0) || s.details.declaredValue != null || s.details.packaging || s.details.fragile) && (
           <div className="card">
             <h2>Data awal dari Kasir</h2>
             <dl className="kv" style={{ margin: 0 }}>
               {s.details.contents && (<><dt>Isi barang</dt><dd>{s.details.contents}{s.details.fragile ? " · rapuh" : ""}</dd></>)}
               {s.details.packaging && (<><dt>Kemasan</dt><dd>{s.details.packaging}</dd></>)}
-              {s.details.estWeightKg != null && (<><dt>Perkiraan berat total</dt><dd>{Number(s.details.estWeightKg).toLocaleString("id-ID")} kg</dd></>)}
+              {s.details.extra?.asuransi && (<><dt>Asuransi</dt><dd>Pakai asuransi</dd></>)}
+              {s.details.extra?.jadwalJemput && (<><dt>Jadwal jemput</dt><dd>{new Date(s.details.extra.jadwalJemput + "T00:00:00").toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}{s.details.extra.waktuJemput ? ` · ${({ PAGI: "pagi", SIANG: "siang", SORE: "sore" } as Record<string, string>)[s.details.extra.waktuJemput] ?? ""}` : ""}</dd></>)}
+              {s.details.extra?.caraBayar && SEES_MONEY.includes(role) && (<><dt>Rencana pembayaran</dt><dd>{({ TUNAI: "Tunai", TRANSFER: "Transfer", TAGIH: "Ditagih ke pelanggan" } as Record<string, string>)[s.details.extra.caraBayar] ?? s.details.extra.caraBayar}</dd></>)}
+              {s.details.extra?.refPelanggan && (<><dt>Referensi pelanggan</dt><dd>{s.details.extra.refPelanggan}</dd></>)}
               {s.details.declaredValue != null && SEES_MONEY.includes(role) && (<><dt>Nilai barang</dt><dd>{rupiah(s.details.declaredValue)}</dd></>)}
             </dl>
           </div>

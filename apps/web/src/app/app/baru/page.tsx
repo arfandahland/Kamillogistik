@@ -113,25 +113,53 @@ export default async function Baru({ searchParams }: { searchParams: Promise<{ e
                   </select>
                 </div>
               </div>
-              <div className="rbrow">
-                <div className="rbf">
-                  <label className="f" htmlFor="estimasi">Perkiraan berat total, kg (boleh kosong)</label>
-                  <input id="estimasi" name="estimasi" inputMode="decimal" placeholder="Contoh: 25" />
-                </div>
-                <div className="rbf">
-                  <label className="f" htmlFor="nilai">Nilai barang, Rp (boleh kosong)</label>
-                  <input id="nilai" name="nilai" inputMode="numeric" placeholder="Contoh: 1500000" />
-                </div>
+              <div className="rbf">
+                <label className="f" htmlFor="nilai">Nilai barang, Rp (boleh kosong)</label>
+                <input id="nilai" name="nilai" inputMode="numeric" placeholder="Contoh: 1500000" />
               </div>
+              <fieldset className="kchips rbf" aria-label="Asuransi barang">
+                <legend className="f">Asuransi barang</legend>
+                <label className="kchip"><input type="radio" name="asuransi" value="" defaultChecked /> Tanpa asuransi</label>
+                <label className="kchip"><input type="radio" name="asuransi" value="ya" /> Pakai asuransi</label>
+              </fieldset>
               <label className="rbcek"><input type="checkbox" name="rapuh" /> Barang mudah pecah atau rapuh</label>
               <div className="rbf">
                 <label className="f" htmlFor="catatan">Catatan kondisi barang (boleh kosong)</label>
                 <input id="catatan" name="catatan" placeholder="Contoh: dus sedikit penyok" />
               </div>
-              <p className="hint">Berat dan ukuran sebenarnya dicatat petugas gudang dengan memindai barcode tiap barang. Harga diisi Kasir saat membuat invoice. Data ini ikut terbaca semua petugas yang memproses resi.</p>
+              <p className="hint">Berat dan ukuran bukan tugas Kasir: petugas gudang mencatatnya dengan memindai barcode tiap barang. Harga diisi Kasir saat membuat invoice. Data ini ikut terbaca semua petugas yang memproses resi.</p>
             </section>
 
-            <DataKendaraan nomor={5} />
+            <section className="card rbsek">
+              <h2 className="tbjudul"><span className="tbno">5</span> Jadwal dan pembayaran</h2>
+              <div className="rbrow">
+                <div className="rbf">
+                  <label className="f" htmlFor="jadwal">Tanggal jemput (bila dijemput kurir)</label>
+                  <input id="jadwal" name="jadwal" type="date" />
+                </div>
+                <fieldset className="kchips rbf" aria-label="Waktu jemput">
+                  <legend className="f">Waktu jemput</legend>
+                  <label className="kchip"><input type="radio" name="waktu" value="" defaultChecked /> Bebas</label>
+                  <label className="kchip"><input type="radio" name="waktu" value="PAGI" /> Pagi</label>
+                  <label className="kchip"><input type="radio" name="waktu" value="SIANG" /> Siang</label>
+                  <label className="kchip"><input type="radio" name="waktu" value="SORE" /> Sore</label>
+                </fieldset>
+              </div>
+              <fieldset className="kchips rbf" aria-label="Rencana pembayaran">
+                <legend className="f">Rencana pembayaran</legend>
+                <label className="kchip"><input type="radio" name="bayar" value="" defaultChecked /> Belum ditentukan</label>
+                <label className="kchip"><input type="radio" name="bayar" value="TUNAI" /> Tunai</label>
+                <label className="kchip"><input type="radio" name="bayar" value="TRANSFER" /> Transfer</label>
+                <label className="kchip"><input type="radio" name="bayar" value="TAGIH" /> Ditagih ke pelanggan</label>
+              </fieldset>
+              <div className="rbf">
+                <label className="f" htmlFor="refpel">Nomor referensi pelanggan, misalnya PO (boleh kosong)</label>
+                <input id="refpel" name="refpel" maxLength={60} autoComplete="off" />
+              </div>
+              <p className="hint">Semua isian di atas ikut terbaca petugas gudang, kurir, dan Finance pada resi ini.</p>
+            </section>
+
+            <DataKendaraan nomor={6} />
           </div>
 
           <div className="tbaksi rbaksi">

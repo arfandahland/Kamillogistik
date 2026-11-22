@@ -50,7 +50,6 @@ export default async function Timbang({ searchParams }: { searchParams: Promise<
               <div><dt>Isi barang</dt><dd>{d.contents ?? "-"}</dd></div>
               <div><dt>Tujuan</dt><dd>{d.destCity}<small>untuk {d.receiver}</small></dd></div>
               <div><dt>Kemasan</dt><dd>{d.packaging ?? "-"}</dd></div>
-              <div><dt>Perkiraan berat total</dt><dd>{d.estWeightKg != null ? `${Number(d.estWeightKg).toLocaleString("id-ID")} kg` : "-"}</dd></div>
               {d.declaredValue != null && <div><dt>Nilai barang</dt><dd>{rupiah(d.declaredValue)}</dd></div>}
               {d.note && <div><dt>Catatan</dt><dd>{d.note}</dd></div>}
             </dl>

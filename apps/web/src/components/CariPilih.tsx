@@ -7,7 +7,7 @@ import { useEffect } from "react";
  * Dipasang sekali di layout: setiap <select> dengan banyak pilihan (atau berpenanda data-cari) mendapat tombol pencari.
  * Matikan untuk satu pilihan dengan data-nocari.
  */
-const MIN_PILIHAN = 7;
+const MAKS_CHIP = 8;
 const norm = (s: string) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9 ]+/g, " ").replace(/\s+/g, " ").trim();
 
 type Item = { i: number; text: string; key: string; group: string; disabled: boolean };
@@ -15,6 +15,7 @@ type Item = { i: number; text: string; key: string; group: string; disabled: boo
 export default function CariPilih() {
   useEffect(() => {
     const aktif = new Map<HTMLSelectElement, { btn: HTMLButtonElement; teks: string }>();
+    const chipSinkron = new Map<HTMLSelectElement, () => void>();
     let panel: HTMLDivElement | null = null;
     let tutupPanel: (() => void) | null = null;
 
@@ -81,14 +82,39 @@ export default function CariPilih() {
 
     function sinkron(sel: HTMLSelectElement) {
       const a = aktif.get(sel); if (!a) return;
+      const cs = chipSinkron.get(sel); if (cs) { cs(); return; }
       const t = labelTeks(sel); if (t !== a.teks) { a.teks = t; a.btn.querySelector("span")!.textContent = t; }
       const kosong = sel.value === ""; a.btn.classList.toggle("kosong", kosong); a.btn.disabled = sel.disabled;
       a.btn.setAttribute("aria-invalid", sel.required && kosong ? "false" : "false");
     }
 
+    function pasangChip(sel: HTMLSelectElement) {
+      const grup = document.createElement("div"); grup.className = "cp-chips"; grup.setAttribute("role", "radiogroup");
+      grup.setAttribute("aria-label", judul(sel));
+      const tombol: HTMLButtonElement[] = [];
+      [...sel.options].forEach((o, i) => {
+        if (o.value === "") return;
+        const b = document.createElement("button"); b.type = "button"; b.className = "cp-chip"; b.textContent = o.text; b.setAttribute("role", "radio");
+        b.addEventListener("click", () => {
+          const setter = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, "value")!.set!;
+          setter.call(sel, o.value); sel.dispatchEvent(new Event("input", { bubbles: true })); sel.dispatchEvent(new Event("change", { bubbles: true })); sinkronChip();
+        });
+        (b as HTMLButtonElement & { _i?: number })._i = i; tombol.push(b); grup.appendChild(b);
+      });
+      const sinkronChip = () => tombol.forEach((b) => { const on = sel.selectedIndex === (b as HTMLButtonElement & { _i?: number })._i && sel.value !== ""; b.classList.toggle("on", on); b.setAttribute("aria-checked", on ? "true" : "false"); b.disabled = sel.disabled || sel.options[(b as HTMLButtonElement & { _i?: number })._i ?? 0]?.disabled === true; });
+      sel.classList.add("cp-src"); sel.tabIndex = -1; sel.setAttribute("aria-hidden", "true");
+      sel.insertAdjacentElement("afterend", grup);
+      const btn = grup as unknown as HTMLButtonElement;
+      aktif.set(sel, { btn, teks: "" });
+      sinkronChip(); sel.addEventListener("change", sinkronChip);
+      chipSinkron.set(sel, sinkronChip);
+    }
+
     function pasang(sel: HTMLSelectElement) {
       if (aktif.has(sel) || sel.multiple || sel.hasAttribute("data-nocari") || sel.closest("[data-nocari]")) return;
-      if (sel.options.length < MIN_PILIHAN && !sel.hasAttribute("data-cari")) return;
+      const nyata = [...sel.options].filter((o) => o.value !== "").length;
+      if (nyata < 2 && !sel.hasAttribute("data-cari")) return;
+      if (nyata <= MAKS_CHIP && !sel.hasAttribute("data-cari")) { pasangChip(sel); return; }
       const btn = document.createElement("button"); btn.type = "button"; btn.className = "cp-btn"; btn.innerHTML = "<span></span><i aria-hidden='true'></i>";
       const lbl = judul(sel); btn.setAttribute("aria-label", `${lbl}. Ketuk untuk mencari`); btn.setAttribute("aria-haspopup", "dialog");
       btn.addEventListener("click", () => buka(sel));

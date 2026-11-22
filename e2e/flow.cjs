@@ -40,7 +40,7 @@ async function isiWilayah(p, nama = "area") {
 async function invoiceKasir(browser, email, resiId, qty, harga) {
   const k = await login(browser, email, PASS, { width: 390, height: 844 });
   await k.page.goto(`${BASE}/app/resi/${resiId}`, { waitUntil: "networkidle" });
-  if (qty != null) await k.page.fill("#inv-jumlah", String(qty));
+  if (qty != null) { const v = await k.page.inputValue("#inv-jumlah"); if (Number(v.replace(",", ".")) !== qty) console.log("  !! jumlah dari gudang", v, "bukan", qty); }
   await k.page.fill("#inv-harga", String(harga));
   const r = await act(k.page, k.page.getByRole("button", { name: /Terbitkan (ulang )?invoice/ }));
   await k.ctx.close(); return r;
@@ -164,7 +164,9 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await pilihTujuan(p);
     await p.fill("#isi", "Barang uji"); await p.fill("#pengirim", "PT Maju Jaya"); await p.fill("#hp_pengirim", "081234567890");
     await p.fill("#penerima", "Budi Santoso"); await p.fill("#hp_penerima", "082233445566"); await p.fill("#alamat", "Jl. Pettarani No. 5, Makassar"); await p.fill("#alamat_jemput", "Jl. Sudirman No. 1, Jakarta");
-    await p.fill("#jumlah", "2");
+    await p.fill("#jumlah", "2"); await p.fill("#nilai", "1500000");
+    await p.locator("label.kchip", { hasText: "Pakai asuransi" }).click(); await p.fill("#jadwal", new Date(Date.now() + 8 * 3600000 + 3 * 86400000).toISOString().slice(0, 10)); await p.locator("label.kchip", { hasText: "Siang" }).click(); await p.locator("label.kchip", { hasText: "Transfer" }).click(); await p.fill("#refpel", "PO-7788");
+    ok("AQ1 form kasir tidak lagi menanyakan berat", (await p.locator("#estimasi").count()) === 0);
     await isiWilayah(p);
     const r = await act(p, p.getByRole("button", { name: "Buat resi" }));
     ok("resi dibuat dengan pesan sukses", r.ok && /Resi sudah dibuat/.test(r.ok), JSON.stringify(r));
@@ -172,6 +174,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("nomor resi terbaca: KML-asal-tujuan-moda-tanggal-jam-urutan-huruf", /^KML-JKT-MKS-LJ-\d{6}-\d{4}-0001-[A-Z]{2}$/.test(resiNo), resiNo);
     ok("penjelasan arti kode tampil", (await p.locator(".kodebox").count()) === 1 && (await p.locator(".tag.moda").innerText()).includes("Laut"));
     ok("penanda tahap: Tahap 1 dari 10", /Tahap 1 dari 10/.test(await text(p)));
+    ok("AQ2 data awal lengkap tampil di detail resi: asuransi, jadwal jemput, rencana bayar, referensi", /Pakai asuransi/.test(await text(p)) && /Jadwal jemput/.test(await text(p)) && /siang/.test(await text(p)) && /Transfer/.test(await text(p)) && /PO-7788/.test(await text(p)));
     await noOverflow(p, "detail resi (HP)");
     await p.screenshot({ path: `${OUT}/e2e-resi-baru.png` });
     kasir.resiUrl = p.url();
@@ -1332,12 +1335,12 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     const ridI = sqlq(`SELECT s.id FROM shipments s JOIN invoices i ON i.shipment_id = s.id AND i.status = 'UNPAID' WHERE s.origin_id = (SELECT id FROM branches_partners WHERE code='JKT') AND s.status NOT IN ('CANCELLED','DELIVERED') AND NOT EXISTS (SELECT 1 FROM payment_allocations pa WHERE pa.invoice_id = i.id) ORDER BY s.created_at DESC LIMIT 1;`);
     const ki = await login(browser, "kasir@uji.id", PASS, { width: 390, height: 844 });
     await ki.page.goto(`${BASE}/app/resi/${ridI}`, { waitUntil: "networkidle" });
-    await ki.page.getByText("Per m³").click(); await ki.page.fill("#inv-jumlah", "2"); await ki.page.fill("#inv-harga", "500000");
+    await ki.page.getByText("Per m³").click(); let volM3 = Number((await ki.page.inputValue("#inv-jumlah")).replace(",", ".")); if (!volM3) { await ki.page.getByText("Per kg").click(); volM3 = Number((await ki.page.inputValue("#inv-jumlah")).replace(",", ".")); } const totM3 = "Rp" + (Math.round(volM3 * 500000) + 50000).toLocaleString("id-ID"); await ki.page.fill("#inv-harga", "500000");
     await ki.page.getByRole("button", { name: "+ Ongkos jemput" }).click();
     await ki.page.fill("input[aria-label='Jumlah biaya 1 (Rp)']", "50000");
-    ok("AI1 pratinjau total invoice per m³ + biaya lain dihitung langsung (2 m³ x 500.000 + 50.000)", /Rp1\.050\.000/.test(await ki.page.locator("#invoice-form").innerText()));
+    ok("AI1 pratinjau total invoice per m³ + biaya lain dihitung langsung dari volume timbangan gudang", (await ki.page.locator("#invoice-form").innerText()).includes(totM3) && (await ki.page.locator("#inv-jumlah").getAttribute("readonly")) !== null);
     await act(ki.page, ki.page.getByRole("button", { name: "Terbitkan ulang invoice" }));
-    ok("AI2 kasir menerbitkan ulang invoice dengan harga manual dan baris biaya bebas", /Invoice INV-\d{4}-\d{6} sebesar Rp1\.050\.000 diterbitkan/.test(await pesan(ki.page)));
+    ok("AI2 kasir menerbitkan ulang invoice dengan harga manual dan baris biaya bebas", (await pesan(ki.page)).includes(`sebesar ${totM3} diterbitkan`), await pesan(ki.page));
     await noOverflow(ki.page, "Form invoice manual (HP)"); await ki.ctx.close();
 
     // Revisi dan pembatalan resi oleh Kasir

@@ -29,8 +29,8 @@ export default function InvoiceForm({ id, aktualKg, volumeKg, volumeM3, ada, jud
           <label key={k} className={`kchip ${satuan === k ? "on" : ""}`}><input type="radio" name="satuan_pilih" checked={satuan === k} onChange={() => ganti(k)} /> {v}</label>
         ))}
       </fieldset>
-      {satuan !== "BORONGAN" && <><label className="f" htmlFor="inv-jumlah">Jumlah yang ditagih ({satuan === "KG" ? "kg" : "m³"})</label>
-        <input id="inv-jumlah" name="jumlah" inputMode="decimal" value={jumlah} onChange={(e) => setJumlah(e.target.value)} required /></>}
+      {satuan !== "BORONGAN" && <><label className="f" htmlFor="inv-jumlah">Jumlah dari timbangan gudang ({satuan === "KG" ? "kg" : "m³"})</label>
+        <input id="inv-jumlah" name="jumlah" inputMode="decimal" value={jumlah} readOnly aria-readonly="true" className="terkunci" /><p className="hint" style={{ margin: 0 }}>{!Number(jumlah.replace(",", ".")) ? "Gudang belum mencatat ukuran barang untuk satuan ini. Pilih satuan lain atau tunggu gudang." : "Angka ini dari timbangan petugas gudang dan tidak bisa diubah Kasir."}</p></>}
       {satuan === "BORONGAN" && <input type="hidden" name="jumlah" value="1" />}
       <label className="f" htmlFor="inv-harga">{satuan === "BORONGAN" ? "Harga borongan (Rp)" : `Harga per ${satuan === "KG" ? "kg" : "m³"} (Rp)`}</label>
       <input id="inv-harga" name="harga" inputMode="numeric" value={harga} onChange={(e) => setHarga(e.target.value.replace(/[^\d]/g, ""))} placeholder="Contoh: 2500" required />
