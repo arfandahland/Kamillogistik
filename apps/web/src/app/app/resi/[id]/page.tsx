@@ -47,7 +47,7 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
   const role = me.data.role as Actor;
   const invId = s.invoice && SEES_MONEY.includes(role) ? (await staffRpc<{ id: string }[]>("staff_list_invoices", { p_q: s.resiNo, p_limit: 1 })).data?.[0]?.id : undefined;
   const pod = s.status === "DELIVERED" ? (await staffRpc<Pod>("get_pod", { p_id: id })).data : null;
-  const viewOnly = (role as string) === "OWNER" || role === OWNER_ROLE; // Pemilik hanya memantau (Super Admin mengoreksi lewat konsol)
+  const viewOnly = (role as string) === "OWNER" || role === OWNER_ROLE || (role as string) === "MV" || (role as string) === "MV_MASTER"; // Pemilik hanya memantau (Super Admin mengoreksi lewat konsol)
   const here = me.data.branchName ?? null;
   // Langkah hanya muncul bagi petugas cabang tempat resi SEDANG berada (atau pemegang barang). Sopir kontainer bekerja lewat manifest.
   const atMine = !viewOnly && (role === "CONTAINER_DRIVER" || s.iAmHolder || (here !== null && here === (s.at ?? s.origin.name)));

@@ -924,9 +924,9 @@
     "semantic_hash": ""
   },
   "e2e/flow.cjs": {
-    "mtime": 1795332186.1799378,
-    "seen": 1795332224.4111695,
-    "ast_hash": "67e5218d06ca4f25196d893d2bc11857",
+    "mtime": 1795334251.4558175,
+    "seen": 1795334301.2185133,
+    "ast_hash": "edd0ecef59fd9c0746cfc75d29ae1dfa",
     "semantic_hash": ""
   },
   "e2e/kamera.cjs": {
@@ -1962,9 +1962,9 @@
     "semantic_hash": ""
   },
   "docs/FITUR-PER-PERAN.md": {
-    "mtime": 1795266480.3769896,
-    "seen": 1795266524.541679,
-    "ast_hash": "40165658166f9157cd1768bc3e1d2bd1",
+    "mtime": 1795334273.9521403,
+    "seen": 1795334301.219497,
+    "ast_hash": "4ce7847982d3b4db6668ba5f08d7c627",
     "semantic_hash": ""
   },
   "apps/web/vercel.json": {
@@ -8634,9 +8634,9 @@
     "semantic_hash": ""
   },
   "db/test/revisi_resi.sql": {
-    "mtime": 1795309231.4216676,
-    "seen": 1795310843.898768,
-    "ast_hash": "",
+    "mtime": 1795332164.1960647,
+    "seen": 1795334301.218388,
+    "ast_hash": "f57addd05b046959ed6d4e9f3d3cc0f2",
     "semantic_hash": ""
   },
   "apps/web/src/components/TutupResiPanel.tsx": {
@@ -8814,9 +8814,9 @@
     "semantic_hash": ""
   },
   "docs/SPEC-DIVISI-MV.md": {
-    "mtime": 1795325881.9814277,
-    "seen": 1795326025.668787,
-    "ast_hash": "8da20e39dd7ce358dcc1688fe696e1ad",
+    "mtime": 1795334266.6316788,
+    "seen": 1795334301.2195451,
+    "ast_hash": "2bbe56334a442b74f89553c912a4f269",
     "semantic_hash": ""
   },
   "apps/web/src/components/ArahKartu.tsx": {
@@ -8886,15 +8886,15 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/mv/udara/page.tsx": {
-    "mtime": 1795333580.327175,
-    "seen": 1795333664.183445,
-    "ast_hash": "a6f02003659d06ac1bdd10317fedb933",
+    "mtime": 1795333975.0151834,
+    "seen": 1795334301.214011,
+    "ast_hash": "078e2fc34f7d1b71dbaf4623a82d95ef",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/mv/udara/unggah/route.ts": {
-    "mtime": 1795333580.3245492,
-    "seen": 1795333664.183446,
-    "ast_hash": "1674a477ac3f32e8bcb5d50812d5a594",
+    "mtime": 1795333975.0148184,
+    "seen": 1795334301.2140143,
+    "ast_hash": "d965135673cfbdf302e66ce143114a14",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/mv/vendor/page.tsx": {
@@ -8928,9 +8928,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/UnggahUdara.tsx": {
-    "mtime": 1795333580.3257813,
-    "seen": 1795333664.1859329,
-    "ast_hash": "22c4f125008f0ad5e944bfd72ebab724",
+    "mtime": 1795333975.0146163,
+    "seen": 1795334301.2166643,
+    "ast_hash": "d078df10c7978c8a0289f4cfffe80ddc",
     "semantic_hash": ""
   },
   "apps/web/src/lib/mv.ts": {
@@ -8943,6 +8943,48 @@
     "mtime": 1795333391.381337,
     "seen": 1795333664.186152,
     "ast_hash": "7841cd23ebd8043ee971fd2673bb853f",
+    "semantic_hash": ""
+  },
+  "db/migrations/049_arah_barang.sql": {
+    "mtime": 1795332096.3025374,
+    "seen": 1795334301.2180047,
+    "ast_hash": "6ac8b760854f0ed16a17ddb031d3a081",
+    "semantic_hash": ""
+  },
+  "db/migrations/050_mv_peran_vendor.sql": {
+    "mtime": 1795333963.092086,
+    "seen": 1795334303.3893633,
+    "ast_hash": "005c71f0ca819a328e02bf6f882c99f3",
+    "semantic_hash": ""
+  },
+  "db/migrations/051_mv_alokasi_hpp.sql": {
+    "mtime": 1795332440.5803893,
+    "seen": 1795334303.3893645,
+    "ast_hash": "42af8d708d6043586eb7a973979ad8c6",
+    "semantic_hash": ""
+  },
+  "db/migrations/052_mv_sj_balik.sql": {
+    "mtime": 1795332443.9218123,
+    "seen": 1795334303.3893654,
+    "ast_hash": "e5dea05023643ff5c1009af8c4e757c3",
+    "semantic_hash": ""
+  },
+  "db/migrations/053_mv_dokumen_manifest_udara.sql": {
+    "mtime": 1795334051.8570437,
+    "seen": 1795334303.3893666,
+    "ast_hash": "3b9fd393ef0da8c58ea53eb4c8e0cdf9",
+    "semantic_hash": ""
+  },
+  "db/migrations/054_mv_penjualan.sql": {
+    "mtime": 1795332561.8202286,
+    "seen": 1795334303.3893676,
+    "ast_hash": "190acff1e26469bb00eb1c8ac4175fe9",
+    "semantic_hash": ""
+  },
+  "db/test/mv.sql": {
+    "mtime": 1795334069.1435063,
+    "seen": 1795334303.3893929,
+    "ast_hash": "e7031c77848f63331195782da5fbe4f5",
     "semantic_hash": ""
   },
   "package-lock.json": {

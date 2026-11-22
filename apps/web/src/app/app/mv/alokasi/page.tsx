@@ -46,7 +46,6 @@ export default async function Alokasi({ searchParams }: { searchParams: Promise<
     const margin = x.mode === "DARAT" && x.tagihan && a?.hpp ? x.tagihan - a.hpp : null;
     const statusTeks = ALOK_STATUS[a?.status ?? "DRAFT"] ?? a?.status;
     const vendorTeks = !a ? "Belum diatur" : a.internal ? "Armada internal" : a.vendor ?? "Belum dipilih";
-    const cocok = (vend.data ?? []).filter((v) => v.kind === "MULTI" || v.kind === x.mode);
     const lanjut = a ? (a.status === "HPP_DIISI" || (a.status === "VENDOR_DIPILIH" && x.mode !== "DARAT") ? ["BERANGKAT", "Tandai berangkat"] : LANJUT[a.status]) : undefined;
     const bisaHpp = tulis && x.mode === "DARAT" && !!a && !a.locked && !(a.status === "SELESAI" && me.role === "MV");
     return (
@@ -57,12 +56,14 @@ export default async function Alokasi({ searchParams }: { searchParams: Promise<
           <span>Tagihan {rp(x.tagihan)} · <b>{vendorTeks}</b>{a?.hpp ? ` · HPP ${rp(a.hpp)}` : ""}{margin != null ? ` · margin kasar ${rp(margin)}` : ""}{a?.locked ? <> · <Icon name="lock" size={14} /> terkunci</> : ""}</span>
           <span><span className="pill">{statusTeks}</span></span></span>}>
         <div id={`r-${x.shipmentId}`} />
+        <Link href={`/app/resi/${x.shipmentId}`} className="btn ghost mvbuka"><Icon name="file" size={18} /> Buka resi</Link>
         {tulis && !a?.locked && !(a && ["BERANGKAT", "TIBA", "SELESAI"].includes(a.status)) && (
           <form action={simpanAlokasi} className="mvform mvkotak">
             <b>Vendor atau armada</b>
             <input type="hidden" name="back" value={back} /><input type="hidden" name="shipment" value={x.shipmentId} />
-            <div className="rbf"><label className="f">Vendor aktif</label>
-              <select name="vendor" defaultValue={a?.vendorId ?? ""}><option value="">Pilih vendor…</option>{cocok.map((v) => <option key={v.id} value={v.id}>{v.name} ({v.code})</option>)}</select></div>
+            <div className="rbf"><label className="f" htmlFor={`vn-${x.shipmentId}`}>Nama vendor</label>
+              <input id={`vn-${x.shipmentId}`} name="vendor_nama" list={`vd-${x.mode}`} defaultValue={a?.vendor ?? ""} maxLength={120} autoComplete="off" placeholder="Ketik nama vendor, atau pilih dari yang pernah dicatat" />
+              <p className="hint">Vendor baru otomatis tercatat dan tersimpan riwayatnya. Nama yang sama dipakai ulang.</p></div>
             <label className="rbcek"><input type="checkbox" name="internal" defaultChecked={!!a?.internal} /> Armada internal (tanpa vendor)</label>
             <div className="rbrow">
               <div className="rbf"><label className="f">Nama sopir</label><input name="sopir" maxLength={80} defaultValue={a?.driver ?? ""} /></div>
@@ -131,6 +132,7 @@ export default async function Alokasi({ searchParams }: { searchParams: Promise<
   const items = list.data ?? [];
   return (
     <main className="wrap stack" style={{ paddingTop: 8 }}>
+      {(["DARAT", "LAUT", "UDARA"] as const).map((md) => <datalist key={md} id={`vd-${md}`}>{(vend.data ?? []).filter((v) => v.status === "AKTIF" && (v.kind === "MULTI" || v.kind === md)).map((v) => <option key={v.id} value={v.name} />)}</datalist>)}
       <BackLink href="/app/mv" ke="beranda MV" />
       <div className="pghead"><div><h1>Alokasi dan HPP</h1><p className="muted">Pilih vendor untuk tiap resi, isi biaya angkut darat (HPP), dan simpan foto dokumen pengiriman.</p></div></div>
       <MvPesan ok={sp.ok} e={sp.e} galat={[list.error]} />

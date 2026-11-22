@@ -14,14 +14,14 @@ export default async function BerandaMV({ searchParams }: { searchParams: Promis
   const finance = me.role === "FINANCE", master = me.role === "SUPER_ADMIN" || me.role === "MV_MASTER";
   const [aktif, usulan, belum, sj] = await Promise.all([
     staffRpc<Vendor[]>("mv_vendor_list", { p_status: "AKTIF" }),
-    staffRpc<Vendor[]>("mv_vendor_list", { p_status: "DIUSULKAN" }),
+    staffRpc<Vendor[]>("mv_vendor_list", { p_status: "BELUM_VERIFIKASI" }),
     staffRpc<unknown[]>("mv_alloc_list", { p_status: "BELUM", p_limit: 200 }),
     finance ? Promise.resolve({ data: null, error: null }) : staffRpc<{ items: SJ[]; terlambat: number }>("mv_sj_list"),
   ]);
   const nBelum = (belum.data ?? []).length;
   const galat = aktif.error ?? belum.error ?? (finance ? null : sj.error);
   const menu = [
-    { href: "/app/mv/vendor", icon: "users", t: "Vendor", d: "Daftar mitra pengangkut, rute layanannya, dan usulan vendor baru." },
+    { href: "/app/mv/vendor", icon: "users", t: "Vendor", d: "Daftar mitra pengangkut yang tercatat otomatis, rute layanannya, dan verifikasi." },
     { href: "/app/mv/alokasi", icon: "truck", t: "Alokasi dan HPP", d: "Pilih vendor atau armada internal untuk tiap resi, isi HPP, dan unggah foto dokumen." },
     { href: "/app/mv/tracking?m=DARAT", icon: "truck", t: "Pemantauan darat", d: "Resi darat ke Sumatera, Jawa Tengah, Jawa Timur, Bali, NTB, dan NTT." },
     { href: "/app/mv/tracking?m=UDARA", icon: "plane", t: "Pemantauan udara", d: "Resi udara ke seluruh Kalimantan." },
@@ -37,7 +37,7 @@ export default async function BerandaMV({ searchParams }: { searchParams: Promis
       <MvPesan ok={sp.ok} e={sp.e} galat={[galat]} />
       <StatRow items={[
         { ikon: "truck", n: aktif.data ? aktif.data.length : "-", label: "Vendor aktif", href: "/app/mv/vendor?s=AKTIF" },
-        { ikon: "clock", n: usulan.data ? usulan.data.length : "-", label: "Usulan vendor menunggu", sub: master ? "Perlu Anda verifikasi" : "Diverifikasi MV Master", warm: true, href: "/app/mv/vendor?s=DIUSULKAN" },
+        { ikon: "clock", n: usulan.data ? usulan.data.length : "-", label: "Vendor belum diverifikasi", sub: master ? "Perlu Anda verifikasi" : "Diverifikasi MV Master", warm: true, href: "/app/mv/vendor?s=DIUSULKAN" },
         { ikon: "alert", n: belum.data ? (nBelum >= 200 ? "200+" : nBelum) : "-", label: "Resi belum diberi vendor", warm: true, href: "/app/mv/alokasi?st=BELUM" },
         { ikon: "file", n: finance ? "-" : sj.data ? sj.data.terlambat : "-", label: "SJ terlambat", warm: true, href: finance ? "/app/keuangan/sj" : "/app/mv/sj?st=TERLAMBAT" },
       ]} />

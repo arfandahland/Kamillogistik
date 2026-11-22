@@ -1661,3 +1661,5 @@ a.tile:nth-child(2n)::after { animation-delay: 1.5s; } a.tile:nth-child(3n)::aft
 }
 @media (prefers-reduced-motion: reduce) { .mvwilkartu, .mvjual, .mvsj { transition: none !important; animation: none !important; } }
 @media print { .mvfoto, .mvfilter { display: none !important; } }
+.mvbuka { margin: 0 0 10px; width: fit-content; min-height: 40px; padding: 0 14px; }
+.mvtrk-a a.mvno { text-decoration: none; color: inherit; }

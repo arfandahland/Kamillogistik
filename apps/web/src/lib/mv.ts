@@ -16,7 +16,7 @@ export type Wilayah = { code: string; mode: Moda; label: string };
 export type Cabang = { id: string; city: string };
 
 export type VendorRute = { id: string; mode: Moda; origin: string | null; region: string | null; regionCode: string | null; vehicle: string | null; active: boolean };
-export type Vendor = { id: string; code: string; name: string; kind: string; status: string; contact: string | null; phone: string | null; email: string | null; address: string | null;
+export type Vendor = { mine?: boolean; verified?: boolean; used?: number; lastUsedAt?: string | null; id: string; code: string; name: string; kind: string; status: string; contact: string | null; phone: string | null; email: string | null; address: string | null;
   bank: string | null; account: string | null; note: string | null; branch: string | null; verifiedAt: string | null; createdAt: string; routes: VendorRute[] };
 
 export const VENDOR_STATUS: Record<string, { label: string; kelas: string }> = {
@@ -27,7 +27,7 @@ export const VENDOR_STATUS: Record<string, { label: string; kelas: string }> = {
 };
 export const VENDOR_JENIS: Record<string, string> = { DARAT: "Darat", LAUT: "Laut", UDARA: "Udara", MULTI: "Campuran" };
 
-export type Alokasi = { id: string; status: string; vendorId: string | null; vendor: string | null; vendorCode: string | null; internal: boolean; driver: string | null; plate: string | null; hpp: number | null; locked: boolean; note: string | null };
+export type Alokasi = { vendorVerified?: boolean; id: string; status: string; vendorId: string | null; vendor: string | null; vendorCode: string | null; internal: boolean; driver: string | null; plate: string | null; hpp: number | null; locked: boolean; note: string | null };
 export type ResiAlokasi = { shipmentId: string; resiNo: string; origin: string; originId: string; dest: string; mode: Moda; shipStatus: string; destProvince: string | null; destRegency: string | null;
   createdAt: string; tagihan: number | null; alloc: Alokasi | null };
 

@@ -20,7 +20,8 @@ SELECT t.as_user(current_setting('t.mvj')::uuid);
 DO $$ DECLARE v jsonb; BEGIN
   v := public.mv_vendor_save(NULL, 'PT Armada Nusantara', 'DARAT', 'Pak Budi', '0812-1111-2222', NULL, 'Jl. Raya 1', 'BCA', '123', NULL);
   PERFORM set_config('t.v1', v->>'id', false);
-  ASSERT (SELECT x->>'status' FROM jsonb_array_elements(public.mv_vendor_list()) x WHERE x->>'id' = current_setting('t.v1')) = 'DIUSULKAN', 'usulan MV berstatus DIUSULKAN';
+  ASSERT (SELECT x->>'status' FROM jsonb_array_elements(public.mv_vendor_list()) x WHERE x->>'id' = current_setting('t.v1')) = 'AKTIF' AND NOT (SELECT (x->>'verified')::boolean FROM jsonb_array_elements(public.mv_vendor_list()) x WHERE x->>'id' = current_setting('t.v1')), 'vendor MV langsung aktif tetapi belum diverifikasi';
+  ASSERT jsonb_array_length(public.mv_vendor_list(NULL, 'BELUM_VERIFIKASI')) >= 1, 'saring belum diverifikasi';
   ASSERT (SELECT x->>'phone' FROM jsonb_array_elements(public.mv_vendor_list()) x WHERE x->>'id' = current_setting('t.v1')) = '6281211112222', 'nomor dinormalkan';
   PERFORM public.mv_vendor_route_save(current_setting('t.v1')::uuid, 'DARAT', NULL, 'DARAT-JATIM', 'Fuso');
 END $$;
@@ -29,11 +30,11 @@ SELECT t.fails($$select public.mv_vendor_save(NULL, 'X', 'DARAT', NULL, NULL, NU
 SELECT t.fails($$select public.mv_vendor_route_save(current_setting('t.v1')::uuid, 'UDARA', NULL, NULL, NULL)$$, 'tidak bisa diberi rute');
 SELECT t.fails($$select public.mv_vendor_route_save(current_setting('t.v1')::uuid, 'DARAT', NULL, 'UDARA-KALIMANTAN', NULL)$$, 'Wilayah tidak sesuai');
 SELECT t.as_user(current_setting('t.mvm')::uuid);            -- MV cabang lain tidak boleh mengubah usulan orang lain
-SELECT t.fails($$select public.mv_vendor_save(current_setting('t.v1')::uuid, 'Ganti Nama', 'DARAT', NULL, NULL, NULL, NULL, NULL, NULL, NULL)$$, 'usulan vendor miliknya');
+SELECT t.fails($$select public.mv_vendor_save(current_setting('t.v1')::uuid, 'Ganti Nama', 'DARAT', NULL, NULL, NULL, NULL, NULL, NULL, NULL)$$, 'vendor miliknya');
 SELECT t.as_user(current_setting('t.mvs')::uuid);
 DO $$ BEGIN
   PERFORM public.mv_vendor_set_status(current_setting('t.v1')::uuid, 'AKTIF');
-  ASSERT (SELECT x->>'status' FROM jsonb_array_elements(public.mv_vendor_list()) x WHERE x->>'id' = current_setting('t.v1')) = 'AKTIF', 'MV Master memverifikasi';
+  ASSERT (SELECT (x->>'verified')::boolean FROM jsonb_array_elements(public.mv_vendor_list()) x WHERE x->>'id' = current_setting('t.v1')), 'MV Master memverifikasi';
   ASSERT (SELECT count(*) FROM jsonb_array_elements(public.mv_regions()) x WHERE x->>'mode' = 'DARAT') = 6, 'enam wilayah darat';
   ASSERT (SELECT count(*) FROM jsonb_array_elements(public.mv_regions()) x WHERE x->>'mode' = 'UDARA') = 1, 'satu wilayah udara';
   ASSERT (SELECT count(*) FROM jsonb_array_elements(public.mv_regions()) x WHERE x->>'mode' = 'LAUT') = 2, 'dua wilayah laut';
@@ -58,10 +59,12 @@ DO $$ DECLARE a jsonb; b jsonb; c jsonb; BEGIN
   b := public.create_shipment('jakarta-makassar-port-to-door-kg','Pengirim MV B','0811','Penerima MV B','0822','Makassar',1,NULL,NULL,'DROPOFF');
   c := public.create_shipment('jakarta-makassar-port-to-door-kg','Pengirim MV C','0811','Penerima MV C','0822','Pontianak',1,NULL,NULL,'DROPOFF');
   PERFORM set_config('t.ra', a->>'id', false); PERFORM set_config('t.rb', b->>'id', false); PERFORM set_config('t.rc', c->>'id', false);
+  PERFORM set_config('t.rb2', (public.create_shipment('jakarta-makassar-port-to-door-kg','Pengirim MV D','0811','Penerima MV D','0822','Surabaya',1,NULL,NULL,'DROPOFF'))->>'id', false);
 END $$;
 RESET ROLE;
 UPDATE public.shipments SET mode = 'DARAT', dest_province = 'Jawa Timur', dest_regency = 'Kota Surabaya' WHERE id = current_setting('t.ra')::uuid;
 UPDATE public.shipments SET origin_id = (SELECT id FROM public.branches_partners WHERE code='MKS'), dest_id = (SELECT id FROM public.branches_partners WHERE code='JKT'), mode = 'DARAT', dest_province = 'Bali', dest_regency = 'Kota Denpasar' WHERE id = current_setting('t.rb')::uuid;
+UPDATE public.shipments SET mode = 'DARAT', dest_province = 'Jawa Timur', dest_regency = 'Kota Malang' WHERE id = current_setting('t.rb2')::uuid;
 UPDATE public.shipments SET mode = 'UDARA', dest_province = 'Kalimantan Barat', dest_regency = 'Kota Pontianak' WHERE id = current_setting('t.rc')::uuid;
 SELECT set_config('t.rcno', (SELECT resi_no FROM public.shipments WHERE id = current_setting('t.rc')::uuid), false);
 
@@ -77,9 +80,21 @@ END $$;
 -- vendor belum aktif tidak boleh dipakai; vendor aktif dengan rute Jatim boleh
 SELECT t.as_user(current_setting('t.mvj')::uuid);
 DO $$ BEGIN PERFORM set_config('t.v2', (public.mv_vendor_save(NULL, 'CV Belum Aktif', 'DARAT', NULL, NULL, NULL, NULL, NULL, NULL, NULL))->>'id', false); END $$;
-SELECT t.fails($$select public.mv_alloc_save(current_setting('t.ra')::uuid, current_setting('t.v2')::uuid, false, NULL, NULL, NULL)$$, 'belum aktif');
-SELECT t.fails($$select public.mv_alloc_save(current_setting('t.ra')::uuid, NULL, false, NULL, NULL, NULL)$$, 'Pilih vendor');
+SELECT t.as_user(current_setting('t.mvs')::uuid);
+DO $$ BEGIN PERFORM public.mv_vendor_set_status(current_setting('t.v2')::uuid, 'NONAKTIF'); END $$;
+SELECT t.as_user(current_setting('t.mvj')::uuid);
+SELECT t.fails($$select public.mv_alloc_save(current_setting('t.ra')::uuid, current_setting('t.v2')::uuid, false, NULL, NULL, NULL)$$, 'dinonaktifkan');
+SELECT t.fails($$select public.mv_alloc_save(current_setting('t.ra')::uuid, NULL, false, NULL, NULL, NULL)$$, 'Isi nama vendor');
 SELECT t.fails($$select public.mv_alloc_save(current_setting('t.ra')::uuid, current_setting('t.v1')::uuid, true, NULL, NULL, NULL)$$, 'tidak keduanya');
+-- nama vendor diketik manual: dicatat otomatis, dipakai ulang bila namanya sama (huruf besar kecil diabaikan)
+DO $$ DECLARE n1 int; n2 int; BEGIN
+  PERFORM public.mv_alloc_save(current_setting('t.rb2')::uuid, NULL, false, NULL, NULL, NULL, 'Armada Ketik Manual');
+  PERFORM public.mv_alloc_save(current_setting('t.rb2')::uuid, NULL, false, NULL, NULL, NULL, '  armada KETIK manual ');
+  ASSERT (SELECT count(*) FROM jsonb_array_elements(public.mv_vendor_list()) x WHERE x->>'name' = 'Armada Ketik Manual') = 1, 'vendor ketikan manual tercatat satu kali';
+  ASSERT (SELECT (x->>'used')::int FROM jsonb_array_elements(public.mv_vendor_list()) x WHERE x->>'name' = 'Armada Ketik Manual') = 1, 'riwayat pemakaian vendor terhitung';
+  PERFORM public.mv_alloc_save(current_setting('t.rb2')::uuid, NULL, true, 'Sopir Sendiri', 'B 9 ZZ', NULL);
+  ASSERT (SELECT a->'alloc'->>'internal' FROM jsonb_array_elements(public.mv_alloc_list()) a WHERE a->>'shipmentId' = current_setting('t.rb2')) = 'true', 'armada internal tanpa vendor';
+END $$;
 SELECT t.fails($$select public.mv_alloc_save(current_setting('t.rb')::uuid, current_setting('t.v1')::uuid, false, NULL, NULL, NULL)$$, 'bukan tanggung jawab');
 DO $$ BEGIN PERFORM set_config('t.al', (public.mv_alloc_save(current_setting('t.ra')::uuid, current_setting('t.v1')::uuid, false, 'Pak Sopir', 'b 1234 xy', 'Fuso'))->>'id', false); END $$;
 SELECT t.fails($$select public.mv_alloc_save(current_setting('t.rc')::uuid, current_setting('t.v1')::uuid, false, NULL, NULL, NULL)$$, 'melayani moda');
@@ -150,6 +165,14 @@ END $$;
 SELECT t.fails($$select public.mv_sj_list()$$, 'izin');
 SELECT t.as_user(current_setting('t.mvm')::uuid);
 SELECT t.fails($$select public.mv_receipt(current_setting('t.tt2')::uuid)$$, 'tidak ditemukan');
+
+-- MV boleh membuka detail resi cabangnya (hanya lihat), tidak bisa mengerjakan langkah resi
+SELECT t.as_user(current_setting('t.mvj')::uuid);
+DO $$ BEGIN ASSERT public.staff_get_shipment(current_setting('t.ra')::uuid)->>'resiNo' IS NOT NULL, 'MV membuka detail resi cabangnya'; END $$;
+SELECT t.fails($$select public.staff_get_shipment(current_setting('t.rb')::uuid)$$, 'bukan tugas Anda');
+SELECT t.fails($$select public.advance_shipment(current_setting('t.ra')::uuid, 'PICKED_UP', NULL)$$, 'izin');
+SELECT t.as_user(current_setting('t.mvs')::uuid);
+DO $$ BEGIN ASSERT public.staff_get_shipment(current_setting('t.rb')::uuid)->>'resiNo' IS NOT NULL, 'MV Master membuka resi semua cabang'; END $$;
 
 -- Dokumentasi pengiriman: kamera atau unggah
 SELECT t.as_user(current_setting('t.mvj')::uuid);

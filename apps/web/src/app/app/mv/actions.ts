@@ -31,7 +31,7 @@ export async function simpanVendor(fd: FormData) {
   });
   segar();
   if (error) go(back, "e", error);
-  go(back, "ok", id ? "Perubahan vendor tersimpan." : "Vendor tersimpan. Vendor usulan aktif setelah diverifikasi MV Master.");
+  go(back, "ok", id ? "Perubahan vendor tersimpan." : "Vendor tersimpan dan sudah bisa dipakai di alokasi. MV Master dapat memverifikasinya kemudian.");
 }
 export async function ubahStatusVendor(fd: FormData) {
   const back = balik(fd, "/app/mv/vendor"), status = str(fd, "status");
@@ -59,7 +59,7 @@ export async function hapusRute(fd: FormData) {
 export async function simpanAlokasi(fd: FormData) {
   const back = balik(fd, "/app/mv/alokasi"), internal = flag(fd, "internal");
   const { error } = await staffRpc("mv_alloc_save", {
-    p_shipment: uuid(str(fd, "shipment")), p_vendor: internal ? null : uuid(str(fd, "vendor")), p_internal: internal,
+    p_shipment: uuid(str(fd, "shipment")), p_vendor: null, p_vendor_name: internal ? null : (str(fd, "vendor_nama") || null), p_internal: internal,
     p_driver: str(fd, "sopir") || null, p_plate: str(fd, "plat") || null, p_note: str(fd, "catatan") || null,
   });
   segar();

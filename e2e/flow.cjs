@@ -1481,16 +1481,16 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await mv.page.locator("details[open] input[name=nama]").first().fill("Vendor Laut Uji"); await mv.page.locator("details[open] select[name=jenis]").first().selectOption("LAUT");
     await mv.page.locator("details[open] input[name=kontak]").first().fill("Pak Laut"); await mv.page.locator("details[open] input[name=telepon]").first().fill("0812 7000 1111");
     const usul = await act(mv.page, mv.page.getByRole("button", { name: "Simpan vendor" }));
-    ok("AO6 MV mengusulkan vendor baru (status menunggu verifikasi)", !!usul.ok && /Menunggu|Diusulkan|usulan/i.test(await text(mv.page)), JSON.stringify(usul));
+    ok("AO6 MV mencatat vendor baru manual: langsung aktif, belum diverifikasi", !!usul.ok && /Vendor tersimpan/.test(usul.ok) && /Belum diverifikasi/.test(await text(mv.page)), JSON.stringify(usul));
     await mv.page.goto(`${BASE}/app/mv/alokasi?s=BELUM`, { waitUntil: "networkidle" });
-    ok("AO7 vendor yang belum diverifikasi tidak muncul di pilihan alokasi", !/Vendor Laut Uji/.test(await mv.page.locator("select[name=vendor]").first().innerHTML().catch(() => "")));
+    ok("AO7 vendor yang baru dicatat langsung muncul sebagai saran nama di alokasi", (await mv.page.locator("datalist#vd-LAUT option[value='Vendor Laut Uji']").count()) === 1);
     await mv.ctx.close();
 
     const mm = await login(browser, "mv.master@uji.id", "Sandi2026a", { width: 390, height: 844 });
-    await mm.page.goto(`${BASE}/app/mv/vendor?s=DIUSULKAN`, { waitUntil: "networkidle" });
+    await mm.page.goto(`${BASE}/app/mv/vendor?s=BELUM_VERIFIKASI`, { waitUntil: "networkidle" });
     const kartuV = mm.page.locator("details", { hasText: "Vendor Laut Uji" }).first();
     await kartuV.locator("summary").first().click();
-    const akt = await act(mm.page, kartuV.getByRole("button", { name: "Aktifkan" }).first());
+    const akt = await act(mm.page, kartuV.getByRole("button", { name: "Verifikasi" }).first());
     ok("AO8 MV Master memverifikasi (mengaktifkan) vendor", !!akt.ok, JSON.stringify(akt));
     await mm.page.goto(`${BASE}/app/mv/penjualan`, { waitUntil: "networkidle" });
     ok("AO9 MV Master melihat penjualan terpisah per cabang", /Cabang saya|Jakarta/.test(await text(mm.page)) && /Makassar/.test(await text(mm.page)) && /Surabaya/.test(await text(mm.page)));
@@ -1498,13 +1498,26 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
 
     const mv2 = await login(browser, "mv.jkt@uji.id", "Sandi2026a", { width: 390, height: 844 });
     await mv2.page.goto(`${BASE}/app/mv/alokasi?m=LAUT`, { waitUntil: "networkidle" });
-    const resiMv = await mv2.page.locator("details").filter({ has: mv2.page.locator("select[name=vendor]") }).count();
+    const resiMv = await mv2.page.locator("details").filter({ has: mv2.page.locator("input[name=vendor_nama]") }).count();
     ok("AO10 MV Jakarta melihat resi laut cabangnya untuk dialokasikan", resiMv >= 1, String(resiMv));
-    const kartuR = mv2.page.locator("details").filter({ has: mv2.page.locator("select[name=vendor]") }).first();
+    const kartuR = mv2.page.locator("details").filter({ has: mv2.page.locator("input[name=vendor_nama]") }).first();
     await kartuR.locator("summary").first().click();
-    await kartuR.locator("select[name=vendor]").selectOption({ label: /Vendor Laut Uji/ }).catch(async () => { const o = await kartuR.locator("select[name=vendor] option").allTextContents(); await kartuR.locator("select[name=vendor]").selectOption({ index: o.findIndex((t) => /Vendor Laut Uji/.test(t)) }); });
+    await kartuR.locator("input[name=vendor_nama]").fill("vendor laut uji");
     const simp = await act(mv2.page, kartuR.getByRole("button", { name: "Simpan pilihan" }));
     ok("AO11 MV memilih vendor terverifikasi untuk resi laut", !!simp.ok && /Vendor Laut Uji/.test(await text(mv2.page)), JSON.stringify(simp));
+    // vendor baru diketik manual langsung tercatat otomatis
+    const kartuR2 = mv2.page.locator("details").filter({ has: mv2.page.locator("input[name=vendor_nama]") }).nth(1);
+    await kartuR2.locator("summary").first().click();
+    await kartuR2.locator("input[name=vendor_nama]").fill("Vendor Ketik Baru");
+    const simp2 = await act(mv2.page, kartuR2.getByRole("button", { name: "Simpan pilihan" }));
+    ok("AO11b vendor yang diketik manual tercatat otomatis dan langsung dipakai", !!simp2.ok && /Vendor Ketik Baru/.test(await text(mv2.page)), JSON.stringify(simp2));
+    await mv2.page.goto(`${BASE}/app/mv/vendor`, { waitUntil: "networkidle" });
+    ok("AO11c vendor ketikan manual muncul di daftar vendor (dipakai 1 kali, belum diverifikasi)", /Vendor Ketik Baru/.test(await text(mv2.page)) && /Vendor Laut Uji/.test(await text(mv2.page)));
+    await mv2.page.goto(`${BASE}/app/mv/alokasi?m=LAUT`, { waitUntil: "networkidle" });
+    await mv2.page.locator("a.mvbuka").first().click({ force: true }).catch(async () => { await mv2.page.locator("details").first().locator("summary").first().click(); await mv2.page.locator("a.mvbuka").first().click(); });
+    await mv2.page.waitForURL(/\/app\/resi\//, { timeout: 15000 }).catch(() => {});
+    ok("AO11d MV membuka detail resi dari alokasi (hanya lihat, tanpa tombol tindakan)", /\/app\/resi\//.test(mv2.page.url()) && !/tidak punya izin|Terjadi kesalahan/.test(await text(mv2.page)) && (await mv2.page.locator("main form button.btn.shine").count()) === 0);
+    await mv2.page.goto(`${BASE}/app/mv/alokasi?m=LAUT`, { waitUntil: "networkidle" });
     ok("AO12 resi laut menampilkan catatan HPP dicatat lewat biaya manifest", /HPP laut dan udara dicatat lewat Biaya manifest/.test(await text(mv2.page)));
     await mv2.page.goto(`${BASE}/app/mv/tracking?m=LAUT`, { waitUntil: "networkidle" });
     ok("AO13 pemantauan laut memuat wilayah Kalimantan dan Sulawesi Utara", /Kalimantan/.test(await text(mv2.page)) && /Sulawesi Utara/.test(await text(mv2.page)));

@@ -87,15 +87,17 @@ CREATE OR REPLACE FUNCTION public.mv_vendor_list(p_q text DEFAULT NULL, p_status
 LANGUAGE plpgsql STABLE SECURITY DEFINER SET search_path = '' AS $$
 BEGIN
   PERFORM public.require_role(ARRAY['SUPER_ADMIN','OWNER','MV','MV_MASTER','FINANCE']);
-  RETURN coalesce((SELECT jsonb_agg(x ORDER BY ord, nm) FROM (
+  RETURN coalesce((SELECT jsonb_agg(x ORDER BY ord, (x->>'used')::int DESC, nm) FROM (
     SELECT jsonb_build_object('id', v.id, 'code', v.code, 'name', v.name, 'kind', v.kind, 'status', v.status, 'contact', v.contact_name, 'phone', v.phone,
         'email', v.email, 'address', v.address, 'bank', v.bank_name, 'account', v.bank_account, 'note', v.note, 'branch', b.city,
-        'verifiedAt', v.verified_at, 'createdAt', v.created_at, 'mine', (v.proposed_by = auth.uid()),
+        'verifiedAt', v.verified_at, 'verified', (v.verified_at IS NOT NULL), 'createdAt', v.created_at, 'mine', (v.proposed_by = auth.uid()),
+        'used', (SELECT count(*) FROM public.shipment_allocations a WHERE a.vendor_id = v.id),
+        'lastUsedAt', (SELECT max(a.updated_at) FROM public.shipment_allocations a WHERE a.vendor_id = v.id),
         'routes', coalesce((SELECT jsonb_agg(jsonb_build_object('id', r.id, 'mode', r.mode, 'origin', ob.city, 'region', tr.label, 'regionCode', r.region_code, 'vehicle', r.vehicle_type, 'active', r.active) ORDER BY r.created_at)
                             FROM public.vendor_routes r LEFT JOIN public.branches_partners ob ON ob.id = r.origin_id LEFT JOIN public.tracking_regions tr ON tr.code = r.region_code WHERE r.vendor_id = v.id), '[]'::jsonb)) AS x,
-      CASE v.status WHEN 'DIUSULKAN' THEN 0 WHEN 'AKTIF' THEN 1 WHEN 'NONAKTIF' THEN 2 ELSE 3 END AS ord, v.name AS nm
+      CASE v.status WHEN 'AKTIF' THEN 0 WHEN 'DIUSULKAN' THEN 1 WHEN 'NONAKTIF' THEN 2 ELSE 3 END AS ord, v.name AS nm
     FROM public.vendors v LEFT JOIN public.branches_partners b ON b.id = v.branch_id
-    WHERE (p_status IS NULL OR p_status = '' OR v.status = p_status) AND (p_kind IS NULL OR p_kind = '' OR v.kind = p_kind)
+    WHERE (p_status IS NULL OR p_status = '' OR v.status = p_status OR (p_status = 'BELUM_VERIFIKASI' AND v.status = 'AKTIF' AND v.verified_at IS NULL)) AND (p_kind IS NULL OR p_kind = '' OR v.kind = p_kind)
       AND (p_q IS NULL OR p_q = '' OR v.name ILIKE '%' || p_q || '%' OR v.code ILIKE '%' || p_q || '%')) t), '[]'::jsonb);
 END $$;
 
@@ -114,14 +116,14 @@ BEGIN
                                status, verified_by, verified_at)
     VALUES (nm, p_kind, nullif(btrim(p_contact), ''), ph, nullif(btrim(p_email), ''), nullif(btrim(p_address), ''), nullif(btrim(p_bank), ''), nullif(btrim(p_account), ''), nullif(btrim(p_note), ''),
             public.my_branch(), auth.uid(),
-            CASE WHEN r IN ('SUPER_ADMIN','MV_MASTER') THEN 'AKTIF' ELSE 'DIUSULKAN' END,
+            'AKTIF',
             CASE WHEN r IN ('SUPER_ADMIN','MV_MASTER') THEN auth.uid() END, CASE WHEN r IN ('SUPER_ADMIN','MV_MASTER') THEN now() END)
     RETURNING id INTO vid;
     PERFORM public.log_audit('mv_vendor_tambah', 'vendors', vid, NULL, jsonb_build_object('name', nm, 'kind', p_kind));
   ELSE
     SELECT * INTO v FROM public.vendors WHERE id = p_id FOR UPDATE;
     IF NOT FOUND THEN RAISE EXCEPTION 'Vendor tidak ditemukan.'; END IF;
-    IF r = 'MV' AND (v.proposed_by IS DISTINCT FROM auth.uid() OR v.status <> 'DIUSULKAN') THEN RAISE EXCEPTION 'MV hanya bisa mengubah usulan vendor miliknya yang belum diverifikasi.' USING ERRCODE = '42501'; END IF;
+    IF r = 'MV' AND (v.proposed_by IS DISTINCT FROM auth.uid() OR v.verified_at IS NOT NULL) THEN RAISE EXCEPTION 'MV hanya bisa mengubah vendor miliknya yang belum diverifikasi.' USING ERRCODE = '42501'; END IF;
     UPDATE public.vendors SET name = nm, kind = p_kind, contact_name = nullif(btrim(p_contact), ''), phone = ph, email = nullif(btrim(p_email), ''), address = nullif(btrim(p_address), ''),
       bank_name = nullif(btrim(p_bank), ''), bank_account = nullif(btrim(p_account), ''), note = nullif(btrim(p_note), ''), updated_at = now() WHERE id = p_id;
     vid := p_id;
@@ -153,7 +155,7 @@ BEGIN
   r := public.require_role(ARRAY['SUPER_ADMIN','MV','MV_MASTER']);
   SELECT * INTO v FROM public.vendors WHERE id = p_vendor;
   IF NOT FOUND THEN RAISE EXCEPTION 'Vendor tidak ditemukan.'; END IF;
-  IF r = 'MV' AND (v.proposed_by IS DISTINCT FROM auth.uid() OR v.status <> 'DIUSULKAN') THEN RAISE EXCEPTION 'MV hanya bisa mengubah rute usulan vendor miliknya yang belum diverifikasi.' USING ERRCODE = '42501'; END IF;
+  IF r = 'MV' AND (v.proposed_by IS DISTINCT FROM auth.uid() OR v.verified_at IS NOT NULL) THEN RAISE EXCEPTION 'MV hanya bisa mengubah rute vendor miliknya yang belum diverifikasi.' USING ERRCODE = '42501'; END IF;
   IF p_mode NOT IN ('DARAT','LAUT','UDARA') THEN RAISE EXCEPTION 'Pilih moda rute.'; END IF;
   IF v.kind <> 'MULTI' AND v.kind <> p_mode THEN RAISE EXCEPTION 'Vendor jenis % tidak bisa diberi rute moda %.', lower(v.kind), lower(p_mode); END IF;
   IF p_origin IS NOT NULL AND NOT EXISTS (SELECT 1 FROM public.branches_partners WHERE id = p_origin) THEN RAISE EXCEPTION 'Cabang asal tidak ditemukan.'; END IF;
@@ -170,7 +172,7 @@ BEGIN
   r := public.require_role(ARRAY['SUPER_ADMIN','MV','MV_MASTER']);
   SELECT v2.* INTO v FROM public.vendors v2 JOIN public.vendor_routes vr ON vr.vendor_id = v2.id WHERE vr.id = p_id;
   IF NOT FOUND THEN RAISE EXCEPTION 'Rute tidak ditemukan.'; END IF;
-  IF r = 'MV' AND (v.proposed_by IS DISTINCT FROM auth.uid() OR v.status <> 'DIUSULKAN') THEN RAISE EXCEPTION 'MV hanya bisa mengubah rute usulan vendor miliknya yang belum diverifikasi.' USING ERRCODE = '42501'; END IF;
+  IF r = 'MV' AND (v.proposed_by IS DISTINCT FROM auth.uid() OR v.verified_at IS NOT NULL) THEN RAISE EXCEPTION 'MV hanya bisa mengubah rute vendor miliknya yang belum diverifikasi.' USING ERRCODE = '42501'; END IF;
   DELETE FROM public.vendor_routes WHERE id = p_id;
   PERFORM public.log_audit('mv_vendor_rute_hapus', 'vendor_routes', p_id, NULL, NULL);
   RETURN jsonb_build_object('ok', true);
@@ -183,3 +185,8 @@ DO $g$ DECLARE f text; BEGIN
     EXECUTE format('GRANT EXECUTE ON FUNCTION public.%s TO authenticated', f);
   END LOOP;
 END $g$;
+
+-- MV boleh membuka detail resi (hanya lihat): MV untuk resi asal cabangnya, MV Master semua. Tidak ada tindakan yang terbuka untuk peran ini.
+SELECT pg_temp.patch_fn('staff_get_shipment', '''CONTAINER_DRIVER'',''FINANCE'',''CS_SALES'']', '''CONTAINER_DRIVER'',''FINANCE'',''CS_SALES'',''MV'',''MV_MASTER'']');
+SELECT pg_temp.patch_fn('staff_get_shipment', 'fin := r IN (''SUPER_ADMIN'',''OWNER'',''HUB_MANAGER'',''MITRA_POS'',''FINANCE'')', 'fin := r IN (''SUPER_ADMIN'',''OWNER'',''HUB_MANAGER'',''MITRA_POS'',''FINANCE'',''MV'',''MV_MASTER'')');
+SELECT pg_temp.patch_fn('can_see', 'public.my_role() IN (''SUPER_ADMIN'',''OWNER'',''FINANCE'')', 'public.my_role() IN (''SUPER_ADMIN'',''OWNER'',''FINANCE'',''MV_MASTER'') OR (public.my_role() = ''MV'' AND s.origin_id = public.my_branch())');

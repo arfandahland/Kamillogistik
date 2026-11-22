@@ -44,7 +44,7 @@ BEGIN
     SELECT jsonb_build_object('shipmentId', s.id, 'resiNo', s.resi_no, 'origin', o.city, 'originId', s.origin_id, 'dest', d.city, 'mode', s.mode, 'shipStatus', s.status,
         'destProvince', s.dest_province, 'destRegency', s.dest_regency, 'createdAt', s.created_at,
         'tagihan', (SELECT i.total FROM public.invoices i WHERE i.shipment_id = s.id AND i.status <> 'VOID' ORDER BY i.created_at DESC LIMIT 1),
-        'alloc', CASE WHEN a.id IS NULL THEN NULL ELSE jsonb_build_object('id', a.id, 'status', a.status, 'vendorId', a.vendor_id, 'vendor', v.name, 'vendorCode', v.code, 'internal', a.internal_fleet,
+        'alloc', CASE WHEN a.id IS NULL THEN NULL ELSE jsonb_build_object('id', a.id, 'status', a.status, 'vendorId', a.vendor_id, 'vendor', v.name, 'vendorCode', v.code, 'vendorVerified', (v.verified_at IS NOT NULL), 'internal', a.internal_fleet,
               'driver', a.driver_name, 'plate', a.vehicle_plate, 'hpp', a.hpp, 'locked', a.hpp_locked, 'note', a.note) END) AS x, s.created_at AS ts
     FROM public.shipments s
     JOIN public.branches_partners o ON o.id = s.origin_id JOIN public.branches_partners d ON d.id = s.dest_id
@@ -59,25 +59,34 @@ BEGIN
     ORDER BY s.created_at DESC LIMIT least(greatest(p_limit, 1), 200)) t), '[]'::jsonb);
 END $$;
 
-CREATE OR REPLACE FUNCTION public.mv_alloc_save(p_shipment uuid, p_vendor uuid, p_internal boolean, p_driver text, p_plate text, p_note text) RETURNS jsonb
+CREATE OR REPLACE FUNCTION public.mv_alloc_save(p_shipment uuid, p_vendor uuid, p_internal boolean, p_driver text, p_plate text, p_note text, p_vendor_name text DEFAULT NULL) RETURNS jsonb
 LANGUAGE plpgsql SECURITY DEFINER SET search_path = '' AS $$
-DECLARE s public.shipments; v public.vendors; a public.shipment_allocations; aid uuid; st text; n_routes int; ok_route boolean;
+DECLARE s public.shipments; v public.vendors; a public.shipment_allocations; aid uuid; st text; n_routes int; ok_route boolean; vn text := btrim(coalesce(p_vendor_name, '')); vid uuid := p_vendor;
 BEGIN
   PERFORM public.require_role(ARRAY['SUPER_ADMIN','MV','MV_MASTER']);
   SELECT * INTO s FROM public.shipments WHERE id = p_shipment;
   IF NOT FOUND OR NOT public._mv_scope(s.origin_id) THEN RAISE EXCEPTION 'Resi tidak ditemukan atau bukan tanggung jawab cabang Anda.' USING ERRCODE = '42501'; END IF;
   IF s.status IN ('CANCELLED','DELIVERED') THEN RAISE EXCEPTION 'Resi ini sudah selesai atau dibatalkan.'; END IF;
-  IF coalesce(p_internal, false) AND p_vendor IS NOT NULL THEN RAISE EXCEPTION 'Pilih vendor atau armada internal, tidak keduanya.'; END IF;
-  IF NOT coalesce(p_internal, false) AND p_vendor IS NULL THEN RAISE EXCEPTION 'Pilih vendor, atau centang armada internal.'; END IF;
+  IF coalesce(p_internal, false) AND (p_vendor IS NOT NULL OR vn <> '') THEN RAISE EXCEPTION 'Pilih vendor atau armada internal, tidak keduanya.'; END IF;
+  IF NOT coalesce(p_internal, false) AND p_vendor IS NULL AND vn = '' THEN RAISE EXCEPTION 'Isi nama vendor, atau centang armada internal.'; END IF;
+  -- Nama vendor diketik manual: pakai vendor yang sudah pernah dicatat (huruf besar kecil diabaikan), atau catat otomatis sebagai vendor baru.
+  IF vid IS NULL AND vn <> '' THEN
+    IF length(vn) < 2 OR length(vn) > 120 THEN RAISE EXCEPTION 'Nama vendor diisi 2 sampai 120 huruf.'; END IF;
+    SELECT id INTO vid FROM public.vendors WHERE lower(btrim(name)) = lower(vn) AND status <> 'DITOLAK' ORDER BY (status = 'AKTIF') DESC, created_at LIMIT 1;
+    IF vid IS NULL THEN
+      INSERT INTO public.vendors(name, kind, status, branch_id, proposed_by) VALUES (vn, s.mode, 'AKTIF', public.my_branch(), auth.uid()) RETURNING id INTO vid;
+      PERFORM public.log_audit('mv_vendor_otomatis', 'vendors', vid, NULL, jsonb_build_object('name', vn, 'kind', s.mode));
+    END IF;
+  END IF;
   IF length(coalesce(p_driver, '')) > 80 OR length(coalesce(p_plate, '')) > 20 OR length(coalesce(p_note, '')) > 300 THEN RAISE EXCEPTION 'Isian sopir, nomor polisi, atau catatan terlalu panjang.'; END IF;
-  IF p_vendor IS NOT NULL THEN
-    SELECT * INTO v FROM public.vendors WHERE id = p_vendor;
+  IF vid IS NOT NULL THEN
+    SELECT * INTO v FROM public.vendors WHERE id = vid;
     IF NOT FOUND THEN RAISE EXCEPTION 'Vendor tidak ditemukan.'; END IF;
-    IF v.status <> 'AKTIF' OR v.verified_at IS NULL THEN RAISE EXCEPTION 'Vendor belum aktif atau belum diverifikasi MV Master.'; END IF;
+    IF v.status <> 'AKTIF' THEN RAISE EXCEPTION 'Vendor ini dinonaktifkan atau ditolak. Pilih vendor lain atau minta MV Master mengaktifkannya.'; END IF;
     IF v.kind <> 'MULTI' AND v.kind <> s.mode THEN RAISE EXCEPTION 'Vendor ini melayani moda %, bukan %.', lower(v.kind), lower(s.mode); END IF;
     SELECT count(*), bool_or((r.origin_id IS NULL OR r.origin_id = s.origin_id)
         AND (r.region_code IS NULL OR EXISTS (SELECT 1 FROM public.tracking_regions tr WHERE tr.code = r.region_code AND public._wilayah_cocok(s.dest_province, s.dest_regency, tr))))
-      INTO n_routes, ok_route FROM public.vendor_routes r WHERE r.vendor_id = p_vendor AND r.mode = s.mode AND r.active;
+      INTO n_routes, ok_route FROM public.vendor_routes r WHERE r.vendor_id = vid AND r.mode = s.mode AND r.active;
     IF n_routes > 0 AND NOT coalesce(ok_route, false) THEN RAISE EXCEPTION 'Vendor ini belum memiliki rute untuk asal dan wilayah tujuan resi ini.'; END IF;
   END IF;
   SELECT * INTO a FROM public.shipment_allocations WHERE shipment_id = p_shipment AND mode = s.mode FOR UPDATE;
@@ -85,14 +94,14 @@ BEGIN
     IF a.hpp_locked THEN RAISE EXCEPTION 'HPP sudah dicocokkan Finance, vendor tidak bisa diganti. Minta MV Master membuka kuncinya.'; END IF;
     IF a.status IN ('BERANGKAT','TIBA','SELESAI') THEN RAISE EXCEPTION 'Barang sudah berangkat, vendor tidak bisa diganti.'; END IF;
     st := CASE WHEN a.hpp IS NOT NULL THEN 'HPP_DIISI' ELSE 'VENDOR_DIPILIH' END;
-    UPDATE public.shipment_allocations SET vendor_id = p_vendor, internal_fleet = coalesce(p_internal, false), driver_name = nullif(btrim(p_driver), ''), vehicle_plate = nullif(upper(btrim(p_plate)), ''),
+    UPDATE public.shipment_allocations SET vendor_id = vid, internal_fleet = coalesce(p_internal, false), driver_name = nullif(btrim(p_driver), ''), vehicle_plate = nullif(upper(btrim(p_plate)), ''),
       note = nullif(btrim(p_note), ''), status = st, updated_at = now() WHERE id = a.id;
     aid := a.id;
   ELSE
     INSERT INTO public.shipment_allocations(shipment_id, mode, branch_id, vendor_id, internal_fleet, driver_name, vehicle_plate, note, status, owner_user_id)
-    VALUES (p_shipment, s.mode, s.origin_id, p_vendor, coalesce(p_internal, false), nullif(btrim(p_driver), ''), nullif(upper(btrim(p_plate)), ''), nullif(btrim(p_note), ''), 'VENDOR_DIPILIH', auth.uid()) RETURNING id INTO aid;
+    VALUES (p_shipment, s.mode, s.origin_id, vid, coalesce(p_internal, false), nullif(btrim(p_driver), ''), nullif(upper(btrim(p_plate)), ''), nullif(btrim(p_note), ''), 'VENDOR_DIPILIH', auth.uid()) RETURNING id INTO aid;
   END IF;
-  PERFORM public.log_audit('mv_alokasi', 'shipment_allocations', aid, NULL, jsonb_build_object('resi', s.resi_no, 'vendor', v.code, 'internal', coalesce(p_internal, false)));
+  PERFORM public.log_audit('mv_alokasi', 'shipment_allocations', aid, NULL, jsonb_build_object('resi', s.resi_no, 'vendor', (SELECT code FROM public.vendors WHERE id = vid), 'internal', coalesce(p_internal, false)));
   RETURN jsonb_build_object('id', aid);
 END $$;
 
@@ -183,7 +192,7 @@ BEGIN
 END $$;
 
 DO $g$ DECLARE f text; BEGIN
-  FOREACH f IN ARRAY ARRAY['mv_alloc_list(uuid,text,text,text,text,int)','mv_alloc_save(uuid,uuid,boolean,text,text,text)','mv_alloc_set_hpp(uuid,bigint,text)','mv_alloc_status(uuid,text)',
+  FOREACH f IN ARRAY ARRAY['mv_alloc_list(uuid,text,text,text,text,int)','mv_alloc_save(uuid,uuid,boolean,text,text,text,text)','mv_alloc_set_hpp(uuid,bigint,text)','mv_alloc_status(uuid,text)',
                            'hpp_match(uuid,boolean,text)','mv_hpp_history(uuid)','mv_tracking(text,text,uuid,text,int)'] LOOP
     EXECUTE format('REVOKE ALL ON FUNCTION public.%s FROM PUBLIC, anon', f);
     EXECUTE format('GRANT EXECUTE ON FUNCTION public.%s TO authenticated', f);

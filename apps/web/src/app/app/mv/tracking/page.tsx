@@ -57,7 +57,7 @@ export default async function Tracking({ searchParams }: { searchParams: Promise
       ) : (
         <Potong batas={10} satuan="resi" kelas="mvlist" items={items.map((x) => (
           <div key={x.shipmentId} className="card mvtrk">
-            <div className="mvtrk-a"><b className="mvno">{x.resiNo}</b><span className="pill">{STATUS_LABEL[x.status as AnyStatus] ?? x.status}</span></div>
+            <div className="mvtrk-a"><Link href={`/app/resi/${x.shipmentId}`} className="mvno" aria-label={`Buka resi ${x.resiNo}`}><b>{x.resiNo}</b></Link><span className="pill">{STATUS_LABEL[x.status as AnyStatus] ?? x.status}</span></div>
             <small className="muted">{x.origin} → {x.dest}</small>
             <small className="muted">Wilayah {x.region}{x.destProvince ? ` · ${x.destRegency ? x.destRegency + ", " : ""}${x.destProvince}` : ""}</small>
             <small>Lokasi terakhir: <b>{x.lokasi ?? "belum tercatat"}</b>{x.lokasiAt ? ` · ${tanggalWaktu(x.lokasiAt)}` : ""}</small>
