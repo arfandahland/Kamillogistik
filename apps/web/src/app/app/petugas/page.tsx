@@ -19,7 +19,7 @@ export default async function Petugas({ searchParams }: { searchParams: Promise<
   return (
     <main className="wrap narrow stack" style={{ paddingTop: 8 }}>
       <BackLink />
-      <h1>Petugas</h1>
+      <div className="pghead"><div><h1>Petugas</h1><p className="muted">Akun kasir, gudang, kurir, dan lainnya. Ketuk satu untuk mengatur status atau kata sandinya.</p></div></div>
       {sp.ok && <div className="ok" role="status">{sp.ok}</div>}{sp.e && <div className="err" role="alert">{sp.e}</div>}{s.error && <div className="err">{s.error}</div>}
       <details className="card admnew" open={!!sp.e}>
         <summary><Icon name="plus" size={20} /> Tambah petugas baru</summary>

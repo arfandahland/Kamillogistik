@@ -43,7 +43,7 @@ export default async function Korporat({ searchParams }: { searchParams: Promise
   return (
     <main className="wrap narrow stack" style={{ paddingTop: 8 }}>
       <BackLink />
-      <div><h1 style={{ marginBottom: 2 }}>Pelanggan korporat</h1><p className="muted" style={{ margin: 0 }}>Perusahaan langganan dengan tempo bayar, batas kredit, dan tarif khusus. Kasir memilihnya saat membuat resi.</p></div>
+      <div className="pghead"><div><h1>Pelanggan korporat</h1><p className="muted">Perusahaan langganan dengan tempo bayar, batas kredit, dan tarif khusus. Kasir memilihnya saat membuat resi.</p></div></div>
       {sp.e && <div className="err" role="alert">{sp.e}</div>}
       {r.error && <div className="err">{r.error}</div>}
       <details className="card admnew" open={!!sp.e}><summary><Icon name="plus" size={20} /> Daftarkan pelanggan korporat</summary>

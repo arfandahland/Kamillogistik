@@ -30,7 +30,7 @@ export default function StaffHome({ rows, stats, pending, tab, q, canCreate, err
   const hasSide = buatDiSini || pending.length > 0;
   return (
     <main className={`wrap stack home ${hubMode ? "dashhome" : ""}`}>
-      {!hubMode && <h1 className="sr-only">Beranda petugas</h1>}
+      {!hubMode && !hideStats && <h1 className="sr-only">Beranda petugas</h1>}
       {followup != null && (
         <Link href="/app/tindak-lanjut" className={`homebadge ${followup === 0 ? "zero" : ""}`}>
           <span className="n">{followup === 0 ? <Icon name="check" size={24} /> : followup}</span>
@@ -64,7 +64,9 @@ export default function StaffHome({ rows, stats, pending, tab, q, canCreate, err
         </aside>}
 
         {!hideList && <section className="listcol stack">
-          <h2 style={{ margin: "6px 2px -4px" }}>{title}</h2>
+          {hideStats
+            ? <div className="pghead"><div><h1>{title}</h1><p className="muted">Semua resi dari seluruh cabang. Ketuk satu resi untuk melihat rinciannya.</p></div></div>
+            : <h2 style={{ margin: "6px 2px -4px" }}>{title}</h2>}
           <form className="card searchcard">
             <Icon name="search" size={20} className="ico sicon" />
             <input name="q" defaultValue={q} placeholder="Cari nomor resi atau nama" enterKeyHint="search" aria-label="Cari" />

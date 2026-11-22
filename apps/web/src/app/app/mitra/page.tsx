@@ -44,7 +44,7 @@ export default async function Mitra({ searchParams }: { searchParams: Promise<{ 
   return (
     <main className="wrap narrow stack" style={{ paddingTop: 8 }}>
       <BackLink />
-      <h1>Mitra dan cabang</h1>
+      <div className="pghead"><div><h1>Mitra dan cabang</h1><p className="muted">Gerai mitra, gudang, rekanan, dan pelabuhan beserta komisinya. Ketuk satu untuk mengubah.</p></div></div>
       {sp.ok && <div className="ok" role="status">{sp.ok}</div>}{sp.e && <div className="err" role="alert">{sp.e}</div>}{r.error && <div className="err">{r.error}</div>}
       <details className="card admnew" open={!!sp.e}><summary><Icon name="plus" size={20} /> Daftarkan mitra atau cabang baru</summary><Form ok /></details>
       <div className="stagger">
