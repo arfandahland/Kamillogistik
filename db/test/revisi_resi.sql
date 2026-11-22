@@ -214,3 +214,20 @@ END $$;
 SELECT t.as_user('00000000-0000-0000-0000-000000000002');
 SELECT t.fails($$select public.measure_item(current_setting('t.tbno') || '-01', 5)$$, 'izin');
 SELECT 'timbang_cepat OK' AS hasil;
+-- 048: profil saya (lihat + ubah nama dan WhatsApp sendiri)
+SELECT t.as_user('00000000-0000-0000-0000-000000000002');   -- kasir Jakarta
+DO $$ DECLARE p jsonb; BEGIN
+  p := public.my_profile();
+  ASSERT p->>'role' = 'MITRA_POS' AND p->>'name' IS NOT NULL AND p->>'branchName' IS NOT NULL, 'profil terbaca: ' || p::text;
+  PERFORM public.my_profile_update('  Kasir   Baru  ', '0812-3456-7001');
+  p := public.my_profile();
+  ASSERT p->>'name' = 'Kasir Baru' AND p->>'phone' = '6281234567001', 'nama dirapikan, nomor dinormalkan: ' || p::text;
+END $$;
+RESET ROLE;
+DO $$ BEGIN ASSERT EXISTS (SELECT 1 FROM public.audit_logs WHERE action = 'UBAH_PROFIL'), 'tercatat di catatan aktivitas'; END $$;
+SELECT t.as_user('00000000-0000-0000-0000-000000000002');
+SELECT t.fails($$select public.my_profile_update('A', '0812')$$, 'Nama lengkap');
+SELECT t.fails($$select public.my_profile_update('Nama Sah', '123')$$, 'tidak valid');
+SELECT t.as_user('00000000-0000-0000-0000-00000000000c');   -- kepala gudang: nomor yang sama sudah dipakai kasir
+SELECT t.fails($$select public.my_profile_update('Kepala Gudang', '081234567001')$$, 'sudah dipakai');
+SELECT 'profil_saya OK' AS hasil;

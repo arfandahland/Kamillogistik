@@ -1172,6 +1172,14 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("AE1 petugas bisa absen masuk dari menu Akun", /Absen masuk tercatat/.test(await pesan(kk.page)));
     await act(kk.page, kk.page.getByRole("button", { name: "Absen pulang" }));
     ok("AE2 petugas bisa absen pulang", /Absen pulang tercatat/.test(await pesan(kk.page)));
+    // Profil: ubah nama dan WhatsApp sendiri
+    await kk.page.goto(`${BASE}/app/akun`, { waitUntil: "networkidle" });
+    ok("AM1 halaman Akun memuat data akun, ubah profil, dan keamanan", /Data akun/.test(await text(kk.page)) && await kk.page.locator("#akun-nama").count() === 1 && /Keamanan/.test(await text(kk.page)));
+    await kk.page.fill("#akun-nama", "Kurir  Jakarta Baru"); await kk.page.fill("#akun-hp", "0812-9000-1234");
+    await act(kk.page, kk.page.getByRole("button", { name: "Simpan profil" }));
+    ok("AM2 profil tersimpan, nama dirapikan dan nomor ditampilkan", /Profil sudah disimpan/.test(await pesan(kk.page)) && /Kurir Jakarta Baru/.test(await text(kk.page)) && /0812 9000 1234/.test(await text(kk.page)));
+    await kk.page.fill("#akun-nama", "K"); await act(kk.page, kk.page.getByRole("button", { name: "Simpan profil" }));
+    ok("AM3 nama terlalu pendek ditolak (validasi peramban atau server)", await kk.page.locator("#akun-nama").evaluate((e) => !e.validity.valid) || /Nama lengkap/.test(await pesan(kk.page)));
     await kk.page.fill("#cuti-dari", iso(5)); await kk.page.fill("#cuti-sampai", iso(6)); await kk.page.fill("#cuti-alasan", "Acara keluarga di Makassar");
     await act(kk.page, kk.page.getByRole("button", { name: "Kirim pengajuan" }));
     ok("AE3 pengajuan cuti terkirim dan tampil menunggu keputusan", /Pengajuan terkirim/.test(await pesan(kk.page)) && /Menunggu keputusan/.test(await kk.page.locator("main").innerText()));

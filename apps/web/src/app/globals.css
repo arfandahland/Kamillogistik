@@ -1444,3 +1444,14 @@ details.admnew > .hint { padding: 0 18px 18px; margin: 0; }
 .rk-isi > .card, .rk-isi .hubcard { box-shadow: none; }
 .rk-isi .hubgrid > * { margin-bottom: 12px; }
 @media (min-width: 1024px) { .potong.hpsaja { display: none; } }
+
+/* Halaman Akun saya */
+.akunid { display: flex; align-items: center; gap: 14px; }
+.akunav { width: 60px; height: 60px; font-size: 22px; flex: none; }
+.akunnama { min-width: 0; } .akunnama h2 { margin: 0 0 8px; font-size: 20px; overflow-wrap: anywhere; }
+.akungrid { display: grid; grid-template-columns: 1fr; gap: 16px; align-items: start; }
+.akungrid > * { margin: 0; min-width: 0; }
+.akunform { display: grid; gap: 12px; }
+.akunaksi { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } .akunaksi > * { margin: 0; } .akunaksi .btn { width: 100%; }
+@media (max-width: 420px) { .akunaksi { grid-template-columns: 1fr; } .infogrid { grid-template-columns: 1fr; } }
+@media (min-width: 900px) { .akungrid { grid-template-columns: 1.15fr 1fr; } main.wrap.narrow:has(.akungrid) { max-width: 960px; } }
