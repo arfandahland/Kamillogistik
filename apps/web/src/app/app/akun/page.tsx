@@ -15,7 +15,7 @@ type Profil = { userId: string; name: string; email: string | null; phone: strin
 
 const tgl = (iso: string | null) => (iso ? new Date(iso).toLocaleDateString("id-ID", { timeZone: "Asia/Makassar", day: "numeric", month: "long", year: "numeric" }) : "-");
 const tglJam = (iso: string | null) => (iso ? new Date(iso).toLocaleString("id-ID", { timeZone: "Asia/Makassar", day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }).replace(".", ":") + " WITA" : "Belum tercatat");
-const hpTampil = (p: string | null) => (p ? "0" + p.replace(/^62/, "").replace(/(\d{3,4})(\d{3,4})(\d+)/, "$1 $2 $3") : "");
+const hpTampil = (p: string | null) => (p ? ("0" + p.replace(/^62/, "")).replace(/(\d{4})(?=\d)/g, "$1 ") : "");
 const inisial = (n: string) => n.split(/\s+/).filter(Boolean).slice(0, 2).map((x) => x[0]!.toUpperCase()).join("");
 
 export default async function Akun({ searchParams }: { searchParams: Promise<{ e?: string; ok?: string }> }) {
