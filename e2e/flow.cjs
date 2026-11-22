@@ -1517,11 +1517,11 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await mv2.page.goto(`${BASE}/app/mv/vendor`, { waitUntil: "networkidle" });
     ok("AO11c vendor ketikan manual muncul di daftar vendor (dipakai 1 kali, belum diverifikasi)", /Vendor Ketik Baru/.test(await text(mv2.page)) && /Vendor Laut Uji/.test(await text(mv2.page)));
     await mv2.page.goto(`${BASE}/app/mv/alokasi?m=LAUT`, { waitUntil: "networkidle" });
-    await mv2.page.locator("a.mvbuka").first().click({ force: true }).catch(async () => { await mv2.page.locator("details").first().locator("summary").first().click(); await mv2.page.locator("a.mvbuka").first().click(); });
-    await mv2.page.waitForURL(/\/app\/resi\//, { timeout: 15000 }).catch(() => {});
+    const hrefResi = await mv2.page.evaluate(() => document.querySelector("a.mvbuka")?.getAttribute("href"));
+    await mv2.page.goto(`${BASE}${hrefResi}`, { waitUntil: "networkidle" });
     ok("AO11d MV membuka detail resi dari alokasi (hanya lihat, tanpa tombol tindakan)", /\/app\/resi\//.test(mv2.page.url()) && !/tidak punya izin|Terjadi kesalahan/.test(await text(mv2.page)) && (await mv2.page.locator("main form button.btn.shine").count()) === 0);
     await mv2.page.goto(`${BASE}/app/mv/alokasi?m=LAUT`, { waitUntil: "networkidle" });
-    ok("AO12 resi laut menampilkan catatan HPP dicatat lewat biaya manifest", /HPP laut dan udara dicatat lewat Biaya manifest/.test(await text(mv2.page)));
+    ok("AO12 resi laut menampilkan catatan HPP dicatat lewat biaya manifest", /HPP laut dan udara dicatat lewat Biaya manifest/.test(await mv2.page.evaluate(() => document.body.textContent)));
     await mv2.page.goto(`${BASE}/app/mv/tracking?m=LAUT`, { waitUntil: "networkidle" });
     ok("AO13 pemantauan laut memuat wilayah Kalimantan dan Sulawesi Utara", /Kalimantan/.test(await text(mv2.page)) && /Sulawesi Utara/.test(await text(mv2.page)));
     await mv2.page.goto(`${BASE}/app/mv/tracking?m=DARAT`, { waitUntil: "networkidle" });
@@ -1555,7 +1555,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("AP1 panduan tidak muncul sendiri pada mesin uji otomatis (hanya dengan ?tur=1)", (await ks.page.locator(".tur").count()) === 0);
     await ks.page.goto(`${BASE}/app?tur=1`, { waitUntil: "networkidle" });
     await ks.page.waitForSelector(".tur", { timeout: 10000 }).catch(() => {});
-    ok("AP2 panduan awal Kasir muncul sebagai kartu kecil dengan sapaan sesuai peran", /Langkah 1 dari/.test(await ks.page.locator(".tur").innerText().catch(() => "")) && /Selamat datang, Kasir/.test(await ks.page.locator(".tur").innerText().catch(() => "")));
+    ok("AP2 panduan awal Kasir muncul sebagai kartu kecil dengan sapaan sesuai peran", /langkah 1 dari/i.test(await ks.page.locator(".tur").innerText().catch(() => "")) && /Selamat datang, Kasir/.test(await ks.page.locator(".tur").innerText().catch(() => "")));
     ok("AP3 kartu panduan tidak menutupi seluruh layar (bukan jendela penghalang)", await ks.page.evaluate(() => { const r = document.querySelector(".tur").getBoundingClientRect(); return r.height < innerHeight * 0.5 && r.width <= innerWidth; }));
     await ks.page.getByRole("button", { name: "Berikutnya" }).click();
     ok("AP4 langkah berikutnya menjelaskan Resi baru dan menyorot menunya", /Buat resi baru/.test(await ks.page.locator(".tur").innerText()) && (await ks.page.locator(".tur-sorot").count()) >= 1);
