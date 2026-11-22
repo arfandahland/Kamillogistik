@@ -19,7 +19,7 @@ export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: { absolute: "Kamil Logistik: Jasa Ekspedisi & Cargo Murah ke Seluruh Indonesia" },
-  description: "Jasa ekspedisi dan cargo darat, laut, udara ke seluruh Indonesia: Jawa, Sumatera, Kalimantan, Sulawesi, Maluku, Papua. Tarif transparan, hitung ongkir sendiri, lacak resi tanpa login, invoice resmi.",
+  description: "Jasa ekspedisi dan cargo darat, laut, udara ke seluruh Indonesia: Jawa, Sumatera, Kalimantan, Sulawesi, Maluku, Maluku Utara, Papua. Kirim mobil, motor, alat berat, pindahan, alat kesehatan, bahan bangunan. Resi bisa dilacak.",
   alternates: { canonical: "/" },
   openGraph: { type: "website", locale: "id_ID", siteName: "Kamil Logistik", title: "Kamil Logistik: Kirim Barang ke Seluruh Indonesia, Murah dan Bisa Dipantau", description: "Cargo darat, laut, dan udara. Tarif transparan, hitung ongkir sendiri, lacak resi tanpa login.", images: ["/og.png"] },
   twitter: { card: "summary_large_image", title: "Kamil Logistik: Kirim Barang ke Seluruh Indonesia", description: "Cargo darat, laut, dan udara. Tarif transparan, lacak resi tanpa login.", images: ["/og.png"] },
@@ -33,9 +33,27 @@ const LAYANAN = [
   { icon: "building", t: "Korporat", d: "Tempo dan tarif khusus", href: "/layanan/cargo-logistik-bisnis" },
 ];
 
+const KIRIM = [
+  { icon: "truck", t: "Mobil dan motor", d: "Kirim kendaraan antar pulau, aman dan terdokumentasi.", href: "/layanan/kirim-kendaraan" },
+  { icon: "box", t: "Alat berat", d: "Excavator, loader, dan alat proyek lainnya.", href: "/layanan/kirim-alat-berat" },
+  { icon: "home", t: "Pindahan rumah dan kantor", d: "Dalam kota, luar kota, sampai antar pulau.", href: "/layanan/pindahan-relokasi" },
+  { icon: "building", t: "Produk perusahaan", d: "Pengiriman rutin dengan tempo bayar dan tarif khusus.", href: "/layanan/cargo-logistik-bisnis" },
+  { icon: "shield", t: "Alat kesehatan", d: "Peralatan klinik dan perlengkapan medis.", href: "/layanan/kirim-alat-kesehatan" },
+  { icon: "layers", t: "Bahan bangunan dan stok toko", d: "Material dan barang dagangan dalam jumlah besar.", href: "/layanan/kirim-bahan-bangunan-dan-stok-toko" },
+];
+const JANGKAUAN = [
+  { n: "Sumatera", k: "Medan, Pekanbaru, Padang, Palembang, Batam, Jambi, Lampung, Banda Aceh" },
+  { n: "Jawa", k: "Jakarta, Bandung, Semarang, Yogyakarta, Surabaya, Malang, Banten" },
+  { n: "Kalimantan", k: "Pontianak, Banjarmasin, Balikpapan, Samarinda, Palangkaraya, Tarakan" },
+  { n: "Sulawesi", k: "Makassar, Manado, Palu, Kendari, Gorontalo, Mamuju, Morowali" },
+  { n: "Maluku dan Maluku Utara", k: "Ambon, Ternate, Tidore, Sofifi, Tual" },
+  { n: "Papua", k: "Jayapura, Sorong, Manokwari, Timika, Merauke, Biak" },
+  { n: "Bali dan Nusa Tenggara", k: "Denpasar, Mataram, Kupang, Labuan Bajo" },
+];
+
 const USP = [
   { icon: "calc", t: "Harga transparan", d: "Hitung ongkir sendiri, rumusnya sama dengan gudang." },
-  { icon: "scan", t: "Pantau dan pindai", d: "Lacak lewat kode resi atau pindai QR di struk." },
+  { icon: "scan", t: "Aplikasi pelacakan yang jelas", d: "Lacak lewat kode resi atau pindai QR di struk. Setiap tahap tercatat." },
   { icon: "file", t: "Invoice resmi", d: "Terbit otomatis setelah barang ditimbang." },
   { icon: "layers", t: "Tercatat tiap tahap", d: "Setiap serah terima barang dikonfirmasi petugas." },
   { icon: "pin", t: "Bukti terima", d: "Foto, tanda tangan, dan lokasi penerima." },
@@ -105,6 +123,24 @@ export default async function Home() {
           <ul className="svcchips">
             {LAYANAN.map((l) => <li key={l.t} className="rv"><span className="si"><Icon name={l.icon} size={22} /></span><b>{l.t}</b><small>{l.d}</small><Link href={l.href} className="stretch" aria-label={`Layanan ${l.t}: ${l.d}`} /></li>)}
           </ul>
+        </section>
+
+        <section aria-labelledby="kirimapa">
+          <h2 id="kirimapa" className="sech">Kami kirim apa saja, dari rumah sampai proyek</h2>
+          <p className="muted" style={{ margin: "0 0 12px" }}>Mobil, motor, alat berat, pindahan rumah, produk perusahaan, alat kesehatan, bahan bangunan, sampai stok toko. Satu jaringan, satu nomor resi, satu halaman pelacakan.</p>
+          <div className="bento">
+            {KIRIM.map((u) => (
+              <Link href={u.href} className="tile rv" key={u.t}><span className="si"><Icon name={u.icon} size={22} /></span><h3>{u.t}</h3><p>{u.d}</p></Link>
+            ))}
+          </div>
+        </section>
+
+        <section aria-labelledby="jangkauan">
+          <h2 id="jangkauan" className="sech">Melayani pengiriman ke seluruh Indonesia</h2>
+          <p className="muted" style={{ margin: "0 0 12px" }}>Dari Sabang sampai Merauke, lewat gudang kami di Jakarta, Makassar, dan Surabaya dan jaringan mitra. Tarif rute populer ada di halaman <Link href="/ekspedisi">Ekspedisi</Link>. Untuk kota lain, tanyakan lewat WhatsApp.</p>
+          <div className="jangkau">
+            {JANGKAUAN.map((j) => (<div className="card rv" key={j.n}><h3>{j.n}</h3><p>{j.k}, dan kota lainnya.</p></div>))}
+          </div>
         </section>
 
         {pairs.length > 0 && (

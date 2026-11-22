@@ -24,9 +24,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/[slug]/opengraph-image.tsx": {
-    "mtime": 1795087761.9610584,
-    "seen": 1795104170.4403377,
-    "ast_hash": "d99d8aa7684f2a132ad4cd70c2131766",
+    "mtime": 1795316517.3472464,
+    "seen": 1795316645.8151457,
+    "ast_hash": "13f4ef4d28dbd0f5666d06f43fc57623",
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/[slug]/page.tsx": {
@@ -36,9 +36,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/ekspedisi/page.tsx": {
-    "mtime": 1794995325.0653653,
-    "seen": 1795104170.4403405,
-    "ast_hash": "f851d9734f44f3bc230b38239c98c7ed",
+    "mtime": 1795316517.34685,
+    "seen": 1795316645.8151515,
+    "ast_hash": "e0dbc9197daeb6fba55d4bd9403e4d31",
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/karir/aksi.ts": {
@@ -114,15 +114,15 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/page.tsx": {
-    "mtime": 1795130312.5655973,
-    "seen": 1795131649.710592,
-    "ast_hash": "0926a13bf7d6bad939200b29a4813aab",
+    "mtime": 1795316517.3461134,
+    "seen": 1795316645.815179,
+    "ast_hash": "1f78c5c55e9418af8ac8f29c50b5b055",
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/panduan/[slug]/page.tsx": {
-    "mtime": 1795096723.5352838,
-    "seen": 1795104170.440354,
-    "ast_hash": "138973afd7d5b07a28f5d9f13d61cda9",
+    "mtime": 1795316532.4552617,
+    "seen": 1795316645.81518,
+    "ast_hash": "9519fbd5bfa3bb36e95a362dae8f411f",
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/panduan/page.tsx": {
@@ -138,9 +138,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/tentang/page.tsx": {
-    "mtime": 1795185930.0819054,
-    "seen": 1795186434.3322303,
-    "ast_hash": "748bef256cbbdf2199f37e6c637d8f25",
+    "mtime": 1795316517.3473792,
+    "seen": 1795316645.8151844,
+    "ast_hash": "e17beea88c59f9a6ac2ee698ab824461",
     "semantic_hash": ""
   },
   "apps/web/src/app/api/chat/route.ts": {
@@ -474,9 +474,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/layout.tsx": {
-    "mtime": 1794976575.0488806,
-    "seen": 1795104170.4404151,
-    "ast_hash": "ae4794759d0f12c192cd9b60fa071582",
+    "mtime": 1795316607.5005765,
+    "seen": 1795316645.8152757,
+    "ast_hash": "84adff5e5faa6183bb7fbc9268763607",
     "semantic_hash": ""
   },
   "apps/web/src/app/llms.txt/route.ts": {
@@ -486,9 +486,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/manifest.ts": {
-    "mtime": 1794961600.411155,
-    "seen": 1795104170.4404168,
-    "ast_hash": "beeca3b7285097223462c13875e97b5c",
+    "mtime": 1795316517.346504,
+    "seen": 1795316645.8152785,
+    "ast_hash": "fb974b50bc888fb57b943d4d112375fd",
     "semantic_hash": ""
   },
   "apps/web/src/app/masuk/page.tsx": {
@@ -822,9 +822,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/lib/panduan.tsx": {
-    "mtime": 1795240892.6383018,
-    "seen": 1795243225.5886986,
-    "ast_hash": "d76da8cc5caf4aab134d87f383ac6cf1",
+    "mtime": 1795316554.2378128,
+    "seen": 1795316645.8153806,
+    "ast_hash": "33e6c09d4f095877070b3810018eb92d",
     "semantic_hash": ""
   },
   "apps/web/src/lib/publicRpc.ts": {
@@ -846,9 +846,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/lib/seo.ts": {
-    "mtime": 1795185805.173582,
-    "seen": 1795186434.3348198,
-    "ast_hash": "528b632a9e4ae772a533b5392032fc94",
+    "mtime": 1795316517.3484952,
+    "seen": 1795316645.8153846,
+    "ast_hash": "529a5531af8464940af9374de68810f4",
     "semantic_hash": ""
   },
   "apps/web/src/lib/site.ts": {
@@ -924,9 +924,9 @@
     "semantic_hash": ""
   },
   "e2e/flow.cjs": {
-    "mtime": 1795310187.2209857,
-    "seen": 1795310271.241069,
-    "ast_hash": "9252d8f1881b4a6b76da1f45eea37fe7",
+    "mtime": 1795316528.8402798,
+    "seen": 1795316645.81547,
+    "ast_hash": "ac6da95349afd72a8cfe49fd041dfa47",
     "semantic_hash": ""
   },
   "e2e/kamera.cjs": {
@@ -1308,21 +1308,21 @@
     "semantic_hash": ""
   },
   "apps/web/public/og.png": {
-    "mtime": 1794968995.4469898,
-    "seen": 1795104170.440539,
-    "ast_hash": "8e7c1f25ca8dbfb2a265cedfa3a22c40",
+    "mtime": 1795316489.0395043,
+    "seen": 1795316645.8155415,
+    "ast_hash": "8defb3ca87a4dd119481114731c86e8d",
     "semantic_hash": ""
   },
   "apps/web/src/app/apple-icon.png": {
-    "mtime": 1794961425.8079588,
-    "seen": 1795104170.4405398,
-    "ast_hash": "ed9445f8332ab32323f7aafa294c75d2",
+    "mtime": 1795316488.2915041,
+    "seen": 1795316645.8155425,
+    "ast_hash": "f08a5b223ef18c3f00fb73b0d95e6878",
     "semantic_hash": ""
   },
   "apps/web/src/app/icon.png": {
-    "mtime": 1794961425.7719588,
-    "seen": 1795104170.4405408,
-    "ast_hash": "63fc52156bdfd7d9e1f777f08f563f69",
+    "mtime": 1795316488.2675042,
+    "seen": 1795316645.8155434,
+    "ast_hash": "a82faa95b02878db4537e4ab489f68f1",
     "semantic_hash": ""
   },
   "db/data/pricelist_2026.sql": {
@@ -1584,9 +1584,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/mitra/page.tsx": {
-    "mtime": 1795117597.9563036,
-    "seen": 1795118851.6301448,
-    "ast_hash": "02b401a7e213bef8fd96e860fbb6dac7",
+    "mtime": 1795316517.3471224,
+    "seen": 1795316645.8151758,
+    "ast_hash": "79d093f3ec17a2da8804527621024283",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/calon-mitra/actions.ts": {
@@ -1728,9 +1728,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/jadwal/page.tsx": {
-    "mtime": 1795130241.5451992,
-    "seen": 1795131649.7105556,
-    "ast_hash": "9c01dab944ca3ca9a6bdaa6d33c087f9",
+    "mtime": 1795316517.3466306,
+    "seen": 1795316645.815153,
+    "ast_hash": "1ef4ed8855ec8bc1ccc15ebbf216ca43",
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/layanan/[slug]/page.tsx": {
@@ -1770,15 +1770,15 @@
     "semantic_hash": ""
   },
   "apps/web/src/lib/layanan.ts": {
-    "mtime": 1795130110.1766756,
-    "seen": 1795131649.7108238,
-    "ast_hash": "ef3565332e721641c1d7e4b78b771850",
+    "mtime": 1795316517.3475282,
+    "seen": 1795316645.8153777,
+    "ast_hash": "f0cd29624a113b180fadf3736a46f9d6",
     "semantic_hash": ""
   },
   "apps/web/src/lib/perusahaan.ts": {
-    "mtime": 1795185791.529783,
-    "seen": 1795186434.3347504,
-    "ast_hash": "512732bcff7344a79588fcc96f8d3e50",
+    "mtime": 1795316517.3481674,
+    "seen": 1795316645.8153813,
+    "ast_hash": "a5275a311b42984077e44b5ac0a66800",
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/jemput/aksi.ts": {
@@ -8799,6 +8799,12 @@
     "mtime": 1795309213.593209,
     "seen": 1795310843.8987412,
     "ast_hash": "f3992890c7260188eeff6b3be1e49343",
+    "semantic_hash": ""
+  },
+  "apps/web/public/logo-square.png": {
+    "mtime": 1795316488.239504,
+    "seen": 1795316645.8155386,
+    "ast_hash": "a82faa95b02878db4537e4ab489f68f1",
     "semantic_hash": ""
   },
   "package-lock.json": {

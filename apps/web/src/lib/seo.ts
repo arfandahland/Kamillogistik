@@ -16,7 +16,7 @@ export const organizationLd = () => ({
   member: undefined,
   location: PERUSAHAAN.kantor.map((k) => ({ "@type": "Place", name: k.nama, address: { "@type": "PostalAddress", streetAddress: k.jalan, addressLocality: k.wilayah, addressRegion: k.provinsi, postalCode: k.pos, addressCountry: "ID" }, hasMap: petaUrl(k) })),
   areaServed: PERUSAHAAN.jangkauan.map((n) => ({ "@type": "AdministrativeArea", name: n })),
-  knowsAbout: ["ekspedisi", "ekspedisi seluruh Indonesia", "jasa pengiriman barang", "cargo laut", "cargo udara", "cargo darat", "kirim kendaraan", "kirim alat berat", "sewa kontainer", "pindahan", "pergudangan", "konsultasi logistik"],
+  knowsAbout: ["ekspedisi", "ekspedisi seluruh Indonesia", "jasa pengiriman barang", "cargo laut", "cargo udara", "cargo darat", "kirim kendaraan", "kirim alat berat", "kirim alat kesehatan", "kirim bahan bangunan", "pindahan rumah antar pulau", "sewa kontainer", "pindahan", "pergudangan", "konsultasi logistik"],
   sameAs: SOSMED.map((x) => x.url),
   contactPoint: PERUSAHAAN.wa.map((w) => ({ "@type": "ContactPoint", telephone: `+${w.nomor}`, contactType: "customer service", areaServed: "ID", availableLanguage: ["Indonesian"] })),
   hasOfferCatalog: { "@type": "OfferCatalog", name: "Layanan Kamil Logistik", itemListElement: LAYANAN.map((l) => ({ "@type": "Offer", itemOffered: { "@type": "Service", name: l.judul, url: abs(`/layanan/${l.slug}`) } })) },

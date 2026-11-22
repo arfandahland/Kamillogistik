@@ -28,7 +28,7 @@ export const PERUSAHAAN = {
     { kota: "Makassar", nama: "Pergudangan Tamalanrea", jalan: "Jl. Ir. Sutami No. A2/6, RT 001/RW 06", wilayah: "Parang Loe, Tamalanrea, Kota Makassar", pos: "90244", provinsi: "Sulawesi Selatan", lat: -5.1146, lng: 119.5166 },
     { kota: "Surabaya", nama: "Kantor Cabang Surabaya", jalan: "Jl. Kalimas Baru 1 Blok C-5 No. 29", wilayah: "Perak Utara, Pabean Cantian, Surabaya", pos: "60165", provinsi: "Jawa Timur", lat: -7.2287, lng: 112.7344 },
   ],
-  jangkauan: ["Seluruh Indonesia", "Jawa", "Sumatera", "Kalimantan", "Sulawesi", "Maluku", "Papua", "Bali dan Nusa Tenggara", "Jabodetabek", "Surabaya", "Makassar", "Medan", "Palembang"],
+  jangkauan: ["Seluruh Indonesia", "Jawa", "Sumatera", "Kalimantan", "Sulawesi", "Maluku", "Maluku Utara", "Papua", "Bali dan Nusa Tenggara", "Jabodetabek", "Surabaya", "Makassar", "Medan", "Palembang"],
   visi: "Menjadi perusahaan logistik terkemuka yang memberikan solusi inovatif, cepat, dan handal, serta mendukung pertumbuhan ekonomi dengan memperkuat konektivitas global dan lokal.",
   misi: ["Memberikan layanan berkualitas tinggi", "Mengadopsi teknologi modern yang mendukung keberlanjutan", "Membangun hubungan yang kuat", "Memberdayakan SDM berkualitas", "Meningkatkan jangkauan dan inovasi", "Berkomitmen menjaga kepercayaan konsumen"],
   profil: "Kamil Logistik adalah perusahaan logistik yang hadir untuk memberikan solusi pengiriman dan manajemen rantai pasok bagi pelanggan di seluruh Indonesia. Kami berkomitmen memastikan setiap proses pengiriman dilakukan dengan efisiensi, kecepatan, dan keamanan tinggi.",

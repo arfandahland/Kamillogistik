@@ -501,4 +501,62 @@ export const ARTIKEL: Artikel[] = [
       <p>Lihat <Link href="/ekspedisi">rute dan tarif</Link>, atau langsung <Link href="/ongkir">hitung ongkir</Link>. Pengiriman rutin untuk toko online dibahas di <Link href="/panduan/kirim-barang-online-shop-umkm-ke-sulawesi">panduan UMKM</Link>.</p>
     </>),
   },
+  {
+    slug: "pindahan-rumah-antar-pulau",
+    title: "Pindahan Rumah Antar Pulau: Persiapan, Packing, dan Biaya",
+    heading: "Pindahan rumah antar pulau: persiapan, packing, dan cara menghitung biaya",
+    description: "Panduan pindahan rumah, kantor, dan toko antar kota dan antar pulau: daftar barang, packing, pilihan darat dan laut, serta cara melacak barang pindahan Anda.",
+    updated: "2026-11-22",
+    body: () => (<>
+      <p>Pindahan antar pulau butuh perencanaan lebih panjang dibanding pindahan dalam kota. Barang menempuh jalur darat dan laut, jadi kemasan dan pencatatan sangat penting.</p>
+      <h2>Persiapan</h2>
+      <ol>
+        <li>Buat daftar barang per ruangan, lalu beri nomor pada setiap dus.</li>
+        <li>Pisahkan barang bernilai tinggi dan dokumen penting untuk dibawa sendiri.</li>
+        <li>Bungkus barang pecah belah dengan bantalan dan tandai jelas.</li>
+        <li>Foto kondisi perabot besar sebelum diangkut.</li>
+      </ol>
+      <h2>Biaya dan jadwal</h2>
+      <p>Biaya bergantung pada volume dan berat, jarak, serta layanan tambahan seperti pengepakan. Kirim daftar barang ke tim kami lewat WhatsApp untuk mendapat penawaran. Lihat juga <Link href="/layanan/pindahan-relokasi">layanan pindahan dan relokasi</Link>.</p>
+      <h2>Pantau barang pindahan</h2>
+      <p>Setiap pengiriman punya nomor resi yang bisa <Link href="/lacak">dilacak tanpa login</Link>. Baca <Link href="/panduan/cara-packing-barang-cargo-laut">panduan packing</Link> sebelum mulai mengemas.</p>
+    </>),
+  },
+  {
+    slug: "kirim-alat-kesehatan-antar-pulau",
+    title: "Cara Kirim Alat Kesehatan Antar Kota dan Antar Pulau",
+    heading: "Cara kirim alat kesehatan dan peralatan klinik antar kota dan antar pulau",
+    description: "Tips mengirim alat kesehatan, peralatan klinik, dan perlengkapan medis lewat cargo: kemasan, informasi yang perlu disiapkan, dan pelacakan resi.",
+    updated: "2026-11-22",
+    body: () => (<>
+      <p>Alat kesehatan bernilai tinggi dan sering peka benturan. Persiapan yang baik membuat barang sampai dengan aman dan tepat waktu.</p>
+      <h2>Yang perlu disiapkan</h2>
+      <ul>
+        <li>Jenis, ukuran, berat, dan nilai barang, agar penanganan dan layanan yang dipilih sesuai.</li>
+        <li>Kemasan asli atau pengaman tambahan untuk perangkat yang peka.</li>
+        <li>Nama, alamat lengkap, dan nomor HP penerima, serta dokumen pendukung bila diminta penerima.</li>
+      </ul>
+      <h2>Alur pengiriman</h2>
+      <p>Barang diperiksa dan difoto saat diterima gudang, ditimbang, lalu Anda mendapat nomor resi untuk <Link href="/lacak">pelacakan</Link>. Lihat <Link href="/layanan/kirim-alat-kesehatan">layanan kirim alat kesehatan</Link> atau tanyakan kebutuhan khusus lewat WhatsApp.</p>
+    </>),
+  },
+  {
+    slug: "kirim-bahan-bangunan-dan-stok-toko-antar-pulau",
+    title: "Kirim Bahan Bangunan dan Stok Toko Antar Pulau Lewat Cargo",
+    heading: "Kirim bahan bangunan dan stok toko antar pulau lewat cargo, supaya hemat",
+    description: "Cara menghemat biaya kirim bahan bangunan, material proyek, dan stok toko dalam jumlah besar antar pulau: kelompokkan barang, kemasan, kontainer, dan invoice.",
+    updated: "2026-11-22",
+    body: () => (<>
+      <p>Untuk barang berat dan dalam jumlah besar, cargo biasanya lebih hemat per kilo dibanding kurir paket. Beberapa kebiasaan ini membantu menekan biaya.</p>
+      <h2>Kiat hemat</h2>
+      <ul>
+        <li>Kirim sekaligus dalam jumlah besar ke satu tujuan, bukan sedikit-sedikit.</li>
+        <li>Gunakan palet atau kemasan kuat untuk barang berat dan mudah pecah.</li>
+        <li>Untuk muatan besar, minta perbandingan kontainer. Baca <Link href="/panduan/lcl-atau-fcl-kirim-lewat-kontainer">LCL atau FCL</Link>.</li>
+        <li>Hitung dulu di <Link href="/ongkir">kalkulator ongkir</Link>.</li>
+      </ul>
+      <h2>Pengiriman rutin</h2>
+      <p>Toko dan distributor yang rutin mengirim bisa menanyakan layanan perusahaan: tempo pembayaran, tarif khusus, dan portal untuk melihat resi dan tagihan. Lihat <Link href="/layanan/kirim-bahan-bangunan-dan-stok-toko">layanan kirim bahan bangunan dan stok toko</Link>.</p>
+    </>),
+  },
 ];

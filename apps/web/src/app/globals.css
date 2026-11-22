@@ -1455,3 +1455,8 @@ details.admnew > .hint { padding: 0 18px 18px; margin: 0; }
 .akunaksi { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } .akunaksi > * { margin: 0; } .akunaksi .btn { width: 100%; }
 @media (max-width: 420px) { .akunaksi { grid-template-columns: 1fr; } .infogrid { grid-template-columns: 1fr; } }
 @media (min-width: 900px) { .akungrid { grid-template-columns: 1.15fr 1fr; } main.wrap.narrow:has(.akungrid) { max-width: 960px; } }
+
+/* Beranda: jangkauan nasional */
+.jangkau { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.jangkau .card { margin: 0; padding: 14px 16px; } .jangkau h3 { margin: 0 0 6px; font-size: 16px; } .jangkau p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
+a.tile { display: block; color: inherit; text-decoration: none; }
