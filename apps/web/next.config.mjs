@@ -4,11 +4,15 @@ export default {
   poweredByHeader: false,
   experimental: { serverActions: { bodySizeLimit: "2mb" } },
   async headers() {
-    // Aplikasi tidak memanggil layanan luar dari peramban (semua lewat server), jadi connect-src cukup 'self'.
-    // 'unsafe-inline' pada skrip diperlukan Next.js untuk data awal halaman; sumber skrip luar tetap tertutup.
+    // Aplikasi tidak memanggil layanan luar dari peramban (semua lewat server). Satu-satunya pengecualian adalah
+    // Google Tag Manager dan Google Analytics, yang hanya dimuat di halaman publik (lihat components/GoogleTag.tsx).
+    // 'unsafe-inline' pada skrip diperlukan Next.js untuk data awal halaman; sumber skrip luar lainnya tetap tertutup.
+    const GOOGLE_SCRIPT = "https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com";
+    const GOOGLE_IMG = "https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://*.g.doubleclick.net https://www.google.com";
+    const GOOGLE_CONNECT = "https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.g.doubleclick.net https://www.google.com";
     const csp = [
-      "default-src 'self'", "script-src 'self' 'unsafe-inline'", "style-src 'self' 'unsafe-inline'", "img-src 'self' data: blob:",
-      "font-src 'self'", "connect-src 'self'", "frame-ancestors 'none'", "base-uri 'self'", "form-action 'self'", "object-src 'none'", "manifest-src 'self'",
+      "default-src 'self'", `script-src 'self' 'unsafe-inline' ${GOOGLE_SCRIPT}`, "style-src 'self' 'unsafe-inline'", `img-src 'self' data: blob: ${GOOGLE_IMG}`,
+      "font-src 'self'", `connect-src 'self' ${GOOGLE_CONNECT}`, "frame-src https://www.googletagmanager.com", "frame-ancestors 'none'", "base-uri 'self'", "form-action 'self'", "object-src 'none'", "manifest-src 'self'",
     ].join("; ");
     return [{
       source: "/(.*)",

@@ -22,6 +22,8 @@ export default function Privasi() {
         <p>Hanya untuk memproses pengiriman, menghubungi pengirim dan penerima, menerbitkan invoice, dan menelusuri masalah. Kami tidak menjual data Anda.</p>
         <h2>Yang tampil di halaman publik</h2>
         <p>Halaman cek resi hanya menampilkan rute, tahap pengiriman, dan nama penerima yang disamarkan. Nomor HP, alamat lengkap, harga, nama petugas, dan foto tidak ditampilkan.</p>
+        <h2>Statistik pengunjung</h2>
+        <p>Halaman publik (beranda, layanan, panduan, dan sejenisnya) memakai Google Tag Manager dan Google Analytics untuk statistik pengunjung yang bersifat agregat, misalnya halaman yang dibuka dan tombol yang diklik. Halaman cek resi, portal, invoice, dan aplikasi petugas tidak dikirim ke alat statistik. Anda dapat menolaknya dengan pengaturan peramban atau pemblokir pelacak.</p>
         <h2>Keamanan</h2>
         <p>Sambungan terenkripsi, akses petugas dibatasi sesuai perannya, dan setiap tindakan petugas tercatat.</p>
         <h2>Pertanyaan</h2>

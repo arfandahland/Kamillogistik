@@ -11,6 +11,10 @@ import { PERUSAHAAN } from "@/lib/perusahaan";
 import { BRAND, waLink } from "@/lib/brand";
 import { getRoutePairs } from "@/lib/routes";
 import { kelompokWilayah } from "@kamil/core";
+import GoogleTag from "@/components/GoogleTag";
+
+/** ID kontainer Google Tag Manager dari variabel GTM_ID (server). Kosong atau salah format = tidak ada skrip luar. */
+const GTM_ID = /^GTM-[A-Z0-9]{4,12}$/.test(process.env.GTM_ID ?? "") ? process.env.GTM_ID! : "";
 
 const TABS = [
   { href: "/", label: "Beranda", icon: "home" },
@@ -42,6 +46,7 @@ export default async function PublikLayout({ children }: { children: React.React
           <small>© {new Date().getFullYear()} Kamil Logistik Express</small>
         </div>
       </footer>
+      {GTM_ID && <GoogleTag id={GTM_ID} />}
       <Gerak />
       <AutoLabel />
       <ChatBot />
