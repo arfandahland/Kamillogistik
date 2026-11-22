@@ -8813,6 +8813,12 @@
     "ast_hash": "a074fcdd168e8c0746c80466bab4ee31",
     "semantic_hash": ""
   },
+  "docs/SPEC-DIVISI-MV.md": {
+    "mtime": 1795325177.7678149,
+    "seen": 1795325195.854323,
+    "ast_hash": "2165a1d617cec78adfc16667a60f979d",
+    "semantic_hash": ""
+  },
   "package-lock.json": {
     "mtime": 1794983214.1951408,
     "seen": 1795104170.4405415,

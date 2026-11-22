@@ -68,6 +68,10 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
 
 (async () => {
   const browser = await chromium.launch();
+  // Prefetch tautan latar belakang (Next.js) membuat "networkidle" di peramban uji tidak pernah tercapai. Dibatalkan hanya di uji;
+  // navigasi biasa tidak terpengaruh dan pengguna sungguhan tidak melihat bedanya.
+  const _newContext = browser.newContext.bind(browser);
+  browser.newContext = async (...a) => { const c = await _newContext(...a); await c.route(/[?&]_rsc=/, (r) => (r.request().headers()["next-router-prefetch"] ? r.abort() : r.continue())); return c; };
   let resiNo = "", resiId = "", invoiceLink = "", manifestId = "", manifestCode = "";
 
   console.log("\n[A] Pengunjung (tanpa login)");
@@ -720,9 +724,9 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
   {
     const pc = await browser.newContext({ viewport: { width: 412, height: 860 } }); const p = await pc.newPage();
     await p.goto(`${BASE}/`, { waitUntil: "networkidle" });
-    ok("M1 carousel punya 5 slide", (await p.locator(".cslide").count()) === 5);
+    ok("M1 carousel punya 8 slide", (await p.locator(".cslide").count()) === 8);
     await p.locator(".cdots button").nth(2).click(); await p.waitForTimeout(700);
-    ok("M2 titik carousel menggeser ke slide 3", /Dijemput atau antar sendiri/.test(await p.locator(".cslide.on").innerText()));
+    ok("M2 titik carousel menggeser ke slide 3 (daftar jadi mitra, dengan daftar keuntungan)", /Daftar jadi mitra Kamil Logistik/.test(await p.locator(".cslide.on").innerText()) && (await p.locator(".cslide.on .cpoin li").count()) === 4);
     ok("hanya satu tombol bantuan mengambang (tombol WhatsApp terpisah dihapus)", (await p.locator(".wa-fab").count()) === 0 && (await p.locator(".dialmain").count()) === 1);
     await p.getByRole("button", { name: "Hubungi kami" }).click(); await p.waitForTimeout(500);
     ok("menu bantuan memuat WhatsApp dan asisten", (await p.locator(".dialitem.wa[href^='https://wa.me/']").count()) === 1 && (await p.locator(".dialitem.ai").count()) === 1);
