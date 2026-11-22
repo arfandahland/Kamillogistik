@@ -8,6 +8,8 @@ import ManifestPindai from "@/components/ManifestPindai";
 import { tanggalWaktu } from "@/lib/brand";
 import { getMe, staffRpc } from "@/lib/supabase/server";
 import { terimaSemuaManifest, berangkatManifest, isiVoyage, keluarkanResi, segelManifest, selesaiBongkar, selesaikanSelisih, revisiEta, serahkanManifest, tambahResiForm, terimaManifest, tibaManifest, ubahManifest } from "../actions";
+import Potong from "@/components/Potong";
+import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Manifest" };
 type Place = { code: string; city: string; name: string };
@@ -28,7 +30,7 @@ export default async function ManifestDetail({ params, searchParams }: { params:
   const { id } = await params;
   const sp = await searchParams;
   const [me, r] = await Promise.all([getMe(), staffRpc<M>("manifest_get", { p_id: id })]);
-  if (r.error || !r.data || !me.data) return <main className="wrap section stack"><div className="err">{r.error ?? "Manifest tidak ditemukan."}</div><Link className="btn ghost" href="/app/manifest">← Kembali</Link></main>;
+  if (r.error || !r.data || !me.data) return <main className="wrap section stack"><BackLink href="/app/manifest" /><div className="err">{r.error ?? "Manifest tidak ditemukan."}</div></main>;
   const m = r.data, role = me.data.role, bn = me.data.branchName;
   const wh = role === "WAREHOUSE" || role === "HUB_MANAGER";
   const kepala = role === "HUB_MANAGER"; // data pengangkutan, segel, dan serah ke sopir adalah tugas Kepala gudang
@@ -48,6 +50,7 @@ export default async function ManifestDetail({ params, searchParams }: { params:
 
   return (
     <main className="wrap section stack detail">
+      <BackLink href="/app/manifest" ke="daftar manifest" />
       {sp.ok && <div className="ok" role="status">{sp.ok}</div>}
       {sp.e && <div className="err" role="alert">{sp.e}</div>}
 
@@ -91,10 +94,10 @@ export default async function ManifestDetail({ params, searchParams }: { params:
               <p className="muted" style={{ marginTop: 0 }}>Hanya resi yang sudah ditimbang, tujuan {m.dest.city}, jalur {MODA_LABEL[m.mode].toLowerCase()}.</p>
               <ManifestPindai id={m.id} mode="tambah" />
               {cands.length > 0 && (<><h3 style={{ marginTop: 18 }}>Siap dimuat ({cands.length})</h3>
-                <div className="cand">{cands.map((c) => (
+                <Potong kelas="cand" batas={5} satuan="resi" label="Lihat semua resi siap" items={cands.map((c) => (
                   <form key={c.id} action={tambahResiForm}><input type="hidden" name="id" value={m.id} /><input type="hidden" name="kode" value={c.resiNo} />
                     <span><code style={{ fontSize: 12.5, wordBreak: "break-all" }}>{c.resiNo}</code><br /><small>{c.receiver} · {c.items} barang · {Number(c.kg).toLocaleString("id-ID")} kg</small></span>
-                    <button className="btn ghost sm">Tambah</button></form>))}</div></>)}
+                    <button className="btn ghost sm">Tambah</button></form>))} /></>)}
             </div>
   {kepala && (          <form action={ubahManifest} className="card rbsek">
               <h2 className="cardh">Data pengangkutan</h2><input type="hidden" name="id" value={m.id} />
@@ -214,12 +217,12 @@ export default async function ManifestDetail({ params, searchParams }: { params:
         <div className="card">
           <h2 className="cardh">Isi manifest ({m.totals.resi})</h2>
           {m.shipments.length === 0 ? <p className="muted" style={{ margin: 0 }}>Belum ada resi.</p> : (
-            <ul className="shiplist">{m.shipments.map((s) => (
+            <Potong tag="ul" kelas="shiplist" batas={6} satuan="resi" items={m.shipments.map((s) => (
               <li key={s.id}>
                 <div className="sh1"><span><Link href={`/app/resi/${s.id}`}><code>{s.resiNo}</code></Link><br /><small className="muted">{s.receiver}</small></span>
                   {m.status === "OPEN" && atOrigin && <form action={keluarkanResi}><input type="hidden" name="id" value={m.id} /><input type="hidden" name="resi" value={s.id} /><button className="btn ghost sm" aria-label={`Keluarkan ${s.resiNo}`}>Keluarkan</button></form>}</div>
                 <div className="itemchips">{s.items.map((it) => <span key={it.barcode} className={`itemchip ${m.status === "ARRIVED" || m.status === "UNLOADED" ? (it.scanned ? "ok" : "miss") : ""}`}>{it.barcode.split("-").pop()} · {it.kg != null ? `${Number(it.kg).toLocaleString("id-ID")} kg` : "?"}{m.status === "ARRIVED" || m.status === "UNLOADED" ? (it.scanned ? " ✓" : " ✗") : ""}</span>)}</div>
-              </li>))}</ul>
+              </li>))} />
           )}
         </div>
         </div>

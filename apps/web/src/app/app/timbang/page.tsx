@@ -7,6 +7,7 @@ import { requireRole } from "@/lib/auth";
 import { rupiah } from "@/lib/brand";
 import { staffRpc } from "@/lib/supabase/server";
 import { cariBarangTimbang } from "./actions";
+import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Timbang Barang" };
 export const dynamic = "force-dynamic";
@@ -23,6 +24,7 @@ export default async function Timbang({ searchParams }: { searchParams: Promise<
   const sudah = d ? d.items.filter((x) => x.weightKg != null).length : 0;
   return (
     <main className="wrap narrow section stack tbpage">
+      <BackLink />
       <header className="pghead">
         <div><h1>Timbang barang</h1><p className="muted">Pindai barcode satu barang, isi berat dan ukurannya, simpan. Ulangi sampai semua barang resi tertimbang.</p></div>
       </header>

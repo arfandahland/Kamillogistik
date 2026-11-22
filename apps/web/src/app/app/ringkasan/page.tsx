@@ -4,6 +4,8 @@ import { requireOwnerView } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
 import { rupiah } from "@/lib/brand";
 import Icon from "@/components/Icon";
+import Potong from "@/components/Potong";
+import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Ringkasan Harian" };
 export const dynamic = "force-dynamic";
@@ -30,6 +32,7 @@ export default async function Ringkasan({ searchParams }: { searchParams: Promis
   const teks = d ? `Ringkasan Kamil Logistik, ${judul}\n• Resi baru: ${d.day.created}\n• Sudah diterima pelanggan: ${d.day.delivered}\n• Ongkir ditagih: ${rupiah(d.day.billed)}\n• Uang masuk: ${rupiah(d.day.received)}\n• Barang bermasalah: ${d.day.problems}\n• Tertahan 24 jam+: ${d.pending.stuck}\n• Piutang belum lunas: ${rupiah(d.pending.unpaid)}` : "";
   return (
     <main className="wrap narrow stack" style={{ paddingTop: 8 }}>
+      <BackLink />
       <h1>Ringkasan harian</h1>
       <div className="daynav card">
         <Link href={`/app/ringkasan?tgl=${geser(tgl, -1)}`} className="btn ghost sm" aria-label="Hari sebelumnya">‹</Link>
@@ -59,13 +62,11 @@ export default async function Ringkasan({ searchParams }: { searchParams: Promis
         </div>
       )}
       <h2 style={{ margin: "8px 2px 0" }}>Kinerja mitra dan gudang (30 hari)</h2>
-      <div className="stagger fstack">
-        {(p.data ?? []).map((x) => (
+      <Potong kelas="stagger fstack" batas={4} satuan="mitra dan gudang" items={(p.data ?? []).map((x) => (
           <article key={x.id} className="card hist"><div className="insph"><b>{x.name}</b><small className="muted">{x.city}</small></div>
             <ul className="chg"><li><span>Resi dibuat</span><b>{x.resi}</b></li><li><span>Sudah diterima pelanggan</span><b>{x.delivered}</b></li><li><span>Rata-rata lama kirim</span><b>{x.avgDays == null ? "–" : `${x.avgDays} hari`}</b></li>
               <li><span>Barang bermasalah saat diperiksa</span><b className={x.problems ? "down" : ""}>{x.inspected ? `${x.problems} dari ${x.inspected}` : "–"}</b></li><li><span>Tertahan di sini sekarang</span><b className={x.stuck ? "down" : ""}>{x.stuck}</b></li></ul></article>
-        ))}
-      </div>
+        ))} />
     </main>
   );
 }

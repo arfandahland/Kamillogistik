@@ -5,6 +5,8 @@ import { staffRpc } from "@/lib/supabase/server";
 import { tanggalWaktu } from "@/lib/brand";
 import StatRow from "@/components/StatRow";
 import { requireRole } from "@/lib/auth";
+import Potong from "@/components/Potong";
+import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Kendala Pengiriman" };
 type Row = { id: string; shipmentId: string; resiNo: string; status: string; kind: string; label: string; issueStatus: "OPEN" | "RESOLVED"; note: string; openedBy: string | null; openedAt: string; resolutionNote: string | null; origin: string; dest: string; jam: number };
@@ -19,6 +21,7 @@ export default async function Kendala({ searchParams }: { searchParams: Promise<
   const lama = terbuka.filter((k) => k.jam >= 24).length;
   return (
     <main className="wrap stack" style={{ paddingTop: 8 }}>
+      <BackLink />
       <div className="pghead"><div><h1>Kendala pengiriman</h1><p className="muted">Salah sortir, barang rusak, gagal kirim, retur, dan barang ditahan. Selesaikan dari halaman resinya.</p></div></div>
       <StatRow items={[
         { ikon: "alert", n: terbuka.length, label: "Kendala terbuka", warm: terbuka.length > 0, href: "/app/kendala" },
@@ -30,15 +33,15 @@ export default async function Kendala({ searchParams }: { searchParams: Promise<
         <Link className={`chip ${tab === "RESOLVED" ? "on" : ""}`} href="/app/kendala?s=selesai">Selesai</Link>
       </nav>
       {r.error && <div className="err">{r.error}</div>}
-      <div className="rlist stagger">
-        {rows.map((k) => (
+      <Potong kelas="rlist stagger" batas={6} satuan="kendala" items={rows.map((k) => (
           <Link key={k.id} href={`/app/resi/${k.shipmentId}#kendala`} className="card resi lift">
             <span className={`ic ${k.issueStatus === "OPEN" ? "warm" : ""}`}><Icon name={k.issueStatus === "OPEN" ? "alert" : "check"} size={24} /></span>
             <span className="meta"><span className="toprow"><b className="no">{k.resiNo}</b><span className={`pill ${k.issueStatus === "OPEN" ? "new" : "done"}`}>{k.issueStatus === "OPEN" ? "Terbuka" : "Selesai"}</span></span>
               <small><b>{k.label}</b> · {k.origin} → {k.dest}</small><small>{k.note}</small>
               <small>{tanggalWaktu(k.openedAt)}{k.openedBy ? ` · ${k.openedBy}` : ""}{k.issueStatus === "OPEN" ? ` · ${k.jam < 48 ? `${k.jam} jam` : `${Math.floor(k.jam / 24)} hari`}` : k.resolutionNote ? ` · ${k.resolutionNote}` : ""}</small></span>
           </Link>
-        ))}
+        ))} />
+      <div>
         {!r.error && rows.length === 0 && <div className="card kosong"><span className="kic"><Icon name="check" size={28} /></span><b>{tab === "OPEN" ? "Tidak ada kendala terbuka" : "Belum ada kendala selesai"}</b></div>}
       </div>
     </main>

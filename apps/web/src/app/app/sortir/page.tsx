@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getMe, staffRpc } from "@/lib/supabase/server";
 import Icon from "@/components/Icon";
+import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Sortir Tujuan Akhir" };
 export const dynamic = "force-dynamic";
@@ -18,6 +19,7 @@ export default async function Sortir() {
   for (const x of rows) { const k = `${x.province} · ${x.regency}`; grup.set(k, [...(grup.get(k) ?? []), x]); }
   return (
     <main className="wrap section stack">
+      <BackLink />
       <h1>Sortir tujuan akhir</h1>
       <p className="muted" style={{ margin: 0 }}>Barang yang sudah dibongkar di gudang ini, dikelompokkan menurut kabupaten atau kota penerima. Buka resi untuk meneruskannya ke gudang lain bila tujuan akhir masih jauh, atau antar lewat kurir bila dekat.</p>
       {r.error && <div className="err">{r.error}</div>}

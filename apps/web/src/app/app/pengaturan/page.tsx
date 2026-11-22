@@ -4,6 +4,7 @@ import SubmitButton from "@/components/SubmitButton";
 import { requireOwner } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
 import { simpanBank, simpanPerusahaan } from "../admin-actions";
+import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Pengaturan" };
 type Set = { company: { name?: string; phone?: string; whatsapp?: string; address?: string; invoiceNote?: string }; banks: { id: string; bank: string; no: string; name: string; active: boolean }[] };
@@ -26,6 +27,7 @@ export default async function Pengaturan({ searchParams }: { searchParams: Promi
   const c = r.data?.company ?? {};
   return (
     <main className="wrap narrow stack" style={{ paddingTop: 8 }}>
+      <BackLink />
       <h1>Pengaturan</h1>
       {sp.ok && <div className="ok" role="status">{sp.ok}</div>}{sp.e && <div className="err" role="alert">{sp.e}</div>}{r.error && <div className="err">{r.error}</div>}
       <form action={simpanPerusahaan} className="card">

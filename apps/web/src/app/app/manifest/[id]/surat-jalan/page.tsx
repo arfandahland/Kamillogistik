@@ -6,6 +6,7 @@ import Icon from "@/components/Icon";
 import { barcodeSvg, qrSvg } from "@/lib/barcode";
 import { tanggalWaktu } from "@/lib/brand";
 import { staffRpc } from "@/lib/supabase/server";
+import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Surat Jalan Pelabuhan" };
 export const dynamic = "force-dynamic";
@@ -18,11 +19,12 @@ export default async function SuratJalan({ params }: { params: Promise<{ id: str
   const r = await staffRpc<M>("manifest_get", { p_id: id });
   if (r.error || !r.data) return <main className="wrap section stack"><div className="err">{r.error ?? "Manifest tidak ditemukan."}</div></main>;
   const m = r.data;
-  if (m.status === "OPEN") return <main className="wrap section stack"><div className="err">Surat jalan diterbitkan setelah manifest disegel.</div><Link className="btn ghost" href={`/app/manifest/${m.id}`}>← Kembali</Link></main>;
+  if (m.status === "OPEN") return <main className="wrap section stack"><BackLink href={`/app/manifest/${m.id}`} ke="manifest" /><div className="err">Surat jalan diterbitkan setelah manifest disegel.</div></main>;
   const alat = m.mode === "UDARA" ? "Penerbangan" : m.mode === "DARAT" ? "Truk" : "Kapal";
   return (
     <main className="wrap section stack">
-      <div className="noprint resiact"><PrintButton label="Cetak surat jalan" /><Link className="btn ghost" href={`/app/manifest/${m.id}`}><Icon name="back" size={20} /> Kembali</Link></div>
+      <BackLink href={`/app/manifest/${id}`} ke="manifest" />
+      <div className="noprint resiact"><PrintButton label="Cetak surat jalan" /></div>
       <article className="docprint">
         <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "start" }}>
           <div>

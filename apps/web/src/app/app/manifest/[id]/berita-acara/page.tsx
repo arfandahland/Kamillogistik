@@ -5,6 +5,7 @@ import PrintButton from "@/components/PrintButton";
 import Icon from "@/components/Icon";
 import { tanggalWaktu } from "@/lib/brand";
 import { staffRpc } from "@/lib/supabase/server";
+import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Berita Acara Bongkar" };
 export const dynamic = "force-dynamic";
@@ -15,11 +16,12 @@ type B = { code: string; mode: "LAUT" | "DARAT" | "UDARA"; voyage: string | null
 export default async function BeritaAcara({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const r = await staffRpc<B>("manifest_unload_report", { p_id: id });
-  if (r.error || !r.data) return <main className="wrap section stack"><div className="err">{r.error ?? "Berita acara tidak tersedia."}</div><Link className="btn ghost" href={`/app/manifest/${id}`}>← Kembali</Link></main>;
+  if (r.error || !r.data) return <main className="wrap section stack"><BackLink href={`/app/manifest/${id}`} ke="manifest" /><div className="err">{r.error ?? "Berita acara tidak tersedia."}</div></main>;
   const b = r.data;
   return (
     <main className="wrap section stack">
-      <div className="noprint resiact"><PrintButton label="Cetak berita acara" /><Link className="btn ghost" href={`/app/manifest/${id}`}><Icon name="back" size={20} /> Kembali</Link></div>
+      <BackLink href={`/app/manifest/${id}`} ke="manifest" />
+      <div className="noprint resiact"><PrintButton label="Cetak berita acara" /></div>
       <article className="docprint">
         <h1>BERITA ACARA BONGKAR · {MODA_LABEL[b.mode].toUpperCase()}</h1>
         <b style={{ fontFamily: "ui-monospace, Menlo, monospace", wordBreak: "break-all" }}>{b.code}</b>

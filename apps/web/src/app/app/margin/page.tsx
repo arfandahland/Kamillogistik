@@ -4,6 +4,8 @@ import StatRow from "@/components/StatRow";
 import { requireRole } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
 import { rupiah } from "@/lib/brand";
+import Potong from "@/components/Potong";
+import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Margin Manifest dan Rute" };
 type Lap = { total: { pendapatan: number; biaya: number; margin: number; manifest: number; tanpaBiaya: number };
@@ -21,6 +23,7 @@ export default async function Margin({ searchParams }: { searchParams: Promise<{
   const warna = (n: number) => (n < 0 ? "down" : "up");
   return (
     <main className="wrap stack" style={{ paddingTop: 8 }}>
+      <BackLink />
       <div className="pghead"><div><h1>Margin manifest dan rute</h1>
       <p className="muted">Pendapatan dari tagihan resi dikurangi biaya operasional yang dicatat per manifest. Manifest yang masih terbuka tidak dihitung.</p></div></div>
       <form className="card rbsek" method="get">
@@ -45,15 +48,13 @@ export default async function Margin({ searchParams }: { searchParams: Promise<{
                 {d.rute.length === 0 && <tr><td colSpan={5} className="muted">Belum ada manifest pada periode ini.</td></tr>}</tbody></table>
           </div>
           <h2 style={{ margin: "6px 2px -4px" }}>Per manifest</h2>
-          <div className="stagger">
-            {d.manifest.map((m) => (
+          <Potong kelas="stagger rlist" batas={6} satuan="manifest" items={d.manifest.map((m) => (
               <Link key={m.id} href={`/app/margin/${m.id}`} className="card resi lift">
                 <span className="meta"><span className="toprow"><b className="no">{m.code}</b><span className={`pill ${m.adaBiaya ? "" : "new"}`}>{m.adaBiaya ? "Ada biaya" : "Belum ada biaya"}</span></span>
                   <small>{m.asal} → {m.tujuan} · {m.resi} resi</small>
                   <small>Pendapatan {rupiah(m.pendapatan)} · biaya {rupiah(m.biaya)} · margin <b className={warna(m.margin)}>{rupiah(m.margin)}</b></small></span>
               </Link>
-            ))}
-          </div>
+            ))} />
         </>
       )}
     </main>

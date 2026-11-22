@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import SubmitButton from "@/components/SubmitButton";
 import { getMe, staffRpc } from "@/lib/supabase/server";
 import { buatManifest } from "../actions";
+import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Buat Manifest" };
 
@@ -13,6 +14,7 @@ export default async function BaruManifest({ searchParams }: { searchParams: Pro
   const tujuan = (await staffRpc<{ code: string; city: string }[]>("manifest_destinations")).data ?? [];
   return (
     <main className="wrap section stack rbpage">
+      <BackLink href="/app/manifest" ke="daftar manifest" />
       <header className="pghead">
         <div><h1>Buat manifest</h1><p className="muted">Dari {me.branchName}. Kode manifest dibuat otomatis, contoh MNF-MKS-JKT-L-261118-1432-01-XX.</p></div>
       </header>

@@ -10,6 +10,7 @@ import { hapusTarifKhusus, portalAksi, simpanTarifKhusus, ubahKorporat } from ".
 import { SITE_URL } from "@/lib/site";
 import { chatLink, normalizePhone } from "@kamil/core";
 import { KorporatFields, type Cust } from "../page";
+import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Pelanggan Korporat" };
 type D = Cust & { overdue: number; rates: { routeId: string; route: string; normal: number; special: number }[]; invoices: { id: string; invoiceNo: string; resiNo: string; total: number; paid: number; dueDate: string; createdAt: string; status: string }[] };
@@ -21,13 +22,14 @@ export default async function KorporatDetail({ params, searchParams }: { params:
   await requireOwner();
   const { id } = await params; const sp = await searchParams;
   const [r, rt, pt] = await Promise.all([staffRpc<D>("owner_customer_detail", { p_company: id }), staffRpc<Rt[]>("owner_list_routes"), staffRpc<string | null>("owner_company_portal", { p_company: id, p_action: "get" })]);
-  if (r.error || !r.data) return <main className="wrap section stack"><div className="err">{r.error ?? "Pelanggan tidak ditemukan."}</div><Link className="btn ghost" href="/app/korporat">← Kembali</Link></main>;
+  if (r.error || !r.data) return <main className="wrap section stack"><BackLink href="/app/korporat" /><div className="err">{r.error ?? "Pelanggan tidak ditemukan."}</div></main>;
   const c = r.data;
   const sudahAda = new Set(c.rates.map((x) => x.routeId));
   const routes = (rt.data ?? []).filter((x) => !sudahAda.has(x.id));
   const pakai = c.credit > 0 ? Math.min(100, Math.round((c.outstanding / c.credit) * 100)) : 0;
   return (
     <main className="wrap narrow stack" style={{ paddingTop: 8 }}>
+      <BackLink href="/app/korporat" ke="daftar pelanggan korporat" />
       {sp.ok && <div className="ok" role="status">{sp.ok}</div>}
       {sp.e && <div className="err" role="alert">{sp.e}</div>}
       <div className="noprint"><Link href="/app/korporat" className="btn ghost"><Icon name="back" size={20} /> Semua pelanggan korporat</Link></div>

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import SubmitButton from "@/components/SubmitButton";
 import { supabaseServer } from "@/lib/supabase/server";
+import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Ganti Kata Sandi" };
 
@@ -22,6 +23,7 @@ export default async function Sandi({ searchParams }: { searchParams: Promise<{ 
   const sp = await searchParams;
   return (
     <main className="wrap narrow section">
+      <BackLink href="/app/akun" ke="akun" />
       <form className="card" action={ganti}>
         <h1>Ganti kata sandi</h1>
         {sp.ok && <div className="ok" role="status">Kata sandi sudah diganti. Gunakan yang baru saat masuk berikutnya.</div>}
@@ -32,7 +34,6 @@ export default async function Sandi({ searchParams }: { searchParams: Promise<{ 
         <input id="ulang" name="ulang" type="password" autoComplete="new-password" minLength={8} required />
         <p className="hint">Minimal 8 huruf atau angka. Jangan beri tahu siapa pun, termasuk atasan.</p>
         <SubmitButton className="btn green" style={{ marginTop: 16 }} steps={["Memeriksa kata sandi…", "Menyimpan kata sandi baru…"]}>Simpan kata sandi baru</SubmitButton>
-        <Link href="/app" className="btn ghost" style={{ marginTop: 10 }}>← Kembali</Link>
       </form>
     </main>
   );

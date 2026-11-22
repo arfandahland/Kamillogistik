@@ -6,6 +6,8 @@ import { requireOwner } from "@/lib/auth";
 import { rupiah } from "@/lib/brand";
 import { staffRpc } from "@/lib/supabase/server";
 import { daftarKorporat } from "./actions";
+import Potong from "@/components/Potong";
+import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Pelanggan Korporat" };
 export type Cust = { id: string; name: string; contact: string | null; phone: string | null; email: string | null; address: string | null; top: number; credit: number; status: string; notes: string | null; outstanding: number; resi: number; rates: number };
@@ -40,14 +42,14 @@ export default async function Korporat({ searchParams }: { searchParams: Promise
   const rows = r.data ?? [];
   return (
     <main className="wrap narrow stack" style={{ paddingTop: 8 }}>
+      <BackLink />
       <div><h1 style={{ marginBottom: 2 }}>Pelanggan korporat</h1><p className="muted" style={{ margin: 0 }}>Perusahaan langganan dengan tempo bayar, batas kredit, dan tarif khusus. Kasir memilihnya saat membuat resi.</p></div>
       {sp.e && <div className="err" role="alert">{sp.e}</div>}
       {r.error && <div className="err">{r.error}</div>}
       <details className="card admnew" open={!!sp.e}><summary><Icon name="plus" size={20} /> Daftarkan pelanggan korporat</summary>
         <form action={daftarKorporat} className="admbody"><KorporatFields /><SubmitButton style={{ marginTop: 14 }} steps={["Memeriksa data…", "Menyimpan pelanggan…"]}>Daftarkan</SubmitButton></form>
       </details>
-      <div className="stagger">
-        {rows.map((c) => (
+      <Potong kelas="stagger rlist" batas={6} satuan="pelanggan" items={rows.map((c) => (
           <Link key={c.id} href={`/app/korporat/${c.id}`} className="card resi lift">
             <span className="ic"><Icon name="building" size={24} /></span>
             <span className="meta">
@@ -56,7 +58,8 @@ export default async function Korporat({ searchParams }: { searchParams: Promise
               <small><b>{rupiah(c.outstanding)}</b> belum dibayar{c.rates > 0 ? ` · ${c.rates} tarif khusus` : ""}</small>
             </span>
           </Link>
-        ))}
+        ))} />
+      <div>
         {!r.error && rows.length === 0 && <div className="card"><p className="muted" style={{ margin: 0 }}>Belum ada pelanggan korporat. Daftarkan yang pertama di atas.</p></div>}
       </div>
     </main>

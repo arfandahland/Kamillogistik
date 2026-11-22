@@ -6,6 +6,7 @@ import SubmitButton from "@/components/SubmitButton";
 import { staffRpc } from "@/lib/supabase/server";
 import { aturShift, hapusDokumen, putusCuti, simpanDokumen } from "./actions";
 import { requireRole } from "@/lib/auth";
+import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Kepegawaian" };
 const TABS = [["daftar", "Pegawai"], ["dokumen", "Dokumen"], ["shift", "Shift"], ["cuti", "Cuti dan izin"], ["rekap", "Rekap"]] as const;
@@ -39,6 +40,7 @@ export default async function Pegawai({ searchParams }: { searchParams: Promise<
   const err = daftar.error ?? dok?.error ?? papan?.error ?? cuti?.error ?? rekap?.error;
   return (
     <main className="wrap stack" style={{ paddingTop: 8 }}>
+      <BackLink />
       <h1>Kepegawaian</h1>
       <p className="muted" style={{ marginTop: -6 }}>Dokumen, shift, absensi, cuti, dan rekap kerja. Halaman ini tidak memuat data resi maupun keuangan.</p>
       <nav className="chips" aria-label="Bagian">{TABS.map(([k, t]) => <Link key={k} className={`chip ${tab === k ? "on" : ""}`} href={`/app/pegawai?t=${k}`}>{t}</Link>)}</nav>

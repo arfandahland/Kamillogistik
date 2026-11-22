@@ -1,3 +1,5 @@
+import Ringkas from "./Ringkas";
+import Potong from "./Potong";
 import Link from "next/link";
 import { STATUS_LABEL, type AnyStatus, ROLE_LABEL } from "@kamil/core";
 import Icon from "./Icon";
@@ -57,13 +59,13 @@ export default function HubDashboard({ d, pesanOwner }: { d: HubData; pesanOwner
         <article className={`card hubcard span2 ${d.mengendap.length ? "flag" : ""}`}>
           <header><span className="hi warm"><Icon name="clock" size={20} /></span><h2>Barang mengendap</h2><span className="pill">{d.mengendap.length}</span></header>
           {d.mengendap.length === 0 ? <p className="muted">Tidak ada barang diam lebih dari 24 jam.</p> : (
-            <ul className="rows">{d.mengendap.map((m) => {
+            <Potong tag="ul" kelas="rows" batas={4} satuan="resi" items={d.mengendap.map((m) => {
               const wa = waNumber(m.receiverPhone);
               return (
                 <li key={m.id}><Link href={`/app/resi/${m.id}`}><b>{m.resiNo}</b><small>{STATUS_LABEL[m.status] ?? m.status} · {m.receiverName}</small></Link><span className="age">{jam(m.jam)}</span>
                   {wa && <a className="mini" href={`https://wa.me/${wa}?text=${encodeURIComponent(`Halo ${m.receiverName.split(" ")[0]}, kami dari Kamil Logistik. Barang dengan resi ${m.resiNo} masih ada di gudang kami. Boleh kami konfirmasi jadwal pengantaran atau pengambilannya?`)}`} target="_blank" rel="noopener noreferrer" aria-label={`Chat penerima ${m.resiNo}`}><Icon name="chat" size={16} /></a>}
                 </li>);
-            })}</ul>
+            })} />
           )}
         </article>
 
@@ -95,6 +97,10 @@ export default function HubDashboard({ d, pesanOwner }: { d: HubData; pesanOwner
           </div>
         </article>
 
+      </div>
+
+      <Ringkas judul="Lainnya" ringkas="Papan gudang, target hari ini, piutang, kinerja tim, laporan shift">
+        <div className="hubgrid">
         {/* 1. Papan gudang */}
         <article className="card hubcard span2">
           <header><span className="hi"><Icon name="layers" size={20} /></span><h2>Papan gudang</h2><b className="big">{totalGudang}<small> barang · {kgGudang.toFixed(1)} kg</small></b></header>
@@ -133,7 +139,8 @@ export default function HubDashboard({ d, pesanOwner }: { d: HubData; pesanOwner
           <a className="btn" href={pesanOwner ? `https://wa.me/${pesanOwner}?text=${encodeURIComponent(ringkas)}` : waLink(ringkas)} target="_blank" rel="noopener noreferrer"><Icon name="chat" size={20} /> Kirim ringkasan ke Pemilik</a>
           <p className="hint" style={{ margin: "6px 0 0" }}>Pesan sudah terisi angka hari ini. Tinggal tekan kirim di WhatsApp.</p>
         </article>
-      </div>
+        </div>
+      </Ringkas>
     </section>
   );
 }

@@ -4,6 +4,7 @@ import { MODA_LABEL, statusLabel, type AnyStatus } from "@kamil/core";
 import Icon from "@/components/Icon";
 import { staffRpc } from "@/lib/supabase/server";
 import { requireRole } from "@/lib/auth";
+import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Cari Resi atau Pelanggan" };
 type Hit = { id: string; resiNo: string; status: AnyStatus; origin: string; dest: string; senderName: string; receiverName: string; mode: "LAUT" | "DARAT" | "UDARA"; match: string };
@@ -16,6 +17,7 @@ export default async function Cari({ searchParams }: { searchParams: Promise<{ q
   const ships = r?.data?.shipments ?? [], mans = r?.data?.manifests ?? [];
   return (
     <main className="wrap narrow stack" style={{ paddingTop: 8 }}>
+      <BackLink />
       <h1>Cari</h1>
       <form className="card searchcard" role="search">
         <Icon name="search" size={20} className="ico sicon" />

@@ -4,6 +4,7 @@ import Icon from "@/components/Icon";
 import { requireOwnerView } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
 import { tanggalWaktu } from "@/lib/brand";
+import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Peta Pantauan" };
 export const dynamic = "force-dynamic";
@@ -26,6 +27,7 @@ export default async function Peta() {
   const lateN = lanes.filter((l) => l.late).length, stuckN = nodes.reduce((a, n) => a + n.stuck, 0);
   return (
     <main className="wrap stack" style={{ paddingTop: 8 }}>
+      <BackLink />
       <h1>Peta pantauan</h1>
       <p className="muted" style={{ marginTop: -6 }}>Posisi muatan antar kota dan kota yang tertahan. Hanya untuk dipantau.</p>
       {r.error && <div className="err">{r.error}</div>}

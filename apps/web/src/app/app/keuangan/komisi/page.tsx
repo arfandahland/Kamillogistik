@@ -3,6 +3,7 @@ import Link from "next/link";
 import { requireRole } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
 import { rupiah, tanggalWita } from "@/lib/brand";
+import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Komisi Mitra" };
 type Row = { id: string; name: string; city: string; type: string; pct: number; status: string; resi: number; delivered: number; revenue: number; paid: number; commission: number; commissionPaid: number };
@@ -18,6 +19,7 @@ export default async function Komisi({ searchParams }: { searchParams: Promise<{
   const tot = rows.reduce((a, x) => ({ revenue: a.revenue + x.revenue, commission: a.commission + x.commission, paid: a.paid + x.commissionPaid }), { revenue: 0, commission: 0, paid: 0 });
   return (
     <main className="wrap narrow stack" style={{ paddingTop: 8 }}>
+      <BackLink href="/app/keuangan" ke="keuangan" />
       <Link href="/app/keuangan" className="muted backlink">← Keuangan</Link>
       <h1>Komisi mitra</h1>
       <form className="card kfilter">

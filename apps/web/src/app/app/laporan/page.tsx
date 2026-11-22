@@ -5,6 +5,7 @@ import PrintButton from "@/components/PrintButton";
 import { requireRole } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
 import { rupiah, tanggal, tanggalWita } from "@/lib/brand";
+import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Laporan Lengkap" };
 type Ringkas = Record<"resiBaru" | "terkirim" | "dibatalkan" | "bermasalah" | "tagihan" | "omzet" | "terbayar" | "kasMasuk" | "belumLunas" | "jatuhTempo" | "rataTagihan" | "komisi" | "jemputBaru" | "klaimBaru" | "klaimTerbuka", number> & { rataHariKirim: number | null };
@@ -38,6 +39,7 @@ export default async function LaporanPemilik({ searchParams }: { searchParams: P
   const persen = k && k.omzet > 0 ? Math.round((k.terbayar / k.omzet) * 100) : 0;
   return (
     <main className="wrap narrow stack" style={{ paddingTop: 8 }}>
+      <BackLink />
       <Link href="/app/kelola" className="muted backlink">← Kelola</Link>
       <h1>Laporan lengkap</h1>
       <p className="muted" style={{ marginTop: -6 }}>Periode {tanggal(dari)} sampai {tanggal(sampai)}. Hanya Pemilik yang bisa melihat laporan ini.</p>

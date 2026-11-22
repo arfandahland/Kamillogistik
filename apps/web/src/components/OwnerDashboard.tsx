@@ -1,4 +1,5 @@
 "use client";
+import Potong from "./Potong";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { buildInsights, percentChange, rupiahRingkas, STATUS_LABEL, type OwnerDashboard as Data } from "@kamil/core";
@@ -105,14 +106,12 @@ export default function OwnerDashboard({ initial, initialError, preview, sisip }
         <section className="card panel p-alert">
           <h2><Icon name="bolt" size={20} /> Perlu perhatian</h2>
           {(
-            <ul className="alerts">
-              {data.alerts.map((a) => (
+            <Potong tag="ul" kelas="alerts" batas={4} satuan="peringatan" items={data.alerts.map((a) => (
                 <li key={a.code} className={a.level}>
                   <div className="at"><b>{a.count}</b><span>{a.title}{a.amount ? ` · ${rp(a.amount)}` : ""}</span></div>
                   <div className="ai">{a.items.map((it) => <Link key={it.id} href={`/app/resi/${it.id}`}>{it.resiNo}</Link>)}</div>
                 </li>
-              ))}
-            </ul>
+              ))} />
           )}
         </section>
         )}
@@ -156,15 +155,13 @@ export default function OwnerDashboard({ initial, initialError, preview, sisip }
         <section className="card panel p-recent">
           <h2>Aktivitas terbaru</h2>
           {data.recent.length === 0 ? <p className="muted" style={{ margin: 0 }}>Belum ada aktivitas.</p> : (
-            <ul className="feed">
-              {data.recent.map((r, i) => (
+            <Potong tag="ul" kelas="feed" batas={6} satuan="aktivitas" items={data.recent.map((r, i) => (
                 <li key={`${r.id}-${i}`}>
                   <span className="fd" />
                   <Link href={`/app/resi/${r.id}`}><b>{r.resiNo}</b> → {STATUS_LABEL[r.status] ?? r.status}</Link>
                   <small>{tanggalWaktu(r.at)}{r.location ? ` · ${r.location}` : ""}{r.by ? ` · ${r.by}` : ""}</small>
                 </li>
-              ))}
-            </ul>
+              ))} />
           )}
         </section>
       </div>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Icon from "@/components/Icon";
 import { requireOwnerView } from "@/lib/auth";
+import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Kelola Bisnis" };
 
@@ -35,6 +36,7 @@ export default async function Kelola() {
   await requireOwnerView();
   return (
     <main className="wrap stack" style={{ paddingTop: 8 }}>
+      <BackLink />
       <h1>Kelola bisnis</h1>
       <p className="muted" style={{ marginTop: -6 }}>Semua pengaturan Pemilik ada di sini. Setiap perubahan tercatat permanen.</p>
       <div className="admgrid stagger">

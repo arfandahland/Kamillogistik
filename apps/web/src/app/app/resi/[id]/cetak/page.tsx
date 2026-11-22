@@ -7,6 +7,7 @@ import { barcodeSvg, qrSvg } from "@/lib/barcode";
 import { getMe, staffRpc } from "@/lib/supabase/server";
 import { abs } from "@/lib/site";
 import Icon from "@/components/Icon";
+import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Cetak Label Resi" };
 export const dynamic = "force-dynamic";
@@ -24,7 +25,7 @@ export default async function Cetak({ params }: { params: Promise<{ id: string }
   const me = (await getMe()).data;
   if (!me || !CAN_PRINT_LABEL.includes(me.role)) redirect(`/app/resi/${id}?e=${encodeURIComponent("Label resi hanya dicetak oleh Kasir di gudang atau gerai.")}`);
   const r = await staffRpc<D>("staff_get_shipment", { p_id: id });
-  if (r.error || !r.data) return <main className="wrap section stack"><div className="err">{r.error ?? "Resi tidak ditemukan."}</div><Link className="btn ghost" href="/app">← Kembali</Link></main>;
+  if (r.error || !r.data) return <main className="wrap section stack"><BackLink href="/app" /><div className="err">{r.error ?? "Resi tidak ditemukan."}</div></main>;
   const s = r.data, p = parseResi(s.resiNo);
   const tgl = p ? `${String(p.tanggal.dd).padStart(2, "0")}/${String(p.tanggal.mm).padStart(2, "0")}/20${String(p.tanggal.yy).padStart(2, "0")} ${String(p.jam.hh).padStart(2, "0")}.${String(p.jam.mi).padStart(2, "0")} WITA` : "";
   const base = {
@@ -40,7 +41,7 @@ export default async function Cetak({ params }: { params: Promise<{ id: string }
   ];
   return (
     <main className="wrap section stack cetakpage">
-      <div className="noprint"><Link href={`/app/resi/${s.id}`} className="btn ghost"><Icon name="back" size={20} /> Kembali ke resi</Link></div>
+      <BackLink href={`/app/resi/${id}`} ke="detail resi" />
       <LabelStudio labels={labels} resiId={s.id} />
     </main>
   );

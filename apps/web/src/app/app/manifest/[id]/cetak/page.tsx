@@ -6,6 +6,7 @@ import Icon from "@/components/Icon";
 import { barcodeSvg, qrSvg } from "@/lib/barcode";
 import { tanggalWaktu } from "@/lib/brand";
 import { staffRpc } from "@/lib/supabase/server";
+import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Cetak Manifest" };
 export const dynamic = "force-dynamic";
@@ -19,7 +20,8 @@ export default async function CetakManifest({ params }: { params: Promise<{ id: 
   const m = r.data;
   return (
     <main className="wrap section stack">
-      <div className="noprint resiact"><PrintButton label="Cetak manifest" /><Link className="btn ghost" href={`/app/manifest/${m.id}`}><Icon name="back" size={20} /> Kembali</Link></div>
+      <BackLink href={`/app/manifest/${id}`} ke="manifest" />
+      <div className="noprint resiact"><PrintButton label="Cetak manifest" /></div>
       <article className="docprint">
         <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "start" }}>
           <div>

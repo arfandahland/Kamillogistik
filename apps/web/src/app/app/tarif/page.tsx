@@ -5,6 +5,7 @@ import { requireOwner } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
 import { rupiah } from "@/lib/brand";
 import { simpanRute } from "../admin-actions";
+import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Tarif dan Rute" };
 type R = { id: string; slug: string; originCode: string; originCity: string; destCode: string; destCity: string; mode: string; service: string; basis: string; unitPrice: number; minChargeable: number; minTotal: number | null; etaDays: number | null; divisor: number; departureNote: string | null; isPublic: boolean };
@@ -48,6 +49,7 @@ export default async function Tarif({ searchParams }: { searchParams: Promise<{ 
   const places = (pp.data ?? []).filter((p) => p.status === "ACTIVE");
   return (
     <main className="wrap narrow stack" style={{ paddingTop: 8 }}>
+      <BackLink />
       <h1>Tarif dan rute</h1>
       <p className="muted" style={{ marginTop: -6 }}>Perubahan harga langsung dipakai kalkulator ongkir, daftar harga, halaman rute, dan penimbangan di gudang.</p>
       {sp.ok && <div className="ok" role="status">{sp.ok}</div>}{sp.e && <div className="err" role="alert">{sp.e}</div>}{rr.error && <div className="err">{rr.error}</div>}

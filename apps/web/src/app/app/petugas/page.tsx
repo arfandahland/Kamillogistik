@@ -6,6 +6,7 @@ import { requireOwner } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
 import { tanggalWaktu } from "@/lib/brand";
 import { buatPetugas, resetSandi, ubahStatusPetugas } from "../admin-actions";
+import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Daftar Petugas" };
 type S = { id: string; name: string; email: string; role: string; branchName: string | null; status: string; lastLogin: string | null };
@@ -17,6 +18,7 @@ export default async function Petugas({ searchParams }: { searchParams: Promise<
   const branches = (p.data ?? []).filter((x) => x.status === "ACTIVE");
   return (
     <main className="wrap narrow stack" style={{ paddingTop: 8 }}>
+      <BackLink />
       <h1>Petugas</h1>
       {sp.ok && <div className="ok" role="status">{sp.ok}</div>}{sp.e && <div className="err" role="alert">{sp.e}</div>}{s.error && <div className="err">{s.error}</div>}
       <details className="card admnew" open={!!sp.e}>

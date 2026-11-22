@@ -6,6 +6,7 @@ import PosisiBaris from "@/components/PosisiBaris";
 import { requireRole } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
 import { waNumber } from "@/lib/publicRpc";
+import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Dashboard Rekrutmen" };
 type D = { total: number; counts: Record<string, number>; last7: number; prev7: number; hiredMonth: number; avgResponseHours: number | null; daily: { d: string; n: number }[];
@@ -27,6 +28,7 @@ export default async function Rekrutmen() {
   const posisiTampil = [...POSISI.map((p) => ({ p, row: d.perPosition.find((x) => x.position === p.slug) }))];
   return (
     <main className="wrap stack" style={{ paddingTop: 8 }}>
+      <BackLink />
       <div className="pghead">
         <div><h1>Dashboard rekrutmen</h1><p className="muted">Ringkasan lamaran dari halaman <Link href="/karir">/karir</Link>.</p></div>
         <div className="pgact"><Link className="btn" href="/app/lamaran">Buka daftar lamaran</Link><a className="btn ghost" href="/app/ekspor/lamaran">Unduh Excel (CSV)</a></div>

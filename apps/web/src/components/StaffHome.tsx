@@ -1,3 +1,4 @@
+import Potong from "./Potong";
 import Link from "next/link";
 import { STATUS_LABEL, type AnyStatus } from "@kamil/core";
 import Icon from "./Icon";
@@ -77,8 +78,7 @@ export default function StaffHome({ rows, stats, pending, tab, q, canCreate, err
 
           {error && <div className="err">{error}</div>}
 
-          <div className="cards-m stagger">
-            {rows.map((r) => {
+          <Potong hpSaja kelas="cards-m stagger" batas={6} satuan="resi" items={rows.map((r) => {
               const m = statusMeta(r.status);
               return (
                 <Link key={r.id} href={`/app/resi/${r.id}`} className="card resi lift">
@@ -91,8 +91,7 @@ export default function StaffHome({ rows, stats, pending, tab, q, canCreate, err
                   </span>
                 </Link>
               );
-            })}
-          </div>
+            })} />
 
           {rows.length > 0 && (
             <div className="dtable card">

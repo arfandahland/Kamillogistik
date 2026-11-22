@@ -4,6 +4,7 @@ import Icon from "@/components/Icon";
 import { requireOwner } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
 import { rupiah, tanggalWaktu } from "@/lib/brand";
+import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Riwayat Harga" };
 type H = { id: string; kind: "BARU" | "UBAH"; route: string; oldPrice: number | null; newPrice: number | null; oldMinKg: number | null; newMinKg: number | null; oldEta: number | null; newEta: number | null; oldPublic: boolean | null; newPublic: boolean | null; by: string | null; at: string };
@@ -20,6 +21,7 @@ export default async function Riwayat() {
   const list = r.data ?? [];
   return (
     <main className="wrap narrow stack" style={{ paddingTop: 8 }}>
+      <BackLink href="/app/tarif" ke="tarif" />
       <Link href="/app/tarif" className="muted backlink">← Tarif dan rute</Link>
       <h1>Riwayat perubahan harga</h1>
       <p className="muted" style={{ marginTop: -6 }}>Setiap perubahan harga, minimal berat, estimasi, dan status tayang tercatat otomatis dan tidak bisa dihapus.</p>

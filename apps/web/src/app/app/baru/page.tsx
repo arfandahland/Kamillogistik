@@ -9,6 +9,7 @@ import WilayahField from "@/components/WilayahField";
 import DataKendaraan from "@/components/DataKendaraan";
 import { randomUUID } from "node:crypto";
 import { buatResi } from "../actions";
+import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Buat Resi Baru" };
 
@@ -22,6 +23,7 @@ export default async function Baru({ searchParams }: { searchParams: Promise<{ e
 
   return (
     <main className="wrap section stack rbpage">
+      <BackLink />
       <header className="pghead">
         <div><h1>Buat resi baru</h1><p className="muted">Isi lima bagian di bawah dari atas ke bawah. Tombol Buat resi ada di paling bawah.</p></div>
       </header>

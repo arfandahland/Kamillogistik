@@ -6,6 +6,8 @@ import FollowupCard from "@/components/FollowupCard";
 import { getMe, staffRpc } from "@/lib/supabase/server";
 import { SITE_URL } from "@/lib/site";
 import { requireRole } from "@/lib/auth";
+import Potong from "@/components/Potong";
+import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Perlu Dihubungi" };
 const KINDS = Object.keys(FOLLOWUP_LABEL) as FollowupKind[];
@@ -22,6 +24,7 @@ export default async function TindakLanjut({ searchParams }: { searchParams: Pro
   const n = (k: FollowupKind) => all.filter((i) => i.kind === k && !i.contactedAt).length;
   return (
     <main className="wrap narrow stack" style={{ paddingTop: 8 }}>
+      <BackLink />
       <h1>Perlu dihubungi</h1>
       <p className="muted" style={{ marginTop: -6 }}>Pelanggan yang menunggu kabar dari kita. Ketuk Chat, pesan sudah terisi, tinggal kirim.</p>
       {q.error && <div className="err">{q.error}</div>}
@@ -32,7 +35,7 @@ export default async function TindakLanjut({ searchParams }: { searchParams: Pro
         ))}
       </div>
       <div className="stagger fstack">
-        {todo.map((i) => <FollowupCard key={i.shipmentId + i.kind} item={i} siteUrl={SITE_URL} canMark={canMark} />)}
+        <Potong batas={5} satuan="pelanggan" items={todo.map((i) => <FollowupCard key={i.shipmentId + i.kind} item={i} siteUrl={SITE_URL} canMark={canMark} />)} />
         {todo.length === 0 && !q.error && (
           <div className="card" style={{ textAlign: "center" }}>
             <span style={{ width: 56, height: 56, borderRadius: 18, margin: "0 auto 10px", display: "grid", placeItems: "center", background: "var(--teal-soft)", color: "var(--teal)" }}><Icon name="check" size={28} /></span>

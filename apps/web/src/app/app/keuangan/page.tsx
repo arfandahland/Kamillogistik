@@ -7,6 +7,7 @@ import Icon from "@/components/Icon";
 import { requireRole } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
 import { rupiah, tanggalWaktu } from "@/lib/brand";
+import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Keuangan" };
 type Fin = {
@@ -25,6 +26,7 @@ export default async function Keuangan({ searchParams }: { searchParams: Promise
   const ratio = k.invoiced > 0 ? Math.round((k.collected / k.invoiced) * 100) : null;
   return (
     <main className="wrap stack dash">
+      <BackLink />
       <div className="dashhead">
         <div><h1 style={{ marginBottom: 2 }}>Keuangan</h1><span className="muted">Pembayaran lewat transfer rekening dan tunai</span></div>
         <div className="chips">{[7, 30, 90].map((d) => <Link key={d} href={`/app/keuangan?hari=${d}`} className={`chip ${hari === d ? "on" : ""}`}>{d} hari</Link>)}</div>

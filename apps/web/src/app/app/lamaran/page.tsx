@@ -4,6 +4,8 @@ import { LABEL_STATUS_LAMARAN, POSISI, STATUS_LAMARAN, posisiDari, pesanKePelama
 import LamaranKartu, { type Lamaran } from "@/components/LamaranKartu";
 import { requireRole } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
+import Potong from "@/components/Potong";
+import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Lamaran Kerja" };
 
@@ -16,6 +18,7 @@ export default async function Lamaran({ searchParams }: { searchParams: Promise<
   const href = (s?: string, p?: string) => `/app/lamaran${s || p ? "?" : ""}${[s && `s=${s}`, p && `p=${p}`].filter(Boolean).join("&")}`;
   return (
     <main className="wrap narrow stack" style={{ paddingTop: 8 }}>
+      <BackLink />
       <h1>Lamaran kerja</h1>
       <p className="muted" style={{ marginTop: -6 }}>Pelamar dari halaman <Link href="/karir">/karir</Link>. Ketuk Chat untuk menghubungi, pesan sudah terisi. CV hanya bisa dibuka di sini.</p>
       {q.error && <div className="err">{q.error}</div>}
@@ -33,7 +36,7 @@ export default async function Lamaran({ searchParams }: { searchParams: Promise<
         <button className="btn ghost" style={{ width: "auto", flex: "none", paddingInline: 18 }}>Tampilkan</button>
       </form>
       <div className="stagger fstack">
-        {(q.data?.items ?? []).map((a) => <LamaranKartu key={a.id} a={a} posisi={posisiDari(a.position)?.judul ?? a.position} pesan={pesanKePelamar(a.name, posisiDari(a.position)?.judul ?? a.position, a.code)} />)}
+        <Potong batas={4} satuan="lamaran" items={(q.data?.items ?? []).map((a) => <LamaranKartu key={a.id} a={a} posisi={posisiDari(a.position)?.judul ?? a.position} pesan={pesanKePelamar(a.name, posisiDari(a.position)?.judul ?? a.position, a.code)} />)} />
         {(q.data?.items ?? []).length === 0 && !q.error && <div className="card" style={{ textAlign: "center" }}><b>Belum ada lamaran</b><p className="muted" style={{ margin: "4px 0 0" }}>Bagikan tautan karir dari tombol di bawah.</p></div>}
       </div>
       <p className="hint">Tautan lowongan untuk dibagikan: <b>/karir</b></p>

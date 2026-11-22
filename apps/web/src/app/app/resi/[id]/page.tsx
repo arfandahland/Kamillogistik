@@ -11,10 +11,12 @@ import PodForm from "@/components/PodForm";
 import KondisiForm from "@/components/KondisiForm";
 import KendalaPanel from "@/components/KendalaPanel";
 import InvoiceForm from "@/components/InvoiceForm";
+import Ringkas from "@/components/Ringkas";
 import RevisiPanel from "@/components/RevisiPanel";
 import TutupResiPanel from "@/components/TutupResiPanel";
 import TeruskanPanel from "@/components/TeruskanPanel";
 import { catatTerima, lanjut, periksa, serahkan, terima, timbang } from "../../actions";
+import BackLink from "@/components/BackLink";
 
 type Detail = {
   id: string; resiNo: string; status: AnyStatus; next: string | null;
@@ -39,7 +41,7 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
   const sp = await searchParams;
   const [me, d] = await Promise.all([getMe(), staffRpc<Detail>("staff_get_shipment", { p_id: id })]);
   if (d.error || !d.data || !me.data) {
-    return <main className="wrap section stack"><div className="err">{d.error ?? "Resi tidak ditemukan."}</div><Link className="btn ghost" href="/app">← Kembali</Link></main>;
+    return <main className="wrap section stack"><BackLink href="/app" /><div className="err">{d.error ?? "Resi tidak ditemukan."}</div></main>;
   }
   const s = d.data;
   const role = me.data.role as Actor;
@@ -57,6 +59,7 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
 
   return (
     <main className="wrap section stack detail">
+      <BackLink href={viewOnly ? "/app/semua" : "/app"} ke={viewOnly ? "semua resi" : "beranda"} />
       {sp.ok && <div className="ok" role="status">{sp.ok}</div>}
       {sp.e && <div className="err" role="alert">{sp.e}</div>}
 
@@ -204,15 +207,21 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
           </div>
         )}
 
-        <div className="card">
-          <h2>Barang ({s.items.length})</h2>
-          {s.items.map((it, i) => (
-            <div className="tarif" key={it.barcode}>
-              <div><b>Barang {i + 1}</b><br /><span className="muted" style={{ fontSize: 14 }}>{it.barcode}{it.note ? ` · ${it.note}` : ""}</span></div>
-              <span>{it.weightKg != null ? `${Number(it.weightKg).toLocaleString("id-ID")} kg` : "belum ditimbang"}</span>
+        {(() => {
+          const sudah = s.items.filter((x) => x.weightKg != null).length;
+          const kg = s.items.reduce((a, x) => a + Number(x.weightKg ?? 0), 0);
+          const ringkasan = `${s.items.length} barang · total ${kg.toLocaleString("id-ID")} kg · ${sudah} sudah ditimbang`;
+          const baris = s.items.map((it, i) => (
+            <div className="brs" key={it.barcode}>
+              <span className="tbn">{i + 1}</span>
+              <span className="bk"><b>…{it.barcode.slice(-6)}</b><small>{it.barcode}{it.note ? ` · ${it.note}` : ""}</small></span>
+              <span className={`bs ${it.weightKg != null ? "sudah" : "tunda"}`}>{it.weightKg != null ? `${Number(it.weightKg).toLocaleString("id-ID")} kg` : "belum ditimbang"}</span>
             </div>
-          ))}
-        </div>
+          ));
+          return s.items.length > 3
+            ? <Ringkas judul="Barang" lencana={s.items.length} ringkas={ringkasan}><div className="brs2">{baris}</div></Ringkas>
+            : <div className="card"><h2>Barang ({s.items.length})</h2><p className="ringkasan1">{ringkasan}</p>{baris}</div>;
+        })()}
 
         {s.invoice && SEES_MONEY.includes(role) && (
           <div className="card">
@@ -226,8 +235,7 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
         )}
 
         {s.inspections.length > 0 && (
-          <div className="card inspview">
-            <h2>Pemeriksaan fisik barang</h2>
+          <Ringkas className="inspview" judul="Pemeriksaan fisik barang" lencana={s.inspections.length} ringkas={s.inspections.some(isProblem) ? "Ada catatan masalah, buka untuk melihat" : "Semua barang dicatat dalam kondisi baik"} buka={s.inspections.length <= 2 || s.inspections.some(isProblem)}>
             {s.inspections.map((n) => (
               <div key={n.id} className={`insp ${isProblem(n) ? "bad" : ""}`}>
                 <div className="insph"><b>{STAGE_LABEL[n.stage]}</b><span className={`pill ${isProblem(n) ? "warn" : "done"}`}>{n.conditions.map((c) => KONDISI_LABEL[c] ?? c).join(", ")}</span></div>
@@ -239,12 +247,11 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
                 ))}</div>}
               </div>
             ))}
-          </div>
+          </Ringkas>
         )}
 
         {pod && (
-          <div className="card podview">
-            <h2>Bukti terima</h2>
+          <Ringkas className="podview" judul="Bukti terima" ringkas={`Diterima oleh ${pod.receiverName} · ${tanggalWaktu(pod.signedAt)}`} buka>
             <dl className="kv">
               <dt>Diterima oleh</dt><dd>{pod.receiverName}</dd>
               <dt>Waktu</dt><dd>{tanggalWaktu(pod.signedAt)}</dd>
@@ -255,18 +262,26 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
               <figure><img src={pod.photo} alt={`Foto barang diterima ${pod.receiverName}`} /><figcaption>Foto barang</figcaption></figure>
               <figure><img className="sigimg" src={pod.signature} alt={`Tanda tangan ${pod.receiverName}`} /><figcaption>Tanda tangan</figcaption></figure>
             </div>
-          </div>
+          </Ringkas>
         )}
 
-        <div className="card">
-          <h2>Riwayat</h2>
-          <ol className="tl">
-            {[...s.events].map((e, i) => (
-              <li key={i} className="done"><span className="dot" /><b>{statusLabel(e.status, s.mode) ?? e.status}</b>
-                <small>{tanggalWaktu(e.at)}{e.location ? ` · ${e.location}` : ""}{e.by ? ` · oleh ${e.by}` : ""}</small></li>
-            ))}
-          </ol>
-        </div>
+        {(() => {
+          const li = (e: Detail["events"][number], i: number) => (
+            <li key={i} className="done"><span className="dot" /><b>{statusLabel(e.status, s.mode) ?? e.status}</b>
+              <small>{tanggalWaktu(e.at)}{e.location ? ` · ${e.location}` : ""}{e.by ? ` · oleh ${e.by}` : ""}</small></li>
+          );
+          const potong = s.events.length > 4, lama = potong ? s.events.slice(0, s.events.length - 3) : [], baru = potong ? s.events.slice(-3) : s.events;
+          return (
+            <div className="card">
+              <h2>Riwayat</h2>
+              {lama.length > 0 && (
+                <details className="potong"><summary><span className="p-buka">Lihat semua riwayat ({s.events.length})</span><span className="p-tutup">Sembunyikan yang lama</span></summary>
+                  <ol className="tl pendek">{lama.map(li)}</ol></details>
+              )}
+              <ol className="tl pendek">{baru.map((e, i) => li(e, i + lama.length))}</ol>
+            </div>
+          );
+        })()}
         </div>
       </div>
     </main>

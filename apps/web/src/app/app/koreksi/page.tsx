@@ -3,6 +3,7 @@ import { STATUS_LABEL } from "@kamil/core";
 import { requireRole } from "@/lib/auth";
 import SubmitButton from "@/components/SubmitButton";
 import { koreksiStatus } from "./actions";
+import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Koreksi Data" };
 export const dynamic = "force-dynamic";
@@ -14,6 +15,7 @@ export default async function Koreksi({ searchParams }: { searchParams: Promise<
   const sp = await searchParams;
   return (
     <main className="wrap narrow section stack">
+      <BackLink />
       <h1>Koreksi data</h1>
       <p className="muted" style={{ margin: 0 }}>Hanya untuk memperbaiki kesalahan, misalnya resi tertutup padahal barang belum sampai. Setiap koreksi mencatat siapa, kapan, dan alasannya, dan tampak di riwayat resi.</p>
       {sp.ok && <div className="ok" role="status">{sp.ok}</div>}

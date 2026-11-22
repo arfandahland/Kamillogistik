@@ -5,6 +5,8 @@ import { staffRpc } from "@/lib/supabase/server";
 import { rupiah, tanggal } from "@/lib/brand";
 import StatRow from "@/components/StatRow";
 import { requireRole } from "@/lib/auth";
+import Potong from "@/components/Potong";
+import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Daftar Tagihan" };
 
@@ -31,6 +33,7 @@ export default async function Tagihan({ searchParams }: { searchParams: Promise<
   const totalBelum = all.filter((x) => x.status !== "PAID").reduce((x, r2) => x + r2.outstanding, 0);
   return (
     <main className="wrap stack" style={{ paddingTop: 8 }}>
+      <BackLink />
       <div className="pghead"><div><h1>Tagihan</h1><p className="muted">Pantau siapa yang belum membayar. Ketuk satu tagihan untuk mencatat pembayaran.</p></div></div>
       <StatRow items={[
         { ikon: "cash", n: rupiah(totalBelum), label: "Total belum dibayar", warm: totalBelum > 0 },
@@ -44,8 +47,7 @@ export default async function Tagihan({ searchParams }: { searchParams: Promise<
       </div>
       {tab !== "lunas" && rows.length > 0 && <p className="hint" style={{ margin: 0 }}>Menampilkan {rows.length} tagihan, sisa {rupiah(open)}.</p>}
       {r.error && <div className="err">{r.error}</div>}
-      <div className="rlist stagger">
-        {rows.slice(0, n).map((x) => {
+      <Potong kelas="rlist stagger" batas={6} satuan="tagihan" items={rows.slice(0, n).map((x) => {
           const l = LABEL[x.status] ?? LABEL.UNPAID!;
           return (
             <Link key={x.id} href={`/app/tagihan/${x.id}`} className="card resi lift">
@@ -58,7 +60,8 @@ export default async function Tagihan({ searchParams }: { searchParams: Promise<
               </span>
             </Link>
           );
-        })}
+        })} />
+      <div>
         {rows.length > n && <Link className="btn ghost" scroll={false} href={`/app/tagihan?${new URLSearchParams({ s: tab, ...(q ? { q } : {}), n: String(n + 30) })}`}>Tampilkan lebih banyak</Link>}
         {!r.error && rows.length === 0 && <div className="card kosong"><span className="kic"><Icon name="check" size={28} /></span><b>{q ? "Tidak ada tagihan yang cocok." : tab === "lunas" ? "Belum ada tagihan lunas." : "Tidak ada tagihan di sini."}</b></div>}
       </div>

@@ -139,7 +139,6 @@ export default function LabelStudio({ labels, resiId }: { labels: LabelData[]; r
           <button type="button" className="btn ghost" onClick={() => { setInfo("Di jendela cetak, pilih tujuan “Simpan sebagai PDF”."); setTimeout(() => window.print(), 300); }} disabled={daftar.length === 0}><Icon name="file" size={20} /> Simpan sebagai PDF</button>
           <button type="button" className="btn ghost" onClick={salinKode}><Icon name="copy" size={20} /> Salin kode resi</button>
           <a className="btn wa" href={wa} target="_blank" rel="noopener noreferrer"><Icon name="chat" size={20} /> Kirim kode ke WhatsApp</a>
-          <a className="btn ghost" href={`/app/resi/${resiId}`}><Icon name="back" size={20} /> Kembali ke resi</a>
         </div>
         {info && <div className="ok" role="status" style={{ marginTop: 10 }}>{info}</div>}
         <p className="hint">Tempel label di sisi atas dus yang rata, jangan menutupi lipatan lakban. Cek hasil pindai dengan menu Pindai setelah mencetak.</p>

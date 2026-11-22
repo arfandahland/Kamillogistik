@@ -9,6 +9,7 @@ import { waNumber } from "@/lib/publicRpc";
 import StatRow from "@/components/StatRow";
 import { rupiah, tanggal } from "@/lib/brand";
 import { catatBayar } from "../../admin-actions";
+import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Detail Tagihan" };
 const STATUS: Record<string, { t: string; cls: string }> = { UNPAID: { t: "Belum dibayar", cls: "new" }, PARTIAL: { t: "Dibayar sebagian", cls: "part" }, OVERDUE: { t: "Lewat tempo", cls: "late" }, PAID: { t: "Lunas", cls: "done" } };
@@ -17,7 +18,7 @@ type Detail = InvoiceView & { id: string; token: string; shipmentId: string; sen
 export default async function TagihanDetail({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ ok?: string; e?: string }> }) {
   const { id } = await params; const sp = await searchParams;
   const r = await staffRpc<Detail>("invoice_detail", { p_id: id });
-  if (r.error || !r.data) return <main className="wrap section stack"><div className="err">{r.error ?? "Tagihan tidak ditemukan."}</div><Link className="btn ghost" href="/app/tagihan">← Kembali</Link></main>;
+  if (r.error || !r.data) return <main className="wrap section stack"><BackLink href="/app/tagihan" /><div className="err">{r.error ?? "Tagihan tidak ditemukan."}</div></main>;
   const inv = r.data;
   const link = `/invoice/${inv.token}`;
   const phone = waNumber(inv.senderPhone);
@@ -27,6 +28,7 @@ export default async function TagihanDetail({ params, searchParams }: { params: 
   const st = STATUS[inv.status] ?? STATUS.UNPAID!;
   return (
     <main className="wrap section stack tagdetail rbpage">
+      <BackLink href="/app/tagihan" ke="daftar tagihan" />
       <div className="pghead">
         <div><h1>Tagihan {inv.invoiceNo}</h1><p className="muted">Resi {inv.resiNo} · {inv.sender}. Catat pembayaran di kiri, bagikan invoice di kanan.</p></div>
         <span className={`pill ${st.cls}`}>{st.t}</span>

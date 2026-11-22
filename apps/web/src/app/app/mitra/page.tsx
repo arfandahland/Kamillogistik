@@ -4,6 +4,7 @@ import SubmitButton from "@/components/SubmitButton";
 import { requireOwner } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
 import { simpanMitra } from "../admin-actions";
+import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Mitra dan Cabang" };
 type P = { id: string; type: string; code: string; name: string; city: string; phone: string | null; address: string | null; contactName: string | null; commissionPct: number; status: string; notes: string | null; staffCount: number; shipmentCount: number };
@@ -42,6 +43,7 @@ export default async function Mitra({ searchParams }: { searchParams: Promise<{ 
   const list = r.data ?? [];
   return (
     <main className="wrap narrow stack" style={{ paddingTop: 8 }}>
+      <BackLink />
       <h1>Mitra dan cabang</h1>
       {sp.ok && <div className="ok" role="status">{sp.ok}</div>}{sp.e && <div className="err" role="alert">{sp.e}</div>}{r.error && <div className="err">{r.error}</div>}
       <details className="card admnew" open={!!sp.e}><summary><Icon name="plus" size={20} /> Daftarkan mitra atau cabang baru</summary><Form ok /></details>
