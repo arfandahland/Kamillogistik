@@ -233,7 +233,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("kurir: barang dijemput", r.ok && /sudah dijemput/.test(r.ok), JSON.stringify(r));
     ok("pemeriksaan tampil di detail: tahap, kondisi Penyok, catatan", /Pemeriksaan fisik barang/.test(await text(p)) && /Saat dijemput/.test(await text(p)) && /Penyok/.test(await text(p)) && /Sudut kardus penyok/.test(await text(p)));
     await p.waitForSelector(".inspfotos img", { timeout: 10000 }).catch(() => {});
-    ok("foto pemeriksaan termuat sebagai gambar", await p.locator(".inspfotos img").first().evaluate((i) => i.complete && i.naturalWidth > 0).catch(() => false));
+    ok("foto pemeriksaan termuat sebagai gambar", await p.waitForFunction(() => { const i = document.querySelector(".inspfotos img"); return !!i && i.complete && i.naturalWidth > 0; }, null, { timeout: 15000 }).then(() => true).catch(() => false));
     ok("status berubah + Tahap 2 dari 10", /Tahap 2 dari 10/.test(await text(p)) && /Anda/.test(await text(p)));
     ok("tombol langkah berikutnya TIDAK ada untuk kurir (bukan gilirannya)", (await p.getByRole("button", { name: "Barang sudah saya terima di gudang" }).count()) === 0);
     await selectByText(p, "select[name=ke]", "Gudang Jakarta");
