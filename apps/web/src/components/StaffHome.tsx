@@ -64,7 +64,7 @@ export default function StaffHome({ rows, stats, pending, tab, q, canCreate, err
         </aside>}
 
         {!hideList && <section className="listcol stack">
-          {hideStats
+          {hideStats && !hubMode
             ? <div className="pghead"><div><h1>{title}</h1><p className="muted">Semua resi dari seluruh cabang. Ketuk satu resi untuk melihat rinciannya.</p></div></div>
             : <h2 style={{ margin: "6px 2px -4px" }}>{title}</h2>}
           <form className="card searchcard">
