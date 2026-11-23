@@ -1855,3 +1855,10 @@ body:has(.appshell) .masukopt.on, body:has(.appshell) .masukopt:has(input:checke
 }
 body:has(.appshell) .masukopt.on small, body:has(.appshell) .masukopt:has(input:checked) small { color: #c6efe4; }
 body:has(.appshell) .masukopt .ci { background: var(--aqua); color: #03211b; }
+/* sisa komponen berlatar putih di tema malam */
+body:has(.appshell) .arahkartu, body:has(.appshell) .sumtile { background: var(--glass); border-color: var(--line); color: var(--ink); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: 0 10px 26px rgba(0, 0, 0, .35), inset 0 1px 0 rgba(255, 255, 255, .08); }
+body:has(.appshell) .arahkartu small, body:has(.appshell) .arahkartu span, body:has(.appshell) .sumtile small { color: var(--muted); }
+body:has(.appshell) .sumtile b { color: #eafaf6; }
+body:has(.appshell) .arahkartu.on { background: linear-gradient(160deg, rgba(54, 209, 176, .24), rgba(54, 209, 176, .08)); border-color: #36d1b0; }
+body:has(.appshell) .fchip { background: rgba(255, 255, 255, .06); border: 1.5px solid var(--line); color: var(--ink); }
+body:has(.appshell) .fchip.on, body:has(.appshell) .fchip[aria-selected=true] { background: var(--aqua); color: #03211b; border-color: transparent; box-shadow: var(--aqua-glow); }
