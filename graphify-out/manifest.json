@@ -174,9 +174,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/actions.ts": {
-    "mtime": 1795266348.6766279,
-    "seen": 1795266524.531969,
-    "ast_hash": "2519db4f245344958cf2d75ddeabd1be",
+    "mtime": 1795377843.2939122,
+    "seen": 1795380629.5344713,
+    "ast_hash": "5eca071953d0a54cfb143f8b7a4a4e7e",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/admin-actions.ts": {
@@ -192,9 +192,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/baru/page.tsx": {
-    "mtime": 1795372601.5300245,
-    "seen": 1795377435.3107011,
-    "ast_hash": "64ca1b99a332d239c7bd4a1eaf478949",
+    "mtime": 1795377843.2932072,
+    "seen": 1795380629.5345526,
+    "ast_hash": "04a2166366c6b455b19427b21bae08e6",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/cari/page.tsx": {
@@ -378,9 +378,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/resi/[id]/page.tsx": {
-    "mtime": 1795334985.6131473,
-    "seen": 1795335067.246352,
-    "ast_hash": "934e6a92d542e6023005d24490100877",
+    "mtime": 1795377843.2944055,
+    "seen": 1795380629.5364797,
+    "ast_hash": "9ec233b66353a463d9e293e03f0a241f",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/ringkasan/page.tsx": {
@@ -900,9 +900,9 @@
     "semantic_hash": ""
   },
   "db/test/run.sh": {
-    "mtime": 1795372729.68564,
-    "seen": 1795377435.3226871,
-    "ast_hash": "effd8f5c1b4afcb97f63dd38ec9d191f",
+    "mtime": 1795377866.375178,
+    "seen": 1795380629.5418487,
+    "ast_hash": "c5e5b61cd2df14ee9a872e00f22906fb",
     "semantic_hash": ""
   },
   "db/test/tariff-cases.json": {
@@ -924,9 +924,9 @@
     "semantic_hash": ""
   },
   "e2e/flow.cjs": {
-    "mtime": 1795341028.0123818,
-    "seen": 1795341069.7348404,
-    "ast_hash": "dc3dcf8676898b95e76b5c4a642724c8",
+    "mtime": 1795378546.2235668,
+    "seen": 1795380629.5420153,
+    "ast_hash": "5d43b2ad93d12bd6c41d5fcf7074b54d",
     "semantic_hash": ""
   },
   "e2e/kamera.cjs": {
@@ -954,9 +954,9 @@
     "semantic_hash": ""
   },
   "e2e/setup.sh": {
-    "mtime": 1795372729.6819701,
-    "seen": 1795377435.3230944,
-    "ast_hash": "48d8656f4f596602062c5acecfbf28ee",
+    "mtime": 1795377866.3728235,
+    "seen": 1795380629.5420947,
+    "ast_hash": "df3845578630da52991912258b62071a",
     "semantic_hash": ""
   },
   "e2e/skenario.cjs": {
@@ -2154,9 +2154,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/InvoiceForm.tsx": {
-    "mtime": 1795241119.0190701,
-    "seen": 1795243225.587227,
-    "ast_hash": "867d5ed8b51280307d7647b7e9c06185",
+    "mtime": 1795378546.2239537,
+    "seen": 1795380629.5379708,
+    "ast_hash": "7a3cce2add2aeb0830b997192694a7f8",
     "semantic_hash": ""
   },
   "db/migrations/035_resi_satu_pintu.sql": {
@@ -8622,9 +8622,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/manifest/[id]/unduh/route.ts": {
-    "mtime": 1795245337.2684748,
-    "seen": 1795245449.938025,
-    "ast_hash": "996a0398699dbfb4ff9babff736a3c8b",
+    "mtime": 1795377933.7437816,
+    "seen": 1795380629.53556,
+    "ast_hash": "2ea12b68968d7faf502cd6b6c0b7a2c6",
     "semantic_hash": ""
   },
   "db/migrations/039_wilayah_kendaraan.sql": {
@@ -8736,9 +8736,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/timbang/page.tsx": {
-    "mtime": 1795306675.9806864,
-    "seen": 1795307707.770332,
-    "ast_hash": "4d396dc3c90f66b9c43c5f025cf28cc9",
+    "mtime": 1795377843.2951255,
+    "seen": 1795380629.5367763,
+    "ast_hash": "26b594dc100186cfc90bdf7bfea93d14",
     "semantic_hash": ""
   },
   "apps/web/src/components/TimbangForm.tsx": {
@@ -8982,9 +8982,9 @@
     "semantic_hash": ""
   },
   "db/test/mv.sql": {
-    "mtime": 1795334948.6049726,
-    "seen": 1795336584.713477,
-    "ast_hash": "",
+    "mtime": 1795372729.676547,
+    "seen": 1795380629.5416443,
+    "ast_hash": "337a52e6f824abe9a03b820e691e88f1",
     "semantic_hash": ""
   },
   "apps/web/src/components/PanduanAwal.tsx": {
@@ -9018,9 +9018,15 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/CariPilih.tsx": {
-    "mtime": 1795373940.6924777,
-    "seen": 1795377435.3152156,
-    "ast_hash": "9ade818655802774d82da6a5d077a768",
+    "mtime": 1795377860.4862273,
+    "seen": 1795380629.5375795,
+    "ast_hash": "211c5d4c95c76992d6d6d311ac1f2349",
+    "semantic_hash": ""
+  },
+  "db/migrations/055_mv_ikut_resi.sql": {
+    "mtime": 1795372729.6576066,
+    "seen": 1795380629.541319,
+    "ast_hash": "6a445bd8fb6fab0082e0b6f8507a1bf2",
     "semantic_hash": ""
   },
   "package-lock.json": {

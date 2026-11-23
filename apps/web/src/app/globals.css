@@ -1716,3 +1716,13 @@ input.terkunci { background: color-mix(in srgb, var(--teal) 7%, var(--card)); fo
 .cp-chip.on { background: var(--teal-soft); border-color: var(--teal-500); color: var(--teal-700, #0f6b5a); }
 .cp-chip:disabled { opacity: .5; cursor: not-allowed; }
 .cp-chip:focus-visible { outline: none; box-shadow: 0 0 0 4px rgba(47, 158, 138, .25); }
+
+/* Bagian ringkas tidak lagi bisa dilipat: semua isi langsung terlihat, tanpa dropdown. */
+.ringkas.statis > summary { pointer-events: none; cursor: default; list-style: none; }
+.ringkas.statis > summary::-webkit-details-marker { display: none; }
+.ringkas.statis > summary::after, .ringkas.statis > summary::before { display: none !important; }
+/* Pusat: kelompok fitur untuk tombol menu bawah. */
+.pusatgrup { margin-top: 22px; }
+.pgh { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.pgi { flex: none; width: 42px; height: 42px; border-radius: 14px; display: grid; place-items: center; background: linear-gradient(135deg, var(--teal), var(--teal-500)); color: #fff; }
+.pgh h2 { margin: 0; font-size: 19px; } .pgh small { display: block; color: var(--muted); font-size: 13.5px; }

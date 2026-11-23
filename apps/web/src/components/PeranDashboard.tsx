@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { STATUS_LABEL, type AnyStatus, ROLE_LABEL } from "@kamil/core";
 import Icon from "./Icon";
-import { Spark } from "./Charts";
+import { Spark, HBars } from "./Charts";
 import TargetForm from "./TargetForm";
 import StatRow from "./StatRow";
 import Ringkas from "./Ringkas";
@@ -14,7 +14,7 @@ const wkt = (iso: string | null) => (iso ? new Date(iso).toLocaleString("id-ID",
 const peta = (alamat: string) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(alamat)}`;
 
 function Kartu({ ikon, judul, warm, flag, span, children, aksi, lipat, ringkas }: { ikon: string; judul: string; warm?: boolean; flag?: boolean; span?: boolean; children: React.ReactNode; aksi?: React.ReactNode; /** Bagian sekunder: terlipat, judul tetap terlihat. */ lipat?: boolean; ringkas?: string }) {
-  if (lipat) return <Ringkas className={`hubcard ${span ? "span2" : ""} ${flag ? "flag" : ""}`} judul={judul} lencana={aksi} ringkas={ringkas}>{children}</Ringkas>;
+  if (lipat) return <Ringkas statis className={`hubcard ${span ? "span2" : ""} ${flag ? "flag" : ""}`} judul={judul} lencana={aksi} ringkas={ringkas}>{children}</Ringkas>;
   return <article className={`card hubcard ${span ? "span2" : ""} ${flag ? "flag" : ""}`}><header><span className={`hi ${warm ? "warm" : ""}`}><Icon name={ikon} size={20} /></span><h2>{judul}</h2>{aksi}</header>{children}</article>;
 }
 const Kosong = ({ t }: { t: string }) => <p className="muted" style={{ margin: 0 }}>{t}</p>;
@@ -112,8 +112,9 @@ export function KasirDash({ d }: { d: KasirData }) {
           <dl className="infogrid"><div><dt>Tunai</dt><dd>{rupiah(d.hariIni.tunai)}</dd></div><div><dt>Transfer</dt><dd>{rupiah(d.hariIni.transfer)}</dd></div></dl>
           <a className="btn" href={waLink(ringkas)} target="_blank" rel="noopener noreferrer"><Icon name="chat" size={20} /> Kirim setoran ke Pemilik</a>
         </Kartu>
-        <Kartu ikon="users" judul="Pelanggan langganan" lipat>
-          {d.pelangganLangganan.length === 0 ? <Kosong t="Belum ada pelanggan yang kirim 2 kali atau lebih dalam 60 hari." /> : <Potong tag="ul" kelas="rows" batas={5} items={d.pelangganLangganan.map((p) => { const w = waNumber(p.hp); return <li key={p.nama}><span><b>{p.nama}</b><small>{p.resi} resi · {hpTampil(p.hp)}</small></span>{w && <a className="mini" href={`https://wa.me/${w}?text=${encodeURIComponent(`Halo ${p.nama.split(" ")[0]}, terima kasih sudah langganan kirim barang di Kamil Logistik. Ada kiriman baru yang bisa kami bantu?`)}`} target="_blank" rel="noopener noreferrer" aria-label={`Chat ${p.nama}`}><Icon name="chat" size={16} /></a>}</li>; })} />}
+        <Kartu ikon="users" judul="Pelanggan langganan (60 hari)" lipat>
+          {d.pelangganLangganan.length === 0 ? <Kosong t="Belum ada pelanggan yang kirim 2 kali atau lebih dalam 60 hari." /> : <><HBars items={d.pelangganLangganan.slice(0, 5).map((p) => ({ label: p.nama, value: p.resi, note: `${p.resi} resi` }))} fmt={(n) => `${n} resi`} empty="Belum ada." /></>}
+          {d.pelangganLangganan.length === 0 ? null : <Potong tag="ul" kelas="rows" batas={5} items={d.pelangganLangganan.map((p) => { const w = waNumber(p.hp); return <li key={p.nama}><span><b>{p.nama}</b><small>{p.resi} resi · {hpTampil(p.hp)}</small></span>{w && <a className="mini" href={`https://wa.me/${w}?text=${encodeURIComponent(`Halo ${p.nama.split(" ")[0]}, terima kasih sudah langganan kirim barang di Kamil Logistik. Ada kiriman baru yang bisa kami bantu?`)}`} target="_blank" rel="noopener noreferrer" aria-label={`Chat ${p.nama}`}><Icon name="chat" size={16} /></a>}</li>; })} />}
         </Kartu>
         <Kartu ikon="chart" judul="Bulan ini" lipat>
           <dl className="infogrid"><div><dt>Resi dibuat</dt><dd>{d.bulanIni.resi}</dd></div><div><dt>Tagihan</dt><dd>{rupiah(d.bulanIni.omzet)}</dd></div><div><dt>Komisi terhitung</dt><dd>{rupiah(d.bulanIni.komisi)}</dd></div><div><dt>Kepuasan pelanggan</dt><dd>{d.rating.jumlah && d.rating.rata ? `${String(d.rating.rata).replace(".", ",")}/5` : "belum ada"}<small>{d.rating.jumlah} penilaian</small></dd></div></dl>

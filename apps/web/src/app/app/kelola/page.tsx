@@ -32,22 +32,36 @@ const ITEMS = [
   { href: "/app/pengaturan", icon: "sliders", t: "Pengaturan dan rekening", d: "Data perusahaan dan rekening bank yang tampil di invoice." },
 ];
 
+const GRUP = [
+  { judul: "Operasional harian", ket: "Pantau muatan, pelanggan, dan masalah.", icon: "truck", h: ["/app/ringkasan", "/app/peta", "/app/tindak-lanjut", "/app/kendala", "/app/jemput", "/app/klaim"] },
+  { judul: "Uang dan laporan", ket: "Pemasukan, piutang, margin, dan komisi.", icon: "cash", h: ["/app/keuangan", "/app/tagihan", "/app/margin", "/app/keuangan/komisi", "/app/laporan"] },
+  { judul: "Orang dan mitra", ket: "Petugas, pegawai, mitra, pelanggan, dan rekrutmen.", icon: "users", h: ["/app/petugas", "/app/pegawai", "/app/mitra", "/app/korporat", "/app/calon-mitra", "/app/rekrutmen", "/app/lamaran"] },
+  { judul: "Harga, website, dan sistem", ket: "Tarif, konten, pengaturan, dan catatan aktivitas.", icon: "sliders", h: ["/app/tarif", "/app/tarif/riwayat", "/app/konten", "/app/pengaturan", "/app/catatan"] },
+];
+
 export default async function Kelola() {
   await requireOwnerView();
+  const sisa = ITEMS.filter((i) => !GRUP.some((g) => g.h.includes(i.href)));
+  const tampil = [...GRUP.map((g) => ({ ...g, items: g.h.map((h) => ITEMS.find((i) => i.href === h)).filter((x): x is (typeof ITEMS)[number] => !!x) })), ...(sisa.length ? [{ judul: "Lainnya", ket: "", icon: "grid", h: [], items: sisa }] : [])];
   return (
     <main className="wrap stack" style={{ paddingTop: 8 }}>
       <BackLink />
       <h1>Kelola bisnis</h1>
-      <p className="muted" style={{ marginTop: -6 }}>Semua pengaturan Pemilik ada di sini. Setiap perubahan tercatat permanen.</p>
-      <div className="admgrid stagger">
-        {ITEMS.map((i) => (
-          <Link key={i.href} href={i.href} className="card lift admcard">
-            <span className="ic"><Icon name={i.icon} size={26} /></span>
-            <span><b>{i.t}</b><small>{i.d}</small></span>
-            <Icon name="arrow" size={20} />
-          </Link>
-        ))}
-      </div>
+      <p className="muted" style={{ marginTop: -6 }}>Semua pengaturan Pemilik ada di sini, dikelompokkan menurut pekerjaannya. Setiap perubahan tercatat permanen.</p>
+      {tampil.map((g) => (
+        <section key={g.judul} className="pusatgrup" aria-label={g.judul}>
+          <header className="pgh"><span className="pgi"><Icon name={g.icon} size={22} /></span><div><h2>{g.judul}</h2>{g.ket && <small>{g.ket}</small>}</div></header>
+          <div className="admgrid stagger">
+            {g.items.map((i) => (
+              <Link key={i.href} href={i.href} className="card lift admcard">
+                <span className="ic"><Icon name={i.icon} size={26} /></span>
+                <span><b>{i.t}</b><small>{i.d}</small></span>
+                <Icon name="arrow" size={20} />
+              </Link>
+            ))}
+          </div>
+        </section>
+      ))}
     </main>
   );
 }

@@ -175,6 +175,15 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("penjelasan arti kode tampil", (await p.locator(".kodebox").count()) === 1 && (await p.locator(".tag.moda").innerText()).includes("Laut"));
     ok("penanda tahap: Tahap 1 dari 10", /Tahap 1 dari 10/.test(await text(p)));
     ok("AQ2 data awal lengkap tampil di detail resi: asuransi, jadwal jemput, rencana bayar, referensi", /Pakai asuransi/.test(await text(p)) && /Jadwal jemput/.test(await text(p)) && /siang/.test(await text(p)) && /Transfer/.test(await text(p)) && /PO-7788/.test(await text(p)));
+    { const pg2 = await kasir.ctx.newPage();
+      await pg2.goto(`${BASE}/app/pusat`, { waitUntil: "networkidle" });
+      const pt = await pg2.locator("main").innerText();
+      ok("AQ3 Pusat Kasir: fitur dikelompokkan (Buat dan urus resi, Pelanggan, Uang)", /Pusat Kasir/.test(pt) && /Buat dan urus resi/.test(pt) && /Pelanggan/.test(pt) && /Uang/.test(pt) && (await pg2.locator("a.admcard[href='/app/baru']").count()) === 1 && (await pg2.locator("a.admcard[href='/app/tagihan']").count()) === 1);
+      const tb = await pg2.locator(".tabbar").innerText();
+      ok("AQ4 menu bawah Kasir: Beranda, Resi baru, Pindai, Tagihan, Pusat", /Beranda/.test(tb) && /Resi baru/.test(tb) && /Pindai/.test(tb) && /Tagihan/.test(tb) && /Pusat/.test(tb));
+      await pg2.goto(`${BASE}/app`, { waitUntil: "networkidle" });
+      ok("AQ5 beranda Kasir tanpa dropdown: semua kartu ringkasan terbuka, grafik pelanggan langganan tersedia", (await pg2.locator("details.ringkas:not([open])").count()) === 0 && (await pg2.locator("details.ringkas.statis").count()) >= 2);
+      await pg2.close(); }
     await noOverflow(p, "detail resi (HP)");
     await p.screenshot({ path: `${OUT}/e2e-resi-baru.png` });
     kasir.resiUrl = p.url();
@@ -1266,7 +1275,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     const fn = await login(browser, "finance@uji.id", PASS, { width: 390, height: 844 });
     ok("AE17 Finance masuk dan diarahkan ke Keuangan", fn.loggedIn && /\/app\/keuangan/.test((await (async () => { await fn.page.goto(`${BASE}/app`, { waitUntil: "networkidle" }); return fn.page.url(); })())));
     const tabF = await fn.page.locator(".tabbar").innerText();
-    ok("AE18 menu bawah Finance: Keuangan, Tagihan, Laporan, Akun", /Keuangan/.test(tabF) && /Tagihan/.test(tabF) && /Laporan/.test(tabF) && /Akun/.test(tabF) && !/Pindai/.test(tabF), tabF.replace(/\n/g, " "));
+    ok("AE18 menu bawah Finance: Keuangan, Tagihan, Laporan, Pusat", /Keuangan/.test(tabF) && /Tagihan/.test(tabF) && /Laporan/.test(tabF) && /Pusat/.test(tabF) && !/Pindai/.test(tabF), tabF.replace(/\n/g, " "));
     await fn.page.goto(`${BASE}/app/tagihan`, { waitUntil: "networkidle" });
     ok("AE19 Finance melihat daftar tagihan", /Tagihan/.test(await fn.page.locator("h1").first().innerText()) && (await fn.page.locator("main .err").count()) === 0);
     const mid = sqlq(`SELECT id FROM manifests WHERE status <> 'OPEN' ORDER BY created_at LIMIT 1;`);
@@ -1288,7 +1297,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     const cs = await login(browser, "cs@uji.id", PASS, { width: 390, height: 844 });
     ok("AE22 CS masuk ke beranda", cs.loggedIn);
     const tabC = await cs.page.locator(".tabbar").innerText();
-    ok("AE23 menu bawah CS: Beranda, Jemput, Klaim, Akun (tanpa Resi baru)", /Beranda/.test(tabC) && !/Resi baru/.test(tabC) && /Jemput/.test(tabC) && /Klaim/.test(tabC) && !/Tagihan/.test(tabC), tabC.replace(/\n/g, " "));
+    ok("AE23 menu bawah CS: Beranda, Jemput, Klaim, Pusat (tanpa Resi baru)", /Beranda/.test(tabC) && !/Resi baru/.test(tabC) && /Jemput/.test(tabC) && /Klaim/.test(tabC) && /Pusat/.test(tabC) && !/Tagihan/.test(tabC), tabC.replace(/\n/g, " "));
     await cs.page.goto(`${BASE}/app/baru`, { waitUntil: "networkidle" });
     ok("AE24 CS tidak bisa membuka formulir resi baru (satu pintu: kasir)", !/\/app\/baru/.test(cs.page.url()) && (await cs.page.locator("form[action]").count()) === 0 || !/Buat resi baru/.test(await cs.page.locator("main").innerText()));
     await cs.page.goto(`${BASE}/app/klaim`, { waitUntil: "networkidle" });
