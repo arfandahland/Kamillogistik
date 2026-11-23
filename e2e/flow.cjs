@@ -1317,7 +1317,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
 
     // Voyage dan surat jalan pelabuhan
     const mj = sqlq(`UPDATE manifests SET status = 'SEALED', holder_user_id = NULL, pending_to_user = NULL WHERE id = (SELECT id FROM manifests WHERE origin_id = (SELECT id FROM branches_partners WHERE code='JKT') ORDER BY created_at LIMIT 1) RETURNING id;`).split("\n")[0];
-    const mg2 = await login(browser, "manajer@uji.id", PASS, { width: 390, height: 844 });
+    const mg2 = await login(browser, "kasir@uji.id", PASS, { width: 390, height: 844 }); // data voyage diisi Kasir cabang asal
     await mg2.page.goto(`${BASE}/app/manifest/${mj}`, { waitUntil: "networkidle" });
     await mg2.page.fill("#voyage", "VY-2611-UJI"); await mg2.page.fill("#pmuat", "Tanjung Priok"); await mg2.page.fill("#pbongkar", "Pelabuhan Soekarno-Hatta Makassar");
     await act(mg2.page, mg2.page.getByRole("button", { name: "Simpan voyage dan pelabuhan" }));
