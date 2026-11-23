@@ -27,3 +27,8 @@ export function isActive(path: string, href: string, also: string[] = []): boole
   if (href === "/app/mv") return path === "/app/mv"; // beranda Divisi MV: tidak ikut menyala di halaman turunannya
   return path === href || path.startsWith(href + "/");
 }
+
+/** Tampilan nama yang rapi: kata yang seluruhnya huruf kecil diberi huruf kapital di depan ("arfan dahland" menjadi "Arfan Dahland"). Data asli tidak diubah; kata bersingkatan seperti "MV" tetap. */
+export function rapikanNama(nama: string): string {
+  return nama.replace(/\S+/g, (w) => (w === w.toLowerCase() ? w.charAt(0).toUpperCase() + w.slice(1) : w));
+}

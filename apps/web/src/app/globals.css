@@ -1862,3 +1862,98 @@ body:has(.appshell) .sumtile b { color: #eafaf6; }
 body:has(.appshell) .arahkartu.on { background: linear-gradient(160deg, rgba(54, 209, 176, .24), rgba(54, 209, 176, .08)); border-color: #36d1b0; }
 body:has(.appshell) .fchip { background: rgba(255, 255, 255, .06); border: 1.5px solid var(--line); color: var(--ink); }
 body:has(.appshell) .fchip.on, body:has(.appshell) .fchip[aria-selected=true] { background: var(--aqua); color: #03211b; border-color: transparent; box-shadow: var(--aqua-glow); }
+
+/* =========================================================================================
+   KACA BERLAPIS — arahan pemilik 23 Nov 2026 (hanya lapisan tampilan): kaca gradasi + pantulan tepi atas,
+   Bento 2 kolom, daftar berkelompok dalam satu kontainer, laci kaca dari bawah, kartu kaca di tengah,
+   sudut 16px, ikon kaca mint tanpa cahaya menyilaukan, sentuhan mengecil halus, transisi geser halaman.
+   Palet: zamrud gelap #071915, mint #10B981, amber #F59E0B.
+   ========================================================================================= */
+body:has(.appshell) {
+  --bg: #071915; --teal: #10b981; --teal-soft: rgba(16, 185, 129, .15); --amber: #f59e0b; --radius: 16px; --rim: rgba(255, 255, 255, .12);
+  --aqua: linear-gradient(135deg, #34d399 0%, #10b981 100%); --aqua-glow: 0 8px 22px rgba(16, 185, 129, .30);
+  --glass: linear-gradient(180deg, rgba(255, 255, 255, .08), rgba(255, 255, 255, .02)), rgba(7, 25, 21, .58);
+  background:
+    radial-gradient(90% 46% at 100% -8%, rgba(16, 185, 129, .26), transparent 62%),
+    radial-gradient(70% 42% at -12% 28%, rgba(6, 95, 70, .42), transparent 64%),
+    linear-gradient(180deg, #0a2a22 0%, #071915 55%, #04120f 100%);
+  background-attachment: fixed;
+}
+body:has(.appshell) .card, body:has(.appshell) .hubcard, body:has(.appshell) .stat, body:has(.appshell) .arahkartu, body:has(.appshell) .sumtile {
+  border-radius: 16px; background: var(--glass); border: 1px solid var(--rim); border-top-color: rgba(255, 255, 255, .22);
+  -webkit-backdrop-filter: blur(24px) saturate(140%); backdrop-filter: blur(24px) saturate(140%);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .35), inset 0 1px 0 rgba(255, 255, 255, .10);
+}
+/* kotak ikon: kaca mint, tanpa cahaya menyilaukan */
+body:has(.appshell) .stat .si, body:has(.appshell) .hi, body:has(.appshell) .admcard .ic, body:has(.appshell) .pgi, .gl-ik {
+  background: rgba(16, 185, 129, .15); border: 1px solid rgba(52, 211, 153, .25); color: #6ee7b7; box-shadow: none;
+}
+body:has(.appshell) .stat.warm .si, body:has(.appshell) .hi.warm { background: rgba(245, 158, 11, .15); border-color: rgba(251, 191, 36, .28); color: #fcd34d; box-shadow: none; }
+body:has(.appshell) .tab.on { color: #6ee7b7; }
+body:has(.appshell) .tab.on .ti { background: rgba(16, 185, 129, .18); box-shadow: none; }
+body:has(.appshell) .tab.on::after { background: #10b981; box-shadow: 0 0 6px #10b981; }
+body:has(.appshell) .has-tabbar { padding-bottom: 128px; }
+
+/* Bento: dua menu utama berdampingan */
+.gl-bentos { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.gl-bento {
+  position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; min-height: 132px; padding: 16px; border-radius: 16px; text-align: left; font: inherit; color: var(--ink); text-decoration: none; cursor: pointer;
+  background: var(--glass); border: 1px solid var(--rim); border-top-color: rgba(255, 255, 255, .22);
+  -webkit-backdrop-filter: blur(24px) saturate(140%); backdrop-filter: blur(24px) saturate(140%); box-shadow: 0 10px 30px rgba(0, 0, 0, .35), inset 0 1px 0 rgba(255, 255, 255, .10);
+}
+.gl-bento .gl-tx { flex: none; width: 100%; } .gl-bento .gl-tx b { font-size: 16px; }
+.gl-bento .gl-pn { position: absolute; top: 14px; right: 14px; }
+/* Daftar berkelompok: satu kontainer kaca, baris dipisah garis tipis */
+.gl-daftar {
+  border-radius: 16px; overflow: hidden; background: var(--glass); border: 1px solid var(--rim); border-top-color: rgba(255, 255, 255, .22);
+  -webkit-backdrop-filter: blur(24px) saturate(140%); backdrop-filter: blur(24px) saturate(140%); box-shadow: 0 10px 30px rgba(0, 0, 0, .35), inset 0 1px 0 rgba(255, 255, 255, .10);
+}
+.gl-baris { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 56px; padding: 12px 14px; background: transparent; border: 0; border-top: 1px solid rgba(255, 255, 255, .08); color: var(--ink); text-align: left; font: inherit; text-decoration: none; cursor: pointer; }
+.gl-baris:first-child { border-top: 0; }
+.gl-aksi .gl-baris { min-height: 50px; }
+.gl-ik { flex: none; width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; }
+.gl-tx { flex: 1; min-width: 0; }
+.gl-tx b { display: block; font-size: 15.5px; line-height: 1.25; font-weight: 800; }
+.gl-tx small { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-top: 2px; color: var(--muted); font-size: 13px; line-height: 1.35; }
+.gl-pn { flex: none; color: rgba(190, 245, 232, .5); }
+.gl-press { transition: transform .18s var(--ease), background .2s, box-shadow .2s; -webkit-tap-highlight-color: transparent; }
+.gl-press:active, body:has(.appshell) .admcard:active, body:has(.appshell) .card.lift:active { transform: scale(.98); box-shadow: 0 0 0 1px rgba(52, 211, 153, .35), 0 0 24px rgba(16, 185, 129, .16); }
+.gl-baris.gl-press:active { background: rgba(16, 185, 129, .12); }
+/* kolom cari */
+.gl-cari { display: flex; align-items: center; gap: 8px; padding: 6px 6px 6px 14px; border-radius: 16px; background: var(--glass); border: 1px solid var(--rim); border-top-color: rgba(255, 255, 255, .22); -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .10); }
+.gl-cari .ico { flex: none; color: #6ee7b7; }
+.gl-cari input { flex: 1; min-width: 0; margin: 0; padding: 10px 4px; background: transparent !important; border: 0 !important; box-shadow: none !important; color: var(--ink); }
+.gl-cari .btn { flex: none; width: auto; margin: 0; }
+/* laci kaca dari bawah dan kartu kaca di tengah */
+.gl-ov { position: fixed; inset: 0; z-index: 80; display: flex; background: rgba(2, 12, 10, .55); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); animation: glFade .22s ease both; }
+.gl-ov.bawah { align-items: flex-end; justify-content: center; }
+.gl-ov.tengah { align-items: center; justify-content: center; padding: 20px; }
+.gl-lembar {
+  width: 100%; max-width: 560px; max-height: 86vh; overflow: auto; padding: 14px 16px calc(20px + env(safe-area-inset-bottom)); color: var(--ink);
+  background: linear-gradient(180deg, rgba(255, 255, 255, .10), rgba(255, 255, 255, .03)), rgba(7, 25, 21, .84);
+  -webkit-backdrop-filter: blur(40px) saturate(150%); backdrop-filter: blur(40px) saturate(150%); border: 1px solid var(--rim); border-top-color: rgba(255, 255, 255, .24); box-shadow: 0 -20px 60px rgba(0, 0, 0, .5);
+}
+.gl-ov.bawah .gl-lembar { border-radius: 24px 24px 0 0; animation: glNaik .42s cubic-bezier(.2, 1.1, .3, 1) both; }
+.gl-ov.tengah .gl-lembar { max-width: 420px; border-radius: 20px; animation: glMuncul .32s cubic-bezier(.2, 1.1, .3, 1) both; }
+.gl-handle { display: block; width: 42px; height: 5px; margin: 0 auto 12px; border-radius: 99px; background: rgba(255, 255, 255, .28); }
+.gl-kep { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.gl-kep h2 { margin: 0; font-size: 19px; } .gl-kep small { display: block; color: var(--muted); line-height: 1.3; }
+.gl-x { margin-left: auto; flex: none; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; cursor: pointer; background: rgba(255, 255, 255, .08); border: 1px solid var(--rim); color: var(--ink); }
+.gl-angka { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.gl-angka div { padding: 12px; border-radius: 14px; background: rgba(255, 255, 255, .05); border: 1px solid rgba(255, 255, 255, .10); }
+.gl-angka b { display: block; font-size: 20px; } .gl-angka span { font-size: 12.5px; color: var(--muted); }
+.gl-tombol { display: grid; gap: 10px; margin-top: 14px; } .gl-tombol .btn { width: 100%; text-align: center; justify-content: center; margin: 0; }
+@keyframes glFade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes glNaik { from { transform: translateY(100%); } to { transform: none; } }
+@keyframes glMuncul { from { opacity: 0; transform: scale(.92) translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes glGeser { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: none; } }
+body:has(.appshell) .appmain > main { animation: glGeser .34s var(--ease) both; }
+/* tombol kembali kaca, seragam di semua halaman */
+body:has(.appshell) .backlink { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px 8px 10px; border-radius: 14px; background: var(--glass); border: 1px solid var(--rim); border-top-color: rgba(255, 255, 255, .22); color: var(--ink); text-decoration: none; font-weight: 800; -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); }
+body:has(.appshell) .backlink:active { transform: scale(.97); }
+/* daftar menu lama (admgrid, dipakai beranda MV dan Keuangan) ikut menjadi daftar berkelompok */
+body:has(.appshell) .admgrid { display: block; overflow: hidden; border-radius: 16px; background: var(--glass); border: 1px solid var(--rim); border-top-color: rgba(255, 255, 255, .22); -webkit-backdrop-filter: blur(24px) saturate(140%); backdrop-filter: blur(24px) saturate(140%); box-shadow: 0 10px 30px rgba(0, 0, 0, .35), inset 0 1px 0 rgba(255, 255, 255, .10); }
+body:has(.appshell) .admgrid .admcard { display: flex; align-items: center; gap: 12px; border-radius: 0; border: 0; border-top: 1px solid rgba(255, 255, 255, .08); background: transparent; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; padding: 13px 14px; margin: 0; }
+body:has(.appshell) .admgrid .admcard:first-child { border-top: 0; }
+body:has(.appshell) .admgrid .admcard small { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+@media (prefers-reduced-motion: reduce) { body:has(.appshell) .appmain > main, .gl-ov, .gl-lembar { animation: none !important; } }

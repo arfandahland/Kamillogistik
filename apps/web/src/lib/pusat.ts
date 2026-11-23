@@ -1,25 +1,37 @@
 /** Kelompok fitur per peran. Tiap kelompok menjadi satu tombol di menu bawah (HP) dan satu bagian bertajuk di menu samping (komputer). */
-export type PusatItem = { href: string; icon: string; t: string; d: string };
+export type Aksi = { t: string; href: string };
+/** mode: "halaman" (bawaan), "laci" (panel kaca dari bawah dengan pilihan cepat), atau "kartu" (kartu kaca ringkasan di tengah layar). */
+export type PusatItem = { href: string; icon: string; t: string; d: string; mode?: "laci" | "kartu"; aksi?: Aksi[] };
 /** `tab` kosong berarti kelompok tidak punya tombol bawah (hanya muncul di menu samping). */
 export type PusatGrup = { slug: string; tab: string; judul: string; ket: string; icon: string; items: PusatItem[] };
 
-const G = (slug: string, tab: string, judul: string, ket: string, icon: string, items: PusatItem[]): PusatGrup => ({ slug, tab, judul, ket, icon, items });
+/** Menu yang punya pilihan cepat: sentuhan membuka laci kaca dari bawah, dengan tombol "Buka halaman penuh" ke halaman aslinya. Semua tautan adalah halaman dan filter yang sudah ada. */
+const LACI: Record<string, { mode: "laci" | "kartu"; aksi?: Aksi[] }> = {
+  "/app/manifest": { mode: "laci", aksi: [{ t: "Sedang diisi", href: "/app/manifest?s=OPEN" }, { t: "Siap berangkat", href: "/app/manifest?s=SEALED" }, { t: "Di perjalanan", href: "/app/manifest?s=IN_TRANSIT" }, { t: "Sudah tiba", href: "/app/manifest?s=ARRIVED" }, { t: "Selesai", href: "/app/manifest?s=UNLOADED" }] },
+  "/app/mv": { mode: "laci", aksi: [{ t: "Alokasi dan HPP", href: "/app/mv/alokasi" }, { t: "Pantau darat", href: "/app/mv/tracking?m=DARAT" }, { t: "Pantau laut", href: "/app/mv/tracking?m=LAUT" }, { t: "Pantau udara", href: "/app/mv/tracking?m=UDARA" }, { t: "Kiriman vendor", href: "/app/mv/kiriman" }, { t: "SJ balik", href: "/app/mv/sj" }, { t: "Penjualan per cabang", href: "/app/mv/penjualan" }] },
+  "/app/tindak-lanjut": { mode: "laci", aksi: [{ t: "Belum dijemput", href: "/app/tindak-lanjut?k=JEMPUT" }, { t: "Belum diantar ke gudang", href: "/app/tindak-lanjut?k=ANTAR" }, { t: "Di gudang tujuan, belum diantar", href: "/app/tindak-lanjut?k=TIBA" }, { t: "Sedang diantar terlalu lama", href: "/app/tindak-lanjut?k=KURIR" }, { t: "Barang bermasalah", href: "/app/tindak-lanjut?k=MASALAH" }, { t: "Tagihan jatuh tempo", href: "/app/tindak-lanjut?k=TAGIHAN" }] },
+  "/app/klaim": { mode: "laci", aksi: [{ t: "Baru", href: "/app/klaim?s=BARU" }, { t: "Diproses", href: "/app/klaim?s=DIPROSES" }, { t: "Menunggu bukti", href: "/app/klaim?s=MENUNGGU_BUKTI" }, { t: "Selesai", href: "/app/klaim?s=SELESAI" }, { t: "Ditolak", href: "/app/klaim?s=DITOLAK" }] },
+  "/app/jemput": { mode: "laci", aksi: [{ t: "Baru", href: "/app/jemput?s=BARU" }, { t: "Sudah dihubungi", href: "/app/jemput?s=DIHUBUNGI" }, { t: "Dijadwalkan", href: "/app/jemput?s=DIJADWALKAN" }, { t: "Selesai dijemput", href: "/app/jemput?s=SELESAI" }, { t: "Batal", href: "/app/jemput?s=BATAL" }] },
+  "/app/kendala": { mode: "laci", aksi: [{ t: "Terbuka", href: "/app/kendala" }, { t: "Selesai", href: "/app/kendala?s=selesai" }] },
+  "/app/ringkasan": { mode: "kartu" },
+};
+const G = (slug: string, tab: string, judul: string, ket: string, icon: string, items: PusatItem[]): PusatGrup => ({ slug, tab, judul, ket, icon, items: items.map((i) => ({ ...i, ...(LACI[i.href] ?? {}) })) });
 const AKUN = G("akun", "", "Akun saya", "Data diri, kata sandi, dan bantuan.", "user", [{ href: "/app/akun", icon: "user", t: "Akun dan panduan", d: "Profil, ganti kata sandi, panduan penggunaan, dan keluar." }]);
 const CARI: PusatItem = { href: "/app/cari", icon: "search", t: "Cari resi", d: "Ketik nomor resi atau nama pengirim dan penerima." };
 const SERAH: PusatItem = { href: "/app/serah", icon: "swap", t: "Serah terima", d: "Terima atau serahkan barang ke petugas lain dengan tombol konfirmasi." };
 const DIHUBUNGI: PusatItem = { href: "/app/tindak-lanjut", icon: "chat", t: "Perlu dihubungi", d: "Pelanggan yang menunggu kabar: belum dijemput, belum diantar, atau tagihan jatuh tempo." };
-const JEMPUT: PusatItem = { href: "/app/jemput", icon: "truck", t: "Pesanan jemput", d: "Pesanan penjemputan dari website: hubungi pelanggan dan atur jadwalnya." };
+const JEMPUT: PusatItem = { href: "/app/jemput", icon: "box", t: "Pesanan jemput", d: "Pesanan penjemputan dari website: hubungi pelanggan dan atur jadwalnya." };
 const KLAIM: PusatItem = { href: "/app/klaim", icon: "shield", t: "Klaim dan keluhan", d: "Laporan barang rusak, hilang, atau keluhan layanan beserta usulan penyelesaiannya." };
 const KENDALA: PusatItem = { href: "/app/kendala", icon: "alert", t: "Kendala pengiriman", d: "Salah sortir, barang rusak, gagal kirim, retur, dan barang ditahan." };
 const MANIFEST: PusatItem = { href: "/app/manifest", icon: "layers", t: "Manifest muatan", d: "Daftar muatan satu kontainer: siapkan, segel, serahkan, dan bongkar." };
 const TIMBANG: PusatItem = { href: "/app/timbang", icon: "scale", t: "Timbang barang", d: "Pindai barcode tiap barang, isi berat dan ukurannya." };
-const SORTIR: PusatItem = { href: "/app/sortir", icon: "layers", t: "Sortir tujuan akhir", d: "Resi dikelompokkan per kabupaten atau kota tujuan akhir." };
+const SORTIR: PusatItem = { href: "/app/sortir", icon: "flip", t: "Sortir tujuan akhir", d: "Resi dikelompokkan per kabupaten atau kota tujuan akhir." };
 
 export const PERAN_PUSAT = ["MITRA_POS", "HUB_MANAGER", "WAREHOUSE", "DRIVER", "CONTAINER_DRIVER", "CS_SALES", "FINANCE", "HRD", "MV", "MV_MASTER", "SUPER_ADMIN", "OWNER"];
 
 /** Daftar halaman Pemilik dan Super Admin. */
 const KELOLA: Record<string, PusatItem> = Object.fromEntries([
-  { href: "/app/ringkasan", icon: "chart", t: "Ringkasan harian", d: "Resi baru, terkirim, uang masuk, masalah, dan kinerja tiap mitra. Bisa dibagikan ke WhatsApp." },
+  { href: "/app/ringkasan", icon: "sparkle", t: "Ringkasan harian", d: "Resi baru, terkirim, uang masuk, masalah, dan kinerja tiap mitra. Bisa dibagikan ke WhatsApp." },
   { href: "/app/peta", icon: "pin", t: "Peta pantauan", d: "Posisi muatan antar kota, muatan yang terlambat, dan kota yang tertahan." },
   MANIFEST,
   { href: "/app/mv", icon: "truck", t: "Divisi MV", d: "Alokasi pengiriman keluar, HPP, pemantauan, dan dokumen tiap divisi." },
@@ -27,20 +39,20 @@ const KELOLA: Record<string, PusatItem> = Object.fromEntries([
   { href: "/app/keuangan", icon: "cash", t: "Keuangan", d: "Uang masuk, piutang, umur piutang, dan riwayat pembayaran." },
   { href: "/app/tagihan", icon: "file", t: "Semua tagihan", d: "Cari invoice, catat pembayaran, cetak, dan kirim ke pelanggan." },
   { href: "/app/margin", icon: "tag", t: "Margin manifest dan rute", d: "Pendapatan dikurangi biaya kapal, armada, dan pelabuhan per manifest dan per rute." },
-  { href: "/app/keuangan/komisi", icon: "users", t: "Komisi mitra", d: "Ongkir dan komisi tiap mitra pada periode yang dipilih." },
+  { href: "/app/keuangan/komisi", icon: "bank", t: "Komisi mitra", d: "Ongkir dan komisi tiap mitra pada periode yang dipilih." },
   { href: "/app/laporan", icon: "chart", t: "Laporan lengkap", d: "Omzet, piutang, rute, kinerja mitra, jemput dan klaim per periode. Unduh Excel untuk pembukuan." },
-  { href: "/app/petugas", icon: "users", t: "Petugas", d: "Buat akun, ganti sandi, atau nonaktifkan kurir, gudang, kasir, MV, dan lainnya." },
-  { href: "/app/pegawai", icon: "user", t: "Kepegawaian", d: "Dokumen dan masa berlakunya, shift, absensi, cuti dan izin, serta rekap kerja untuk penggajian." },
+  { href: "/app/petugas", icon: "user", t: "Petugas", d: "Buat akun, ganti sandi, atau nonaktifkan kurir, gudang, kasir, MV, dan lainnya." },
+  { href: "/app/pegawai", icon: "users", t: "Kepegawaian", d: "Dokumen dan masa berlakunya, shift, absensi, cuti dan izin, serta rekap kerja untuk penggajian." },
   { href: "/app/mitra", icon: "store", t: "Mitra dan cabang", d: "Daftarkan gerai mitra, gudang, rekanan, dan pelabuhan beserta komisinya." },
   { href: "/app/korporat", icon: "building", t: "Pelanggan korporat", d: "Perusahaan langganan: tempo bayar, batas kredit, tarif khusus, dan rekap tagihan." },
-  { href: "/app/calon-mitra", icon: "store", t: "Calon mitra", d: "Pendaftar mitra dari website: hubungi, survei, dan catat statusnya." },
-  { href: "/app/rekrutmen", icon: "chart", t: "Dashboard rekrutmen", d: "Pelamar masuk, alur seleksi, waktu respon, dan buka tutup lowongan per posisi." },
-  { href: "/app/lamaran", icon: "users", t: "Lamaran kerja", d: "Pelamar dari halaman karir: baca CV, hubungi lewat WhatsApp, dan catat statusnya." },
-  { href: "/app/tarif", icon: "tag", t: "Tarif dan rute", d: "Ubah harga, minimal berat, dan jadwal. Website langsung memakai harga baru." },
+  { href: "/app/calon-mitra", icon: "send", t: "Calon mitra", d: "Pendaftar mitra dari website: hubungi, survei, dan catat statusnya." },
+  { href: "/app/rekrutmen", icon: "eye", t: "Dashboard rekrutmen", d: "Pelamar masuk, alur seleksi, waktu respon, dan buka tutup lowongan per posisi." },
+  { href: "/app/lamaran", icon: "copy", t: "Lamaran kerja", d: "Pelamar dari halaman karir: baca CV, hubungi lewat WhatsApp, dan catat statusnya." },
+  { href: "/app/tarif", icon: "calc", t: "Tarif dan rute", d: "Ubah harga, minimal berat, dan jadwal. Website langsung memakai harga baru." },
   { href: "/app/tarif/riwayat", icon: "clock", t: "Riwayat harga", d: "Siapa mengubah harga, kapan, dari berapa ke berapa." },
-  { href: "/app/konten", icon: "grid", t: "Konten website", d: "Unggah dan atur foto dokumentasi dan testimoni yang tampil di beranda." },
+  { href: "/app/konten", icon: "image", t: "Konten website", d: "Unggah dan atur foto dokumentasi dan testimoni yang tampil di beranda." },
   { href: "/app/pengaturan", icon: "sliders", t: "Pengaturan dan rekening", d: "Data perusahaan dan rekening bank yang tampil di invoice." },
-  { href: "/app/catatan", icon: "clock", t: "Catatan aktivitas", d: "Siapa mengubah apa dan kapan: akun, tarif, lamaran, konten." },
+  { href: "/app/catatan", icon: "list", t: "Catatan aktivitas", d: "Siapa mengubah apa dan kapan: akun, tarif, lamaran, konten." },
   CARI,
 ].map((i) => [i.href, i]));
 const K = (...h: string[]) => h.map((x) => KELOLA[x]!).filter(Boolean);
@@ -75,7 +87,7 @@ export function grupPusat(role: string): { judul: string; sapa: string; grup: Pu
     case "CS_SALES": return { judul: "Pusat Layanan Pelanggan", sapa: "Pelanggan, pesanan, dan keluhan.", grup: [
       G("layanan", "Layanan", "Pelanggan", "Hubungi dan cari resi.", "users", [DIHUBUNGI, CARI]), AKUN] };
     case "FINANCE": return { judul: "Pusat Keuangan", sapa: "Uang masuk, tagihan, biaya, dan laporan.", grup: [
-      G("dokumen", "Dokumen", "Komisi dan dokumen", "Komisi mitra dan surat jalan balik dari MV.", "file", [{ href: "/app/keuangan/komisi", icon: "users", t: "Komisi mitra", d: "Ongkir dan komisi tiap mitra pada periode yang dipilih." }, { href: "/app/keuangan/sj", icon: "file", t: "SJ balik dari MV", d: "Surat jalan yang sudah diserahkan MV beserta tanda terimanya." }, CARI]), AKUN] };
+      G("dokumen", "Dokumen", "Komisi dan dokumen", "Komisi mitra dan surat jalan balik dari MV.", "file", [{ href: "/app/keuangan/komisi", icon: "bank", t: "Komisi mitra", d: "Ongkir dan komisi tiap mitra pada periode yang dipilih." }, { href: "/app/keuangan/sj", icon: "file", t: "SJ balik dari MV", d: "Surat jalan yang sudah diserahkan MV beserta tanda terimanya." }, CARI]), AKUN] };
     case "HRD": return { judul: "Pusat HRD", sapa: "Rekrutmen dan kepegawaian.", grup: [
       G("pegawai", "Atur", "Kepegawaian", "Data dan jadwal pegawai.", "user", [{ href: "/app/pegawai?t=daftar", icon: "user", t: "Daftar pegawai", d: "Pegawai aktif dan status absen hari ini." }, { href: "/app/pegawai?t=dokumen", icon: "file", t: "Dokumen pegawai", d: "SIM, KTP, dan kontrak beserta masa berlakunya." }, { href: "/app/pegawai?t=shift", icon: "clock", t: "Shift", d: "Atur shift pagi, siang, malam, atau libur." }, { href: "/app/pegawai?t=cuti", icon: "shield", t: "Cuti dan izin", d: "Setujui atau tolak pengajuan." }, { href: "/app/pegawai?t=rekap", icon: "chart", t: "Rekap kerja", d: "Rekap per tanggal untuk penggajian, unduh CSV." }]), AKUN] };
     case "MV": case "MV_MASTER": return { judul: "Pusat MV", sapa: "Vendor, penjualan, dan pencarian.", grup: [
