@@ -12,3 +12,6 @@ Rules:
 ## Agen desain UI/UX
 
 Untuk merapikan tampilan (tata letak HP dan komputer, form, kartu angka, pembagian fitur per peran), gunakan agen `ui-ux-designer` (`.claude/agents/ui-ux-designer.md`). Agen ini tidak mengubah tema warna; ia bekerja dari tangkapan layar nyata dan memakai komponen tata letak yang sudah ada di `apps/web/src/app/globals.css`.
+
+## Skill UI/UX Pro Max
+Skill `ui-ux-pro-max` (MIT, dari github.com/nextlevelbuilder/ui-ux-pro-max-skill) terpasang di `.claude/skills/ui-ux-pro-max`. Pakai untuk panduan susunan, UX, grafik, dan aksesibilitas (`python3 -I .claude/skills/ui-ux-pro-max/scripts/search.py "<kata kunci>" --domain ux`). Tema warna dan font proyek TIDAK boleh diganti oleh rekomendasi skill. Prinsip menu bawah: tiap tombol punya satu fungsi, maksimal 5 tombol, statistik tampil sebagai kartu atau grafik (bukan dropdown).
