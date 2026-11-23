@@ -1095,7 +1095,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     const mg = await login(browser, "manajer@uji.id", PASS, { width: 390, height: 844 });
     ok("Y1 Manajer Gudang bisa masuk", mg.loggedIn);
     const p = mg.page; await p.goto(`${BASE}/app`, { waitUntil: "networkidle" }); await p.waitForTimeout(700);
-    ok("Y2 beranda menampilkan 10 kartu dashboard dan satu judul utama", (await p.locator(".hubcard").count()) === 10 && (await p.locator("h1").count()) === 1);
+    ok("Y2 beranda menampilkan 9 kartu dashboard (tanpa piutang) dan satu judul utama", (await p.locator(".hubcard").count()) === 9 && (await p.locator("h1").count()) === 1);
     ok("AN1 beranda cabang menampilkan 4 kartu arah barang (akan masuk, di cabang ini, sudah keluar, selesai)", (await p.locator(".arahkartu").count()) === 4 && /Akan masuk/.test(await p.locator(".arahbar").innerText()) && /Sudah keluar/.test(await p.locator(".arahbar").innerText()));
     await p.locator(".arahkartu.masuk").click();
     await p.waitForURL(/a=MASUK/, { timeout: 25000 }).catch(async () => { await p.goto(`${BASE}/app?a=MASUK`, { waitUntil: "load" }); }); // klik sesekali tertahan prefetch yang dibatalkan di peramban uji; isi halaman tetap diuji
@@ -1114,8 +1114,9 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await p.goto(`${BASE}/app/jemput`, { waitUntil: "networkidle" });
     const nomor = await p.locator("main").innerText(); ok("Y7 nomor WhatsApp di antrean jemput tampil rapi (0812-...) bukan 62...", !/\b628\d{8,}\b/.test(nomor));
     ok("Y8 Kepala gudang tidak melihat tombol unduh CSV yang akan ditolak (hanya Super Admin)", (await p.locator("a:has-text('Unduh Excel')").count()) === 0);
+    { await p.goto(`${BASE}/app/tagihan`, { waitUntil: "networkidle" }); const tbm = await p.locator(".tabbar").innerText(); ok("AR1 Kepala gudang tidak punya menu Tagihan: halaman dialihkan dan tidak ada di menu bawah", !/\/app\/tagihan/.test(p.url()) && !/Tagihan/.test(tbm) && /Pusat/.test(tbm) && /Manifest/.test(tbm), p.url() + " " + tbm.replace(/\n/g, " ")); await p.goto(`${BASE}/app`, { waitUntil: "networkidle" }); ok("AR2 beranda Kepala gudang tidak memuat kartu piutang cabang", !/Piutang cabang/.test(await text(p))); }
     ok("Y9 Kepala gudang tidak ditawari membuat resi dari pesanan jemput (hanya Kasir)", (await p.locator("a[href^='/app/baru?jemput=']").count()) === 0);
-    for (const u of ["/app/pindai", "/app/manifest", "/app/tagihan", "/app/serah", "/app/tindak-lanjut", "/app/akun"]) { await p.goto(`${BASE}${u}`, { waitUntil: "networkidle" }); await noOverflow(p, `Manajer ${u} (HP)`); }
+    for (const u of ["/app/pindai", "/app/manifest", "/app/serah", "/app/tindak-lanjut", "/app/akun", "/app/pusat"]) { await p.goto(`${BASE}${u}`, { waitUntil: "networkidle" }); await noOverflow(p, `Manajer ${u} (HP)`); }
     await mg.ctx.close();
     const md = await login(browser, "manajer@uji.id", PASS, { width: 1366, height: 900 });
     await md.page.goto(`${BASE}/app`, { waitUntil: "networkidle" }); await md.page.waitForTimeout(700);

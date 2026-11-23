@@ -16,7 +16,7 @@ export type Me = { userId?: string; name: string; role: string; branchName: stri
 export default function StaffShell({ me, pending, children, forceFull }: { me: Me; pending: number; children: React.ReactNode; forceFull?: boolean }) {
   const owner = OWNER_VIEW.includes(me.role);
   const pantau = me.role === "OWNER"; // hanya memantau: menu pengelolaan disembunyikan
-  const finance = owner || me.role === "HUB_MANAGER" || me.role === "MITRA_POS";
+  const finance = owner || me.role === "MITRA_POS";
   // Menu bawah di HP (maks 5) dan menu samping di komputer (lengkap).
   const tabs = me.role === "HRD"
     ? [{ href: "/app/rekrutmen", label: "Dashboard", icon: "chart" }, { href: "/app/lamaran", label: "Lamaran", icon: "users" }, { href: "/app/pegawai", label: "Pegawai", icon: "user" }, { href: "/app/pusat", label: "Pusat", icon: "grid" }]

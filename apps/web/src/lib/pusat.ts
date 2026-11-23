@@ -24,8 +24,7 @@ export function grupPusat(role: string): { judul: string; sapa: string; grup: Pu
       { judul: "Uang", ket: "Invoice, pembayaran, dan setoran.", icon: "cash", items: [TAGIHAN] }, AKUN] };
     case "HUB_MANAGER": return { judul: "Pusat Gudang", sapa: "Muatan, masalah, dan pelanggan cabang Anda.", grup: [
       { judul: "Muatan dan barang", ket: "Manifest, serah terima, dan penimbangan.", icon: "layers", items: [MANIFEST, SERAH, PINDAI, TIMBANG, SORTIR, CARI] },
-      { judul: "Masalah dan pelanggan", ket: "Yang perlu ditindaklanjuti hari ini.", icon: "alert", items: [KENDALA, DIHUBUNGI, JEMPUT] },
-      { judul: "Uang cabang", ket: "Tagihan cabang.", icon: "cash", items: [TAGIHAN] }, AKUN] };
+      { judul: "Masalah dan pelanggan", ket: "Yang perlu ditindaklanjuti hari ini.", icon: "alert", items: [KENDALA, DIHUBUNGI, JEMPUT] }, AKUN] };
     case "WAREHOUSE": return { judul: "Pusat Gudang", sapa: "Kerja harian petugas gudang.", grup: [
       { judul: "Kerja gudang", ket: "Terima, timbang, dan muat barang.", icon: "box", items: [TIMBANG, PINDAI, SERAH, MANIFEST, SORTIR, CARI] },
       { judul: "Masalah dan pelanggan", ket: "Laporkan dan pantau.", icon: "alert", items: [KENDALA, DIHUBUNGI] }, AKUN] };

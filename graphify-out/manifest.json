@@ -222,9 +222,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/kelola/page.tsx": {
-    "mtime": 1795306675.9719112,
-    "seen": 1795307707.7702792,
-    "ast_hash": "412c82134b65a9277b6f05793c55d1fc",
+    "mtime": 1795392741.164589,
+    "seen": 1795395197.2816293,
+    "ast_hash": "de925008a5313b7ccddb140a76459571",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/keuangan/komisi/page.tsx": {
@@ -756,9 +756,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/StaffShell.tsx": {
-    "mtime": 1795338096.7815275,
-    "seen": 1795338167.6727128,
-    "ast_hash": "b875a9776baab1554eebfaddc9578ee4",
+    "mtime": 1795392706.778885,
+    "seen": 1795395197.282707,
+    "ast_hash": "127e5a1a56efd71c87ab82a56b169256",
     "semantic_hash": ""
   },
   "apps/web/src/components/SubmitButton.tsx": {
@@ -924,9 +924,9 @@
     "semantic_hash": ""
   },
   "e2e/flow.cjs": {
-    "mtime": 1795378546.2235668,
-    "seen": 1795380629.5420153,
-    "ast_hash": "5d43b2ad93d12bd6c41d5fcf7074b54d",
+    "mtime": 1795392753.2024715,
+    "seen": 1795395197.283639,
+    "ast_hash": "75c283839ee82c83ca859a38815260de",
     "semantic_hash": ""
   },
   "e2e/kamera.cjs": {
@@ -1926,9 +1926,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/PeranDashboard.tsx": {
-    "mtime": 1795306822.1045642,
-    "seen": 1795307707.7704043,
-    "ast_hash": "dc97409d52742320147e4b21064d09b7",
+    "mtime": 1795393935.6779432,
+    "seen": 1795395197.2825944,
+    "ast_hash": "cf6580572796096806e0c0efc8147e52",
     "semantic_hash": ""
   },
   "apps/web/src/components/TargetForm.tsx": {
@@ -8784,9 +8784,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/Ringkas.tsx": {
-    "mtime": 1795306637.8765569,
-    "seen": 1795307707.770411,
-    "ast_hash": "2488fbd67deaea65fdf00e836091360a",
+    "mtime": 1795393935.677293,
+    "seen": 1795395197.2826335,
+    "ast_hash": "5059b562cbb93851f934f598a8838cdd",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/akun/actions.ts": {
@@ -9027,6 +9027,24 @@
     "mtime": 1795372729.6576066,
     "seen": 1795380629.541319,
     "ast_hash": "6a445bd8fb6fab0082e0b6f8507a1bf2",
+    "semantic_hash": ""
+  },
+  "apps/web/src/app/app/pusat/page.tsx": {
+    "mtime": 1795392717.7135253,
+    "seen": 1795395197.2819378,
+    "ast_hash": "23e20713350e7cc3373b5a82d5926175",
+    "semantic_hash": ""
+  },
+  "apps/web/src/lib/pusat.ts": {
+    "mtime": 1795392693.962728,
+    "seen": 1795395197.282879,
+    "ast_hash": "40663a7c95017d138042838f56232972",
+    "semantic_hash": ""
+  },
+  "db/migrations/056_data_awal_lengkap.sql": {
+    "mtime": 1795377933.7210197,
+    "seen": 1795395197.2833233,
+    "ast_hash": "f75cec010539733a35d6bdd93412ce91",
     "semantic_hash": ""
   },
   "package-lock.json": {

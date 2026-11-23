@@ -33,7 +33,7 @@ export default function HubDashboard({ d, pesanOwner }: { d: HubData; pesanOwner
   const totalGudang = d.papan.reduce((a, x) => a + x.n, 0), kgGudang = d.papan.reduce((a, x) => a + Number(x.kg), 0);
   const maksPapan = Math.max(1, ...d.papan.map((x) => x.n));
   const capai = d.target.rata ? Math.min(150, Math.round((d.target.hariIni / Number(d.target.rata)) * 100)) : null;
-  const perhatian = d.mengendap.length + d.serah.length + d.selisih.length + (d.piutang.lembarLewat > 0 ? 1 : 0) + (d.jemput.baru > 0 ? 1 : 0);
+  const perhatian = d.mengendap.length + d.serah.length + d.selisih.length + (d.jemput.baru > 0 ? 1 : 0);
   const ringkas = `*Ringkasan shift ${d.cabang}*\n${new Date(d.tanggal).toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}\n\n• Resi baru: ${d.hari.resiBaru}\n• Barang diterima gudang: ${d.hari.diterima}\n• Barang dimuat: ${d.hari.dimuat}\n• Barang sampai ke penerima: ${d.hari.terkirim}\n• Barang di gudang sekarang: ${totalGudang} (${kgGudang.toFixed(1)} kg)\n• Mengendap lebih 24 jam: ${d.mengendap.length}\n• Serah terima macet: ${d.serah.length}\n• Selisih manifest terbuka: ${d.selisih.length}\n• Piutang cabang: ${rupiah(d.piutang.belumLunas)} (lewat tempo ${rupiah(d.piutang.jatuhTempo)})\n• Pesanan jemput website belum diproses: ${d.jemput.baru}`;
   return (
     <section className="hub stack" aria-label="Dashboard manajer gudang">
@@ -99,7 +99,7 @@ export default function HubDashboard({ d, pesanOwner }: { d: HubData; pesanOwner
 
       </div>
 
-      <Ringkas judul="Lainnya" ringkas="Papan gudang, target hari ini, piutang, kinerja tim, laporan shift">
+      <Ringkas judul="Lainnya" ringkas="Papan gudang, target hari ini, kinerja tim, laporan shift">
         <div className="hubgrid">
         {/* 1. Papan gudang */}
         <article className="card hubcard span2">
@@ -116,13 +116,6 @@ export default function HubDashboard({ d, pesanOwner }: { d: HubData; pesanOwner
           <p style={{ margin: "6px 0 0" }}><b className="big">{d.target.hariIni}</b> langkah<small className="muted"> {d.target.rata != null && d.target.rata !== 0 ? `· rata-rata ${String(d.target.rata).replace(".", ",")}/hari` : "· belum ada pembanding"}</small></p>
           {capai != null && <p className="hint" style={{ margin: "2px 0 0" }}>{capai >= 100 ? "Di atas rata-rata 7 hari. Bagus!" : `${capai}% dari rata-rata 7 hari.`}</p>}
           <div className="sparkbox"><Spark values={d.target.tren.map((t) => t.n)} color="var(--teal)" /></div>
-        </article>
-
-        {/* 7. Piutang cabang */}
-        <article className="card hubcard">
-          <header><span className="hi"><Icon name="cash" size={20} /></span><h2>Piutang cabang</h2><Link href="/app/tagihan" className="more">Tagihan</Link></header>
-          <p style={{ margin: 0 }}><b className="big">{rupiah(d.piutang.belumLunas)}</b><small className="muted"> {d.piutang.lembar} tagihan belum lunas</small></p>
-          <p className={d.piutang.lembarLewat ? "down" : "muted"} style={{ margin: "4px 0 0", fontWeight: 700 }}>{d.piutang.lembarLewat ? `${rupiah(d.piutang.jatuhTempo)} lewat jatuh tempo (${d.piutang.lembarLewat} tagihan, terlama ${d.piutang.terlamaHari} hari)` : "Tidak ada yang lewat jatuh tempo."}</p>
         </article>
 
         {/* 9. Kinerja tim */}
