@@ -1,7 +1,7 @@
 # Graph Report - Kamillogistik  (2026-11-23)
 
 ## Corpus Check
-- 1505 files · ~446,659 words
+- 1505 files · ~446,678 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 41 file(s) not represented in the graph (top: .csv 35, (none) 3, .example 1)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `b6f8b4db`
+- Built from commit: `72902378`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -563,16 +563,16 @@ Nodes (9): ST, ubahKlaim(), usulKlaim(), KlaimAntrean(), metadata, JENIS, Klaim,
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `next` connect `(publik)/layout.tsx` to `FollowupCard.tsx`, `alokasi/page.tsx`, `akun/page.tsx`, `BackLink`, `(publik)/[slug]/page.tsx`, `web/package.json`, `pegawai/page.tsx`, `konten/actions.ts`, `fake-supabase.mjs`, `manifest/[id]/page.tsx`, `StaffShell.tsx`, `petugas/page.tsx`, `PeranDashboard.tsx`, `staffRpc`, `lib/seo.ts`, `tagihan/[id]/page.tsx`, `timbang/page.tsx`, `mv/actions.ts`, `RevisiPanel.tsx`, `SubmitButton.tsx`, `OwnerDashboard.tsx`, `server.ts`, `resi.ts`, `waLink`, `getRoutePairs`, `requireRole`, `(publik)/page.tsx`, `chat.ts`, `resi/[id]/page.tsx`, `server.ts`, `HubDashboard.tsx`, `rekrutmen/page.tsx`, `laporan/page.tsx`, `[resi]/page.tsx`, `udara/page.tsx`, `ringkasan/page.tsx`, `BiayaManifest.tsx`, `Icon`, `Calculator.tsx`, `Icon.tsx`, `pegawai/actions.ts`, `index.ts`, `FormModal.tsx`, `src/app/layout.tsx`, `getMe`, `LamarForm.tsx`, `publicRpc.ts`, `react`, `app/mitra/page.tsx`, `portal/[token]/page.tsx`, `layanan/[slug]/page.tsx`, `KlaimKartu.tsx`?**
-  _High betweenness centrality (0.125) - this node is a cross-community bridge._
+  _High betweenness centrality (0.128) - this node is a cross-community bridge._
 - **What connects `../../tsconfig.base.json`, `NODE_PATH`, `SITE_URL` to the rest of the system?**
   _9 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `alokasi/page.tsx` be split into smaller, more focused modules?**
   _Cohesion score 0.0636030636030636 - nodes in this community are weakly interconnected._
 - **Why does `staffRpc()` connect `staffRpc` to `FollowupCard.tsx`, `alokasi/page.tsx`, `akun/page.tsx`, `BackLink`, `pegawai/page.tsx`, `SubmitButton`, `konten/actions.ts`, `fake-supabase.mjs`, `manifest/[id]/page.tsx`, `petugas/page.tsx`, `PeranDashboard.tsx`, `tagihan/[id]/page.tsx`, `timbang/page.tsx`, `mv/actions.ts`, `RevisiPanel.tsx`, `SubmitButton.tsx`, `OwnerDashboard.tsx`, `server.ts`, `requireRole`, `resi/[id]/page.tsx`, `server.ts`, `rekrutmen/page.tsx`, `laporan/page.tsx`, `udara/page.tsx`, `ringkasan/page.tsx`, `BiayaManifest.tsx`, `Icon`, `Icon.tsx`, `pegawai/actions.ts`, `getMe`, `LamarForm.tsx`, `react`, `unduh/route.ts`, `app/mitra/page.tsx`, `KlaimKartu.tsx`?**
-  _High betweenness centrality (0.060) - this node is a cross-community bridge._
+  _High betweenness centrality (0.051) - this node is a cross-community bridge._
 - **Should `BackLink` be split into smaller, more focused modules?**
   _Cohesion score 0.11596638655462185 - nodes in this community are weakly interconnected._
 - **Why does `react` connect `react` to `FollowupCard.tsx`, `alokasi/page.tsx`, `BackLink`, `web/package.json`, `SubmitButton`, `konten/actions.ts`, `fake-supabase.mjs`, `manifest/[id]/page.tsx`, `StaffShell.tsx`, `lib/seo.ts`, `tagihan/[id]/page.tsx`, `timbang/page.tsx`, `RevisiPanel.tsx`, `SubmitButton.tsx`, `OwnerDashboard.tsx`, `(publik)/layout.tsx`, `server.ts`, `resi.ts`, `testimoni.ts`, `getRoutePairs`, `(publik)/page.tsx`, `resi/[id]/page.tsx`, `server.ts`, `[resi]/page.tsx`, `udara/page.tsx`, `Calculator.tsx`, `FormModal.tsx`, `src/app/layout.tsx`, `getMe`, `LamarForm.tsx`, `Toast.tsx`, `jemput/aksi.ts`, `klaim/aksi.ts`, `publicRpc.ts`, `react`, `portal/[token]/page.tsx`, `layanan/[slug]/page.tsx`, `KlaimKartu.tsx`?**
-  _High betweenness centrality (0.057) - this node is a cross-community bridge._
+  _High betweenness centrality (0.044) - this node is a cross-community bridge._
 - **Should `(publik)/[slug]/page.tsx` be split into smaller, more focused modules?**
   _Cohesion score 0.11960132890365449 - nodes in this community are weakly interconnected._

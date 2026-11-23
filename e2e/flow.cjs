@@ -288,7 +288,8 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     console.log("\n[E2] Manifest: buat, isi, segel, serah terima");
     ok("AL4 staf gudang tidak punya tombol Buat manifest (hanya Kepala gudang)", (await (async () => { await p.goto(`${BASE}/app/manifest`, { waitUntil: "networkidle" }); return p.getByRole("link", { name: /Buat manifest/ }).count(); })()) === 0);
     {
-      const mj = await login(browser, "manajer@uji.id"); const p = mj.page;
+      const ks = await login(browser, "kasir@uji.id"); const p = ks.page;
+    ok("AR3 Kepala gudang tidak bisa membuat manifest (hanya Kasir): halaman Buat manifest dialihkan", await (async () => { const kg = await login(browser, "manajer@uji.id"); await kg.page.goto(`${BASE}/app/manifest/baru`, { waitUntil: "networkidle" }); const dialih = !/manifest\/baru/.test(kg.page.url()); await kg.ctx.close(); return dialih; })());
     await p.goto(`${BASE}/app/manifest/baru`, { waitUntil: "networkidle" });
     await p.selectOption("#tujuan", "MKS"); await p.fill("#kontainer", "MSKU1234567"); await p.fill("#pengangkut", "KM Sinar Laut");
     r = await act(p, p.getByRole("button", { name: "Buat manifest" }));
@@ -303,13 +304,18 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("kode yang tidak ada ditolak dengan pesan awam", /tidak dikenali|sudah ada|belum siap/i.test(await p.locator(".mlog li").first().innerText().catch(() => "")));
     await p.fill("#segel", "SEG-001");
     r = await act(p, p.getByRole("button", { name: /Segel manifest/ }));
-    ok("manifest disegel: semua resi tercatat sudah dimuat", r.ok && /disegel/.test(r.ok), JSON.stringify(r));
-    await selectByText(p, "select[name=ke]", "Sopir Kontainer");
-    r = await act(p, p.getByRole("button", { name: "Serahkan manifest" }));
-    ok("manifest diserahkan ke sopir (menunggu diterima)", r.ok && /Menunggu penerima/.test(r.ok), JSON.stringify(r));
-    await p.goto(`${BASE}/app/resi/${resiId}`, { waitUntil: "networkidle" });
-    ok("detail resi menampilkan kode manifest dan status Sudah dimuat", (await p.locator(".manifestlink code").innerText()).includes("MNF-") && /Sudah dimuat/.test(await text(p)));
-    await p.screenshot({ path: `${OUT}/e2e-manifest-resi.png` });
+    ok("manifest disegel oleh Kasir: semua resi tercatat sudah dimuat", r.ok && /disegel/.test(r.ok), JSON.stringify(r));
+    ok("setelah disegel Kasir tidak punya tombol serah ke sopir (tugas Kepala gudang)", (await p.getByRole("button", { name: "Serahkan manifest" }).count()) === 0);
+      await ks.ctx.close();
+      const mj = await login(browser, "manajer@uji.id"); const q = mj.page;
+    await q.goto(`${BASE}/app/manifest/${manifestId}`, { waitUntil: "networkidle" });
+    ok("Kepala gudang tidak bisa mengubah isi manifest (tanpa segel, tanpa tambah resi)", (await q.locator("#segel").count()) === 0 && (await q.getByRole("button", { name: /Segel manifest/ }).count()) === 0);
+    await selectByText(q, "select[name=ke]", "Sopir Kontainer");
+    r = await act(q, q.getByRole("button", { name: "Serahkan manifest" }));
+    ok("Kepala gudang menyerahkan manifest bersegel Kasir ke sopir (menunggu diterima)", r.ok && /Menunggu penerima/.test(r.ok), JSON.stringify(r));
+    await q.goto(`${BASE}/app/resi/${resiId}`, { waitUntil: "networkidle" });
+    ok("detail resi menampilkan kode manifest dan status Sudah dimuat", (await q.locator(".manifestlink code").innerText()).includes("MNF-") && /Sudah dimuat/.test(await text(q)));
+    await q.screenshot({ path: `${OUT}/e2e-manifest-resi.png` });
       await mj.ctx.close();
     }
   }
@@ -407,7 +413,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
   {
     const p = kasir.page;
     await p.goto(`${BASE}/app/tagihan`, { waitUntil: "networkidle" });
-    ok("tagihan muncul di daftar (belum dibayar)", /INV-\d{4}-000001/.test(await text(p)) && /Rp61\.600/.test(await text(p)));
+    ok("tagihan muncul di daftar (belum dibayar)", /INV-\d{4}-000001/.test(await text(p)) && /Rp140\.000/.test(await text(p)));
     { const hf = await p.locator("a.resi").first().getAttribute("href"); await p.goto(`${BASE}${hf}`, { waitUntil: "networkidle" }); }
     { const t0 = await text(p); ok("detail tagihan: invoice rapi dengan rekening bank", /invoice/i.test(t0) && /BCA/.test(t0) && /1234567890/.test(t0) && /kamil logistik express/i.test(t0), t0.slice(0, 700)); }
     { const t1 = await text(p); ok("rincian memakai format Rp2.800", /50 kg x Rp2\.800/.test(t1), t1.slice(0, 900)); }
@@ -436,7 +442,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     const { ctx, page } = await ctxFor(browser);
     await page.goto(invoiceLink, { waitUntil: "networkidle" });
     const t = await text(page);
-    ok("invoice publik terbuka TANPA login, berstatus LUNAS", /INVOICE/.test(t) && /LUNAS/.test(t) && /Rp61\.600/.test(t));
+    ok("invoice publik terbuka TANPA login, berstatus LUNAS", /INVOICE/.test(t) && /LUNAS/.test(t) && /Rp140\.000/.test(t));
     ok("invoice publik TIDAK membocorkan nama petugas / riwayat internal", !/Kasir Jakarta|dicatat|Gudang Jakarta/.test(t.replace(/Kamil Logistik Express/g, "")));
     ok("invoice publik dilarang diindeks mesin pencari", (await page.locator('meta[name=robots]').getAttribute("content")).includes("noindex"));
     await noOverflow(page, "invoice publik (HP)");
@@ -472,7 +478,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     const d = await text(p);
     ok("pemilik hanya MELIHAT: tidak ada tombol operasional", (await p.getByRole("button", { name: /Barang sudah|Serahkan|Ya, barang|Hitung dan buat/ }).count()) === 0);
     ok("pemilik melihat bukti terima (foto + tanda tangan), tanpa form", (await p.locator(".podgrid img").count()) === 2 && (await p.locator(".pod").count()) === 0);
-    ok("pemilik melihat tagihan dan riwayat lengkap", /Tagihan/.test(d) && /Riwayat/.test(d) && /Rp61\.600/.test(d));
+    ok("pemilik melihat tagihan dan riwayat lengkap", /Tagihan/.test(d) && /Riwayat/.test(d) && /Rp140\.000/.test(d));
     await p.screenshot({ path: `${OUT}/e2e-owner-resi.png`, fullPage: true });
   }
 
@@ -1105,7 +1111,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     const kepala = await p.locator(".hubhead").innerText();
     ok("Y3 dashboard terkunci ke Gudang Jakarta dan menampilkan status perhatian", /Gudang Jakarta/.test(kepala) && /(terkendali|perlu perhatian)/.test(kepala), kepala.replace(/\n/g, " "));
     const aksi = await p.$$eval(".hubquick a", (as) => as.map((a) => a.getAttribute("href")));
-    ok("Y4 aksi cepat kepala gudang: manifest baru dan serah terima, tanpa Pindai ganda dan tanpa Resi baru (satu pintu: kasir)", ["/app/manifest/baru", "/app/serah"].every((h) => aksi.includes(h)) && !aksi.includes("/app/pindai") && !aksi.includes("/app/baru"), aksi.join(","));
+    ok("Y4 aksi cepat kepala gudang: daftar manifest dan serah terima, tanpa membuat manifest, tanpa Pindai ganda dan tanpa Resi baru (satu pintu: kasir)", ["/app/manifest", "/app/serah"].every((h) => aksi.includes(h)) && !aksi.includes("/app/manifest/baru") && !aksi.includes("/app/pindai") && !aksi.includes("/app/baru"), aksi.join(","));
     ok("AD1 dashboard kepala gudang tidak punya tombol Buat resi (resi satu pintu di kasir)", (await p.locator("a[href='/app/baru']").count()) === 0);
     const wa = await p.locator(".shift a.btn").getAttribute("href"); const pesan = decodeURIComponent(wa || "");
     ok("Y5 laporan akhir shift: pesan WhatsApp berisi ringkasan cabang dan angka hari ini", /Ringkasan shift Gudang Jakarta/.test(pesan) && /Resi baru: \d+/.test(pesan) && /Piutang cabang: Rp/.test(pesan), pesan.slice(0, 80));
@@ -1532,7 +1538,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     // Vendor tanpa akun: MV membuat link khusus, vendor mengirim laporan tanpa login, masuk ke kotak masuk MV, link bisa dicabut
     {
       await mv2.page.goto(`${BASE}/app/mv/alokasi?m=LAUT`, { waitUntil: "networkidle" });
-      const hrefV = await mv2.page.evaluate(() => [...document.querySelectorAll("a.mvbuka")].map((a) => a.getAttribute("href"))[0]);
+      const hrefV = await mv2.page.evaluate(() => { const d = [...document.querySelectorAll("details")].find((x) => /Vendor Laut Uji/i.test(x.innerText)); return d?.querySelector("a.mvbuka")?.getAttribute("href") ?? null; });
       const idV = (hrefV || "").split("/").pop();
       await mv2.page.goto(`${BASE}/app/mv/alokasi?m=LAUT&r=${idV}`, { waitUntil: "networkidle" });
       await mv2.page.getByRole("button", { name: /Buat link vendor/ }).first().click();

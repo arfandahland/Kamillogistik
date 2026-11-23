@@ -3,8 +3,9 @@
 RESET ROLE;
 INSERT INTO staff_invites(email, full_name, role, branch_id) VALUES
  ('gudang-mks@x.id','Gudang Makassar','WAREHOUSE',(SELECT id FROM branches_partners WHERE code='MKS')),
- ('kepala-mks@x.id','Kepala Gudang Makassar','HUB_MANAGER',(SELECT id FROM branches_partners WHERE code='MKS'));
-INSERT INTO auth.users(id,email) VALUES ('00000000-0000-0000-0000-00000000000a','gudang-mks@x.id'),('00000000-0000-0000-0000-00000000000b','kepala-mks@x.id');
+ ('kepala-mks@x.id','Kepala Gudang Makassar','HUB_MANAGER',(SELECT id FROM branches_partners WHERE code='MKS')),
+ ('kepala-jkt-mf@x.id','Kepala Gudang Jakarta','HUB_MANAGER',(SELECT id FROM branches_partners WHERE code='JKT'));
+INSERT INTO auth.users(id,email) VALUES ('00000000-0000-0000-0000-00000000000a','gudang-mks@x.id'),('00000000-0000-0000-0000-00000000000b','kepala-mks@x.id'),('00000000-0000-0000-0000-00000000000f','kepala-jkt-mf@x.id');
 
 -- Tiga resi siap muat di gudang Jakarta: A (2 barang), B (1 barang), C (jalur udara)
 SELECT t.as_user('00000000-0000-0000-0000-000000000002');
@@ -21,11 +22,13 @@ UPDATE shipments SET status = 'SORTED_INVOICED', current_holder_user_id = '00000
 UPDATE shipment_items SET weight_kg = 10 WHERE shipment_id IN (current_setting('t.a')::uuid, current_setting('t.b')::uuid, current_setting('t.c')::uuid);
 
 -- ---------- Buat manifest ----------
-SELECT t.as_user('00000000-0000-0000-0000-000000000002');   -- kasir
+SELECT t.as_user('00000000-0000-0000-0000-000000000004');   -- staf gudang tidak menentukan manifest
+SELECT t.fails($$select public.manifest_create('MKS')$$, 'izin');
+SELECT t.as_user('00000000-0000-0000-0000-00000000000f');   -- Kepala gudang juga tidak
 SELECT t.fails($$select public.manifest_create('MKS')$$, 'izin');
 SELECT t.as_anon();
 SELECT t.fails($$select public.manifest_create('MKS')$$, 'permission denied');
-SELECT t.as_user('00000000-0000-0000-0000-000000000004');   -- gudang Jakarta
+SELECT t.as_user('00000000-0000-0000-0000-000000000002');   -- hanya Kasir yang menentukan manifest
 SELECT t.fails($$select public.manifest_create('JKT')$$, 'tidak boleh sama');
 SELECT t.fails($$select public.manifest_create('XXX')$$, 'tidak ditemukan');
 SELECT t.fails($$select public.manifest_create('MKS','KAPAL_TERBANG')$$, 'laut, darat, atau udara');
@@ -55,14 +58,18 @@ DO $$ DECLARE g jsonb; BEGIN
   ASSERT NOT (public.manifest_candidates(current_setting('t.m')::uuid))::text ~ (current_setting('t.a') || '|' || current_setting('t.b') || '|' || current_setting('t.c')), 'calon muatan tidak memuat resi yang sudah masuk atau beda jalur';
 END $$;
 -- Resi di manifest tidak bisa dilanjutkan satu per satu
+SELECT t.as_user('00000000-0000-0000-0000-000000000004');
 SELECT t.fails($$select public.advance_shipment(current_setting('t.a')::uuid, 'LOADED')$$, 'lewat manifest');
 SELECT t.fails($$select public.advance_shipment(current_setting('t.a')::uuid, 'AT_DEST_HUB')$$, 'lewat manifest');
 
 -- ---------- Segel ----------
+SELECT t.as_user('00000000-0000-0000-0000-000000000002');
 SELECT t.fails($$select public.manifest_seal(current_setting('t.m')::uuid, 'ab')$$, 'nomor segel');
 SELECT t.as_user('00000000-0000-0000-0000-000000000005');   -- sopir kontainer tidak boleh menyegel
 SELECT t.fails($$select public.manifest_seal(current_setting('t.m')::uuid, 'SEG-001')$$, 'izin');
-SELECT t.as_user('00000000-0000-0000-0000-000000000004');
+SELECT t.as_user('00000000-0000-0000-0000-00000000000f');   -- Kepala gudang juga tidak
+SELECT t.fails($$select public.manifest_seal(current_setting('t.m')::uuid, 'SEG-001')$$, 'izin');
+SELECT t.as_user('00000000-0000-0000-0000-000000000002');   -- Kasir menyegel
 DO $$ DECLARE r jsonb; BEGIN
   r := public.manifest_seal(current_setting('t.m')::uuid, 'SEG-001');
   ASSERT r->>'status' = 'SEALED' AND (r->>'resi')::int = 2, 'manifest disegel';
@@ -73,8 +80,10 @@ DO $$ BEGIN ASSERT (SELECT count(*) FROM shipments WHERE manifest_id = current_s
 
 -- ---------- Serah terima massal ke sopir ----------
 SELECT t.as_user('00000000-0000-0000-0000-000000000004');
-SELECT t.fails($$select public.manifest_handover_start(current_setting('t.m')::uuid, '00000000-0000-0000-0000-000000000003')$$, 'sopir');
 SELECT t.fails($$select public.manifest_depart(current_setting('t.m')::uuid)$$, 'izin');
+SELECT t.fails($$select public.manifest_handover_start(current_setting('t.m')::uuid, '00000000-0000-0000-0000-000000000005')$$, 'pemegang');   -- staf gudang bukan pemegang
+SELECT t.as_user('00000000-0000-0000-0000-00000000000f');   -- Kepala gudang asal menyerahkan manifest bersegel Kasir
+SELECT t.fails($$select public.manifest_handover_start(current_setting('t.m')::uuid, '00000000-0000-0000-0000-000000000003')$$, 'sopir');
 DO $$ BEGIN
   ASSERT (public.manifest_handover_start(current_setting('t.m')::uuid, '00000000-0000-0000-0000-000000000005')->>'resi')::int = 2, 'serah terima dimulai untuk 2 resi';
 END $$;

@@ -46,6 +46,12 @@ DO $$ DECLARE r jsonb; BEGIN
   ASSERT (r->>'total')::bigint = 750000 + 50000 + 120000, 'm3 x harga + baris biaya bebas: ' || r::text;
   r := public.invoice_issue(current_setting('t.sid')::uuid, 'BORONGAN', 99, 900000);   -- diterbitkan ulang selagi belum dibayar
   ASSERT (r->>'total')::bigint = 900000, 'borongan: jumlah dianggap 1';
+  r := public.invoice_issue(current_setting('t.sid')::uuid, 'KG', 20, 1000);
+  ASSERT (r->>'total')::bigint = 50000, 'berat tagih minimal 50 kg: 20 kg ditagih 50 kg';
+  r := public.invoice_issue(current_setting('t.sid')::uuid, 'KG', 51, 1000);
+  ASSERT (r->>'total')::bigint = 51000, 'tanpa pembulatan: 51 kg tetap 51 kg';
+  r := public.invoice_issue(current_setting('t.sid')::uuid, 'KG', 80.5, 1000);
+  ASSERT (r->>'total')::bigint = 80500, 'di atas 50 kg mengikuti timbangan';
 END $$;
 RESET ROLE;
 DO $$ BEGIN

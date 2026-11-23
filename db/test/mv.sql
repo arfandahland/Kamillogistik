@@ -269,7 +269,7 @@ SELECT t.as_anon();
 DO $$ DECLARE r jsonb; i jsonb; BEGIN
   i := public.vendor_link_info(current_setting('t.tok'));
   ASSERT (i->>'berlaku')::boolean AND i->>'resiNo' IS NOT NULL, 'info link untuk vendor';
-  ASSERT NOT (i::text ~* 'hpp|tagihan|price|pengirim|sender', 'info vendor tanpa harga dan data pelanggan');
+  ASSERT NOT (i::text ~* 'hpp|tagihan|price|pengirim|sender'), 'info vendor tanpa harga dan data pelanggan';
   ASSERT public.vendor_link_info('salah') IS NULL, 'token asal-asalan ditolak';
   r := public.vendor_link_submit(current_setting('t.tok'), 'LAPORAN', 'Barang sudah naik kapal.', NULL, 'Sopir Uji', '0812-000');
   ASSERT r->>'id' IS NOT NULL, 'laporan vendor tersimpan';

@@ -56,8 +56,8 @@ SELECT t.as_user('00000000-0000-0000-0000-000000000002');   -- kasir mengisi har
 DO $$ DECLARE m1 jsonb; m2 jsonb; BEGIN
   m1 := public.invoice_issue(current_setting('t.rb2b')::uuid, 'KG', 10, 2000);
   m2 := public.invoice_issue(current_setting('t.rret')::uuid, 'KG', 10, 2500);
-  ASSERT (m1->>'total')::bigint = 20000, 'B2B: 10 kg x Rp2.000 = Rp20.000, dapat ' || (m1->>'total');
-  ASSERT (m2->>'total')::bigint = 25000, 'ritel: harga manual kasir';
+  ASSERT (m1->>'total')::bigint = 100000, 'B2B: 10 kg ditagih minimal 50 kg x Rp2.000 = Rp100.000, dapat ' || (m1->>'total');
+  ASSERT (m2->>'total')::bigint = 125000, 'ritel: harga manual kasir, minimal 50 kg';
 END $$;
 RESET ROLE;
 DO $$ BEGIN
@@ -69,14 +69,14 @@ END $$;
 SELECT t.as_user('00000000-0000-0000-0000-000000000001');
 DO $$ DECLARE d jsonb; BEGIN
   d := public.owner_customer_detail(current_setting('t.co')::uuid);
-  ASSERT (d->>'outstanding')::bigint = 20000 AND jsonb_array_length(d->'invoices') = 1 AND d->'invoices'->0->>'status' = 'UNPAID', 'rekap: 1 tagihan belum lunas Rp20.000';
-  PERFORM public.owner_save_customer(current_setting('t.co')::uuid, 'PT Sinar Jaya', 'Bu Rina', '0811', 'rina@sinar.id', 'Jakarta', 14, 20000, 'ACTIVE', NULL);   -- batas = tagihan terbuka
+  ASSERT (d->>'outstanding')::bigint = 100000 AND jsonb_array_length(d->'invoices') = 1 AND d->'invoices'->0->>'status' = 'UNPAID', 'rekap: 1 tagihan belum lunas Rp100.000';
+  PERFORM public.owner_save_customer(current_setting('t.co')::uuid, 'PT Sinar Jaya', 'Bu Rina', '0811', 'rina@sinar.id', 'Jakarta', 14, 100000, 'ACTIVE', NULL);   -- batas = tagihan terbuka
 END $$;
 SELECT t.as_user('00000000-0000-0000-0000-000000000002');
 SELECT t.fails($$select public.create_shipment('jakarta-makassar-port-to-door-kg','PT Sinar Jaya','0811','B','0822','M',1,NULL,NULL,'DROPOFF',NULL,current_setting('t.co')::uuid)$$, 'Batas kredit');
 DO $$ DECLARE inv uuid; BEGIN
   SELECT (x->>'id')::uuid INTO inv FROM jsonb_array_elements(public.staff_list_invoices('UNPAID')) x WHERE x->>'resiNo' = (SELECT (public.staff_get_shipment(current_setting('t.rb2b')::uuid))->>'resiNo');
-  PERFORM public.record_payment(inv, 'TUNAI', 20000);
+  PERFORM public.record_payment(inv, 'TUNAI', 100000);
   PERFORM public.create_shipment('jakarta-makassar-port-to-door-kg','PT Sinar Jaya','0811','B','0822','M',1,NULL,NULL,'DROPOFF',NULL,current_setting('t.co')::uuid);
 END $$;
 -- Nonaktif: tidak bisa dipakai lagi

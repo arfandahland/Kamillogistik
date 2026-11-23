@@ -12,13 +12,13 @@ type Row = { id: string; code: string; status: string; mode: string; origin: str
 const TABS = [{ k: "", t: "Semua" }, { k: "OPEN", t: "Sedang diisi" }, { k: "SEALED", t: "Siap berangkat" }, { k: "IN_TRANSIT", t: "Di perjalanan" }, { k: "ARRIVED", t: "Sudah tiba" }, { k: "UNLOADED", t: "Selesai" }];
 
 export default async function Manifest({ searchParams }: { searchParams: Promise<{ s?: string }> }) {
-  await requireRole(["SUPER_ADMIN","OWNER","HUB_MANAGER","WAREHOUSE","CONTAINER_DRIVER"]);
+  await requireRole(["SUPER_ADMIN","OWNER","MITRA_POS","HUB_MANAGER","WAREHOUSE","CONTAINER_DRIVER"]);
   const sp = await searchParams;
   const tab = TABS.find((t) => t.k === sp.s)?.k ?? "";
   const [me, r] = await Promise.all([getMe(), staffRpc<Row[]>("manifest_list", { p_status: tab || null, p_limit: 60 })]);
   const rows = r.data ?? [];
   const role = me.data?.role;
-  const bisaBuat = role === "HUB_MANAGER"; // Staf gudang menambah barang dengan pindai; Kepala gudang yang membuat dan menyegel manifest
+  const bisaBuat = role === "MITRA_POS"; // hanya Kasir yang menentukan isi manifest; gudang dan sopir menerima serta membongkar muatan
   const menunggu = rows.filter((x) => x.pendingToMe);
   return (
     <main className="wrap stack" style={{ paddingTop: 8 }}>

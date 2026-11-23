@@ -38,14 +38,18 @@ DO $$ DECLARE r jsonb; BEGIN
   ASSERT jsonb_array_length(public.issue_for_shipment(current_setting('t.k1')::uuid)) = 1, 'resi punya satu kendala';
 END $$;
 SELECT t.fails($$select public.issue_open(current_setting('t.k1')::uuid, 'SALAH_SORTIR', 'lagi')$$, 'sudah dilaporkan');
--- Kendala terbuka menutup jalur masuk manifest
-SELECT t.as_user('00000000-0000-0000-0000-00000000000c');   -- kepala gudang Jakarta
+-- Kendala terbuka menutup jalur masuk manifest. Manifest ditentukan Kasir.
+RESET ROLE;
+INSERT INTO staff_invites(email, full_name, role, branch_id) VALUES ('kasir-mks-kt@x.id','Kasir Makassar','MITRA_POS',(SELECT id FROM branches_partners WHERE code='MKS'));
+INSERT INTO auth.users(id,email) VALUES ('00000000-0000-0000-0000-000000000010','kasir-mks-kt@x.id');
+SELECT t.as_user('00000000-0000-0000-0000-000000000002');   -- Kasir Jakarta
 DO $$ DECLARE r jsonb; BEGIN
   r := public.manifest_create('MKS', 'LAUT', 'MSKU7654321', 'KM Uji', now() + interval '1 day', now() + interval '6 days', 'uji kendala');
   PERFORM set_config('t.mk', r->>'id', false);
 END $$;
 SELECT t.fails($$select public.manifest_add(current_setting('t.mk')::uuid, current_setting('t.rk1'))$$, 'kendala');
 DO $$ BEGIN ASSERT NOT (public.manifest_candidates(current_setting('t.mk')::uuid))::text LIKE '%' || current_setting('t.rk1') || '%', 'resi bermasalah tidak jadi calon muatan'; END $$;
+SELECT t.as_user('00000000-0000-0000-0000-00000000000c');   -- Kepala gudang menyelesaikan kendala
 SELECT t.fails($$select public.issue_resolve(current_setting('t.i1')::uuid, 'LANJUT', 'a')$$, 'catatan');
 SELECT t.fails($$select public.issue_resolve(current_setting('t.i1')::uuid, 'RETUR_SELESAI', 'dikembalikan saja')$$, 'hanya untuk');
 SELECT t.fails($$select public.issue_resolve(current_setting('t.i1')::uuid, 'ABC', 'dikembalikan saja')$$, 'tidak dikenal');
@@ -54,10 +58,12 @@ SELECT t.fails($$select public.issue_resolve(current_setting('t.i1')::uuid, 'LAN
 SELECT t.as_user('00000000-0000-0000-0000-00000000000e');   -- kepala gudang kota lain (Surabaya, belum terkait resi)
 SELECT t.fails($$select public.issue_resolve(current_setting('t.i1')::uuid, 'LANJUT', 'sudah dipindah ke rak benar')$$, 'bukan untuk gudang');
 SELECT t.as_user('00000000-0000-0000-0000-00000000000c');
+DO $$ BEGIN PERFORM public.issue_resolve(current_setting('t.i1')::uuid, 'LANJUT', 'Koli sudah dipindah ke rak yang benar'); END $$;
+SELECT t.as_user('00000000-0000-0000-0000-000000000002');
 DO $$ BEGIN
-  PERFORM public.issue_resolve(current_setting('t.i1')::uuid, 'LANJUT', 'Koli sudah dipindah ke rak yang benar');
   ASSERT (public.manifest_add(current_setting('t.mk')::uuid, current_setting('t.rk1'))->>'items')::int = 1, 'setelah selesai, resi bisa masuk manifest';
 END $$;
+SELECT t.as_user('00000000-0000-0000-0000-00000000000c');
 SELECT t.fails($$select public.issue_resolve(current_setting('t.i1')::uuid, 'LANJUT', 'sekali lagi')$$, 'sudah diselesaikan');
 
 -- Gagal kirim: tidak boleh diterima sebelum kendala selesai, dan bisa berakhir retur
@@ -91,7 +97,9 @@ END $$;
 -- Manifest mk berisi k1; segel lalu anggap sudah di tangan sopir dan berangkat
 SELECT t.as_user('00000000-0000-0000-0000-00000000000c');
 SELECT t.fails($$select public.manifest_revise_eta(current_setting('t.mk')::uuid, now() + interval '9 days', 'cuaca')$$, 'hanya bisa direvisi');
+SELECT t.as_user('00000000-0000-0000-0000-000000000002');   -- Kasir menyegel
 DO $$ BEGIN PERFORM public.manifest_seal(current_setting('t.mk')::uuid, 'SEG-K01'); END $$;
+SELECT t.as_user('00000000-0000-0000-0000-00000000000c');
 SELECT t.fails($$select public.manifest_revise_eta(current_setting('t.mk')::uuid, now() + interval '9 days', 'ok')$$, 'alasan');
 SELECT t.as_user('00000000-0000-0000-0000-000000000003');   -- kurir bukan pihak manifest
 SELECT t.fails($$select public.manifest_revise_eta(current_setting('t.mk')::uuid, now() + interval '9 days', 'cuaca buruk')$$, 'izin');
@@ -123,12 +131,15 @@ DO $$ BEGIN PERFORM public.manifest_arrive(current_setting('t.mk')::uuid); END $
 SELECT t.fails($$select public.manifest_revise_eta(current_setting('t.mk')::uuid, now() + interval '9 days', 'sudah tiba')$$, 'hanya bisa direvisi');
 
 -- ================= RESI BERANTAI: Jakarta -> Makassar -> Morowali (satu resi) =================
-SELECT t.as_user('00000000-0000-0000-0000-00000000000c');
+SELECT t.as_user('00000000-0000-0000-0000-000000000002');   -- Kasir menyusun dan menyegel
 DO $$ DECLARE r jsonb; BEGIN
   r := public.manifest_create('MKS', 'LAUT', NULL, 'KM Lurus', now(), now() + interval '6 days');
   PERFORM set_config('t.m1', r->>'id', false);
   PERFORM public.manifest_add(current_setting('t.m1')::uuid, current_setting('t.rk3'));
   PERFORM public.manifest_seal(current_setting('t.m1')::uuid, 'SEG-L01');
+END $$;
+SELECT t.as_user('00000000-0000-0000-0000-00000000000c');   -- Kepala gudang menyerahkan ke sopir
+DO $$ BEGIN
   PERFORM public.manifest_handover_start(current_setting('t.m1')::uuid, '00000000-0000-0000-0000-000000000005');
 END $$;
 SELECT t.as_user('00000000-0000-0000-0000-000000000005');
@@ -164,11 +175,15 @@ DO $$ DECLARE g jsonb; r jsonb; BEGIN
   ASSERT g->>'status' = 'SORTED_INVOICED' AND g->>'mode' = 'DARAT' AND g->'dest'->>'code' = 'MRW', 'resi diteruskan ke Morowali, siap dimuat: ' || (g->>'status');
   ASSERT jsonb_array_length(g->'legs') = 1 AND g->'legs'->0->>'to' = 'Morowali', 'riwayat leg tercatat';
   ASSERT public.can_see(current_setting('t.k3')::uuid), 'gudang Makassar tetap melihat resi';
+END $$;
+SELECT t.as_user('00000000-0000-0000-0000-000000000010');   -- Kasir Makassar menyusun manifest lanjutan
+DO $$ DECLARE r jsonb; BEGIN
   r := public.manifest_create('MRW', 'DARAT', NULL, 'Truk Lanjut', now(), now() + interval '2 days');
   PERFORM set_config('t.m2', r->>'id', false);
   ASSERT public.manifest_candidates(current_setting('t.m2')::uuid)::text LIKE '%' || current_setting('t.rk3') || '%', 'resi jadi calon muatan leg berikutnya';
   PERFORM public.manifest_add(current_setting('t.m2')::uuid, current_setting('t.rk3'));
 END $$;
+SELECT t.as_user('00000000-0000-0000-0000-00000000000b');
 SELECT t.fails($$select public.shipment_forward(current_setting('t.k3')::uuid, current_setting('t.mks')::uuid, 'DARAT')$$, 'tempat barang berada');
 RESET ROLE;
 SELECT 'kendala_transit OK' AS hasil;
@@ -200,11 +215,13 @@ SELECT set_config('t.mv', (SELECT id::text FROM manifests WHERE status = 'UNLOAD
 UPDATE manifests SET status = 'SEALED', holder_user_id = '00000000-0000-0000-0000-00000000000c', pending_to_user = NULL
   WHERE id = (SELECT id FROM manifests WHERE origin_id = (SELECT id FROM branches_partners WHERE code='JKT') AND status = 'UNLOADED' ORDER BY created_at LIMIT 1);
 SELECT set_config('t.mv', (SELECT id::text FROM manifests WHERE origin_id = (SELECT id FROM branches_partners WHERE code='JKT') AND status = 'SEALED' ORDER BY created_at LIMIT 1), false);
-SELECT t.as_user('00000000-0000-0000-0000-000000000002');
+SELECT t.as_user('00000000-0000-0000-0000-000000000003');   -- kurir tidak berhak
 SELECT t.fails($$select public.manifest_voyage_set(current_setting('t.mv')::uuid, 'V-12', 'Tanjung Priok', 'Soekarno-Hatta Makassar')$$, 'izin');
-SELECT t.as_user('00000000-0000-0000-0000-00000000000b');
-SELECT t.fails($$select public.manifest_voyage_set(current_setting('t.mv')::uuid, 'V-12', 'Tanjung Priok', 'Makassar')$$, 'gudang asal');
-SELECT t.as_user('00000000-0000-0000-0000-00000000000c');
+SELECT t.as_user('00000000-0000-0000-0000-00000000000c');   -- Kepala gudang tidak lagi menentukan data voyage
+SELECT t.fails($$select public.manifest_voyage_set(current_setting('t.mv')::uuid, 'V-12', 'Tanjung Priok', 'Makassar')$$, 'izin');
+SELECT t.as_user('00000000-0000-0000-0000-000000000010');   -- Kasir Makassar bukan cabang asal
+SELECT t.fails($$select public.manifest_voyage_set(current_setting('t.mv')::uuid, 'V-12', 'Tanjung Priok', 'Makassar')$$, 'bukan tugas');
+SELECT t.as_user('00000000-0000-0000-0000-000000000002');   -- Kasir Jakarta (cabang asal)
 DO $$ BEGIN
   PERFORM public.manifest_voyage_set(current_setting('t.mv')::uuid, 'VY-2611', 'Tanjung Priok', 'Pelabuhan Soekarno Makassar');
   ASSERT public.manifest_get(current_setting('t.mv')::uuid)->>'voyage' = 'VY-2611' AND public.manifest_get(current_setting('t.mv')::uuid)->>'portUnload' = 'Pelabuhan Soekarno Makassar', 'voyage dan pelabuhan tampil di manifest';
@@ -213,8 +230,12 @@ SELECT t.fails($$select public.manifest_voyage_set(current_setting('t.mv')::uuid
 SELECT 'voyage OK' AS hasil;
 
 -- ================= EKSPOR MANIFEST (040) =================
-SELECT t.as_user('00000000-0000-0000-0000-000000000002');
+SELECT t.as_user('00000000-0000-0000-0000-000000000003');   -- kurir tidak berhak
 SELECT t.fails($$select public.manifest_export(current_setting('t.mv')::uuid)$$, 'izin');
+SELECT t.as_user('00000000-0000-0000-0000-000000000010');   -- Kasir cabang lain tidak melihat manifest ini
+SELECT t.fails($$select public.manifest_export(current_setting('t.mv')::uuid)$$, 'bukan tugas');
+SELECT t.as_user('00000000-0000-0000-0000-000000000002');   -- Kasir cabang asal boleh mengekspor
+DO $$ BEGIN ASSERT (public.manifest_export(current_setting('t.mv')::uuid)->'manifest'->>'code') LIKE 'MNF-JKT-%', 'Kasir cabang asal mengekspor manifest'; END $$;
 SELECT t.as_user('00000000-0000-0000-0000-00000000000c');
 DO $$ DECLARE x jsonb; BEGIN
   x := public.manifest_export(current_setting('t.mv')::uuid);

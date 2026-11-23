@@ -50,7 +50,7 @@ export default function HubDashboard({ d, pesanOwner }: { d: HubData; pesanOwner
       </div>
 
       <nav className="hubquick two" aria-label="Aksi cepat">
-        <Link href="/app/manifest/baru"><Icon name="layers" size={22} /><span>Manifest baru</span></Link>
+        <Link href="/app/manifest"><Icon name="layers" size={22} /><span>Manifest muatan</span></Link>
         <Link href="/app/serah"><Icon name="swap" size={22} /><span>Serah terima</span></Link>
       </nav>
 

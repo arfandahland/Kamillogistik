@@ -33,14 +33,15 @@ export default async function ManifestDetail({ params, searchParams }: { params:
   if (r.error || !r.data || !me.data) return <main className="wrap section stack"><BackLink href="/app/manifest" /><div className="err">{r.error ?? "Manifest tidak ditemukan."}</div></main>;
   const m = r.data, role = me.data.role, bn = me.data.branchName;
   const wh = role === "WAREHOUSE" || role === "HUB_MANAGER";
-  const kepala = role === "HUB_MANAGER"; // data pengangkutan, segel, dan serah ke sopir adalah tugas Kepala gudang
+  const kepala = role === "HUB_MANAGER"; // serah ke sopir dan serah terima di tujuan adalah tugas Kepala gudang
+  const kasirAsal = role === "MITRA_POS" && bn === m.origin.name; // isi, data pengangkutan, dan segel manifest ditentukan Kasir cabang asal
   const atOrigin = wh && bn === m.origin.name, atDest = wh && bn === m.dest.name;
   const sopir = role === "CONTAINER_DRIVER" || role === "HUB_MANAGER";
   const cur = STEPS.indexOf(m.status);
   const modaIcon = m.mode === "UDARA" ? "plane" : m.mode === "DARAT" ? "truck" : "ship";
   const [cands, dir] = await Promise.all([
-    m.status === "OPEN" && atOrigin ? staffRpc<Cand[]>("manifest_candidates", { p_id: id }).then((x) => x.data ?? []) : Promise.resolve([] as Cand[]),
-    (m.status === "SEALED" && atOrigin && m.iAmHolder && !m.pendingTo) || (m.status === "ARRIVED" && sopir && m.iAmHolder && !m.pendingTo) ? staffRpc<Dir>("staff_directory").then((x) => x.data ?? []) : Promise.resolve([] as Dir),
+    m.status === "OPEN" && kasirAsal ? staffRpc<Cand[]>("manifest_candidates", { p_id: id }).then((x) => x.data ?? []) : Promise.resolve([] as Cand[]),
+    (m.status === "SEALED" && atOrigin && kepala && (m.iAmHolder || !m.holder) && !m.pendingTo) || (m.status === "ARRIVED" && sopir && m.iAmHolder && !m.pendingTo) ? staffRpc<Dir>("staff_directory").then((x) => x.data ?? []) : Promise.resolve([] as Dir),
   ]);
   const sopirList = dir.filter((u) => u.role === "CONTAINER_DRIVER");
   const gudangTujuan = dir.filter((u) => u.role === "HUB_MANAGER" && u.branchName === m.dest.name);
@@ -73,7 +74,7 @@ export default async function ManifestDetail({ params, searchParams }: { params:
             {m.seal && (<><dt>Nomor segel</dt><dd>{m.seal}</dd></>)}
             {m.departureAt && (<><dt>Berangkat</dt><dd>{tanggalWaktu(m.departureAt)}</dd></>)}
             {m.eta && (<><dt>Perkiraan tiba</dt><dd>{tanggalWaktu(m.eta)}</dd></>)}
-            <dt>Dipegang</dt><dd>{m.iAmHolder ? "Anda" : m.holder ?? "-"}{m.pendingTo ? ` (menunggu ${m.pendingTo} menerima)` : ""}</dd>
+            <dt>Dipegang</dt><dd>{m.iAmHolder ? "Anda" : m.holder ?? (m.status === "SEALED" ? "Menunggu gudang asal menyerahkan ke sopir" : "-")}{m.pendingTo ? ` (menunggu ${m.pendingTo} menerima)` : ""}</dd>
             {m.note && (<><dt>Catatan</dt><dd>{m.note}</dd></>)}
           </dl>
           <div className="resiact"><Link className="btn" href={`/app/manifest/${m.id}/cetak`}><Icon name="print" size={20} /> Cetak manifest</Link>{m.status !== "OPEN" && <Link className="btn ghost" href={`/app/manifest/${m.id}/surat-jalan`}><Icon name="file" size={20} /> Surat jalan pelabuhan</Link>}<a className="btn ghost" href={`/app/manifest/${m.id}/unduh`}><Icon name="file" size={20} /> Unduh isi manifest (CSV)</a></div>
@@ -88,7 +89,7 @@ export default async function ManifestDetail({ params, searchParams }: { params:
           </form>
         )}
 
-        {m.status === "OPEN" && atOrigin && (
+        {m.status === "OPEN" && kasirAsal && (
           <>
             <div className="card"><h2 className="cardh">Tambah resi ke manifest</h2>
               <p className="muted" style={{ marginTop: 0 }}>Hanya resi yang sudah ditimbang, tujuan {m.dest.city}, jalur {MODA_LABEL[m.mode].toLowerCase()}.</p>
@@ -99,7 +100,7 @@ export default async function ManifestDetail({ params, searchParams }: { params:
                     <span><code style={{ fontSize: 12.5, wordBreak: "break-all" }}>{c.resiNo}</code><br /><small>{c.receiver} · {c.items} barang · {Number(c.kg).toLocaleString("id-ID")} kg</small></span>
                     <button className="btn ghost sm">Tambah</button></form>))} /></>)}
             </div>
-  {kepala && (          <form action={ubahManifest} className="card rbsek">
+  {kasirAsal && (          <form action={ubahManifest} className="card rbsek">
               <h2 className="cardh">Data pengangkutan</h2><input type="hidden" name="id" value={m.id} />
               <div className="rbf"><label className="f" htmlFor="kontainer">Nomor kontainer / AWB / plat truk</label><input id="kontainer" name="kontainer" defaultValue={m.container ?? ""} autoComplete="off" /></div>
               <div className="rbf"><label className="f" htmlFor="pengangkut">Nama kapal / nomor penerbangan</label><input id="pengangkut" name="pengangkut" defaultValue={m.carrier ?? ""} autoComplete="off" /></div>
@@ -108,7 +109,7 @@ export default async function ManifestDetail({ params, searchParams }: { params:
               <div className="rbf"><label className="f" htmlFor="catatan">Catatan</label><input id="catatan" name="catatan" defaultValue={m.note ?? ""} autoComplete="off" /></div>
               <SubmitButton className="btn ghost" steps={["Menyimpan…"]}>Simpan data pengangkutan</SubmitButton>
             </form>)}
-  {kepala && (          <form action={segelManifest} className="card rbsek">
+  {kasirAsal && (          <form action={segelManifest} className="card rbsek">
               <h2 className="cardh">Segel dan muat</h2><input type="hidden" name="id" value={m.id} />
               <p className="hint">Setelah disegel, resi tidak bisa ditambah atau dikeluarkan, dan semua resi tercatat <b>sudah dimuat</b>.</p>
               <div className="rbf"><label className="f" htmlFor="segel">Nomor segel</label><input id="segel" name="segel" required minLength={3} autoComplete="off" placeholder="Contoh: SEG-001234" /></div>
@@ -117,7 +118,7 @@ export default async function ManifestDetail({ params, searchParams }: { params:
           </>
         )}
 
-        {m.status === "SEALED" && atOrigin && kepala && m.iAmHolder && !m.pendingTo && (
+        {m.status === "SEALED" && atOrigin && kepala && (m.iAmHolder || !m.holder) && !m.pendingTo && (
           <form action={serahkanManifest} className="card rbsek"><input type="hidden" name="id" value={m.id} />
             <h2 className="cardh">Serahkan manifest ke sopir</h2>
             <label className="f" htmlFor="ke">Diserahkan kepada</label>
@@ -155,7 +156,7 @@ export default async function ManifestDetail({ params, searchParams }: { params:
 
         {role === "HUB_MANAGER" && atOrigin && <BiayaManifest manifestId={m.id} kembali={`/app/manifest/${m.id}`} />}
 
-        {(((role === "HUB_MANAGER") && atOrigin && (m.status === "OPEN" || m.status === "SEALED")) || (role === "CONTAINER_DRIVER" && m.iAmHolder && (m.status === "SEALED" || m.status === "IN_TRANSIT"))) && (
+        {((kasirAsal && (m.status === "OPEN" || m.status === "SEALED")) || (role === "CONTAINER_DRIVER" && m.iAmHolder && (m.status === "SEALED" || m.status === "IN_TRANSIT"))) && (
           <form action={isiVoyage} className="card rbsek">
             <h2 className="cardh">Voyage dan pelabuhan</h2><input type="hidden" name="id" value={m.id} />
             <div className="rbf"><label className="f" htmlFor="voyage">Nomor voyage / penerbangan</label><input id="voyage" name="voyage" defaultValue={m.voyage ?? ""} maxLength={40} autoComplete="off" /></div>
@@ -220,7 +221,7 @@ export default async function ManifestDetail({ params, searchParams }: { params:
             <Potong tag="ul" kelas="shiplist" batas={6} satuan="resi" items={m.shipments.map((s) => (
               <li key={s.id}>
                 <div className="sh1"><span><Link href={`/app/resi/${s.id}`}><code>{s.resiNo}</code></Link><br /><small className="muted">{s.receiver}</small></span>
-                  {m.status === "OPEN" && atOrigin && <form action={keluarkanResi}><input type="hidden" name="id" value={m.id} /><input type="hidden" name="resi" value={s.id} /><button className="btn ghost sm" aria-label={`Keluarkan ${s.resiNo}`}>Keluarkan</button></form>}</div>
+                  {m.status === "OPEN" && kasirAsal && <form action={keluarkanResi}><input type="hidden" name="id" value={m.id} /><input type="hidden" name="resi" value={s.id} /><button className="btn ghost sm" aria-label={`Keluarkan ${s.resiNo}`}>Keluarkan</button></form>}</div>
                 <div className="itemchips">{s.items.map((it) => <span key={it.barcode} className={`itemchip ${m.status === "ARRIVED" || m.status === "UNLOADED" ? (it.scanned ? "ok" : "miss") : ""}`}>{it.barcode.split("-").pop()} · {it.kg != null ? `${Number(it.kg).toLocaleString("id-ID")} kg` : "?"}{m.status === "ARRIVED" || m.status === "UNLOADED" ? (it.scanned ? " ✓" : " ✗") : ""}</span>)}</div>
               </li>))} />
           )}
