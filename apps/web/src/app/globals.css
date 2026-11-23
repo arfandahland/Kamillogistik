@@ -1979,3 +1979,16 @@ body:has(.appshell) .mlog li, body:has(.appshell) .cand form, body:has(.appshell
 body:has(.appshell) .mlog li.bad { background: rgba(239, 68, 68, .14); color: #fca5a5; }
 body:has(.appshell) .mlog li.ok { background: rgba(16, 185, 129, .14); color: #a7f3d0; }
 body:has(.appshell) .inv-sheet, body:has(.appshell) .inv-sheet * { --ink: #0c2924; --muted: #51706a; --line: #d5e8e3; }
+
+/* penyempurnaan hasil audit: sasaran sentuh, huruf kecil, placeholder */
+body:has(.appshell) .chip, body:has(.appshell) .fchip, body:has(.appshell) .rbnav a { min-height: 40px; }
+body:has(.appshell) a.more { display: inline-flex; align-items: center; min-height: 36px; padding: 0 8px; }
+body:has(.appshell) a.frow { display: block; padding: 10px 0; }
+body:has(.appshell) .sstep small { font-size: 12px; }
+.tabbar.many .tab { font-size: 11px; letter-spacing: -.2px; }
+body:has(.appshell) input::placeholder, body:has(.appshell) textarea::placeholder { color: rgba(190, 245, 232, .62); }
+body:has(.appshell) .cp-btn, body:has(.appshell) .cp-btn span { color: var(--ink); }
+body:has(.appshell) .cp-btn .cp-ph, body:has(.appshell) .cp-btn.kosong span { color: rgba(190, 245, 232, .68); }
+body:has(.appshell) .chips.wrapc .chip, body:has(.appshell) .fchips .chip, body:has(.appshell) .fchips .fchip { min-height: 40px; }
+body:has(.appshell) .shiplist li { background: rgba(255, 255, 255, .05); border-color: var(--rim); color: var(--ink); }
+body:has(.appshell) .shiplist li small { color: var(--muted); }
