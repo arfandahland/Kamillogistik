@@ -1847,3 +1847,11 @@ body:has(.appshell) .tabbar .tab.featured.on::after { display: none; }
 body:has(.appshell) .sidebar { background: linear-gradient(180deg, #0a3a32 0%, #05261f 60%, #031a16 100%); border-right: 1px solid var(--line); }
 body:has(.appshell) .sidebar .sn.on { background: linear-gradient(90deg, rgba(54, 209, 176, .26), rgba(54, 209, 176, .06)); box-shadow: inset 3px 0 0 #36d1b0; color: #fff; }
 .salin { user-select: all; -webkit-user-select: all; font-family: ui-monospace, monospace; font-size: 13.5px; }
+/* pilihan bergaya kartu (cara masuk, jenis layanan, dan sejenisnya) di tema malam */
+body:has(.appshell) .masukopt, body:has(.appshell) .kchip { background: rgba(255, 255, 255, .05); border-color: var(--line); color: var(--ink); }
+body:has(.appshell) .masukopt small { color: var(--muted); }
+body:has(.appshell) .masukopt.on, body:has(.appshell) .masukopt:has(input:checked), body:has(.appshell) .kchip.on, body:has(.appshell) .kchip:has(input:checked) {
+  background: linear-gradient(160deg, rgba(54, 209, 176, .22), rgba(54, 209, 176, .08)); border-color: #36d1b0; color: #eafaf6; box-shadow: 0 0 0 1px rgba(54, 209, 176, .35), 0 10px 24px rgba(0, 0, 0, .3);
+}
+body:has(.appshell) .masukopt.on small, body:has(.appshell) .masukopt:has(input:checked) small { color: #c6efe4; }
+body:has(.appshell) .masukopt .ci { background: var(--aqua); color: #03211b; }

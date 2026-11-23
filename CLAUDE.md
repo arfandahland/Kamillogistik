@@ -11,7 +11,10 @@ Rules:
 
 ## Agen desain UI/UX
 
-Untuk merapikan tampilan (tata letak HP dan komputer, form, kartu angka, pembagian fitur per peran), gunakan agen `ui-ux-designer` (`.claude/agents/ui-ux-designer.md`). Agen ini tidak mengubah tema warna; ia bekerja dari tangkapan layar nyata dan memakai komponen tata letak yang sudah ada di `apps/web/src/app/globals.css`.
+Untuk merapikan tampilan (tata letak HP dan komputer, form, kartu angka, pembagian fitur per peran), gunakan agen `ui-ux-designer` (`.claude/agents/ui-ux-designer.md`). Agen ini mengikuti Tema Malam Kamil (lihat di bawah); ia bekerja dari tangkapan layar nyata dan memakai komponen tata letak yang sudah ada di `apps/web/src/app/globals.css`.
 
 ## Skill UI/UX Pro Max
-Skill `ui-ux-pro-max` (MIT, dari github.com/nextlevelbuilder/ui-ux-pro-max-skill) terpasang di `.claude/skills/ui-ux-pro-max`. Pakai untuk panduan susunan, UX, grafik, dan aksesibilitas (`python3 -I .claude/skills/ui-ux-pro-max/scripts/search.py "<kata kunci>" --domain ux`). Tema warna dan font proyek TIDAK boleh diganti oleh rekomendasi skill. Prinsip menu bawah: tiap tombol punya satu fungsi, maksimal 5 tombol, statistik tampil sebagai kartu atau grafik (bukan dropdown).
+Skill `ui-ux-pro-max` (MIT, dari github.com/nextlevelbuilder/ui-ux-pro-max-skill) terpasang di `.claude/skills/ui-ux-pro-max`. Pakai untuk panduan susunan, UX, grafik, dan aksesibilitas (`python3 -I .claude/skills/ui-ux-pro-max/scripts/search.py "<kata kunci>" --domain ux`). Palet dan font dari rekomendasi skill TIDAK dipakai; warna proyek mengikuti Tema Malam Kamil. Prinsip menu bawah: tiap tombol punya satu fungsi; jumlah tombol bebas (6 sampai 8 boleh) asal jelas di HP dan rapi di komputer; statistik tampil sebagai kartu atau grafik (bukan dropdown).
+
+## Tema Malam Kamil (arahan pemilik, 23 Nov 2026)
+Aplikasi petugas (`/app`) memakai tema gelap bergradien teal dari warna logo, kartu kaca, menu bawah melayang dengan tombol tengah (Pindai) menonjol, tombol utama aqua; oranye hanya untuk peringatan. Ini menggantikan aturan lama "tema warna tidak boleh diubah". Gaya ada di akhir `apps/web/src/app/globals.css` (bagian TEMA MALAM KAMIL, berlaku lewat `body:has(.appshell)`). Website publik belum memakai tema ini. Jangan menambah warna baru di luar token tema.
