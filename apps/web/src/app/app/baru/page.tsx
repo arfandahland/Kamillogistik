@@ -31,10 +31,11 @@ export default async function Baru({ searchParams }: { searchParams: Promise<{ e
       {e && <div className="err" role="alert">{e}</div>}
       {tujuan.length === 0 ? <section className="card"><p className="muted" style={{ margin: 0 }}>Belum ada gudang tujuan yang aktif. Hubungi pemilik.</p></section> : (
         <form className="rbform" action={buatResi}>
+          <nav className="rbnav" aria-label="Loncat ke bagian">{[["b1", "Rute"], ["b2", "Pengirim"], ["b3", "Penerima"], ["b4", "Barang"], ["b5", "Bayar"]].map(([h, t], i) => <a key={h} href={`#${h}`}><span>{i + 1}</span>{t}</a>)}</nav>
           <input type="hidden" name="ref" value={randomUUID()} />
           {pj && <input type="hidden" name="jemput" value={pj.id} />}
           <div className="rbkol">
-            <section className="card rbsek">
+            <section className="card rbsek" id="b1">
               <h2 className="tbjudul"><span className="tbno">1</span> Rute dan cara masuk</h2>
               <div className="rbrow r32">
                 <div className="rbf">
@@ -57,7 +58,7 @@ export default async function Baru({ searchParams }: { searchParams: Promise<{ e
               {pj && <p className="hint">Barang masuk lewat pesanan jemput, jadi cara masuk tidak perlu dipilih.</p>}
             </section>
 
-            <section className="card rbsek">
+            <section className="card rbsek" id="b2">
               <h2 className="tbjudul"><span className="tbno">2</span> Pengirim</h2>
               <PelangganField perusahaan={perusahaan} />
               <div className="rbrow r23">
@@ -75,7 +76,7 @@ export default async function Baru({ searchParams }: { searchParams: Promise<{ e
           </div>
 
           <div className="rbkol">
-            <section className="card rbsek">
+            <section className="card rbsek" id="b3">
               <h2 className="tbjudul"><span className="tbno">3</span> Penerima dan alamat</h2>
               <div className="rbrow r23">
                 <div className="rbf">
@@ -95,7 +96,7 @@ export default async function Baru({ searchParams }: { searchParams: Promise<{ e
               <WilayahField />
             </section>
 
-            <section className="card rbsek">
+            <section className="card rbsek" id="b4">
               <h2 className="tbjudul"><span className="tbno">4</span> Barang</h2>
               <div className="rbf">
                 <label className="f" htmlFor="isi">Isi barang</label>
@@ -130,7 +131,7 @@ export default async function Baru({ searchParams }: { searchParams: Promise<{ e
               <p className="hint">Berat dan ukuran bukan tugas Kasir: petugas gudang mencatatnya dengan memindai barcode tiap barang. Harga diisi Kasir saat membuat invoice. Data ini ikut terbaca semua petugas yang memproses resi.</p>
             </section>
 
-            <section className="card rbsek">
+            <section className="card rbsek" id="b5">
               <h2 className="tbjudul"><span className="tbno">5</span> Jadwal dan pembayaran</h2>
               <div className="rbrow">
                 <div className="rbf">

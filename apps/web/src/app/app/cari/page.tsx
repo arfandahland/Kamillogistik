@@ -21,10 +21,10 @@ export default async function Cari({ searchParams }: { searchParams: Promise<{ q
       <h1>Cari</h1>
       <form className="card searchcard" role="search">
         <Icon name="search" size={20} className="ico sicon" />
-        <input name="q" defaultValue={q} autoFocus placeholder="Kode resi, nama, nomor HP, tagihan, manifest" enterKeyHint="search" aria-label="Kata kunci" autoComplete="off" />
+        <input name="q" defaultValue={q} autoFocus placeholder="Resi, nama, atau nomor HP" enterKeyHint="search" aria-label="Kata kunci" autoComplete="off" />
         <button className="btn sm">Cari</button>
       </form>
-      <p className="muted" style={{ marginTop: -6, fontSize: 14 }}>Boleh sebagian saja: tiga huruf nama, empat angka nomor HP, atau ujung kode resi.</p>
+      <p className="muted" style={{ marginTop: 0, fontSize: 14 }}>Boleh sebagian saja: tiga huruf nama, empat angka nomor HP, atau ujung kode resi.</p>
       {r?.error && <div className="err">{r.error}</div>}
       {q.length > 0 && q.length < 2 && <p className="muted">Ketik minimal 2 huruf.</p>}
       <div className="stagger">

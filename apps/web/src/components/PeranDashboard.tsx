@@ -101,12 +101,11 @@ export function KasirDash({ d }: { d: KasirData }) {
         { ikon: "box", n: d.hariIni.resi, label: "Resi dibuat hari ini" },
         { ikon: "file", n: rupiah(d.hariIni.omzet).replace("Rp", ""), label: "Tagihan hari ini (Rp)" },
         { ikon: "cash", n: rupiah(total).replace("Rp", ""), label: "Uang masuk hari ini (Rp)" },
-        { ikon: "clock", n: rupiah(d.piutang.total).replace("Rp", ""), label: "Piutang cabang (Rp)", sub: d.piutang.lewat ? `${d.piutang.lewat} tagihan lewat tempo` : `${d.piutang.lembar} tagihan`, href: "/app/tagihan", warm: d.piutang.lewat > 0 },
+        { ikon: "truck", n: d.jemputBaru, label: "Pesanan jemput baru", sub: d.jemputBaru ? "Ketuk untuk memproses" : "Belum ada", href: "/app/jemput", warm: d.jemputBaru > 0 },
       ]} />
-      <nav className="hubquick two" aria-label="Aksi cepat"><Link href="/app/jemput"><Icon name="truck" size={22} /><span>Jemput{d.jemputBaru ? ` (${d.jemputBaru})` : ""}</span></Link><Link href="/app/serah"><Icon name="swap" size={22} /><span>Serah terima</span></Link></nav>
       <div className="hubgrid">
-        <Kartu ikon="box" judul="Menunggu ditimbang atau dibuatkan invoice" flag={d.perluTimbang.length > 0} aksi={<span className="pill">{d.perluTimbang.length}</span>}>
-          {d.perluTimbang.length === 0 ? <Kosong t="Semua resi sudah diproses." /> : <Potong tag="ul" kelas="rows" batas={5} items={d.perluTimbang.map((r) => <li key={r.id}><Link href={`/app/resi/${r.id}`}><b>{r.resiNo}</b><small>{STATUS_LABEL[r.status] ?? r.status} · {r.pengirim}</small></Link></li>)} />}
+        <Kartu ikon="box" judul="Menunggu gudang menimbang" flag={d.perluTimbang.length > 0} aksi={<span className="pill">{d.perluTimbang.length}</span>}>
+          {d.perluTimbang.length === 0 ? <Kosong t="Semua resi sudah diproses." /> : <Potong tag="ul" kelas="rows" batas={3} items={d.perluTimbang.map((r) => <li key={r.id}><Link href={`/app/resi/${r.id}`}><b>{r.resiNo}</b><small>{STATUS_LABEL[r.status] ?? r.status} · {r.pengirim}</small></Link></li>)} />}
         </Kartu>
         <Kartu ikon="cash" judul="Kas hari ini">
           <dl className="infogrid"><div><dt>Tunai</dt><dd>{rupiah(d.hariIni.tunai)}</dd></div><div><dt>Transfer</dt><dd>{rupiah(d.hariIni.transfer)}</dd></div></dl>

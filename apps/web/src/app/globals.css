@@ -1726,3 +1726,15 @@ input.terkunci { background: color-mix(in srgb, var(--teal) 7%, var(--card)); fo
 .pgh { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
 .pgi { flex: none; width: 42px; height: 42px; border-radius: 14px; display: grid; place-items: center; background: linear-gradient(135deg, var(--teal), var(--teal-500)); color: #fff; }
 .pgh h2 { margin: 0; font-size: 19px; } .pgh small { display: block; color: var(--muted); font-size: 13.5px; }
+
+/* ===== Penyegaran Kasir: filter ringkas, loncat bagian form ===== */
+.fchips .chip, .chips.wrapc .chip, .fchips button.chip { min-height: 38px; padding: 0 14px; font-size: 14px; }
+.fchips, .chips.wrapc { gap: 6px; }
+.rbnav { position: sticky; top: 6px; z-index: 5; display: flex; gap: 6px; overflow-x: auto; padding: 8px 2px; margin: 0 0 4px; scrollbar-width: none; background: linear-gradient(var(--bg, #f3faf8) 70%, transparent); }
+.rbnav::-webkit-scrollbar { display: none; }
+.rbnav a { flex: none; display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 12px 0 6px; border-radius: 99px; border: 1.5px solid var(--line); background: var(--card); font-weight: 800; font-size: 13.5px; color: var(--ink); text-decoration: none; }
+.rbnav a span { width: 22px; height: 22px; border-radius: 50%; background: var(--teal); color: #fff; display: grid; place-items: center; font-size: 12px; }
+.rbsek { scroll-margin-top: 120px; }
+@media (min-width: 900px) { .rbnav { display: none; } }
+.fchips { flex-wrap: nowrap; overflow-x: auto !important; -webkit-mask-image: linear-gradient(90deg, #000 88%, transparent); mask-image: linear-gradient(90deg, #000 88%, transparent); padding-right: 28px; }
+.rbnav { background: var(--bg); border-radius: 14px; box-shadow: 0 6px 14px -10px rgba(5, 38, 31, .45); }
