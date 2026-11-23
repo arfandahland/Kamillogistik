@@ -56,13 +56,13 @@
   "54": "getRoutePairs",
   "55": "Spesifikasi Divisi MV (Mitra Vendor) untuk Kamil Logistik",
   "56": "vercel.json",
-  "57": "staffRpc",
+  "57": "cari/page.tsx",
   "58": "(publik)/page.tsx",
   "59": "chat.ts",
   "60": "resi/[id]/page.tsx",
   "61": "skenario.cjs",
   "62": "server.ts",
-  "63": "HubDashboard.tsx",
+  "63": "rupiah",
   "64": "design_system.py",
   "65": "preview.py",
   "66": "Analisis kekurangan aplikasi (November 2026)",
@@ -111,5 +111,6 @@
   "109": "_resolve_color_mode",
   "110": "HitungVolume.tsx",
   "111": "_select_palette_for_mode",
-  "112": "_flatten_tokens"
+  "112": "_flatten_tokens",
+  "113": "KlaimKartu.tsx"
 }

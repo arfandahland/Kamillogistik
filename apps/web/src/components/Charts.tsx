@@ -139,7 +139,8 @@ export function Donut({ parts, center, sub }: { parts: { label: string; value: n
 }
 
 /** Batang mendatar untuk peringkat (rute, petugas). */
-export function HBars({ items, color = "var(--teal-500)", fmt = (n: number) => String(n), empty }: { items: { label: string; value: number; note?: string }[]; color?: string; fmt?: (n: number) => string; empty: string }) {
+export function HBars({ items, color = "var(--teal-500)", fmt: fmtFn, satuan, empty }: { items: { label: string; value: number; note?: string }[]; color?: string; fmt?: (n: number) => string; /** Teks satuan biasa (aman dipakai dari server component, berbeda dengan fungsi fmt). */ satuan?: string; empty: string }) {
+  const fmt = fmtFn ?? ((n: number) => (satuan ? `${n} ${satuan}` : String(n)));
   const max = Math.max(1, ...items.map((i) => i.value));
   if (items.length === 0) return <p className="muted" style={{ margin: 0 }}>{empty}</p>;
   return (

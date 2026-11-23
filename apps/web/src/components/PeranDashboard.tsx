@@ -112,7 +112,7 @@ export function KasirDash({ d }: { d: KasirData }) {
           <a className="btn" href={waLink(ringkas)} target="_blank" rel="noopener noreferrer"><Icon name="chat" size={20} /> Kirim setoran ke Pemilik</a>
         </Kartu>
         <Kartu ikon="users" judul="Pelanggan langganan (60 hari)" lipat>
-          {d.pelangganLangganan.length === 0 ? <Kosong t="Belum ada pelanggan yang kirim 2 kali atau lebih dalam 60 hari." /> : <><HBars items={d.pelangganLangganan.slice(0, 5).map((p) => ({ label: p.nama, value: p.resi, note: `${p.resi} resi` }))} fmt={(n) => `${n} resi`} empty="Belum ada." /></>}
+          {d.pelangganLangganan.length === 0 ? <Kosong t="Belum ada pelanggan yang kirim 2 kali atau lebih dalam 60 hari." /> : <><HBars items={d.pelangganLangganan.slice(0, 5).map((p) => ({ label: p.nama, value: p.resi, note: `${p.resi} resi` }))} satuan="resi" empty="Belum ada." /></>}
           {d.pelangganLangganan.length === 0 ? null : <Potong tag="ul" kelas="rows" batas={5} items={d.pelangganLangganan.map((p) => { const w = waNumber(p.hp); return <li key={p.nama}><span><b>{p.nama}</b><small>{p.resi} resi · {hpTampil(p.hp)}</small></span>{w && <a className="mini" href={`https://wa.me/${w}?text=${encodeURIComponent(`Halo ${p.nama.split(" ")[0]}, terima kasih sudah langganan kirim barang di Kamil Logistik. Ada kiriman baru yang bisa kami bantu?`)}`} target="_blank" rel="noopener noreferrer" aria-label={`Chat ${p.nama}`}><Icon name="chat" size={16} /></a>}</li>; })} />}
         </Kartu>
         <Kartu ikon="chart" judul="Bulan ini" lipat>
