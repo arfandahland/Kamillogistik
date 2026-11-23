@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import Icon from "./Icon";
 import type { PusatItem } from "@/lib/pusat";
@@ -40,7 +41,7 @@ export default function MenuKaca({ items, ringkasan }: { items: PusatItem[]; rin
       {bento.length > 0 && <div className="gl-bentos">{bento.map((i) => butir(i, "gl-bento gl-press"))}</div>}
       {daftar.length > 0 && <div className="gl-daftar">{daftar.map((i) => butir(i, "gl-baris gl-press"))}</div>}
 
-      {buka && (
+      {buka && typeof document !== "undefined" && createPortal(
         <div className={`gl-ov ${buka.mode === "kartu" ? "tengah" : "bawah"}`} role="presentation" onClick={(e) => { if (e.target === e.currentTarget) setBuka(null); }}>
           <div className="gl-lembar" role="dialog" aria-modal="true" aria-label={buka.t}>
             {buka.mode === "laci" && <span className="gl-handle" aria-hidden />}
@@ -63,7 +64,7 @@ export default function MenuKaca({ items, ringkasan }: { items: PusatItem[]; rin
             </div>
           </div>
         </div>
-      )}
+      , document.body)}
     </>
   );
 }

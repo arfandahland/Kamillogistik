@@ -1947,7 +1947,7 @@ body:has(.appshell) .has-tabbar { padding-bottom: 128px; }
 @keyframes glNaik { from { transform: translateY(100%); } to { transform: none; } }
 @keyframes glMuncul { from { opacity: 0; transform: scale(.92) translateY(10px); } to { opacity: 1; transform: none; } }
 @keyframes glGeser { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: none; } }
-body:has(.appshell) .appmain > main { animation: glGeser .34s var(--ease) both; }
+body:has(.appshell) .appmain > main { animation: glGeser .34s var(--ease) backwards; }
 /* tombol kembali kaca, seragam di semua halaman */
 body:has(.appshell) .backlink { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px 8px 10px; border-radius: 14px; background: var(--glass); border: 1px solid var(--rim); border-top-color: rgba(255, 255, 255, .22); color: var(--ink); text-decoration: none; font-weight: 800; -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); }
 body:has(.appshell) .backlink:active { transform: scale(.97); }

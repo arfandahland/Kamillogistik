@@ -178,7 +178,11 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     { const pg2 = await kasir.ctx.newPage();
       await pg2.goto(`${BASE}/app/pusat?g=kontak`, { waitUntil: "networkidle" });
       const pt = await pg2.locator("main").innerText();
-      ok("AQ3 Kelompok Pelanggan Kasir: Perlu dihubungi, Pesanan jemput, Cari", /pusat kasir/i.test(pt) && /Pelanggan/.test(pt) && (await pg2.locator("a.admcard[href='/app/tindak-lanjut']").count()) === 1 && (await pg2.locator("a.admcard[href='/app/jemput']").count()) === 1);
+      ok("AQ3 Kelompok Pelanggan Kasir: Perlu dihubungi, Pesanan jemput, dan kolom Cari resi", /pusat kasir/i.test(pt) && /Pelanggan/.test(pt) && /Perlu dihubungi/.test(pt) && /Pesanan jemput/.test(pt) && (await pg2.locator("form[action='/app/cari'] input[name=q]").count()) === 1);
+      await pg2.getByRole("button", { name: /Pesanan jemput/ }).click();
+      ok("AQ3b menu berfilter membuka laci kaca: tombol halaman penuh dan pilihan cepat memakai halaman yang sudah ada", (await pg2.locator("[role=dialog] a[href='/app/jemput']").count()) === 1 && (await pg2.locator("[role=dialog] a[href='/app/jemput?s=BARU']").count()) === 1);
+      await pg2.keyboard.press("Escape");
+      ok("AQ3c laci kaca tertutup dengan tombol Esc", (await pg2.locator("[role=dialog]").count()) === 0);
       const tb = await pg2.locator(".tabbar").innerText();
       ok("AQ4 menu bawah Kasir: Beranda, Resi baru, Manifest, Pindai, Tagihan, Kontak, Muatan", ["Beranda", "Resi baru", "Manifest", "Pindai", "Tagihan", "Kontak", "Muatan"].every((x) => tb.includes(x)));
       await pg2.goto(`${BASE}/app`, { waitUntil: "networkidle" });
@@ -1495,6 +1499,22 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("AO1 Super Admin membuat akun MV cabang Jakarta", /dibuat/.test(await buatMv("MV Jakarta Uji", "mv.jkt@uji.id", "MV", "Jakarta")));
     ok("AO2 Super Admin membuat akun MV Master tanpa cabang", /dibuat/.test(await buatMv("MV Master Uji", "mv.master@uji.id", "MV_MASTER", "")));
     ok("AO3 menu samping Super Admin memuat Divisi MV", (await sa.page.locator("a[href='/app/mv']").count()) >= 1);
+    {
+      await sa.page.goto(`${BASE}/app/pusat?g=operasional`, { waitUntil: "networkidle" });
+      ok("AS1 tab Operasi: dua menu utama berdampingan (Bento) dan Cari resi menjadi kolom cari", (await sa.page.locator(".gl-bentos > *").count()) === 2 && (await sa.page.locator("form[action='/app/cari']").count()) === 1 && (await sa.page.locator(".gl-daftar .gl-baris").filter({ hasText: "Cari resi" }).count()) === 0);
+      await sa.page.getByRole("button", { name: /Ringkasan harian/ }).click();
+      const kartu = await sa.page.locator("[role=dialog]").innerText();
+      ok("AS2 Ringkasan harian membuka kartu kaca dengan angka hari ini dan tombol bagikan ke WhatsApp", /Resi baru/.test(kartu) && /Uang masuk/.test(kartu) && (await sa.page.locator("[role=dialog] a[href^='https://wa.me/']").count()) === 1 && (await sa.page.locator("[role=dialog] a[href='/app/ringkasan']").count()) === 1);
+      await sa.page.keyboard.press("Escape");
+      await sa.page.getByRole("button", { name: /Manifest muatan/ }).click();
+      ok("AS3 Manifest muatan membuka laci kaca dengan lima filter status dan tombol halaman penuh", (await sa.page.locator("[role=dialog] .gl-aksi a").count()) === 5 && (await sa.page.locator("[role=dialog] a[href='/app/manifest']").count()) === 1);
+      await sa.page.locator("[role=dialog] a[href='/app/manifest?s=SEALED']").click();
+      await sa.page.waitForURL(/manifest\?s=SEALED/, { timeout: 15000 }).catch(() => {});
+      ok("AS4 pilihan cepat di laci membuka halaman asli dengan filter yang sama", /manifest\?s=SEALED/.test(sa.page.url()));
+      for (const g of ["uang", "orang", "sistem"]) { await sa.page.goto(`${BASE}/app/pusat?g=${g}`, { waitUntil: "networkidle" }); ok(`AS5 tab ${g}: daftar berkelompok dalam satu kontainer kaca tanpa galat`, (await sa.page.locator(".gl-daftar").count()) >= 1 && !/Terjadi kesalahan|Application error/.test(await sa.page.locator("main").innerText())); }
+      const ikon = await sa.page.evaluate(() => [...document.querySelectorAll("main .gl-ik svg")].map((s) => s.innerHTML));
+      ok("AS6 ikon menu pada satu tab tidak ada yang kembar", new Set(ikon).size === ikon.length, String(ikon.length));
+    }
     await sa.ctx.close();
 
     const mv = await login(browser, "mv.jkt@uji.id", "Sandi2026a", { width: 390, height: 844 });
