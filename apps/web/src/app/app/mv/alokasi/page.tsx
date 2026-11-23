@@ -121,7 +121,7 @@ export default async function Alokasi({ searchParams }: { searchParams: Promise<
             <p className="hint">Vendor tidak perlu akun. Kirim link ini lewat WhatsApp; vendor cukup membukanya untuk mengirim foto dan laporan, dan hasilnya masuk ke Kiriman vendor divisi Anda.</p>
             {lv.error && <div className="err">{lv.error}</div>}
             {lv.data?.link ? (<>
-              <input readOnly value={`${SITE_URL}/vendor/${lv.data.link.token}`} aria-label="Link vendor" onFocus={(e) => e.currentTarget.select()} />
+              <input readOnly value={`${SITE_URL}/vendor/${lv.data.link.token}`} aria-label="Link vendor" className="salin" />
               <p className="hint" style={{ margin: 0 }}>Berlaku sampai {tanggalWaktu(lv.data.link.expiresAt)}.</p>
               <div className="mvact">
                 <a className="btn green" target="_blank" rel="noopener noreferrer" href={`https://wa.me/?text=${encodeURIComponent(`Mohon kirim foto dan laporan pengiriman ${x.resiNo} lewat link ini: ${SITE_URL}/vendor/${lv.data.link.token}`)}`}><Icon name="chat" size={18} /> Kirim lewat WhatsApp</a>

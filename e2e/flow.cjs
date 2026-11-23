@@ -1417,8 +1417,12 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("AI12 halaman manifest menyediakan tombol unduh isi manifest", (await mgx.page.getByRole("link", { name: /Unduh isi manifest/ }).count()) === 1);
     const kasirX = await login(browser, "kasir@uji.id", PASS, { width: 390, height: 844 });
     const bocorX = await kasirX.page.request.get(`${BASE}/app/manifest/${mj}/unduh`);
-    ok("AI13 kasir tidak bisa mengunduh isi manifest", bocorX.status() === 403);
-    await kasirX.ctx.close(); await mgx.ctx.close();
+    ok("AI13 Kasir cabang asal boleh mengunduh isi manifest (Kasir yang menyusunnya)", bocorX.status() === 200);
+    await kasirX.ctx.close();
+    const kasirY = await login(browser, "kasir.mks@uji.id", PASS, { width: 390, height: 844 });
+    const bocorY = await kasirY.page.request.get(`${BASE}/app/manifest/${mj}/unduh`);
+    ok("AI13b Kasir cabang lain tidak bisa mengunduh isi manifest ini", bocorY.status() !== 200, String(bocorY.status()));
+    await kasirY.ctx.close(); await mgx.ctx.close();
     const ow2 = await login(browser, "owner@uji.id", "Pemilik2026x", { width: 390, height: 844 });
     await ow2.page.goto(`${BASE}/app/mitra`, { waitUntil: "networkidle" });
     ok("AI14 Pemilik memilih peran akun saat mendaftarkan mitra (Kasir, Kepala gudang, Petugas gudang)", (await ow2.page.locator("#akun_peran option").allTextContents()).join("|").includes("Kasir") && (await ow2.page.locator("#akun_peran option").count()) === 4);

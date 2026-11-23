@@ -1746,3 +1746,104 @@ input.terkunci { background: color-mix(in srgb, var(--teal) 7%, var(--card)); fo
 .tabbar.many .tab .ti { width: 34px; height: 30px; }
 .tabbar.many .tab.featured .ti { width: 50px; height: 50px; margin-top: -24px; }
 .sidebar .sn-sec { margin: 14px 12px 4px; font-size: 11.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: rgba(200, 248, 240, .6); }
+
+/* =========================================================================================
+   TEMA MALAM KAMIL (aplikasi petugas /app) — arahan pemilik 23 Nov 2026: gelap bergradien teal dari warna logo,
+   kartu kaca, menu bawah melayang dengan tombol tengah menonjol. Berlaku otomatis bila halaman memuat .appshell.
+   Bagian pertama menyalin aturan mode gelap bawaan agar selalu aktif di aplikasi, tidak bergantung pengaturan HP.
+   ========================================================================================= */
+body:has(.appshell) { --bg: #05201b; --card: #0b2e28; --ink: #e8f8f4; --muted: #95bbb3; --line: #1b4a41;
+    --teal: #3fb8a0; --teal-dark: #bdf3e6; --teal-soft: #0f3b33; --danger: #ffb4a8; --danger-bg: #3a1814;
+    --ok-bg: #0f3b33; --ok-ink: #bdf3e6;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, .3), 0 4px 12px rgba(0, 0, 0, .25);
+    --shadow-md: 0 2px 4px rgba(0, 0, 0, .3), 0 12px 28px rgba(0, 0, 0, .35);
+    --shadow-lg: 0 6px 12px rgba(0, 0, 0, .35), 0 28px 60px rgba(0, 0, 0, .5); }
+body:has(.appshell) .pill.sea { background: #12304f; color: #9cc8ff; }
+body:has(.appshell) .pill.new { background: #3a2b10; color: #ffd9a0; }
+body:has(.appshell) .banner { background: linear-gradient(135deg, #3a2b10, #2e2210); color: #ffd9a0; border-color: #8a5a14; }
+body:has(.appshell) .pend { background: rgba(255, 255, 255, .07); }
+body:has(.appshell) .alerts li.warn { background: #3a2b10; border-color: #8a5a14; color: #ffd9a0; }
+body:has(.appshell) .topbar { background: linear-gradient(135deg, rgba(10, 48, 41, .78), rgba(10, 48, 41, .55)); border-color: rgba(200, 248, 240, .2); box-shadow: 0 14px 38px rgba(0, 0, 0, .4), inset 0 1px 0 rgba(200, 248, 240, .18); }
+body:has(.appshell) .topbar .navlinks a { color: #d6f4ec; }
+body:has(.appshell) .topbar .navlinks a:hover { background: rgba(200, 248, 240, .12); }
+body:has(.appshell) .ticker { background: rgba(11, 46, 40, .6); }
+body:has(.appshell) .bs { background: radial-gradient(600px 300px at 90% 0%, rgba(255, 179, 71, .14), transparent 60%), linear-gradient(160deg, #0b2e28, #082520); border-color: rgba(200, 248, 240, .14); }
+body:has(.appshell) .bs-jenis, body:has(.appshell) .bs-poin b { color: #e8f8f4; }
+body:has(.appshell) .bs-rute b { color: #7ff0cf; }
+body:has(.appshell) .bs-poin li { background: rgba(255, 255, 255, .06); border-color: rgba(200, 248, 240, .14); }
+body:has(.appshell) .bs-chip, body:has(.appshell) .bs-float { background: rgba(10, 48, 41, .7); color: #e8f8f4; }
+body:has(.appshell) .bs-arrow .ico { background: #0b2e28; }
+body:has(.appshell) .ddbtn, body:has(.appshell) .burger { color: #d6f4ec; }
+body:has(.appshell) .burger { background: rgba(255, 255, 255, .08); border-color: rgba(200, 248, 240, .2); }
+body:has(.appshell) .topbar .nav.mitrabtn { color: #d6f4ec; background: rgba(200, 248, 240, .1); border-color: rgba(200, 248, 240, .3); }
+body:has(.appshell) .ddpanel, body:has(.appshell) .mpanel { background: rgba(8, 40, 34, .94); border-color: rgba(200, 248, 240, .16); }
+body:has(.appshell) .ddgrid a, body:has(.appshell) .ddrow, body:has(.appshell) .mlist a, body:has(.appshell) .mgrid a { color: #e8f8f4; }
+body:has(.appshell) .mgrid a, body:has(.appshell) .ddall { background: rgba(255, 255, 255, .08); }
+body:has(.appshell) .mchips a { background: rgba(255, 255, 255, .06); color: #d6f4ec; border-color: rgba(200, 248, 240, .2); }
+body:has(.appshell) .kpi.warn, body:has(.appshell) .warnbox { background: rgba(245, 180, 107, .08); border-color: rgba(245, 180, 107, .45); }
+body:has(.appshell) .switch { background: rgba(255, 255, 255, .06); }
+body:has(.appshell) .mdlbox { background: #0b2e28; }
+body:has(.appshell) .mdlgrip { background: rgba(200, 248, 240, .3); }
+body:has(.appshell) .mdlx { background: rgba(255, 255, 255, .1); color: #e8f8f4; }
+body:has(.appshell) .toast { background: rgba(10, 48, 41, .94); color: #e8f8f4; }
+body:has(.appshell) .toast.err { background: rgba(60, 20, 16, .95); color: #ffd6cf; }
+body:has(.appshell) .abouthero { background: linear-gradient(150deg, #0b2e28, #082520); border-color: rgba(200, 248, 240, .14); }
+body:has(.appshell) .chip-badge { background: rgba(255, 255, 255, .08); }
+body:has(.appshell) .trustbar { background: linear-gradient(150deg, #0b2e28, #0a2822); }
+body:has(.appshell) .tbpills li { background: rgba(255, 255, 255, .06); }
+body:has(.appshell) .abinfo { background: rgba(255, 255, 255, .06); }
+body:has(.appshell) .tl > div { background: var(--card); }
+body:has(.appshell) .ddpanel { background: rgba(8, 40, 34, .97); }
+body:has(.appshell) .topbar .nav.jemputbtn { color: #ffd9a8; }
+body:has(.appshell) .stats.dash .stat.warm .ssub { color: #ffd9a0; }
+body:has(.appshell) .brs .bs.tunda { color: #ffd9a0; }
+
+body:has(.appshell) {
+  color-scheme: dark;
+  --bg: #031a16; --card: #0b2b25; --ink: #eafaf6; --muted: #9bc4bb; --line: rgba(190, 245, 232, .14);
+  --teal: #36d1b0; --teal-dark: #bdf3e6; --teal-soft: rgba(54, 209, 176, .14);
+  --aqua: linear-gradient(135deg, #34e0ba 0%, #1aa88c 100%); --aqua-glow: 0 10px 26px rgba(52, 224, 186, .38);
+  --glass: linear-gradient(160deg, rgba(255, 255, 255, .08), rgba(255, 255, 255, .025)), rgba(11, 43, 37, .74);
+  background:
+    radial-gradient(90% 46% at 100% -8%, rgba(54, 209, 176, .30), transparent 62%),
+    radial-gradient(70% 42% at -12% 28%, rgba(19, 122, 104, .38), transparent 64%),
+    linear-gradient(180deg, #05261f 0%, #031a16 55%, #021310 100%);
+  background-attachment: fixed;
+}
+/* kartu kaca */
+body:has(.appshell) .card, body:has(.appshell) .hubcard, body:has(.appshell) .stat {
+  background: var(--glass); border: 1px solid var(--line); -webkit-backdrop-filter: blur(14px) saturate(130%); backdrop-filter: blur(14px) saturate(130%);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .38), inset 0 1px 0 rgba(255, 255, 255, .09);
+}
+body:has(.appshell) .stat .si, body:has(.appshell) .hi, body:has(.appshell) .admcard .ic, body:has(.appshell) .pgi {
+  background: linear-gradient(145deg, #2fd1a8, #14806a); color: #031a16; box-shadow: 0 6px 16px rgba(47, 209, 168, .3);
+}
+body:has(.appshell) .stat b { background: linear-gradient(180deg, #ffffff, #b9f3e5); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+body:has(.appshell) .stat.warm .si, body:has(.appshell) .hi.warm { background: linear-gradient(145deg, #ffc66d, #f28c28); color: #2b1600; box-shadow: 0 6px 16px rgba(242, 140, 40, .3); }
+/* tombol utama: aqua dari warna logo (oranye dipakai hanya untuk peringatan) */
+body:has(.appshell) .btn:not(.ghost):not(.green):not(.danger):not(.sm.ghost) { background: var(--aqua); color: #03211b; border-color: transparent; box-shadow: var(--aqua-glow); text-shadow: none; }
+body:has(.appshell) .btn.ghost { background: rgba(255, 255, 255, .06); border: 1.5px solid var(--line); color: var(--ink); box-shadow: none; }
+/* isian */
+body:has(.appshell) input:not([type=checkbox]):not([type=radio]), body:has(.appshell) select, body:has(.appshell) textarea {
+  background: rgba(255, 255, 255, .06); border: 1.5px solid var(--line); color: var(--ink);
+}
+body:has(.appshell) input::placeholder, body:has(.appshell) textarea::placeholder { color: rgba(190, 245, 232, .45); }
+body:has(.appshell) input:focus, body:has(.appshell) select:focus, body:has(.appshell) textarea:focus { outline: none; border-color: #36d1b0; box-shadow: 0 0 0 3px rgba(54, 209, 176, .25); }
+/* chip dan penyaring */
+body:has(.appshell) .chip, body:has(.appshell) .cp-chips button { background: rgba(255, 255, 255, .06); border-color: var(--line); color: var(--ink); }
+body:has(.appshell) .chip.on, body:has(.appshell) .cp-chips button[aria-pressed=true] { background: var(--aqua); color: #03211b; border-color: transparent; box-shadow: var(--aqua-glow); }
+/* menu bawah melayang, tombol tengah menonjol */
+body:has(.appshell) .tabbar {
+  background: linear-gradient(180deg, rgba(14, 60, 51, .86), rgba(5, 32, 27, .92)); border: 1px solid rgba(190, 245, 232, .18);
+  -webkit-backdrop-filter: blur(18px) saturate(140%); backdrop-filter: blur(18px) saturate(140%);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, .55), inset 0 1px 0 rgba(255, 255, 255, .1);
+}
+body:has(.appshell) .tab { color: rgba(190, 245, 232, .62); }
+body:has(.appshell) .tab.on { color: #7ff0d6; }
+body:has(.appshell) .tab.on .ti { background: rgba(54, 209, 176, .18); box-shadow: 0 0 18px rgba(54, 209, 176, .35); }
+body:has(.appshell) .tab.on::after { content: ""; position: absolute; bottom: 2px; left: 50%; width: 5px; height: 5px; margin-left: -2.5px; border-radius: 50%; background: #36d1b0; box-shadow: 0 0 8px #36d1b0; }
+body:has(.appshell) .tabbar .tab.featured .ti, body:has(.appshell) .tabbar .tab.featured.on .ti { background: var(--aqua); color: #03211b; box-shadow: 0 12px 28px rgba(52, 224, 186, .5), 0 0 0 5px rgba(5, 32, 27, .95); }
+body:has(.appshell) .tabbar .tab.featured.on::after { display: none; }
+body:has(.appshell) .sidebar { background: linear-gradient(180deg, #0a3a32 0%, #05261f 60%, #031a16 100%); border-right: 1px solid var(--line); }
+body:has(.appshell) .sidebar .sn.on { background: linear-gradient(90deg, rgba(54, 209, 176, .26), rgba(54, 209, 176, .06)); box-shadow: inset 3px 0 0 #36d1b0; color: #fff; }
+.salin { user-select: all; -webkit-user-select: all; font-family: ui-monospace, monospace; font-size: 13.5px; }
