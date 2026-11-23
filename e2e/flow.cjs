@@ -176,11 +176,11 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("penanda tahap: Tahap 1 dari 10", /Tahap 1 dari 10/.test(await text(p)));
     ok("AQ2 data awal lengkap tampil di detail resi: asuransi, jadwal jemput, rencana bayar, referensi", /Pakai asuransi/.test(await text(p)) && /Jadwal jemput/.test(await text(p)) && /siang/.test(await text(p)) && /Transfer/.test(await text(p)) && /PO-7788/.test(await text(p)));
     { const pg2 = await kasir.ctx.newPage();
-      await pg2.goto(`${BASE}/app/pusat`, { waitUntil: "networkidle" });
+      await pg2.goto(`${BASE}/app/pusat?g=kontak`, { waitUntil: "networkidle" });
       const pt = await pg2.locator("main").innerText();
-      ok("AQ3 Pusat Kasir: fitur dikelompokkan (Buat dan urus resi, Pelanggan, Uang)", /Pusat Kasir/.test(pt) && /Buat dan urus resi/.test(pt) && /Pelanggan/.test(pt) && /Uang/.test(pt) && (await pg2.locator("a.admcard[href='/app/baru']").count()) === 1 && (await pg2.locator("a.admcard[href='/app/tagihan']").count()) === 1);
+      ok("AQ3 Kelompok Pelanggan Kasir: Perlu dihubungi, Pesanan jemput, Cari", /pusat kasir/i.test(pt) && /Pelanggan/.test(pt) && (await pg2.locator("a.admcard[href='/app/tindak-lanjut']").count()) === 1 && (await pg2.locator("a.admcard[href='/app/jemput']").count()) === 1);
       const tb = await pg2.locator(".tabbar").innerText();
-      ok("AQ4 menu bawah Kasir: Beranda, Resi baru, Pindai, Tagihan, Pusat", /Beranda/.test(tb) && /Resi baru/.test(tb) && /Pindai/.test(tb) && /Tagihan/.test(tb) && /Pusat/.test(tb));
+      ok("AQ4 menu bawah Kasir: Beranda, Resi baru, Manifest, Pindai, Tagihan, Kontak, Muatan", ["Beranda", "Resi baru", "Manifest", "Pindai", "Tagihan", "Kontak", "Muatan"].every((x) => tb.includes(x)));
       await pg2.goto(`${BASE}/app`, { waitUntil: "networkidle" });
       ok("AQ5 beranda Kasir tanpa dropdown: semua kartu ringkasan terbuka, grafik pelanggan langganan tersedia", (await pg2.locator("details.ringkas:not([open])").count()) === 0 && (await pg2.locator("details.ringkas.statis").count()) >= 2);
       await pg2.close(); }
@@ -1174,7 +1174,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
       const tanpa = await ow.page.evaluate(() => [...document.querySelectorAll("input:not([type=hidden]),select,textarea")].filter((e) => !e.labels?.length && !e.getAttribute("aria-label") && !e.placeholder && !e.closest("label")).length);
       ok(`AA ${u}: semua kolom isian punya label yang terhubung`, tanpa === 0, String(tanpa));
     }
-    for (const [u, t] of [["/app/kelola", /Kelola Bisnis/], ["/app/petugas", /Daftar Petugas/], ["/app/tagihan", /Daftar Tagihan/], ["/app/cari?q=a", /Cari Resi/]]) { await ow.page.goto(`${BASE}${u}`, { waitUntil: "networkidle" }); ok(`AA judul tab ${u} jelas`, t.test(await ow.page.title())); }
+    for (const [u, t] of [["/app/pusat", /Pusat Kerja/], ["/app/petugas", /Daftar Petugas/], ["/app/tagihan", /Daftar Tagihan/], ["/app/cari?q=a", /Cari Resi/]]) { await ow.page.goto(`${BASE}${u}`, { waitUntil: "networkidle" }); ok(`AA judul tab ${u} jelas`, t.test(await ow.page.title())); }
     await ow.ctx.close();
     const pg = await (await browser.newContext({ viewport: { width: 390, height: 844 } })).newPage();
     await pg.goto(`${BASE}/lacak/RESI-TIDAK-ADA`, { waitUntil: "networkidle" }); ok("AA halaman resi tidak ditemukan punya judul utama (h1)", (await pg.locator("h1").count()) >= 1);
@@ -1276,7 +1276,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     const fn = await login(browser, "finance@uji.id", PASS, { width: 390, height: 844 });
     ok("AE17 Finance masuk dan diarahkan ke Keuangan", fn.loggedIn && /\/app\/keuangan/.test((await (async () => { await fn.page.goto(`${BASE}/app`, { waitUntil: "networkidle" }); return fn.page.url(); })())));
     const tabF = await fn.page.locator(".tabbar").innerText();
-    ok("AE18 menu bawah Finance: Keuangan, Tagihan, Laporan, Pusat", /Keuangan/.test(tabF) && /Tagihan/.test(tabF) && /Laporan/.test(tabF) && /Pusat/.test(tabF) && !/Pindai/.test(tabF), tabF.replace(/\n/g, " "));
+    ok("AE18 menu bawah Finance: Keuangan, Tagihan, Laporan, Dokumen", /Keuangan/.test(tabF) && /Tagihan/.test(tabF) && /Laporan/.test(tabF) && /Dokumen/.test(tabF) && !/Pindai/.test(tabF), tabF.replace(/\n/g, " "));
     await fn.page.goto(`${BASE}/app/tagihan`, { waitUntil: "networkidle" });
     ok("AE19 Finance melihat daftar tagihan", /Tagihan/.test(await fn.page.locator("h1").first().innerText()) && (await fn.page.locator("main .err").count()) === 0);
     const mid = sqlq(`SELECT id FROM manifests WHERE status <> 'OPEN' ORDER BY created_at LIMIT 1;`);
@@ -1298,7 +1298,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     const cs = await login(browser, "cs@uji.id", PASS, { width: 390, height: 844 });
     ok("AE22 CS masuk ke beranda", cs.loggedIn);
     const tabC = await cs.page.locator(".tabbar").innerText();
-    ok("AE23 menu bawah CS: Beranda, Jemput, Klaim, Pusat (tanpa Resi baru)", /Beranda/.test(tabC) && !/Resi baru/.test(tabC) && /Jemput/.test(tabC) && /Klaim/.test(tabC) && /Pusat/.test(tabC) && !/Tagihan/.test(tabC), tabC.replace(/\n/g, " "));
+    ok("AE23 menu bawah CS: Beranda, Jemput, Klaim, Layanan (tanpa Resi baru)", /Beranda/.test(tabC) && !/Resi baru/.test(tabC) && /Jemput/.test(tabC) && /Klaim/.test(tabC) && /Layanan/.test(tabC) && !/Tagihan/.test(tabC), tabC.replace(/\n/g, " "));
     await cs.page.goto(`${BASE}/app/baru`, { waitUntil: "networkidle" });
     ok("AE24 CS tidak bisa membuka formulir resi baru (satu pintu: kasir)", !/\/app\/baru/.test(cs.page.url()) && (await cs.page.locator("form[action]").count()) === 0 || !/Buat resi baru/.test(await cs.page.locator("main").innerText()));
     await cs.page.goto(`${BASE}/app/klaim`, { waitUntil: "networkidle" });
@@ -1529,6 +1529,36 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("AO11b vendor yang diketik manual tercatat otomatis dan langsung dipakai", !!simp2.ok && /Vendor Ketik Baru/.test(await text(mv2.page)), JSON.stringify(simp2));
     await mv2.page.goto(`${BASE}/app/mv/vendor`, { waitUntil: "networkidle" });
     ok("AO11c vendor ketikan manual muncul di daftar vendor (dipakai 1 kali, belum diverifikasi)", /Vendor Ketik Baru/.test(await text(mv2.page)) && /Vendor Laut Uji/.test(await text(mv2.page)));
+    // Vendor tanpa akun: MV membuat link khusus, vendor mengirim laporan tanpa login, masuk ke kotak masuk MV, link bisa dicabut
+    {
+      await mv2.page.goto(`${BASE}/app/mv/alokasi?m=LAUT`, { waitUntil: "networkidle" });
+      const hrefV = await mv2.page.evaluate(() => [...document.querySelectorAll("a.mvbuka")].map((a) => a.getAttribute("href"))[0]);
+      const idV = (hrefV || "").split("/").pop();
+      await mv2.page.goto(`${BASE}/app/mv/alokasi?m=LAUT&r=${idV}`, { waitUntil: "networkidle" });
+      await mv2.page.getByRole("button", { name: /Buat link vendor/ }).first().click();
+      await mv2.page.waitForURL(/ok=/, { timeout: 20000 }).catch(() => {});
+      const linkV = await mv2.page.locator("input[aria-label='Link vendor']").first().inputValue().catch(() => "");
+      ok("AO11e MV membuat link khusus vendor (tanpa akun)", /\/vendor\/[0-9a-f]{48}$/.test(linkV), linkV);
+      const vctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
+      const vp = await vctx.newPage();
+      const pathV = linkV.replace(/^https?:\/\/[^/]+/, "");
+      await vp.goto(`${BASE}${pathV}`, { waitUntil: "networkidle" });
+      ok("AO11f halaman vendor terbuka tanpa login dan hanya memuat info seperlunya", /Kirim foto dan laporan/.test(await vp.locator("main").innerText()) && !/Rp\s?\d/.test(await vp.locator("main").innerText()) && /noindex/.test((await vp.locator("meta[name=robots]").getAttribute("content")) || ""));
+      await vp.locator("select[name=jenis]").selectOption("LAPORAN", { force: true });
+      await vp.fill("#vd-nama", "Sopir Uji"); await vp.fill("#vd-cat", "Barang sudah naik kapal, posisi di pelabuhan.");
+      await vp.getByRole("button", { name: /Kirim ke divisi MV/ }).click();
+      await vp.waitForURL(/ok=1/, { timeout: 20000 }).catch(() => {});
+      ok("AO11g vendor mengirim laporan tertulis tanpa akun", /Terkirim/.test(await vp.locator("main").innerText()));
+      await mv2.page.goto(`${BASE}/app/mv/kiriman`, { waitUntil: "networkidle" });
+      ok("AO11h laporan vendor masuk ke kotak masuk divisi MV", /Barang sudah naik kapal/.test(await text(mv2.page)) && /Sopir Uji/.test(await text(mv2.page)));
+      await mv2.page.goto(`${BASE}/app/mv/alokasi?m=LAUT&r=${idV}`, { waitUntil: "networkidle" });
+      await mv2.page.getByRole("button", { name: /Cabut link/ }).first().click();
+      await mv2.page.waitForURL(/ok=/, { timeout: 20000 }).catch(() => {});
+      await vp.goto(`${BASE}${pathV}`, { waitUntil: "networkidle" });
+      ok("AO11i link yang dicabut tidak bisa dipakai lagi", /tidak berlaku/.test(await vp.locator("main").innerText()) && (await vp.locator("form").count()) === 0);
+      const rb = await vctx.newPage(); const st = await rb.goto(`${BASE}/vendor/${"0".repeat(48)}`); ok("AO11j link asal-asalan menghasilkan halaman tidak ditemukan", st?.status() === 404);
+      await vctx.close();
+    }
     await mv2.page.goto(`${BASE}/app/mv/alokasi?m=LAUT`, { waitUntil: "networkidle" });
     const hrefResi = await mv2.page.evaluate(() => document.querySelector("a.mvbuka")?.getAttribute("href"));
     await mv2.page.goto(`${BASE}${hrefResi}`, { waitUntil: "networkidle" });

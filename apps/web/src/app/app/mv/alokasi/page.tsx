@@ -12,11 +12,14 @@ import { staffRpc } from "@/lib/supabase/server";
 import { tanggalWaktu } from "@/lib/brand";
 import { daftarCabang, daftarWilayah } from "@/lib/mvdata";
 import { ALOK_FILTER, ALOK_STATUS, DOK_JENIS, MODA_NAMA, MV_BACA, MV_SEMUA_CABANG, MV_TULIS, href, pilih, rp, uuidOk, type ResiAlokasi, type Vendor } from "@/lib/mv";
-import { kunciHpp, simpanAlokasi, simpanHpp, ubahStatusAlokasi } from "../actions";
+import { buatLinkVendor, cabutLinkVendor, kunciHpp, simpanAlokasi, simpanHpp, ubahStatusAlokasi } from "../actions";
+import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = { title: "Alokasi dan HPP" };
 type Riwayat = { old: number | null; new: number; reason: string | null; by: string | null; at: string };
 type Dok = { id: string; kind: string; source: string; reason: string | null; at: string; capturedAt: string | null; hasGps: boolean; by: string | null };
+type LinkV = { link: { token: string; expiresAt: string } | null; kiriman: { id: string; kind: string; note: string | null; name: string; phone: string | null; hasPhoto: boolean; read: boolean; at: string }[] };
+const KIR: Record<string, string> = { FOTO_SERAH: "Foto serah terima", FOTO_PERJALANAN: "Foto di perjalanan", FOTO_TIBA: "Foto barang tiba", LAPORAN: "Laporan" };
 const LANJUT: Record<string, [string, string]> = { BERANGKAT: ["TIBA", "Tandai tiba"], TIBA: ["SELESAI", "Tandai selesai"] };
 const MODA = [["", "Semua"], ["DARAT", "Darat"], ["LAUT", "Laut"], ["UDARA", "Udara"]] as const;
 
@@ -26,7 +29,7 @@ export default async function Alokasi({ searchParams }: { searchParams: Promise<
   const c = uuidOk(sp.c) ? sp.c : "", w = (sp.w ?? "").replace(/[^A-Z-]/g, ""), q = (sp.q ?? "").trim().slice(0, 40), r = uuidOk(sp.r) ? sp.r : "";
   const banyakCabang = MV_SEMUA_CABANG.includes(me.role), tulis = MV_TULIS.includes(me.role), master = me.role === "SUPER_ADMIN" || me.role === "MV_MASTER";
   const listP = staffRpc<ResiAlokasi[]>("mv_alloc_list", { p_branch: c || null, p_mode: m || null, p_status: st || null, p_region: w || null, p_q: q || null, p_limit: 80 });
-  const [list, vend, cabang, wilayah, rwy, dok] = await Promise.all([
+  const [list, vend, cabang, wilayah, rwy, dok, lv] = await Promise.all([
     listP,
     tulis ? staffRpc<Vendor[]>("mv_vendor_list", { p_status: "AKTIF" }) : Promise.resolve({ data: [] as Vendor[], error: null }),
     banyakCabang ? daftarCabang() : Promise.resolve([]),
@@ -37,6 +40,11 @@ export default async function Alokasi({ searchParams }: { searchParams: Promise<
       return a ? staffRpc<Riwayat[]>("mv_hpp_history", { p_alloc: a.id }) : { data: [] as Riwayat[], error: null };
     })(),
     r ? staffRpc<Dok[]>("mv_doc_list", { p_shipment: r }) : Promise.resolve({ data: null, error: null }),
+    (async () => {
+      if (!r || !tulis) return { data: null as LinkV | null, error: null };
+      const a = (await listP).data?.find((x) => x.shipmentId === r)?.alloc;
+      return a ? staffRpc<LinkV>("mv_vendor_link_get", { p_alloc: a.id }) : { data: null as LinkV | null, error: null };
+    })(),
   ]);
   const base = { m, st, c, w, q };
   const back = href("/app/mv/alokasi", base);
@@ -105,6 +113,32 @@ export default async function Alokasi({ searchParams }: { searchParams: Promise<
             <div className="rbf"><label className="f">Alasan membuka kunci</label><input name="alasan" required minLength={5} maxLength={200} /></div>
             <SubmitButton className="btn ghost" steps={["Membuka kunci…"]}>Buka kunci</SubmitButton>
           </form>
+        )}
+        {tulis && a && buka && (
+          <section className="mvkotak" aria-label="Link vendor">
+            <b>Link untuk vendor</b>
+            <p className="hint">Vendor tidak perlu akun. Kirim link ini lewat WhatsApp; vendor cukup membukanya untuk mengirim foto dan laporan, dan hasilnya masuk ke Kiriman vendor divisi Anda.</p>
+            {lv.error && <div className="err">{lv.error}</div>}
+            {lv.data?.link ? (<>
+              <input readOnly value={`${SITE_URL}/vendor/${lv.data.link.token}`} aria-label="Link vendor" onFocus={(e) => e.currentTarget.select()} />
+              <p className="hint" style={{ margin: 0 }}>Berlaku sampai {tanggalWaktu(lv.data.link.expiresAt)}.</p>
+              <div className="mvact">
+                <a className="btn green" target="_blank" rel="noopener noreferrer" href={`https://wa.me/?text=${encodeURIComponent(`Mohon kirim foto dan laporan pengiriman ${x.resiNo} lewat link ini: ${SITE_URL}/vendor/${lv.data.link.token}`)}`}><Icon name="chat" size={18} /> Kirim lewat WhatsApp</a>
+                <form action={cabutLinkVendor}><input type="hidden" name="back" value={back} /><input type="hidden" name="alloc" value={a.id} /><SubmitButton className="btn ghost" steps={["Mencabut link…"]}>Cabut link</SubmitButton></form>
+              </div>
+            </>) : <p className="muted" style={{ margin: 0 }}>Belum ada link aktif.</p>}
+            <form action={buatLinkVendor} className="mvform">
+              <input type="hidden" name="back" value={back} /><input type="hidden" name="alloc" value={a.id} />
+              <div className="rbf"><label className="f" htmlFor={`hari-${x.shipmentId}`}>Masa berlaku</label><select id={`hari-${x.shipmentId}`} name="hari" defaultValue="7"><option value="3">3 hari</option><option value="7">7 hari</option><option value="14">14 hari</option><option value="30">30 hari</option></select></div>
+              <SubmitButton className="btn" steps={["Membuat link…"]}>{lv.data?.link ? "Buat link baru (yang lama dicabut)" : "Buat link vendor"}</SubmitButton>
+            </form>
+            {(lv.data?.kiriman ?? []).length > 0 && (<div><h3 className="cardh">Kiriman dari vendor</h3>
+              <div className="mvdok">{(lv.data?.kiriman ?? []).map((k) => (
+                <div key={k.id} className="mvdokitem">
+                  {k.hasPhoto && (<a href={`/app/mv/vendor-foto/${k.id}`} target="_blank" rel="noopener">{/* eslint-disable-next-line @next/next/no-img-element */}<img src={`/app/mv/vendor-foto/${k.id}`} alt={KIR[k.kind] ?? k.kind} loading="lazy" /></a>)}
+                  <b>{KIR[k.kind] ?? k.kind}</b><small>{tanggalWaktu(k.at)} · {k.name}{k.phone ? ` · ${k.phone}` : ""}</small>{k.note && <small>{k.note}</small>}
+                </div>))}</div></div>)}
+          </section>
         )}
         {tulis && <FormDokumen shipment={x.shipmentId} back={back} master={master} />}
         {buka ? (

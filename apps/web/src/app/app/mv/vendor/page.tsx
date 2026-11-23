@@ -54,7 +54,7 @@ export default async function VendorMV({ searchParams }: { searchParams: Promise
     const st = VENDOR_STATUS[v.status] ?? { label: v.status, kelas: "" };
     const bisaUbah = tulis && (master || (v.mine === true && !v.verified));
     return (
-      <Ringkas key={v.id} judul={v.name} lencana={v.code}
+      <Ringkas key={v.id} judul={v.name}
         ringkas={<span className="mvsum"><span className={`pill ${st.kelas}`}>{st.label}</span>{v.status === "AKTIF" && <span className={`pill ${v.verified ? "done" : "warn"}`}>{v.verified ? "Terverifikasi" : "Belum diverifikasi"}</span>}<span>{VENDOR_JENIS[v.kind] ?? v.kind}{v.contact ? ` · ${v.contact}` : ""}</span>
           {v.routes.length > 0 && <span className="mvchips">{v.routes.map((x) => <span key={x.id} className={`pill ${x.mode === "LAUT" ? "sea" : x.mode === "UDARA" ? "part" : ""}`}>{MODA_NAMA[x.mode]}{x.region ? ` · ${x.region}` : ""}</span>)}</span>}</span>}>
         <dl className="infogrid">

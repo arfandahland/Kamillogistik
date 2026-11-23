@@ -135,3 +135,26 @@ export async function terimaManifestUdara(fd: FormData) {
   if (error) go(back, "e", error);
   go(back, "ok", "Manifest udara diterima.");
 }
+
+/* ---------- Link vendor (tanpa akun) ---------- */
+export async function buatLinkVendor(fd: FormData) {
+  const back = balik(fd, "/app/mv/alokasi");
+  const { error } = await staffRpc("mv_vendor_link_create", { p_alloc: uuid(str(fd, "alloc")), p_days: Number(str(fd, "hari")) || 7 });
+  segar();
+  if (error) go(back, "e", error);
+  go(back, "ok", "Link vendor dibuat. Salin atau kirim lewat WhatsApp.");
+}
+export async function cabutLinkVendor(fd: FormData) {
+  const back = balik(fd, "/app/mv/alokasi");
+  const { error } = await staffRpc("mv_vendor_link_revoke", { p_alloc: uuid(str(fd, "alloc")) });
+  segar();
+  if (error) go(back, "e", error);
+  go(back, "ok", "Link vendor dicabut. Link lama tidak bisa dipakai lagi.");
+}
+export async function tandaiBacaVendor(fd: FormData) {
+  const back = balik(fd, "/app/mv/kiriman");
+  const { error } = await staffRpc("mv_vendor_mark_read", { p_id: uuid(str(fd, "id")) });
+  segar();
+  if (error) go(back, "e", error);
+  redirect(back);
+}

@@ -40,7 +40,7 @@ export default async function LaporanPemilik({ searchParams }: { searchParams: P
   return (
     <main className="wrap narrow stack" style={{ paddingTop: 8 }}>
       <BackLink />
-      <Link href="/app/kelola" className="muted backlink">← Kelola</Link>
+      <Link href="/app/pusat?g=uang" className="muted backlink">← Uang dan laporan</Link>
       <h1>Laporan lengkap</h1>
       <p className="muted" style={{ marginTop: -6 }}>Periode {tanggal(dari)} sampai {tanggal(sampai)}. Hanya Pemilik yang bisa melihat laporan ini.</p>
       <div className="fchips" aria-label="Periode cepat">

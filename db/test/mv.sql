@@ -252,4 +252,43 @@ DO $$ DECLARE s record; a uuid; BEGIN
   UPDATE public.shipments SET status = 'DELIVERED' WHERE id = s.id;
   ASSERT (SELECT status FROM public.shipment_allocations WHERE id = a) = 'TIBA', 'alokasi ikut tiba saat resi diterima';
 END $$;
+
+-- vendor tanpa akun: link khusus, kiriman foto dan laporan, isolasi antar divisi
+RESET ROLE;
+SELECT t.as_user(current_setting('t.mvj')::uuid);
+DO $$ DECLARE l jsonb; BEGIN
+  l := public.mv_vendor_link_create(current_setting('t.al')::uuid, 7);
+  ASSERT l->>'token' ~ '^[0-9a-f]{48}$', 'token acak 48 heks';
+  PERFORM set_config('t.tok', l->>'token', false);
+END $$;
+SELECT t.fails($$select public.mv_vendor_link_create(current_setting('t.al')::uuid, 99)$$, 'Masa berlaku');
+SELECT t.as_user(current_setting('t.mvm')::uuid);   -- MV Makassar bukan pemilik alokasi Jakarta
+SELECT t.fails($$select public.mv_vendor_link_create(current_setting('t.al')::uuid, 7)$$, 'tanggung jawab');
+SELECT t.fails($$select public.mv_vendor_link_get(current_setting('t.al')::uuid)$$, 'tanggung jawab');
+SELECT t.as_anon();
+DO $$ DECLARE r jsonb; i jsonb; BEGIN
+  i := public.vendor_link_info(current_setting('t.tok'));
+  ASSERT (i->>'berlaku')::boolean AND i->>'resiNo' IS NOT NULL, 'info link untuk vendor';
+  ASSERT NOT (i::text ~* 'hpp|tagihan|price|pengirim|sender', 'info vendor tanpa harga dan data pelanggan');
+  ASSERT public.vendor_link_info('salah') IS NULL, 'token asal-asalan ditolak';
+  r := public.vendor_link_submit(current_setting('t.tok'), 'LAPORAN', 'Barang sudah naik kapal.', NULL, 'Sopir Uji', '0812-000');
+  ASSERT r->>'id' IS NOT NULL, 'laporan vendor tersimpan';
+END $$;
+SELECT t.fails($$select public.vendor_link_submit(current_setting('t.tok'), 'FOTO_SERAH', NULL, NULL, 'Sopir Uji')$$, 'JPEG');
+SELECT t.fails($$select public.vendor_link_submit(current_setting('t.tok'), 'LAPORAN', 'ab', NULL, 'Sopir Uji')$$, 'minimal 5');
+SELECT t.fails($$select public.vendor_link_submit(repeat('0', 48), 'LAPORAN', 'Laporan palsu ini', NULL, 'X Y')$$, 'tidak dikenal');
+SELECT t.fails($$select * from public.vendor_submissions$$, 'permission');
+RESET ROLE;
+SELECT t.as_user(current_setting('t.mvj')::uuid);
+DO $$ BEGIN
+  ASSERT (public.mv_vendor_inbox(true))->>'belumDibaca' = '1', 'kiriman vendor masuk ke kotak MV pemilik';
+  ASSERT jsonb_array_length((public.mv_vendor_link_get(current_setting('t.al')::uuid))->'kiriman') = 1, 'kiriman terlihat di alokasi';
+END $$;
+SELECT t.as_user(current_setting('t.mvm')::uuid);
+DO $$ BEGIN ASSERT (public.mv_vendor_inbox(true))->>'belumDibaca' = '0', 'MV Makassar tidak melihat kiriman vendor Jakarta'; END $$;
+SELECT t.as_user(current_setting('t.mvj')::uuid);
+SELECT public.mv_vendor_link_revoke(current_setting('t.al')::uuid);
+SELECT t.as_anon();
+SELECT t.fails($$select public.vendor_link_submit(current_setting('t.tok'), 'LAPORAN', 'Setelah dicabut', NULL, 'Sopir Uji')$$, 'tidak berlaku');
+RESET ROLE;
 SELECT 'mv OK' AS hasil;

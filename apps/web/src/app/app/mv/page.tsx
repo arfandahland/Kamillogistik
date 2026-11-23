@@ -12,16 +12,18 @@ export const metadata: Metadata = { title: "Divisi MV" };
 export default async function BerandaMV({ searchParams }: { searchParams: Promise<{ ok?: string; e?: string }> }) {
   const me = await requireRole(MV_BACA); const sp = await searchParams;
   const finance = me.role === "FINANCE", master = me.role === "SUPER_ADMIN" || me.role === "MV_MASTER";
-  const [aktif, usulan, belum, sj] = await Promise.all([
+  const [aktif, usulan, belum, sj, kir] = await Promise.all([
     staffRpc<Vendor[]>("mv_vendor_list", { p_status: "AKTIF" }),
     staffRpc<Vendor[]>("mv_vendor_list", { p_status: "BELUM_VERIFIKASI" }),
     staffRpc<unknown[]>("mv_alloc_list", { p_status: "BELUM", p_limit: 200 }),
     finance ? Promise.resolve({ data: null, error: null }) : staffRpc<{ items: SJ[]; terlambat: number }>("mv_sj_list"),
+    finance || me.role === "OWNER" ? Promise.resolve({ data: null, error: null }) : staffRpc<{ belumDibaca: number }>("mv_vendor_inbox", { p_only_unread: true, p_limit: 1 }),
   ]);
   const nBelum = (belum.data ?? []).length;
   const galat = aktif.error ?? belum.error ?? (finance ? null : sj.error);
   const menu = [
     { href: "/app/mv/vendor", icon: "users", t: "Vendor", d: "Daftar mitra pengangkut yang tercatat otomatis, rute layanannya, dan verifikasi." },
+    ...(finance || me.role === "OWNER" ? [] : [{ href: "/app/mv/kiriman", icon: "image", t: "Kiriman vendor", d: kir.data?.belumDibaca ? `${kir.data.belumDibaca} kiriman belum dibaca. Foto dan laporan vendor lewat link khusus, tanpa akun.` : "Foto dan laporan dari vendor lewat link khusus, tanpa akun vendor." }]),
     { href: "/app/mv/alokasi", icon: "truck", t: "Alokasi dan HPP", d: "Pilih vendor atau armada internal untuk tiap resi, isi HPP, dan unggah foto dokumen." },
     { href: "/app/mv/tracking?m=DARAT", icon: "truck", t: "Pemantauan darat", d: "Resi darat ke Sumatera, Jawa Tengah, Jawa Timur, Bali, NTB, dan NTT." },
     { href: "/app/mv/tracking?m=UDARA", icon: "plane", t: "Pemantauan udara", d: "Resi udara ke seluruh Kalimantan." },
