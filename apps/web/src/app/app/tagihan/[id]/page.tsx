@@ -75,7 +75,7 @@ export default async function TagihanDetail({ params, searchParams }: { params: 
         </div>
         <div className="dkol">
           <InvoiceActions url={link} waHref={wa} />
-          <InvoiceDocument inv={inv} />
+          <InvoiceDocument inv={inv} judul="h2" />
         </div>
       </div>
     </main>

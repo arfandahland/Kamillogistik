@@ -14,7 +14,9 @@ const STATUS: Record<string, { t: string; cls: string }> = {
 };
 
 /** Dokumen invoice yang rapi di layar dan saat dicetak / disimpan sebagai PDF. */
-export default function InvoiceDocument({ inv }: { inv: InvoiceView }) {
+/** `judul`: tingkat judul INVOICE. Halaman publik memakai h1; di dalam aplikasi (yang sudah punya h1 sendiri) pakai h2. */
+export default function InvoiceDocument({ inv, judul = "h1" }: { inv: InvoiceView; judul?: "h1" | "h2" }) {
+  const Judul = judul;
   const st = STATUS[inv.status] ?? STATUS.UNPAID!;
   const c = inv.info.company;
   return (
@@ -24,7 +26,7 @@ export default function InvoiceDocument({ inv }: { inv: InvoiceView }) {
           <img src="/logo-sm.webp" width="110" height="87" alt="" />
           <div><b>{c.name ?? "Kamil Logistik"}</b><small>{c.address || "Jasa pengiriman barang"}</small><small>{c.phone ? `WhatsApp ${c.phone}` : ""}</small></div>
         </div>
-        <div className="inv-title"><h1>INVOICE</h1><span className={`inv-stamp ${st.cls}`}>{st.t}</span></div>
+        <div className="inv-title"><Judul>INVOICE</Judul><span className={`inv-stamp ${st.cls}`}>{st.t}</span></div>
       </header>
 
       <dl className="inv-meta">
