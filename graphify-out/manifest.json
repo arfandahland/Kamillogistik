@@ -924,9 +924,9 @@
     "semantic_hash": ""
   },
   "e2e/flow.cjs": {
-    "mtime": 1795437188.72174,
-    "seen": 1795437245.6942306,
-    "ast_hash": "7f86dfbe69d27bfeab167e49f32a2b70",
+    "mtime": 1795440210.0421019,
+    "seen": 1795440275.8278773,
+    "ast_hash": "56011d7290158064afe53b0e402ed582",
     "semantic_hash": ""
   },
   "e2e/kamera.cjs": {
@@ -9210,9 +9210,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/MenuKaca.tsx": {
-    "mtime": 1795439909.4980912,
-    "seen": 1795440013.7003849,
-    "ast_hash": "66512983f86669a90b88c9fb5c821df3",
+    "mtime": 1795440100.9389484,
+    "seen": 1795440275.8276803,
+    "ast_hash": "e16ee50921d10e0ae6ae9325598244da",
     "semantic_hash": ""
   },
   "package-lock.json": {
