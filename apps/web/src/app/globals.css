@@ -1436,8 +1436,8 @@ details.admnew > .hint { padding: 0 18px 18px; margin: 0; }
 .brs:first-child { border-top: 0; }
 .brs .tbn { width: 30px; height: 30px; font-size: 13px; }
 .brs .bk { min-width: 0; display: grid; } .brs .bk b { font-size: 14.5px; overflow-wrap: anywhere; } .brs .bk small { color: var(--muted); font-size: 12.5px; overflow-wrap: anywhere; }
-.brs .bs { font-weight: 800; font-size: 14px; white-space: nowrap; text-align: right; } .brs .bs.sudah { color: var(--teal-dark); } .brs .bs.tunda { color: #8a4a00; }
-@media (prefers-color-scheme: dark) { .brs .bs.tunda { color: #ffd9a0; } }
+.brs .bst { font-weight: 800; font-size: 14px; white-space: nowrap; text-align: right; } .brs .bst.sudah { color: var(--teal-dark); } .brs .bst.tunda { color: #8a4a00; }
+@media (prefers-color-scheme: dark) { .brs .bst.tunda { color: #ffd9a0; } }
 @media (min-width: 900px) { .brs2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 24px; } .brs2 > .brs:nth-child(2) { border-top: 0; } }
 .ringkasan1 { display: flex; flex-wrap: wrap; gap: 6px 14px; color: var(--muted); font-size: 14px; font-weight: 700; margin: 0; } .ringkasan1 b { color: var(--ink); }
 .tl.pendek li { padding-bottom: 14px; }
@@ -1796,7 +1796,7 @@ body:has(.appshell) .tl > div { background: var(--card); }
 body:has(.appshell) .ddpanel { background: rgba(8, 40, 34, .97); }
 body:has(.appshell) .topbar .nav.jemputbtn { color: #ffd9a8; }
 body:has(.appshell) .stats.dash .stat.warm .ssub { color: #ffd9a0; }
-body:has(.appshell) .brs .bs.tunda { color: #ffd9a0; }
+body:has(.appshell) .brs .bst.tunda { color: #ffd9a0; }
 
 body:has(.appshell) {
   color-scheme: dark;
@@ -1992,3 +1992,42 @@ body:has(.appshell) .cp-btn .cp-ph, body:has(.appshell) .cp-btn.kosong span { co
 body:has(.appshell) .chips.wrapc .chip, body:has(.appshell) .fchips .chip, body:has(.appshell) .fchips .fchip { min-height: 40px; }
 body:has(.appshell) .shiplist li { background: rgba(255, 255, 255, .05); border-color: var(--rim); color: var(--ink); }
 body:has(.appshell) .shiplist li small { color: var(--muted); }
+
+/* Penyempurnaan tampilan Kasir (audit 23 Nov 2026): hanya lapisan presentasi */
+/* Kartu resi: garis status di tepi kiri, nomor lebih tegas */
+body:has(.appshell) .card.resi { border-left: 4px solid rgba(110, 231, 183, .55); padding-left: 12px; }
+body:has(.appshell) .card.resi.st-new { border-left-color: #f2b25c; }
+body:has(.appshell) .card.resi.st-sea { border-left-color: #60a5fa; }
+body:has(.appshell) .card.resi.st-done { border-left-color: rgba(148, 163, 184, .55); }
+body:has(.appshell) .card.resi .no { font-size: 15px; letter-spacing: .2px; }
+body:has(.appshell) .card.resi .prog { height: 6px; border-radius: 99px; overflow: hidden; background: rgba(255, 255, 255, .08); }
+body:has(.appshell) .card.resi .prog i { background: linear-gradient(90deg, #10b981, #5eead4); box-shadow: 0 0 10px rgba(94, 234, 212, .45); }
+/* Judul bagian ("Daftar resi", "Pratinjau") terbaca jelas di tema malam */
+body:has(.appshell) .sech, body:has(.appshell) h2.sech { color: #eafaf6; font-size: 20px; }
+body:has(.appshell) .sech small { color: var(--muted); font-weight: 600; }
+/* Pilihan ukuran kertas yang aktif */
+body:has(.appshell) .paper { background: rgba(255, 255, 255, .05); border-color: var(--rim); color: var(--ink); }
+body:has(.appshell) .paper small { color: var(--muted); }
+body:has(.appshell) .paper.on { background: linear-gradient(160deg, rgba(16, 185, 129, .3), rgba(16, 185, 129, .12)); border-color: #34d399; color: #fff; box-shadow: 0 8px 22px rgba(16, 185, 129, .22); }
+body:has(.appshell) .paper.on small { color: #bff5e2; }
+/* Beranda HP: kartu angka naik lebih dekat ke judul */
+@media (max-width: 1023px) { body:has(.appshell) .stats.dash { margin-top: -34px; } }
+/* Kartu angka ringkas di halaman kelompok */
+.gl-ang { display: grid; grid-template-columns: repeat(auto-fit, minmax(132px, 1fr)); gap: 10px; }
+.gl-an { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 2px 10px; padding: 12px 14px; border-radius: 16px; background: var(--glass); border: 1px solid var(--rim); text-decoration: none; color: var(--ink); box-shadow: 0 8px 20px rgba(0, 0, 0, .25); }
+.gl-an .gl-ik { grid-row: span 2; width: 36px; height: 36px; border-radius: 12px; display: grid; place-items: center; background: rgba(16, 185, 129, .16); color: #6ee7b7; }
+.gl-an b { font-size: 26px; line-height: 1; font-weight: 800; } .gl-an small { color: var(--muted); font-size: 12.5px; line-height: 1.25; }
+.gl-an.warm { border-color: rgba(251, 191, 36, .4); background: linear-gradient(160deg, rgba(245, 158, 11, .16), var(--glass)); }
+.gl-an.warm .gl-ik { background: rgba(245, 158, 11, .2); color: #fcd34d; }
+/* Keadaan kosong: ikon besar bercahaya */
+body:has(.appshell) .empty, body:has(.appshell) .kosong-kartu { text-align: center; }
+body:has(.appshell) .empty .ico { filter: drop-shadow(0 0 14px rgba(94, 234, 212, .45)); }
+/* Gerak halus: daftar muncul bertahap, hormati pengaturan kurangi gerak */
+@keyframes glmuncul { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+body:has(.appshell) .cards-m.stagger > *, body:has(.appshell) .gl-an, body:has(.appshell) .stat { animation: glmuncul .45s cubic-bezier(.2, .8, .2, 1) backwards; }
+body:has(.appshell) .cards-m.stagger > *:nth-child(2), body:has(.appshell) .stat:nth-child(2), .gl-an:nth-child(2) { animation-delay: .06s; }
+body:has(.appshell) .cards-m.stagger > *:nth-child(3), body:has(.appshell) .stat:nth-child(3), .gl-an:nth-child(3) { animation-delay: .12s; }
+body:has(.appshell) .cards-m.stagger > *:nth-child(n+4), body:has(.appshell) .stat:nth-child(4) { animation-delay: .18s; }
+@media (prefers-reduced-motion: reduce) { body:has(.appshell) .cards-m.stagger > *, body:has(.appshell) .gl-an, body:has(.appshell) .stat { animation: none; } }
+.kosong-kartu { display: grid; justify-items: center; gap: 2px; padding: 22px 16px; }
+.kosong-ik { width: 56px; height: 56px; border-radius: 18px; margin-bottom: 8px; display: grid; place-items: center; background: rgba(16, 185, 129, .16); color: #6ee7b7; box-shadow: 0 0 24px rgba(16, 185, 129, .25); }

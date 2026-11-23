@@ -86,7 +86,7 @@ export default function StaffHome({ rows, stats, pending, tab, q, canCreate, err
           <Potong hpSaja kelas="cards-m stagger" batas={6} satuan="resi" items={rows.map((r) => {
               const m = statusMeta(r.status);
               return (
-                <Link key={r.id} href={`/app/resi/${r.id}`} className="card resi lift">
+                <Link key={r.id} href={`/app/resi/${r.id}`} className={`card resi lift st-${m.pill || "jalan"}`}>
                   <span className={`ic ${m.tone}`}><Icon name={m.icon} size={24} /></span>
                   <span className="meta">
                     <span className="toprow"><b className="no">{r.resiNo}</b><span className={`pill ${m.pill}`}>{STATUS_LABEL[r.status] ?? r.status}</span></span>

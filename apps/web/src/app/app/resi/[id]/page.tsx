@@ -218,7 +218,7 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
             <div className="brs" key={it.barcode}>
               <span className="tbn">{i + 1}</span>
               <span className="bk"><b>…{it.barcode.slice(-6)}</b><small>{it.barcode}{it.note ? ` · ${it.note}` : ""}</small></span>
-              <span className={`bs ${it.weightKg != null ? "sudah" : "tunda"}`}>{it.weightKg != null ? `${Number(it.weightKg).toLocaleString("id-ID")} kg` : "belum ditimbang"}</span>
+              <span className={`bst ${it.weightKg != null ? "sudah" : "tunda"}`}>{it.weightKg != null ? `${Number(it.weightKg).toLocaleString("id-ID")} kg` : "belum ditimbang"}</span>
             </div>
           ));
           return s.items.length > 3

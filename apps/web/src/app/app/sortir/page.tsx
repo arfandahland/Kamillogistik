@@ -23,7 +23,7 @@ export default async function Sortir() {
       <h1>Sortir tujuan akhir</h1>
       <p className="muted" style={{ margin: 0 }}>Barang yang sudah dibongkar di gudang ini, dikelompokkan menurut kabupaten atau kota penerima. Buka resi untuk meneruskannya ke gudang lain bila tujuan akhir masih jauh, atau antar lewat kurir bila dekat.</p>
       {r.error && <div className="err">{r.error}</div>}
-      {!r.error && rows.length === 0 && <div className="card"><p className="muted" style={{ margin: 0 }}>Belum ada barang yang menunggu disortir.</p></div>}
+      {!r.error && rows.length === 0 && <div className="card kosong-kartu"><span className="kosong-ik"><Icon name="check" size={28} /></span><b>Semua barang sudah disortir</b><p className="muted" style={{ margin: "4px 0 0" }}>Belum ada barang yang menunggu disortir.</p></div>}
       {[...grup.entries()].map(([k, list]) => (
         <section key={k} className="card">
           <h2 style={{ marginTop: 0 }}><Icon name="pin" size={18} /> {k} <span className="muted">· {list.length} resi</span></h2>

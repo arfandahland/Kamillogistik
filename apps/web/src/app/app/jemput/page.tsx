@@ -1,3 +1,4 @@
+import Icon from "@/components/Icon";
 import type { Metadata } from "next";
 import Link from "next/link";
 import JemputKartu, { STATUS_JEMPUT, type Jemput } from "@/components/JemputKartu";
@@ -26,7 +27,7 @@ export default async function JemputAntrean({ searchParams }: { searchParams: Pr
       </div>
       <div className="stagger fstack">
         <Potong batas={4} satuan="pesanan" items={(q.data?.items ?? []).map((a) => <JemputKartu key={a.id} a={a} bisaResi={me.role === "MITRA_POS"} />)} />
-        {(q.data?.items ?? []).length === 0 && !q.error && <div className="card" style={{ textAlign: "center" }}><b>Belum ada pesanan</b><p className="muted" style={{ margin: "4px 0 0" }}>Bagikan tautan kamillogistik.com/jemput.</p></div>}
+        {(q.data?.items ?? []).length === 0 && !q.error && <div className="card kosong-kartu"><span className="kosong-ik"><Icon name="truck" size={28} /></span><b>Belum ada pesanan</b><p className="muted" style={{ margin: "4px 0 0" }}>Bagikan tautan kamillogistik.com/jemput.</p></div>}
       </div>
     </main>
   );
