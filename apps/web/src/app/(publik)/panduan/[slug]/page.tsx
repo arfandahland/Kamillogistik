@@ -36,7 +36,7 @@ export default async function Artikel({ params }: { params: Promise<{ slug: stri
   };
   return (
     <main className="wrap section stack">
-      <JsonLd data={[organizationLd(), ld, breadcrumbLd([{ name: "Beranda", path: "/" }, { name: "Panduan", path: "/panduan" }, { name: a.heading, path: `/panduan/${a.slug}` }])]} />
+      <JsonLd data={[organizationLd(), ld, ...(a.faq ? [{ "@context": "https://schema.org", "@type": "FAQPage", mainEntity: a.faq.map(([q, t]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: t } })) }] : []), breadcrumbLd([{ name: "Beranda", path: "/" }, { name: "Panduan", path: "/panduan" }, { name: a.heading, path: `/panduan/${a.slug}` }])]} />
       <nav aria-label="Jejak halaman" className="crumbs"><Link href="/">Beranda</Link> › <Link href="/panduan">Panduan</Link> › <span>{a.title}</span></nav>
       <article className="card prose">
         <h1>{a.heading}</h1>

@@ -15,3 +15,4 @@ export * from "./service/seo";
 export * from "./service/wilayah";
 export * from "./service/chat";
 export * from "./service/karir";
+export * from "./service/daftarHarga";

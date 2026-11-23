@@ -7,7 +7,7 @@ import { priceLabel, wilayahSlug, type RoutePair } from "@kamil/core";
  * Harga dan lama kirim diambil dari data rute asli, bukan ditulis tetap, supaya selalu sama dengan kalkulator.
  */
 export type Ctx = { pairs: RoutePair[] };
-export type Artikel = { slug: string; title: string; heading: string; description: string; updated: string; body: (c: Ctx) => ReactNode };
+export type Artikel = { slug: string; title: string; heading: string; description: string; updated: string; body: (c: Ctx) => ReactNode; /** Pertanyaan umum: dipakai untuk data terstruktur FAQ di mesin pencari. */ faq?: [string, string][] };
 
 const harga = (pairs: RoutePair[], slug: string) => { const p = pairs.find((x) => x.slug === slug); return p ? priceLabel(p.minPrice) : "tarif terbaru di halaman rute"; };
 const hari = (pairs: RoutePair[], slug: string) => pairs.find((x) => x.slug === slug)?.etaDays;
@@ -730,3 +730,6 @@ export const ARTIKEL: Artikel[] = [
     </>),
   },
 ];
+
+import { ARTIKEL_LANJUTAN } from "./panduan-lanjutan";
+ARTIKEL.push(...ARTIKEL_LANJUTAN);

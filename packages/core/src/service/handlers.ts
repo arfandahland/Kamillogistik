@@ -3,6 +3,7 @@ import { calculateTariff } from "../tariff";
 import { isValidResi, splitItem } from "../resi";
 import type { Repo, RouteService } from "./repo";
 import { toPublicTrack } from "./publicView";
+import { ASAL_HARGA, cariHarga, etaTengah, type HargaBaris } from "./daftarHarga";
 
 export type Reply<T = unknown> = { status: number; body: T };
 
@@ -79,6 +80,8 @@ async function quote(repo: Repo, input: unknown): Promise<Reply> {
   if (!parsed.success)
     return { status: 400, body: { error: "Data belum lengkap. Isi kota asal, kota tujuan, dan berat barang." } };
   const b = parsed.data;
+  const pl = cariHarga(b.origin, b.dest);
+  if (pl) return quoteDaftarHarga(pl, b.pieces);
   const route = await repo.findRoute(b.origin.toUpperCase(), b.dest.toUpperCase(), { service: b.service, basis: b.basis, mode: b.mode });
   if (!route) return { status: 404, body: { error: "Maaf, rute ini belum tersedia. Hubungi kami lewat WhatsApp untuk bantuan." } };
 
@@ -124,4 +127,23 @@ async function quote(repo: Repo, input: unknown): Promise<Reply> {
       note: "Ini perkiraan. Biaya pasti dihitung setelah barang ditimbang di gudang kami.",
     },
   };
+}
+
+/** Cek ongkir dari daftar harga sementara (materi promosi 2026). Hanya untuk perkiraan di kalkulator, bukan tagihan. */
+function quoteDaftarHarga(h: HargaBaris, pieces: z.infer<typeof QuoteBody>["pieces"]): Reply {
+  const r = calculateTariff({ pieces, service: { basis: "PER_KG", unitPrice: h.rate, volumetricDivisor: 4000, minChargeable: h.minKg } });
+  const a = ASAL_HARGA[h.asal];
+  const explain: string[] = [];
+  if (r.volumetricKg > r.actualKg) explain.push(`Barang Anda berat aslinya ${nf(r.actualKg)} kg, tapi ukurannya besar sehingga dihitung setara ${nf(r.volumetricKg)} kg.`);
+  else explain.push(`Barang Anda dihitung dari berat aslinya, ${nf(r.actualKg)} kg.`);
+  if (r.chargeable > Math.max(r.actualKg, r.volumetricKg)) explain.push(`Ada batas kirim minimal ${nf(h.minKg)} kg, jadi dihitung ${nf(r.chargeable)} kg.`);
+  explain.push(`${nf(r.chargeable)} kg x Rp${nf(r.unitPrice)} = Rp${nf(r.total)}`);
+  return { status: 200, body: {
+    total: r.total, unitPrice: r.unitPrice, unit: r.chargeableUnit, chargeable: r.chargeable, explain,
+    etaDays: etaTengah(h.eta), etaText: `${h.eta.replace("-", " sampai ")} hari`,
+    service: { code: "DAFTAR_HARGA", title: a.layanan, hint: "" },
+    route: { origin: a.kota, dest: h.kota },
+    catatan: a.catatan,
+    note: "Ini perkiraan. Biaya pasti dihitung setelah barang ditimbang di gudang kami.",
+  } };
 }

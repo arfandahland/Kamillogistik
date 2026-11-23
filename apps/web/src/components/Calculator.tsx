@@ -9,7 +9,7 @@ type Route = {
   unitPrice: number; minChargeable: number; etaDays: number;
 };
 type Item = { w: string; l: string; wd: string; h: string };
-type Result = { total: number; explain: string[]; etaDays: number; note: string; service: { title: string }; route: { origin: string; dest: string } };
+type Result = { total: number; explain: string[]; etaDays: number; etaText?: string; catatan?: string[]; note: string; service: { title: string }; route: { origin: string; dest: string } };
 
 const num = (s: string) => Number(s.replace(",", ".")) || 0;
 const emptyItem = (): Item => ({ w: "", l: "", wd: "", h: "" });
@@ -150,9 +150,9 @@ export default function Calculator({ routes, initialOrigin, initialDest }: { rou
         <div ref={resRef} className="card fade" style={{ marginTop: 18, background: "var(--teal-soft)" }} aria-live="polite">
           <span className="muted">Perkiraan ongkir {res.route.origin} → {res.route.dest}</span>
           <div className="price">{rupiah(res.total)}</div>
-          <p className="muted" style={{ marginTop: 6 }}>{res.service.title}. Perkiraan tiba sekitar {res.etaDays} hari.</p>
+          <p className="muted" style={{ marginTop: 6 }}>{res.service.title}. Perkiraan tiba sekitar {res.etaText ?? `${res.etaDays} hari`}.</p>
           <ul style={{ paddingLeft: 20, margin: "10px 0" }}>{res.explain.map((x, i) => <li key={i}>{x}</li>)}</ul>
-          <p className="hint">{res.note}</p>
+          <p className="hint">{res.note}</p>{res.catatan && res.catatan.length > 0 && <ul className="hint" style={{ margin: "6px 0 0", paddingLeft: 18 }}>{res.catatan.map((c) => <li key={c}>{c}</li>)}</ul>}
           <a className="btn" style={{ marginTop: 12 }}
             href={waLink(`Halo Kamil Logistik, saya mau kirim barang ${res.route.origin} ke ${res.route.dest}. Perkiraan ongkir Rp${res.total.toLocaleString("id-ID")}. Mohon dibantu.`)}>
             <Icon name="chat" size={22} /> Pesan lewat WhatsApp

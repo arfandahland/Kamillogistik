@@ -1,17 +1,17 @@
 # Graph Report - Kamillogistik  (2026-11-23)
 
 ## Corpus Check
-- 1505 files · ~446,678 words
+- 1506 files · ~447,447 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 41 file(s) not represented in the graph (top: .csv 35, (none) 3, .example 1)
 
 ## Summary
-- 2190 nodes · 5601 edges · 112 communities (100 shown, 12 thin omitted)
+- 2190 nodes · 5597 edges · 112 communities (100 shown, 12 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 15 edges (avg confidence: 0.86)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `72902378`
+- Built from commit: `b54f41d0`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -70,7 +70,7 @@
 - getRoutePairs
 - Spesifikasi Divisi MV (Mitra Vendor) untuk Kamil Logistik
 - vercel.json
-- requireRole
+- cari/page.tsx
 - (publik)/page.tsx
 - chat.ts
 - resi/[id]/page.tsx
@@ -80,7 +80,7 @@
 - design_system.py
 - preview.py
 - Analisis kekurangan aplikasi (November 2026)
-- rekrutmen/page.tsx
+- requireRole
 - laporan/page.tsx
 - [resi]/page.tsx
 - udara/page.tsx
@@ -115,7 +115,7 @@
 - klaim/aksi.ts
 - publicRpc.ts
 - react
-- unduh/route.ts
+- kiriman/page.tsx
 - app/mitra/page.tsx
 - portal/[token]/page.tsx
 - layanan/[slug]/page.tsx
@@ -129,13 +129,13 @@
 1. `staffRpc()` - 168 edges
 2. `next` - 154 edges
 3. `Icon()` - 119 edges
-4. `BackLink()` - 84 edges
+4. `BackLink()` - 82 edges
 5. `react` - 72 edges
 6. `requireRole()` - 66 edges
 7. `tanggalWaktu()` - 53 edges
 8. `waLink()` - 45 edges
-9. `Potong()` - 44 edges
-10. `SubmitButton()` - 42 edges
+9. `SubmitButton()` - 42 edges
+10. `Potong()` - 42 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `1. Dua jalur masuk dan dua arah` --references--> `nextStatus()`  [INFERRED]
@@ -163,15 +163,15 @@ Cohesion: 0.22
 Nodes (14): tandaiDihubungi(), FollowupCard(), FOLLOWUP_LABEL, FollowupItem, FollowupKind, followupLink(), followupMessage(), rp() (+6 more)
 
 ### Community 2 - "alokasi/page.tsx"
-Cohesion: 0.06
-Nodes (66): metadata, SJDariMV(), Alokasi(), Dok, KIR, LANJUT, LinkV, metadata (+58 more)
+Cohesion: 0.07
+Nodes (56): Alokasi(), Dok, KIR, LANJUT, LinkV, metadata, MODA, Riwayat (+48 more)
 
 ### Community 3 - "akun/page.tsx"
 Cohesion: 0.23
 Nodes (11): keluar(), ke(), ubahProfil(), Akun(), hpTampil(), inisial(), metadata, Profil (+3 more)
 
 ### Community 4 - "BackLink"
-Cohesion: 0.12
+Cohesion: 0.11
 Nodes (26): BeritaAcara(), CetakManifest(), dynamic, M, metadata, dynamic, M, metadata (+18 more)
 
 ### Community 5 - "(publik)/[slug]/page.tsx"
@@ -287,8 +287,8 @@ Cohesion: 0.17
 Nodes (11): Berikutnya, Catatan data (perlu konfirmasi Fase 0), Fitur inti, Fitur tambahan (migrasi 014-018), Identitas visual (dari materi promosi), Kamil Logistik Express, Keamanan dan uji penetrasi, Pricelist dan data (+3 more)
 
 ### Community 33 - "server.ts"
-Cohesion: 0.06
-Nodes (37): Catatan(), metadata, NAMA, Row, metadata, Row, B, dynamic (+29 more)
+Cohesion: 0.07
+Nodes (32): Catatan(), metadata, NAMA, Row, metadata, Row, B, dynamic (+24 more)
 
 ### Community 34 - "compilerOptions"
 Cohesion: 0.18
@@ -350,9 +350,9 @@ Nodes (28): GET(), revalidate, GET(), revalidate, Artikel(), revalidate, metadat
 Cohesion: 0.10
 Nodes (20): 0. Ringkasan untuk rapat (1 halaman), 10. Keputusan yang dibutuhkan dari tim, 11. Yang belum saya verifikasi dari kode, 1. Peran dan jobdesk MV, 2.1 Atribut wajib tiap pengiriman, 2.2 Masalah yang ditemukan di kode saat ini, 2.3 Matriks akses modul MV, 2.4 Penjualan per cabang: terkelompok dan filter pintar (+12 more)
 
-### Community 57 - "requireRole"
-Cohesion: 0.10
-Nodes (20): Cari(), Hit, Man, metadata, ke(), koreksiStatus(), dynamic, Koreksi() (+12 more)
+### Community 57 - "cari/page.tsx"
+Cohesion: 0.13
+Nodes (12): Cari(), Hit, Man, metadata, Baris, Ekspor, GET(), sel() (+4 more)
 
 ### Community 58 - "(publik)/page.tsx"
 Cohesion: 0.18
@@ -390,9 +390,9 @@ Nodes (18): _button_outline_text_color(), _contrast_ratio(), _palette_is_dark(),
 Cohesion: 0.50
 Nodes (3): Analisis kekurangan aplikasi (November 2026), Prioritas berikutnya, Sudah ditutup di putaran ini
 
-### Community 68 - "rekrutmen/page.tsx"
-Cohesion: 0.18
-Nodes (8): Lamaran(), metadata, D, lama(), metadata, Rekrutmen(), WARNA, Lamaran
+### Community 68 - "requireRole"
+Cohesion: 0.09
+Nodes (22): ke(), koreksiStatus(), dynamic, Koreksi(), metadata, STATUS, Lamaran(), metadata (+14 more)
 
 ### Community 69 - "laporan/page.tsx"
 Cohesion: 0.21
@@ -526,9 +526,9 @@ Nodes (15): kirimNilai(), NilaiHasil, kirimVendor(), dynamic, Info, metadata, MO
 Cohesion: 0.14
 Nodes (18): ST, ubahCalonMitra(), CalonMitra(), metadata, ST, ubahJemput(), JemputAntrean(), metadata (+10 more)
 
-### Community 103 - "unduh/route.ts"
-Cohesion: 0.38
-Nodes (5): Baris, Ekspor, GET(), sel(), wkt()
+### Community 103 - "kiriman/page.tsx"
+Cohesion: 0.14
+Nodes (14): metadata, SJDariMV(), Item, Kiriman(), KIRIMAN_JENIS, metadata, BerandaMV(), metadata (+6 more)
 
 ### Community 104 - "app/mitra/page.tsx"
 Cohesion: 0.40
@@ -562,17 +562,17 @@ Nodes (9): ST, ubahKlaim(), usulKlaim(), KlaimAntrean(), metadata, JENIS, Klaim,
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `next` connect `(publik)/layout.tsx` to `FollowupCard.tsx`, `alokasi/page.tsx`, `akun/page.tsx`, `BackLink`, `(publik)/[slug]/page.tsx`, `web/package.json`, `pegawai/page.tsx`, `konten/actions.ts`, `fake-supabase.mjs`, `manifest/[id]/page.tsx`, `StaffShell.tsx`, `petugas/page.tsx`, `PeranDashboard.tsx`, `staffRpc`, `lib/seo.ts`, `tagihan/[id]/page.tsx`, `timbang/page.tsx`, `mv/actions.ts`, `RevisiPanel.tsx`, `SubmitButton.tsx`, `OwnerDashboard.tsx`, `server.ts`, `resi.ts`, `waLink`, `getRoutePairs`, `requireRole`, `(publik)/page.tsx`, `chat.ts`, `resi/[id]/page.tsx`, `server.ts`, `HubDashboard.tsx`, `rekrutmen/page.tsx`, `laporan/page.tsx`, `[resi]/page.tsx`, `udara/page.tsx`, `ringkasan/page.tsx`, `BiayaManifest.tsx`, `Icon`, `Calculator.tsx`, `Icon.tsx`, `pegawai/actions.ts`, `index.ts`, `FormModal.tsx`, `src/app/layout.tsx`, `getMe`, `LamarForm.tsx`, `publicRpc.ts`, `react`, `app/mitra/page.tsx`, `portal/[token]/page.tsx`, `layanan/[slug]/page.tsx`, `KlaimKartu.tsx`?**
-  _High betweenness centrality (0.128) - this node is a cross-community bridge._
+- **Why does `next` connect `(publik)/layout.tsx` to `FollowupCard.tsx`, `alokasi/page.tsx`, `akun/page.tsx`, `BackLink`, `(publik)/[slug]/page.tsx`, `web/package.json`, `pegawai/page.tsx`, `konten/actions.ts`, `fake-supabase.mjs`, `manifest/[id]/page.tsx`, `StaffShell.tsx`, `petugas/page.tsx`, `PeranDashboard.tsx`, `staffRpc`, `lib/seo.ts`, `tagihan/[id]/page.tsx`, `timbang/page.tsx`, `mv/actions.ts`, `RevisiPanel.tsx`, `SubmitButton.tsx`, `OwnerDashboard.tsx`, `server.ts`, `resi.ts`, `waLink`, `getRoutePairs`, `cari/page.tsx`, `(publik)/page.tsx`, `chat.ts`, `resi/[id]/page.tsx`, `server.ts`, `HubDashboard.tsx`, `requireRole`, `laporan/page.tsx`, `[resi]/page.tsx`, `udara/page.tsx`, `ringkasan/page.tsx`, `BiayaManifest.tsx`, `Icon`, `Calculator.tsx`, `Icon.tsx`, `pegawai/actions.ts`, `index.ts`, `FormModal.tsx`, `src/app/layout.tsx`, `getMe`, `LamarForm.tsx`, `publicRpc.ts`, `react`, `kiriman/page.tsx`, `app/mitra/page.tsx`, `portal/[token]/page.tsx`, `layanan/[slug]/page.tsx`, `KlaimKartu.tsx`?**
+  _High betweenness centrality (0.162) - this node is a cross-community bridge._
 - **What connects `../../tsconfig.base.json`, `NODE_PATH`, `SITE_URL` to the rest of the system?**
   _9 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `alokasi/page.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.0636030636030636 - nodes in this community are weakly interconnected._
-- **Why does `staffRpc()` connect `staffRpc` to `FollowupCard.tsx`, `alokasi/page.tsx`, `akun/page.tsx`, `BackLink`, `pegawai/page.tsx`, `SubmitButton`, `konten/actions.ts`, `fake-supabase.mjs`, `manifest/[id]/page.tsx`, `petugas/page.tsx`, `PeranDashboard.tsx`, `tagihan/[id]/page.tsx`, `timbang/page.tsx`, `mv/actions.ts`, `RevisiPanel.tsx`, `SubmitButton.tsx`, `OwnerDashboard.tsx`, `server.ts`, `requireRole`, `resi/[id]/page.tsx`, `server.ts`, `rekrutmen/page.tsx`, `laporan/page.tsx`, `udara/page.tsx`, `ringkasan/page.tsx`, `BiayaManifest.tsx`, `Icon`, `Icon.tsx`, `pegawai/actions.ts`, `getMe`, `LamarForm.tsx`, `react`, `unduh/route.ts`, `app/mitra/page.tsx`, `KlaimKartu.tsx`?**
-  _High betweenness centrality (0.051) - this node is a cross-community bridge._
-- **Should `BackLink` be split into smaller, more focused modules?**
-  _Cohesion score 0.11596638655462185 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.07242063492063493 - nodes in this community are weakly interconnected._
 - **Why does `react` connect `react` to `FollowupCard.tsx`, `alokasi/page.tsx`, `BackLink`, `web/package.json`, `SubmitButton`, `konten/actions.ts`, `fake-supabase.mjs`, `manifest/[id]/page.tsx`, `StaffShell.tsx`, `lib/seo.ts`, `tagihan/[id]/page.tsx`, `timbang/page.tsx`, `RevisiPanel.tsx`, `SubmitButton.tsx`, `OwnerDashboard.tsx`, `(publik)/layout.tsx`, `server.ts`, `resi.ts`, `testimoni.ts`, `getRoutePairs`, `(publik)/page.tsx`, `resi/[id]/page.tsx`, `server.ts`, `[resi]/page.tsx`, `udara/page.tsx`, `Calculator.tsx`, `FormModal.tsx`, `src/app/layout.tsx`, `getMe`, `LamarForm.tsx`, `Toast.tsx`, `jemput/aksi.ts`, `klaim/aksi.ts`, `publicRpc.ts`, `react`, `portal/[token]/page.tsx`, `layanan/[slug]/page.tsx`, `KlaimKartu.tsx`?**
-  _High betweenness centrality (0.044) - this node is a cross-community bridge._
+  _High betweenness centrality (0.059) - this node is a cross-community bridge._
+- **Should `BackLink` be split into smaller, more focused modules?**
+  _Cohesion score 0.1111111111111111 - nodes in this community are weakly interconnected._
+- **Why does `staffRpc()` connect `staffRpc` to `FollowupCard.tsx`, `alokasi/page.tsx`, `akun/page.tsx`, `BackLink`, `pegawai/page.tsx`, `SubmitButton`, `konten/actions.ts`, `fake-supabase.mjs`, `manifest/[id]/page.tsx`, `petugas/page.tsx`, `PeranDashboard.tsx`, `tagihan/[id]/page.tsx`, `timbang/page.tsx`, `mv/actions.ts`, `RevisiPanel.tsx`, `SubmitButton.tsx`, `OwnerDashboard.tsx`, `server.ts`, `cari/page.tsx`, `resi/[id]/page.tsx`, `server.ts`, `requireRole`, `laporan/page.tsx`, `udara/page.tsx`, `ringkasan/page.tsx`, `BiayaManifest.tsx`, `Icon`, `Icon.tsx`, `pegawai/actions.ts`, `getMe`, `LamarForm.tsx`, `react`, `kiriman/page.tsx`, `app/mitra/page.tsx`, `KlaimKartu.tsx`?**
+  _High betweenness centrality (0.050) - this node is a cross-community bridge._
 - **Should `(publik)/[slug]/page.tsx` be split into smaller, more focused modules?**
   _Cohesion score 0.11960132890365449 - nodes in this community are weakly interconnected._
