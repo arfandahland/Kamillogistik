@@ -279,7 +279,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("gudang menyimpan data timbang dan diteruskan ke Kasir (otomatis Sudah ditimbang)", r.ok && /Semua 2 barang/.test(r.ok) && /22 kg/.test(r.ok), JSON.stringify(r));
     const ridE = resiId;
     const invE = await invoiceKasir(browser, "kasir@uji.id", ridE, 22, 2800);
-    ok("kasir menerbitkan invoice dengan harga manual: 22 kg x Rp2.800 = Rp61.600", invE.ok && /Rp61\.600/.test(invE.ok) && /INV-\d{4}-000001/.test(invE.ok), JSON.stringify(invE));
+    ok("kasir menerbitkan invoice dengan harga manual: 22 kg ditagih minimal 50 kg x Rp2.800 = Rp140.000", invE.ok && /Rp140\.000/.test(invE.ok) && /INV-\d{4}-000001/.test(invE.ok), JSON.stringify(invE));
     await p.goto(`${BASE}/app/resi/${ridE}`, { waitUntil: "networkidle" });
     ok("gudang TIDAK melihat nominal tagihan (data keuangan)", !/Rp61\.600/.test(await text(p)));
     ok("Tahap 4 dari 10 setelah ditimbang", /Tahap 4 dari 10/.test(await text(p)));
@@ -410,7 +410,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("tagihan muncul di daftar (belum dibayar)", /INV-\d{4}-000001/.test(await text(p)) && /Rp61\.600/.test(await text(p)));
     { const hf = await p.locator("a.resi").first().getAttribute("href"); await p.goto(`${BASE}${hf}`, { waitUntil: "networkidle" }); }
     { const t0 = await text(p); ok("detail tagihan: invoice rapi dengan rekening bank", /invoice/i.test(t0) && /BCA/.test(t0) && /1234567890/.test(t0) && /kamil logistik express/i.test(t0), t0.slice(0, 700)); }
-    { const t1 = await text(p); ok("rincian memakai format Rp2.800", /22 kg x Rp2\.800/.test(t1), t1.slice(0, 900)); }
+    { const t1 = await text(p); ok("rincian memakai format Rp2.800", /50 kg x Rp2\.800/.test(t1), t1.slice(0, 900)); }
     await p.fill("#jumlah", "20000");
     let r = await act(p, p.getByRole("button", { name: "Simpan pembayaran" }));
     ok("transfer tanpa referensi ditolak dengan alasan jelas", r.err && /referensi/.test(r.err), JSON.stringify(r));
@@ -420,10 +420,10 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await p.fill("#jumlah", "20000"); await p.fill("#referensi", "Budi BCA 1122");
     r = await act(p, p.getByRole("button", { name: "Simpan pembayaran" }));
     ok("transfer sebagian Rp20.000 tercatat", r.ok && /masih punya sisa/.test(r.ok), JSON.stringify(r));
-    ok("status DIBAYAR SEBAGIAN, sisa Rp41.600", /DIBAYAR SEBAGIAN/.test(await text(p)) && /Rp41\.600/.test(await text(p)));
+    ok("status DIBAYAR SEBAGIAN, sisa Rp120.000", /DIBAYAR SEBAGIAN/.test(await text(p)) && /Rp120\.000/.test(await text(p)));
     await p.check("input[name=cara][value=TUNAI]");
     r = await act(p, p.getByRole("button", { name: "Simpan pembayaran" }));
-    ok("pelunasan tunai (sisa Rp41.600) → LUNAS", r.ok && /sudah lunas/.test(r.ok) && /LUNAS/.test(await text(p)), JSON.stringify(r));
+    ok("pelunasan tunai (sisa Rp120.000) → LUNAS", r.ok && /sudah lunas/.test(r.ok) && /LUNAS/.test(await text(p)), JSON.stringify(r));
     ok("form pembayaran hilang setelah lunas", (await p.locator("#jumlah").count()) === 0);
     await p.screenshot({ path: `${OUT}/e2e-invoice-lunas.png`, fullPage: true });
     const href = await p.locator("a.btn.wa").getAttribute("href");
@@ -457,14 +457,14 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     const p = owner.page;
     await p.goto(`${BASE}/app`, { waitUntil: "networkidle" }); await p.waitForTimeout(1800);
     const t = await text(p);
-    ok("dashboard: pendapatan Rp61,6 rb", /Rp61,6 rb/.test(t), t.slice(0, 400));
+    ok("dashboard: pendapatan Rp140 rb", /Rp140 rb/.test(t), t.slice(0, 400));
     ok("dashboard: 1 resi baru dan 1 sedang berjalan", /Resi baru\s*\n?\s*1/.test(t.replace(/\n+/g, "\n")) || /\b1\b/.test(t));
     ok("dashboard: ada aktivitas terbaru dan kinerja petugas", /Aktivitas terbaru/.test(t) && /Aktivitas petugas/.test(t) && /langkah/.test(t));
     ok("dashboard: kesimpulan otomatis tidak mengarang persentase", !/naik \d+%|turun \d+%/.test(t));
     await p.screenshot({ path: `${OUT}/e2e-owner-data.png`, fullPage: true });
     await p.goto(`${BASE}/app/keuangan`, { waitUntil: "networkidle" }); await p.waitForTimeout(1800);
     const f = await text(p);
-    ok("keuangan: ditagihkan dan uang masuk Rp61,6 rb, belum dibayar Rp0", (f.match(/Rp61,6 rb/g) || []).length >= 2, f.slice(0, 300));
+    ok("keuangan: ditagihkan dan uang masuk Rp140 rb, belum dibayar Rp0", (f.match(/Rp140 rb/g) || []).length >= 2, f.slice(0, 300));
     ok("keuangan: pembayaran terbaru memuat transfer dan tunai", /Transfer/.test(f) && /Tunai/.test(f));
     await p.goto(`${BASE}/app/semua`, { waitUntil: "networkidle" });
     ok("semua resi: resi tampil untuk pemilik", new RegExp(resiNo).test(await text(p)));
@@ -551,7 +551,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     r = await act(g, g.getByRole("button", { name: "Simpan dan timbang berikutnya" }));
     ok("data timbang pelanggan korporat tersimpan", r.ok && /Semua 1 barang/.test(r.ok) && /10 kg/.test(r.ok), JSON.stringify(r));
     r = await invoiceKasir(browser, "kasir@uji.id", korId, 10, 2000);
-    ok("harga manual kasir: 10 kg x Rp2.000 = Rp20.000", r.ok && /Rp20\.000/.test(r.ok), JSON.stringify(r));
+    ok("harga manual kasir: 10 kg ditagih minimal 50 kg x Rp2.000 = Rp100.000", r.ok && /Rp100\.000/.test(r.ok), JSON.stringify(r));
     await k.goto(`${BASE}/app/baru`, { waitUntil: "networkidle" });
     await pilihTujuan(k);
     await k.getByText("Perusahaan langganan").click(); await k.selectOption("#company", { label: "PT Sinar Jaya (tempo 14 hari)" });
@@ -563,7 +563,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await p.goto(`${BASE}/app/korporat`, { waitUntil: "networkidle" });
     { const href = await p.locator("a[href^='/app/korporat/']", { hasText: "PT Sinar Jaya" }).first().getAttribute("href"); await p.goto(`${BASE}${href}`, { waitUntil: "networkidle" }); }
     const t = await text(p);
-    ok("rekap korporat: Rp20.000 belum dibayar dan batas kredit terpakai penuh", /Rp20\.000/.test(t) && /dari Rp20\.000/.test(t), t.slice(0, 300));
+    ok("rekap korporat: Rp100.000 belum dibayar dan melewati batas kredit Rp20.000", /Rp100\.000/.test(t) && /dari Rp20\.000/.test(t), t.slice(0, 300));
     ok("rekap korporat memuat daftar invoice", /INV-/.test(t));
     await p.screenshot({ path: `${OUT}/e2e-korporat.png`, fullPage: true });
     ok("kasir tidak bisa membuka halaman pelanggan korporat (hanya pemilik)", await (async () => { await k.goto(`${BASE}/app/korporat`, { waitUntil: "networkidle" }); return !k.url().includes("/app/korporat"); })());

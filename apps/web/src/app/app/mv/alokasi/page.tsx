@@ -55,6 +55,7 @@ export default async function Alokasi({ searchParams }: { searchParams: Promise<
     const statusTeks = ALOK_STATUS[a?.status ?? "DRAFT"] ?? a?.status;
     const vendorTeks = !a ? "Belum diatur" : a.internal ? "Armada internal" : a.vendor ?? "Belum dipilih";
     const lanjut = a ? (a.status === "HPP_DIISI" || (a.status === "VENDOR_DIPILIH" && x.mode !== "DARAT") ? ["BERANGKAT", "Tandai berangkat"] : LANJUT[a.status]) : undefined;
+    const backR = href("/app/mv/alokasi", { ...base, r: x.shipmentId });
     const bisaHpp = tulis && x.mode === "DARAT" && !!a && !a.locked && !(a.status === "SELESAI" && me.role === "MV");
     return (
       <Ringkas key={x.shipmentId} buka={buka} className="mvresi"
@@ -124,11 +125,11 @@ export default async function Alokasi({ searchParams }: { searchParams: Promise<
               <p className="hint" style={{ margin: 0 }}>Berlaku sampai {tanggalWaktu(lv.data.link.expiresAt)}.</p>
               <div className="mvact">
                 <a className="btn green" target="_blank" rel="noopener noreferrer" href={`https://wa.me/?text=${encodeURIComponent(`Mohon kirim foto dan laporan pengiriman ${x.resiNo} lewat link ini: ${SITE_URL}/vendor/${lv.data.link.token}`)}`}><Icon name="chat" size={18} /> Kirim lewat WhatsApp</a>
-                <form action={cabutLinkVendor}><input type="hidden" name="back" value={back} /><input type="hidden" name="alloc" value={a.id} /><SubmitButton className="btn ghost" steps={["Mencabut link…"]}>Cabut link</SubmitButton></form>
+                <form action={cabutLinkVendor}><input type="hidden" name="back" value={backR} /><input type="hidden" name="alloc" value={a.id} /><SubmitButton className="btn ghost" steps={["Mencabut link…"]}>Cabut link</SubmitButton></form>
               </div>
             </>) : <p className="muted" style={{ margin: 0 }}>Belum ada link aktif.</p>}
             <form action={buatLinkVendor} className="mvform">
-              <input type="hidden" name="back" value={back} /><input type="hidden" name="alloc" value={a.id} />
+              <input type="hidden" name="back" value={backR} /><input type="hidden" name="alloc" value={a.id} />
               <div className="rbf"><label className="f" htmlFor={`hari-${x.shipmentId}`}>Masa berlaku</label><select id={`hari-${x.shipmentId}`} name="hari" defaultValue="7"><option value="3">3 hari</option><option value="7">7 hari</option><option value="14">14 hari</option><option value="30">30 hari</option></select></div>
               <SubmitButton className="btn" steps={["Membuat link…"]}>{lv.data?.link ? "Buat link baru (yang lama dicabut)" : "Buat link vendor"}</SubmitButton>
             </form>

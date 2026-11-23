@@ -924,9 +924,9 @@
     "semantic_hash": ""
   },
   "e2e/flow.cjs": {
-    "mtime": 1795430572.1280906,
-    "seen": 1795430740.3419077,
-    "ast_hash": "0c743e97c0092d4a1fb24b23222bc58f",
+    "mtime": 1795432475.7258253,
+    "seen": 1795432536.1313932,
+    "ast_hash": "bfe0754ffb2d09e3dc9a0d9558a3d476",
     "semantic_hash": ""
   },
   "e2e/kamera.cjs": {
@@ -8982,9 +8982,9 @@
     "semantic_hash": ""
   },
   "db/test/mv.sql": {
-    "mtime": 1795372729.676547,
-    "seen": 1795380629.5416443,
-    "ast_hash": "",
+    "mtime": 1795430603.0965135,
+    "seen": 1795432536.1313736,
+    "ast_hash": "583f7c79e49e139935e7fbe7cdcaa26e",
     "semantic_hash": ""
   },
   "apps/web/src/components/PanduanAwal.tsx": {
@@ -9159,6 +9159,18 @@
     "mtime": 1795430477.5057538,
     "seen": 1795430740.3389132,
     "ast_hash": "f9b71bcd54ed071fec8cca09b4cc593b",
+    "semantic_hash": ""
+  },
+  "db/migrations/058_vendor_link.sql": {
+    "mtime": 1795430443.9897525,
+    "seen": 1795432536.1313503,
+    "ast_hash": "e887a54b6ba633c593d0bb52a0ebb37d",
+    "semantic_hash": ""
+  },
+  "db/migrations/059_berat_minimal_50.sql": {
+    "mtime": 1795430631.2357528,
+    "seen": 1795432536.1313524,
+    "ast_hash": "f2ce87433e735a65d3b70e2f51ecdc91",
     "semantic_hash": ""
   },
   "package-lock.json": {
