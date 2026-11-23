@@ -1200,9 +1200,9 @@
     "semantic_hash": ""
   },
   "CLAUDE.md": {
-    "mtime": 1795414247.4843938,
-    "seen": 1795414252.4625418,
-    "ast_hash": "5d1e614a51741daa4930ee35f15fd1f7",
+    "mtime": 1795437495.467693,
+    "seen": 1795437506.4638295,
+    "ast_hash": "f15800eb61d5afa6bc5b8077654012b9",
     "semantic_hash": ""
   },
   "README.md": {
@@ -8754,9 +8754,9 @@
     "semantic_hash": ""
   },
   ".claude/agents/ui-ux-designer.md": {
-    "mtime": 1795414247.4841104,
-    "seen": 1795414252.4625368,
-    "ast_hash": "15ae4caf21ee60da3230426fa127ffd8",
+    "mtime": 1795437503.2989333,
+    "seen": 1795437506.4638214,
+    "ast_hash": "e32de381aebbd040994108a29a38b0af",
     "semantic_hash": ""
   },
   "apps/web/src/components/StatRow.tsx": {
