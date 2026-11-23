@@ -3,7 +3,7 @@ import { calculateTariff } from "../tariff";
 import { isValidResi, splitItem } from "../resi";
 import type { Repo, RouteService } from "./repo";
 import { toPublicTrack } from "./publicView";
-import { ASAL_HARGA, cariHarga, etaTengah, type HargaBaris } from "./daftarHarga";
+import { ASAL_HARGA, CATATAN_BALIK, cariHarga, cariHargaBalik, etaTengah, type HargaBaris } from "./daftarHarga";
 
 export type Reply<T = unknown> = { status: number; body: T };
 
@@ -81,7 +81,9 @@ async function quote(repo: Repo, input: unknown): Promise<Reply> {
     return { status: 400, body: { error: "Data belum lengkap. Isi kota asal, kota tujuan, dan berat barang." } };
   const b = parsed.data;
   const pl = cariHarga(b.origin, b.dest);
-  if (pl) return quoteDaftarHarga(pl, b.pieces);
+  if (pl) return quoteDaftarHarga(pl, b.pieces, false);
+  const balik = cariHargaBalik(b.origin, b.dest);
+  if (balik) return quoteDaftarHarga(balik, b.pieces, true);
   const route = await repo.findRoute(b.origin.toUpperCase(), b.dest.toUpperCase(), { service: b.service, basis: b.basis, mode: b.mode });
   if (!route) return { status: 404, body: { error: "Maaf, rute ini belum tersedia. Hubungi kami lewat WhatsApp untuk bantuan." } };
 
@@ -130,7 +132,7 @@ async function quote(repo: Repo, input: unknown): Promise<Reply> {
 }
 
 /** Cek ongkir dari daftar harga sementara (materi promosi 2026). Hanya untuk perkiraan di kalkulator, bukan tagihan. */
-function quoteDaftarHarga(h: HargaBaris, pieces: z.infer<typeof QuoteBody>["pieces"]): Reply {
+function quoteDaftarHarga(h: HargaBaris, pieces: z.infer<typeof QuoteBody>["pieces"], balik: boolean): Reply {
   const r = calculateTariff({ pieces, service: { basis: "PER_KG", unitPrice: h.rate, volumetricDivisor: 4000, minChargeable: h.minKg } });
   const a = ASAL_HARGA[h.asal];
   const explain: string[] = [];
@@ -142,8 +144,8 @@ function quoteDaftarHarga(h: HargaBaris, pieces: z.infer<typeof QuoteBody>["piec
     total: r.total, unitPrice: r.unitPrice, unit: r.chargeableUnit, chargeable: r.chargeable, explain,
     etaDays: etaTengah(h.eta), etaText: `${h.eta.replace("-", " sampai ")} hari`,
     service: { code: "DAFTAR_HARGA", title: a.layanan, hint: "" },
-    route: { origin: a.kota, dest: h.kota },
-    catatan: a.catatan,
+    route: balik ? { origin: h.kota, dest: a.kota } : { origin: a.kota, dest: h.kota },
+    catatan: balik ? [CATATAN_BALIK, ...a.catatan] : a.catatan,
     note: "Ini perkiraan. Biaya pasti dihitung setelah barang ditimbang di gudang kami.",
   } };
 }

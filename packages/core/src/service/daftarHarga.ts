@@ -122,3 +122,13 @@ export function cariHarga(asal: string, kodeTujuan: string): HargaBaris | undefi
 
 /** "4-6" -> 5 (tengah, dibulatkan ke atas) untuk kolom estimasi angka. */
 export const etaTengah = (eta: string) => { const [a, b] = eta.split("-").map(Number); return Math.ceil(((a ?? 0) + (b ?? a ?? 0)) / 2); };
+
+/**
+ * Arah sebaliknya (kota tujuan ke Jakarta atau Makassar). Daftar harga resmi baru satu arah, jadi sementara arah sebaliknya
+ * memakai tarif, minimal, dan estimasi yang sama. Hasilnya diberi catatan agar pelanggan mengonfirmasi lewat WhatsApp.
+ * Ganti dengan daftar harga arah sebaliknya begitu diterima.
+ */
+export function cariHargaBalik(asalKode: string, tujuan: string): HargaBaris | undefined {
+  return DAFTAR_HARGA.find((h) => kodeHarga(h) === asalKode.toUpperCase() && h.asal === tujuan.toUpperCase());
+}
+export const CATATAN_BALIK = "Tarif arah sebaliknya sementara memakai tarif yang sama dengan arah berangkat. Hubungi kami lewat WhatsApp untuk konfirmasi harga pasti.";
