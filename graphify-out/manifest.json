@@ -108,9 +108,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/ongkir/page.tsx": {
-    "mtime": 1795435231.3665671,
-    "seen": 1795435593.1444445,
-    "ast_hash": "8fe0d6214c6de60b5c0d2440525b9e02",
+    "mtime": 1795444677.9379945,
+    "seen": 1795444804.5061717,
+    "ast_hash": "d070fc9ed54a5c9fa91234bf8b5afea4",
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/page.tsx": {
@@ -1020,9 +1020,9 @@
     "semantic_hash": ""
   },
   "packages/core/src/service/handlers.ts": {
-    "mtime": 1795435231.3660235,
-    "seen": 1795435593.1449459,
-    "ast_hash": "e9f87d59fac5158c39197a5228cbfc7c",
+    "mtime": 1795444677.9367628,
+    "seen": 1795444804.5067322,
+    "ast_hash": "88708145dcdc9057e6d8e9ae5d6616ad",
     "semantic_hash": ""
   },
   "packages/core/src/service/karir.ts": {
@@ -9198,15 +9198,15 @@
     "semantic_hash": ""
   },
   "packages/core/src/service/daftarHarga.ts": {
-    "mtime": 1795435231.3662624,
-    "seen": 1795435593.144945,
-    "ast_hash": "38fc04fd0a1c9b07c2db39c50cb82dcc",
+    "mtime": 1795444677.936032,
+    "seen": 1795444804.5067313,
+    "ast_hash": "7698f1b71237ddb4650b4ad7db7aad5e",
     "semantic_hash": ""
   },
   "packages/core/test/daftarHarga.test.ts": {
-    "mtime": 1795435253.8371599,
-    "seen": 1795435593.144959,
-    "ast_hash": "d00c9dc1787c9758fc345ae43f1c12dc",
+    "mtime": 1795444677.9384882,
+    "seen": 1795444804.506745,
+    "ast_hash": "3d54d9b6b6d8b81c73e01f60cab7d134",
     "semantic_hash": ""
   },
   "apps/web/src/components/MenuKaca.tsx": {
