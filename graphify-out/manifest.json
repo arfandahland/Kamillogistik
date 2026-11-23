@@ -108,9 +108,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/ongkir/page.tsx": {
-    "mtime": 1794974427.2939556,
-    "seen": 1795104170.4403522,
-    "ast_hash": "fe1884ffadac8ec1a7b640ed83ff0fbd",
+    "mtime": 1795435231.3665671,
+    "seen": 1795435593.1444445,
+    "ast_hash": "8fe0d6214c6de60b5c0d2440525b9e02",
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/page.tsx": {
@@ -120,9 +120,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/panduan/[slug]/page.tsx": {
-    "mtime": 1795316532.4552617,
-    "seen": 1795316645.81518,
-    "ast_hash": "9519fbd5bfa3bb36e95a362dae8f411f",
+    "mtime": 1795435325.4887712,
+    "seen": 1795435593.1444473,
+    "ast_hash": "f57a200aafc6072bd9a59f08f861e558",
     "semantic_hash": ""
   },
   "apps/web/src/app/(publik)/panduan/page.tsx": {
@@ -528,9 +528,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/Calculator.tsx": {
-    "mtime": 1795372601.5356305,
-    "seen": 1795377435.315134,
-    "ast_hash": "accd8465e771a92cb548a431dfee29e3",
+    "mtime": 1795435231.3667784,
+    "seen": 1795435593.1446645,
+    "ast_hash": "c617fc1dd5564fb309519b4ad3351e33",
     "semantic_hash": ""
   },
   "apps/web/src/components/CaraMasukField.tsx": {
@@ -822,9 +822,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/lib/panduan.tsx": {
-    "mtime": 1795320462.0980394,
-    "seen": 1795320517.008241,
-    "ast_hash": "809af206e9bd128449d11c91da9c4ce2",
+    "mtime": 1795435325.4740627,
+    "seen": 1795435593.1447997,
+    "ast_hash": "005a9e7941f1ca1e6b9157e9a3296e2f",
     "semantic_hash": ""
   },
   "apps/web/src/lib/publicRpc.ts": {
@@ -990,9 +990,9 @@
     "semantic_hash": ""
   },
   "packages/core/src/index.ts": {
-    "mtime": 1795090134.8081198,
-    "seen": 1795104170.4404912,
-    "ast_hash": "bc27388d5bfbd65f946a30b14c0d3835",
+    "mtime": 1795435208.377923,
+    "seen": 1795435593.1449401,
+    "ast_hash": "4666cd62c790a0d97a67bf50e4a720d6",
     "semantic_hash": ""
   },
   "packages/core/src/inspection.ts": {
@@ -1020,9 +1020,9 @@
     "semantic_hash": ""
   },
   "packages/core/src/service/handlers.ts": {
-    "mtime": 1795240897.317694,
-    "seen": 1795243225.5904868,
-    "ast_hash": "2cfa82a4b4272935af1f804b661be6ef",
+    "mtime": 1795435231.3660235,
+    "seen": 1795435593.1449459,
+    "ast_hash": "e9f87d59fac5158c39197a5228cbfc7c",
     "semantic_hash": ""
   },
   "packages/core/src/service/karir.ts": {
@@ -1488,9 +1488,9 @@
     "semantic_hash": ""
   },
   "db/test/korporat.sql": {
-    "mtime": 1795241062.9386418,
-    "seen": 1795243923.351359,
-    "ast_hash": "",
+    "mtime": 1795434995.9745426,
+    "seen": 1795435593.1448987,
+    "ast_hash": "3c29b17893085907c85502c84106644b",
     "semantic_hash": ""
   },
   "db/test/lamaran.sql": {
@@ -1500,9 +1500,9 @@
     "semantic_hash": ""
   },
   "db/test/manifest.sql": {
-    "mtime": 1795252073.842859,
-    "seen": 1795253053.7461944,
-    "ast_hash": "",
+    "mtime": 1795435023.2987366,
+    "seen": 1795435593.1449003,
+    "ast_hash": "2e44f8b7d9db4c171914ad37e3c9c457",
     "semantic_hash": ""
   },
   "db/test/owner_dashboard.sql": {
@@ -1542,9 +1542,9 @@
     "semantic_hash": ""
   },
   "db/test/security.sql": {
-    "mtime": 1795241062.938798,
-    "seen": 1795243923.351585,
-    "ast_hash": "",
+    "mtime": 1795435000.0716004,
+    "seen": 1795435593.1449158,
+    "ast_hash": "fb45e5f31c876941d24ab7ea4df3fb70",
     "semantic_hash": ""
   },
   "db/test/staff_flow.sql": {
@@ -2130,9 +2130,9 @@
     "semantic_hash": ""
   },
   "db/test/kendala_transit.sql": {
-    "mtime": 1795252079.7584274,
-    "seen": 1795253053.7461271,
-    "ast_hash": "",
+    "mtime": 1795435111.6437573,
+    "seen": 1795435593.1448956,
+    "ast_hash": "695478cca77aaa1c2f0a2e7c6a4f5182",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/manifest/[id]/surat-jalan/page.tsx": {
@@ -8982,9 +8982,9 @@
     "semantic_hash": ""
   },
   "db/test/mv.sql": {
-    "mtime": 1795430603.0965135,
-    "seen": 1795432536.1313736,
-    "ast_hash": "",
+    "mtime": 1795435120.2875037,
+    "seen": 1795435593.1449032,
+    "ast_hash": "b74fca8d2284ed8b78374dd5f1e91fce",
     "semantic_hash": ""
   },
   "apps/web/src/components/PanduanAwal.tsx": {
@@ -9171,6 +9171,42 @@
     "mtime": 1795430631.2357528,
     "seen": 1795432536.1313524,
     "ast_hash": "f2ce87433e735a65d3b70e2f51ecdc91",
+    "semantic_hash": ""
+  },
+  "apps/web/src/lib/panduan-lanjutan-a.ts": {
+    "mtime": 1795435466.5334113,
+    "seen": 1795435593.144796,
+    "ast_hash": "16594766b155b671f85ece0afc66529b",
+    "semantic_hash": ""
+  },
+  "apps/web/src/lib/panduan-lanjutan-b.ts": {
+    "mtime": 1795435569.221936,
+    "seen": 1795435593.1447978,
+    "ast_hash": "c1b346b2803e27e696033ba041f465bc",
+    "semantic_hash": ""
+  },
+  "apps/web/src/lib/panduan-lanjutan.tsx": {
+    "mtime": 1795435325.4614694,
+    "seen": 1795435593.1447985,
+    "ast_hash": "1faa19f3c51839eeb877fa6181f7f2b8",
+    "semantic_hash": ""
+  },
+  "db/migrations/060_manifest_kasir.sql": {
+    "mtime": 1795434857.2699103,
+    "seen": 1795435593.14488,
+    "ast_hash": "7e1383c4053800c993174c4c58c2df62",
+    "semantic_hash": ""
+  },
+  "packages/core/src/service/daftarHarga.ts": {
+    "mtime": 1795435231.3662624,
+    "seen": 1795435593.144945,
+    "ast_hash": "38fc04fd0a1c9b07c2db39c50cb82dcc",
+    "semantic_hash": ""
+  },
+  "packages/core/test/daftarHarga.test.ts": {
+    "mtime": 1795435253.8371599,
+    "seen": 1795435593.144959,
+    "ast_hash": "d00c9dc1787c9758fc345ae43f1c12dc",
     "semantic_hash": ""
   },
   "package-lock.json": {
