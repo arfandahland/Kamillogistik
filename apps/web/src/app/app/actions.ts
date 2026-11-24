@@ -51,6 +51,8 @@ export async function buatResi(fd: FormData) {
       extra: {
         jadwalJemput: String(fd.get("jadwal") ?? "").trim(), waktuJemput: String(fd.get("waktu") ?? ""), asuransi: fd.get("asuransi") === "ya",
         caraBayar: String(fd.get("bayar") ?? ""), refPelanggan: String(fd.get("refpel") ?? "").trim(),
+        ...(fd.get("sj") === "ya" ? { suratJalanKembali: true } : fd.get("sj") === "tidak" ? { suratJalanKembali: false } : {}),
+        rincian: fd.getAll("rin_nama").map((n, i) => ({ nama: String(n ?? "").trim(), qty: Number(fd.getAll("rin_qty")[i] ?? 0) || 0 })).filter((r) => r.nama || r.qty),
       },
     },
   });

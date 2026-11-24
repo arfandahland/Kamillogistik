@@ -56,7 +56,7 @@ SELECT t.fails($$select public.create_shipment_full(current_setting('t.b_mks')::
 DO $$ DECLARE r jsonb; g jsonb; BEGIN
   r := public.create_shipment_full(current_setting('t.b_mks')::uuid,'LAUT','Pengirim Area','0811','Penerima Area','0822','Jl. Perintis No. 10, Makassar',
     '{"province":"Sulawesi Selatan","regency":"Kota Makassar","district":"Panakkukang","village":"Pandang","code":"73.71.07.1001"}'::jsonb, 1, NULL, NULL, 'DROPOFF', NULL, NULL,
-    '{"jenis":"Motor","merek":"Honda Beat","nopol":"DD 1234 XY","stnk":"Ada","bpkb":"","kolom_aneh":"diabaikan"}'::jsonb, '{"contents":"Sepeda motor Honda Beat","declaredValue":"15000000","estWeightKg":"95.5","packaging":"Tanpa kemasan","fragile":false}'::jsonb);
+    '{"jenis":"Motor","merek":"Honda Beat","nopol":"DD 1234 XY","stnk":"Ada","bpkb":"","kolom_aneh":"diabaikan"}'::jsonb, '{"extra":{"suratJalanKembali":false,"caraBayar":"TRANSFER"},"contents":"Sepeda motor Honda Beat","declaredValue":"15000000","estWeightKg":"95.5","packaging":"Tanpa kemasan","fragile":false}'::jsonb);
   PERFORM set_config('t.rarea', r->>'id', false);
   g := public.staff_get_shipment((r->>'id')::uuid);
   ASSERT g->'area'->>'district' = 'Panakkukang' AND g->'area'->>'code' = '73.71.07.1001', 'alamat lengkap tersimpan: ' || (g->'area')::text;
@@ -77,7 +77,7 @@ SELECT t.fails($$select public.create_shipment_full(current_setting('t.b_jkt')::
 SELECT t.fails($$select public.create_shipment_full(current_setting('t.b_mks')::uuid,'KERETA','A','0811','B','0822','Jl. X No. 1, Surabaya','{"province":"Jawa Timur","regency":"Kota Surabaya","district":"Gubeng","village":"Airlangga","code":"35.78.01.1001"}'::jsonb)$$, 'moda');
 DO $$ DECLARE r jsonb; g jsonb; n int; BEGIN
   r := public.create_shipment_full(current_setting('t.b_sub')::uuid,'DARAT','Pengirim Manual','0811','Penerima Manual','0822','Jl. Raya Gubeng No. 5',
-    '{"province":"Jawa Timur","regency":"Kota Surabaya","district":"Gubeng","village":"Airlangga","code":"35.78.01.1001"}'::jsonb, 2, NULL, NULL, 'DROPOFF', NULL, NULL, NULL, '{"contents":"Spare part motor"}'::jsonb);
+    '{"province":"Jawa Timur","regency":"Kota Surabaya","district":"Gubeng","village":"Airlangga","code":"35.78.01.1001"}'::jsonb, 2, NULL, NULL, 'DROPOFF', NULL, NULL, NULL, '{"extra":{"suratJalanKembali":false,"caraBayar":"TRANSFER"},"contents":"Spare part motor"}'::jsonb);
   ASSERT (r->>'resiNo') LIKE 'KML-%-SUB-DA-%', 'kode resi memuat asal, tujuan, moda: ' || (r->>'resiNo');
   g := public.staff_get_shipment((r->>'id')::uuid);
   ASSERT g IS NOT NULL, 'resi terbaca';
@@ -116,7 +116,7 @@ SELECT t.as_user('00000000-0000-0000-0000-000000000002');
 DO $$ DECLARE r jsonb; g jsonb; BEGIN
   ASSERT public.staff_pickup_get(current_setting('t.pjid')::uuid)->>'name' = 'Rina Jemput B', 'data pesanan terbaca kasir';
   r := public.create_shipment_from_pickup(current_setting('t.pjid')::uuid, current_setting('t.b_mks')::uuid, 'LAUT', 'Rina Jemput B', '081299990044', 'Penerima B', '0822',
-    'Jl. Perintis No. 3, Makassar', '{"province":"Sulawesi Selatan","regency":"Kota Makassar","district":"Panakkukang","village":"Pandang","code":"73.71.07.1001"}'::jsonb, 2, NULL, NULL, NULL, NULL, '{"contents":"Dus pakaian"}'::jsonb);
+    'Jl. Perintis No. 3, Makassar', '{"province":"Sulawesi Selatan","regency":"Kota Makassar","district":"Panakkukang","village":"Pandang","code":"73.71.07.1001"}'::jsonb, 2, NULL, NULL, NULL, NULL, '{"extra":{"suratJalanKembali":false,"caraBayar":"TRANSFER"},"contents":"Dus pakaian"}'::jsonb);
   PERFORM set_config('t.pjs', r->>'id', false);
   g := public.staff_get_shipment((r->>'id')::uuid);
   ASSERT g->>'status' = 'AT_ORIGIN_HUB' AND g->>'pickupType' = 'PICKUP' AND (r->>'resiNo') LIKE '%-LJ-%', 'resi langsung di gudang asal, kode jemput: ' || (g->>'status') || ' ' || (r->>'resiNo');
@@ -169,11 +169,11 @@ SELECT 'penjagaan_lokasi OK' AS hasil;
 RESET ROLE;
 SELECT t.as_user('00000000-0000-0000-0000-000000000002');
 SELECT t.fails($$select public.create_shipment_full(current_setting('t.b_mks')::uuid,'LAUT','A','0811','B','0822','Jl. X No. 1, Makassar','{"province":"Sulawesi Selatan","regency":"Kota Makassar","district":"Panakkukang","village":"Pandang","code":"73.71.07.1001"}'::jsonb, 1, NULL, NULL, 'DROPOFF')$$, 'Isi barang');
-SELECT t.fails($$select public.create_shipment_full(current_setting('t.b_mks')::uuid,'LAUT','A','0811','B','0822','Jl. X No. 1, Makassar','{"province":"Sulawesi Selatan","regency":"Kota Makassar","district":"Panakkukang","village":"Pandang","code":"73.71.07.1001"}'::jsonb, 1, NULL, NULL, 'DROPOFF', NULL, NULL, NULL, '{"contents":"Pakaian","declaredValue":"abc"}'::jsonb)$$, 'Nilai barang');
+SELECT t.fails($$select public.create_shipment_full(current_setting('t.b_mks')::uuid,'LAUT','A','0811','B','0822','Jl. X No. 1, Makassar','{"province":"Sulawesi Selatan","regency":"Kota Makassar","district":"Panakkukang","village":"Pandang","code":"73.71.07.1001"}'::jsonb, 1, NULL, NULL, 'DROPOFF', NULL, NULL, NULL, '{"extra":{"suratJalanKembali":false,"caraBayar":"TRANSFER"},"contents":"Pakaian","declaredValue":"abc"}'::jsonb)$$, 'Nilai barang');
 DO $$ DECLARE r jsonb; g jsonb; BEGIN
   r := public.create_shipment_full(current_setting('t.b_mks')::uuid,'LAUT','Pengirim Lengkap','0811','Penerima Lengkap','0822','Jl. Perintis No. 77, Makassar',
     '{"province":"Sulawesi Selatan","regency":"Kota Makassar","district":"Panakkukang","village":"Pandang","code":"73.71.07.1001"}'::jsonb, 3, NULL, NULL, 'DROPOFF', NULL, NULL, NULL,
-    '{"contents":"Peralatan dapur","declaredValue":"2500000","estWeightKg":"40","packaging":"Kardus","fragile":true}'::jsonb);
+    '{"extra":{"suratJalanKembali":false,"caraBayar":"TRANSFER"},"contents":"Peralatan dapur","declaredValue":"2500000","estWeightKg":"40","packaging":"Kardus","fragile":true}'::jsonb);
   PERFORM set_config('t.tb', r->>'id', false); PERFORM set_config('t.tbno', r->>'resiNo', false);
   g := public.staff_get_shipment((r->>'id')::uuid);
   ASSERT g->'details'->>'contents' = 'Peralatan dapur' AND (g->'details'->>'fragile')::boolean AND (g->'details'->>'declaredValue')::bigint = 2500000 AND (g->'details'->>'estWeightKg')::numeric = 40, 'data awal tersimpan: ' || (g->'details')::text;

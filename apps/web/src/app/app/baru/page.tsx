@@ -7,6 +7,8 @@ import CaraMasukField from "@/components/CaraMasukField";
 import PelangganField from "@/components/PelangganField";
 import WilayahField from "@/components/WilayahField";
 import DataKendaraan from "@/components/DataKendaraan";
+import MetodeBayar from "@/components/MetodeBayar";
+import RincianBarang from "@/components/RincianBarang";
 import { randomUUID } from "node:crypto";
 import { buatResi } from "../actions";
 import BackLink from "@/components/BackLink";
@@ -114,6 +116,7 @@ export default async function Baru({ searchParams }: { searchParams: Promise<{ e
                   </select>
                 </div>
               </div>
+              <RincianBarang />
               <div className="rbf">
                 <label className="f" htmlFor="nilai">Nilai barang, Rp (boleh kosong)</label>
                 <input id="nilai" name="nilai" inputMode="numeric" placeholder="Contoh: 1500000" />
@@ -146,12 +149,12 @@ export default async function Baru({ searchParams }: { searchParams: Promise<{ e
                   <label className="kchip"><input type="radio" name="waktu" value="SORE" /> Sore</label>
                 </fieldset>
               </div>
-              <fieldset className="kchips rbf" aria-label="Rencana pembayaran">
-                <legend className="f">Rencana pembayaran</legend>
-                <label className="kchip"><input type="radio" name="bayar" value="" defaultChecked /> Belum ditentukan</label>
-                <label className="kchip"><input type="radio" name="bayar" value="TUNAI" /> Tunai</label>
-                <label className="kchip"><input type="radio" name="bayar" value="TRANSFER" /> Transfer</label>
-                <label className="kchip"><input type="radio" name="bayar" value="TAGIH" /> Ditagih ke pelanggan</label>
+              <MetodeBayar />
+              <fieldset className="kchips rbf" aria-label="Surat jalan kembali">
+                <legend className="f">Surat jalan harus kembali?</legend>
+                <label className="kchip"><input type="radio" name="sj" value="ya" required /> Ya, wajib kembali</label>
+                <label className="kchip"><input type="radio" name="sj" value="tidak" /> Tidak perlu</label>
+                <p className="hint" style={{ flexBasis: "100%", margin: 0 }}>Bila Ya, surat jalan yang sudah ditandatangani penerima wajib dikembalikan dan dilacak sampai ke Finance.</p>
               </fieldset>
               <div className="rbf">
                 <label className="f" htmlFor="refpel">Nomor referensi pelanggan, misalnya PO (boleh kosong)</label>

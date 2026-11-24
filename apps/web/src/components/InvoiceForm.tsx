@@ -9,7 +9,7 @@ const SARAN = ["Ongkos jemput", "Ongkir antar ke alamat", "Packing", "Asuransi",
 
 /** Kasir menerbitkan invoice: harga satuan diisi manual (per kg, per m3, atau borongan) + baris biaya bebas. Tanpa tarif otomatis. */
 export default function InvoiceForm({ id, aktualKg, volumeKg, volumeM3, ada, judul }: { id: string; aktualKg: number; volumeKg: number; volumeM3: number; ada: boolean; judul: string }) {
-  const MIN_KG = 50; // berat tagih minimal 50 kg, berapa pun ukuran dan timbangannya
+  const MIN_KG = 30; // berat tagih minimal 30 kg, berapa pun ukuran dan timbangannya
   const kgSaran = Math.max(aktualKg, volumeKg, MIN_KG);
   const [satuan, setSatuan] = useState<"KG" | "M3" | "BORONGAN">("KG");
   const [jumlah, setJumlah] = useState(String(Math.ceil(kgSaran)));

@@ -32,6 +32,7 @@ async function isiWilayah(p, nama = "area") {
   await tunggu(`${b}-kab`); await p.selectOption(`${b}-kab`, { label: "Kota Makassar" });
   await tunggu(`${b}-kec`); await p.selectOption(`${b}-kec`, { label: "Panakkukang" });
   await tunggu(`${b}-desa`); const v = await p.$eval(`${b}-desa option:nth-child(2)`, (o) => o.value); await p.selectOption(`${b}-desa`, v);
+  if (nama === "area" && (await p.locator("input[name=sj]").count()) > 0) { await p.locator("input[name=sj][value=tidak]").check({ force: true }); }
 }
   await p.fill("#isi", opts.isi || "Pakaian dan perlengkapan");
   if (opts.bad) { await p.getByText(opts.bad, { exact: true }).click(); await p.fill("#catatan", "Sudut kardus penyok, isi aman"); }
