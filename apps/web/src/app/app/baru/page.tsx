@@ -9,6 +9,7 @@ import WilayahField from "@/components/WilayahField";
 import DataKendaraan from "@/components/DataKendaraan";
 import MetodeBayar from "@/components/MetodeBayar";
 import RincianBarang from "@/components/RincianBarang";
+import SuratJalanField from "@/components/SuratJalanField";
 import { randomUUID } from "node:crypto";
 import { buatResi } from "../actions";
 import BackLink from "@/components/BackLink";
@@ -150,12 +151,7 @@ export default async function Baru({ searchParams }: { searchParams: Promise<{ e
                 </fieldset>
               </div>
               <MetodeBayar />
-              <fieldset className="kchips rbf" aria-label="Surat jalan kembali">
-                <legend className="f">Surat jalan harus kembali?</legend>
-                <label className="kchip"><input type="radio" name="sj" value="ya" required /> Ya, wajib kembali</label>
-                <label className="kchip"><input type="radio" name="sj" value="tidak" /> Tidak perlu</label>
-                <p className="hint" style={{ flexBasis: "100%", margin: 0 }}>Bila Ya, surat jalan yang sudah ditandatangani penerima wajib dikembalikan dan dilacak sampai ke Finance.</p>
-              </fieldset>
+              <SuratJalanField />
               <div className="rbf">
                 <label className="f" htmlFor="refpel">Nomor referensi pelanggan, misalnya PO (boleh kosong)</label>
                 <input id="refpel" name="refpel" maxLength={60} autoComplete="off" />

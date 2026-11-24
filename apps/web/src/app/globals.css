@@ -2147,3 +2147,7 @@ body:has(.appshell) .arus-cari { flex-wrap: nowrap; overflow: hidden; }
 .kh-foto { font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 99px; background: #e0f2f1; color: #0f766e; text-decoration: none; }
 .kh-peg { display: grid; gap: 8px; text-decoration: none; color: inherit; } .kh-peg header { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; } .kh-peg header small { flex-basis: 100%; color: var(--muted); } .kh-peg .mati { font-style: normal; font-size: 11px; padding: 2px 8px; border-radius: 99px; background: #e5e7eb; color: #4b5563; }
 .kh-angka { display: grid; grid-template-columns: repeat(auto-fit, minmax(84px, 1fr)); gap: 8px; list-style: none; margin: 0; padding: 0; text-align: center; } .kh-angka b { display: block; font-size: 20px; } .kh-angka span { font-size: 11.5px; color: var(--muted); } .kh-angka li.w b { color: #d97706; }
+
+/* Pilihan wajib yang masih kosong (pencari wilayah, tombol pilihan) disorot supaya tombol kirim tidak terasa mati */
+.cp-salah { outline: 2px solid #ff8a5b; outline-offset: 3px; border-radius: 14px; }
+.cp-pesan { margin: 6px 2px 0; }
