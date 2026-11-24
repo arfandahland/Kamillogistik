@@ -40,6 +40,7 @@ const KELOLA: Record<string, PusatItem> = Object.fromEntries([
   { href: "/app/keuangan", icon: "cash", t: "Keuangan", d: "Uang masuk, piutang, umur piutang, dan riwayat pembayaran." },
   { href: "/app/keuangan/belum-ditagih", icon: "file", t: "Resi belum ditagih", d: "Resi dari Kasir yang belum punya invoice. Buat invoice, retail bayar sebelum diantar, rekanan tempo setelah hard copy." },
   { href: "/app/tagihan", icon: "file", t: "Semua tagihan", d: "Cari invoice, catat pembayaran, cetak, dan kirim ke pelanggan." },
+  { href: "/app/laba-rugi", icon: "chart", t: "Laba rugi per resi", d: "Tagihan dikurangi HPP vendor semua leg dan biaya manifest, per resi, rute, moda, dan kapal." },
   { href: "/app/margin", icon: "tag", t: "Margin manifest dan rute", d: "Pendapatan dikurangi biaya kapal, armada, dan pelabuhan per manifest dan per rute." },
   { href: "/app/keuangan/komisi", icon: "bank", t: "Komisi mitra", d: "Ongkir dan komisi tiap mitra pada periode yang dipilih." },
   { href: "/app/laporan", icon: "chart", t: "Laporan lengkap", d: "Omzet, piutang, rute, kinerja mitra, jemput dan klaim per periode. Unduh Excel untuk pembukuan." },
@@ -70,7 +71,7 @@ export function grupPusat(role: string): { judul: string; sapa: string; grup: Pu
     case "SUPER_ADMIN": case "OWNER": {
       const grup = [
         G("operasional", "Operasi", "Operasional harian", "Pantau muatan, pelanggan, dan masalah.", "truck", K("/app/ringkasan", "/app/peta", "/app/manifest", "/app/mv", "/app/tindak-lanjut", "/app/kendala", "/app/jemput", "/app/klaim", "/app/cari")),
-        G("uang", "Uang", "Uang dan laporan", "Pemasukan, piutang, margin, dan komisi.", "cash", K("/app/keuangan", "/app/keuangan/belum-ditagih", "/app/tagihan", "/app/margin", "/app/keuangan/komisi", "/app/keuangan/input-absen", "/app/keuangan/kehadiran", "/app/laporan")),
+        G("uang", "Uang", "Uang dan laporan", "Pemasukan, piutang, margin, dan komisi.", "cash", K("/app/keuangan", "/app/keuangan/belum-ditagih", "/app/tagihan", "/app/margin", "/app/laba-rugi", "/app/keuangan/komisi", "/app/keuangan/input-absen", "/app/keuangan/kehadiran", "/app/laporan")),
         G("orang", "Orang", "Orang dan mitra", "Petugas, pegawai, mitra, pelanggan, dan rekrutmen.", "users", K("/app/petugas", "/app/karyawan", "/app/pegawai", "/app/absen/qr", "/app/mitra", "/app/korporat", "/app/calon-mitra", "/app/rekrutmen", "/app/lamaran")),
         G("sistem", "Sistem", "Harga, website, dan sistem", "Tarif, konten, pengaturan, dan catatan aktivitas.", "sliders", K("/app/tarif", "/app/tarif/riwayat", "/app/konten", "/app/pengaturan", "/app/catatan")),
         AKUN,
