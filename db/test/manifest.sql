@@ -121,7 +121,7 @@ SELECT t.fails($$select public.manifest_handover_start(current_setting('t.m')::u
 SELECT t.as_user('00000000-0000-0000-0000-000000000005');
 DO $$ BEGIN ASSERT (public.manifest_handover_start(current_setting('t.m')::uuid, '00000000-0000-0000-0000-00000000000b')->>'resi')::int = 2, 'diserahkan ke gudang Makassar'; END $$;
 SELECT t.as_user('00000000-0000-0000-0000-00000000000b');
-SELECT t.fails($$select public.manifest_scan_unload(current_setting('t.m')::uuid, current_setting('t.ra') || '-01')$$, 'belum diserahkan');
+SELECT t.fails($$select public.manifest_scan_unload(current_setting('t.m')::uuid, current_setting('t.ra') || '-01')$$, 'proses serah terima');
 DO $$ BEGIN ASSERT (public.manifest_handover_accept(current_setting('t.m')::uuid)->>'accepted')::int = 2, 'gudang Makassar menerima manifest'; END $$;
 
 -- ---------- Bongkar: pindai, selisih, selesai ----------

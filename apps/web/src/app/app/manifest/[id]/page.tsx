@@ -7,7 +7,7 @@ import SubmitButton from "@/components/SubmitButton";
 import ManifestPindai from "@/components/ManifestPindai";
 import { tanggalWaktu } from "@/lib/brand";
 import { getMe, staffRpc } from "@/lib/supabase/server";
-import { terimaSemuaManifest, berangkatManifest, isiVoyage, keluarkanResi, segelManifest, selesaiBongkar, selesaikanSelisih, revisiEta, serahkanManifest, tambahResiForm, terimaManifest, tibaManifest, ubahManifest } from "../actions";
+import { bongkarSemuaLengkap, terimaSemuaManifest, berangkatManifest, isiVoyage, keluarkanResi, segelManifest, selesaiBongkar, selesaikanSelisih, revisiEta, serahkanManifest, tambahResiForm, terimaManifest, tibaManifest, ubahManifest } from "../actions";
 import Potong from "@/components/Potong";
 import BackLink from "@/components/BackLink";
 
@@ -45,7 +45,7 @@ export default async function ManifestDetail({ params, searchParams }: { params:
   ]);
   const sopirList = dir.filter((u) => u.role === "CONTAINER_DRIVER");
   const gudangTujuan = dir.filter((u) => u.role === "HUB_MANAGER" && u.branchName === m.dest.name);
-  const bongkar = m.status === "ARRIVED" && atDest && m.iAmHolder && !m.pendingTo;
+  const bongkar = m.status === "ARRIVED" && atDest && !m.pendingTo; // gudang tujuan membongkar langsung, tanpa syarat serah terima dari sopir
   const kurang = m.totals.items - m.totals.scanned;
   const bukaKasus = m.cases.filter((c) => c.status === "OPEN");
 
@@ -118,7 +118,7 @@ export default async function ManifestDetail({ params, searchParams }: { params:
           </>
         )}
 
-        {m.status === "SEALED" && atOrigin && kepala && (m.iAmHolder || !m.holder) && !m.pendingTo && (
+        {m.status === "SEALED" && atOrigin && kepala && (m.iAmHolder || !m.holder) && !m.pendingTo && sopirList.length > 0 && (
           <form action={serahkanManifest} className="card rbsek"><input type="hidden" name="id" value={m.id} />
             <h2 className="cardh">Serahkan manifest ke sopir</h2>
             <label className="f" htmlFor="ke">Diserahkan kepada</label>
@@ -128,7 +128,7 @@ export default async function ManifestDetail({ params, searchParams }: { params:
           </form>
         )}
 
-        {m.status === "SEALED" && sopir && m.iAmHolder && !m.pendingTo && role === "CONTAINER_DRIVER" && (
+        {m.status === "SEALED" && !m.pendingTo && ((role === "CONTAINER_DRIVER" && m.iAmHolder) || (kepala && atOrigin)) && (
           <form action={berangkatManifest} className="card rbsek"><input type="hidden" name="id" value={m.id} />
             <h2 className="cardh">Berangkat</h2>
             <div className="rbf"><label className="f" htmlFor="pengangkut">{m.mode === "UDARA" ? "Nomor penerbangan" : m.mode === "DARAT" ? "Plat truk" : "Nama kapal"}</label><input id="pengangkut" name="pengangkut" defaultValue={m.carrier ?? ""} autoComplete="off" /></div>
@@ -138,7 +138,7 @@ export default async function ManifestDetail({ params, searchParams }: { params:
           </form>
         )}
 
-        {m.status === "IN_TRANSIT" && sopir && m.iAmHolder && (
+        {m.status === "IN_TRANSIT" && ((sopir && m.iAmHolder) || (kepala && atDest)) && (
           <form action={tibaManifest} className="card rbsek"><input type="hidden" name="id" value={m.id} />
             <h2 className="cardh">Sudah tiba?</h2><p className="muted" style={{ marginTop: 0 }}>Kedatangan dicatat untuk semua resi di manifest ini.</p>
             <SubmitButton steps={["Mencatat kedatangan semua resi…"]}>{m.mode === "UDARA" ? "Pesawat sudah mendarat" : m.mode === "DARAT" ? "Truk sudah tiba" : "Kapal sudah sandar"} di {m.dest.city}</SubmitButton>
@@ -177,8 +177,15 @@ export default async function ManifestDetail({ params, searchParams }: { params:
         )}
 
         {bongkar && (
-          <div className="card">
+          <div className="card stack">
             <h2 className="cardh">Bongkar dan cocokkan</h2>
+            <p className="muted" style={{ marginTop: 0 }}>Cocokkan barang yang turun dengan daftar manifest di bawah ({m.totals.resi} resi, {m.totals.items} barang). Bila semuanya lengkap dan baik, cukup satu ketukan.</p>
+            <form action={bongkarSemuaLengkap}><input type="hidden" name="id" value={m.id} />
+              <SubmitButton className="btn green" steps={["Menandai semua barang…", "Mencatat barang tiba di gudang…"]}>Semua {m.totals.items} barang lengkap dan baik</SubmitButton>
+              <p className="hint" style={{ margin: "6px 0 0" }}>Tercatat atas nama Anda beserta waktunya. Bila ada yang kurang atau rusak, buka bagian di bawah.</p>
+            </form>
+            <details className="potong">
+              <summary><span className="p-buka">Ada yang kurang atau rusak? Cocokkan satu per satu</span><span className="p-tutup">Tutup</span></summary>
             <p className="muted" style={{ marginTop: 0 }}>Pindai label tiap barang yang diturunkan. {kurang > 0 ? `Masih ${kurang} barang belum dipindai.` : "Semua barang sudah cocok."}</p>
             <div className="progbar" aria-label={`${m.totals.scanned} dari ${m.totals.items} barang`}><i style={{ width: `${m.totals.items ? Math.round((m.totals.scanned / m.totals.items) * 100) : 0}%` }} /></div>
             <b>{m.totals.scanned} dari {m.totals.items} barang</b>
@@ -193,6 +200,7 @@ export default async function ManifestDetail({ params, searchParams }: { params:
               {kurang > 0 && (<><div className="rbf"><label className="f" htmlFor="catatan">Catatan selisih (wajib bila jumlah kurang)</label><input id="catatan" name="catatan" required autoComplete="off" placeholder="Contoh: barang 2 dari resi … tidak ada di kontainer" /></div></>)}
               <SubmitButton className={kurang > 0 ? "btn ghost" : "btn"} style={{ marginTop: 12 }} steps={["Mencocokkan jumlah barang…", "Mencatat barang tiba di gudang…"]}>{kurang > 0 ? `Selesaikan dengan selisih (${kurang} barang kurang)` : "Selesai membongkar"}</SubmitButton>
             </form>
+            </details>
           </div>
         )}
 

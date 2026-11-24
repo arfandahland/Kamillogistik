@@ -93,3 +93,14 @@ export async function terimaSemuaManifest(fd: FormData) {
   if (r.error) back(id, "e", r.error);
   back(id, "ok", `Semua ${r.data?.scanned ?? ""} barang diterima sesuai manifest. Periksa lagi bila ada yang rusak, lalu tekan Selesai membongkar.`);
 }
+
+/** Satu tombol: semua barang lengkap dan baik sesuai daftar manifest. Menandai semua diterima lalu menyelesaikan pembongkaran. */
+export async function bongkarSemuaLengkap(fd: FormData) {
+  const id = str(fd, "id");
+  const a = await staffRpc<{ scanned: number }>("manifest_accept_all", { p_id: id });
+  if (a.error) { revalidatePath(`/app/manifest/${id}`); back(id, "e", a.error); }
+  const f = await staffRpc<{ resiSelesai: number }>("manifest_finish_unload", { p_id: id, p_note: null });
+  revalidatePath("/app/manifest"); revalidatePath(`/app/manifest/${id}`); revalidatePath("/app");
+  if (f.error) back(id, "e", f.error);
+  back(id, "ok", `Pembongkaran selesai: ${a.data?.scanned ?? ""} barang diterima lengkap sesuai manifest, ${f.data?.resiSelesai ?? ""} resi sudah tercatat di gudang.`);
+}

@@ -21,9 +21,9 @@ export default function StaffShell({ me, pending, children, forceFull }: { me: M
   const finance = owner || me.role === "MITRA_POS";
   // Menu bawah di HP: tombol kerja utama + satu tombol per kelompok fitur. Menu samping di komputer: bagian bertajuk per kelompok.
   const lurus: Tab[] = me.role === "HRD"
-    ? [{ href: "/app/rekrutmen", label: "Dashboard", icon: "chart" }, { href: "/app/lamaran", label: "Lamaran", icon: "users" }, { href: "/app/pegawai", label: "Pegawai", icon: "user" }]
+    ? [{ href: "/app/rekrutmen", label: "Dashboard", icon: "chart" }, { href: "/app/lamaran", label: "Lamaran", icon: "users" }, { href: "/app/karyawan", label: "Absensi", icon: "clock", also: ["/app/absen/qr", "/app/karyawan/cabang"] }, { href: "/app/pegawai", label: "Pegawai", icon: "user" }]
     : me.role === "FINANCE"
-    ? [{ href: "/app/keuangan", label: "Keuangan", icon: "cash" }, { href: "/app/tagihan", label: "Tagihan", icon: "file" }, { href: "/app/laporan", label: "Laporan", icon: "chart" }, { href: "/app/margin", label: "Margin", icon: "tag" }]
+    ? [{ href: "/app/keuangan", label: "Keuangan", icon: "cash" }, { href: "/app/tagihan", label: "Tagihan", icon: "file" }, { href: "/app/laporan", label: "Laporan", icon: "chart" }, { href: "/app/margin", label: "Margin", icon: "tag" }, { href: "/app/keuangan/kehadiran", label: "Kehadiran", icon: "clock" }]
     : me.role === "CS_SALES"
     ? [{ href: "/app", label: "Beranda", icon: "home" }, { href: "/app/jemput", label: "Jemput", icon: "truck" }, { href: "/app/klaim", label: "Klaim", icon: "shield" }]
     : me.role === "MV" || me.role === "MV_MASTER"

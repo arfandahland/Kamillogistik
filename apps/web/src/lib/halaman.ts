@@ -21,10 +21,10 @@ export function nomorHalaman(p: number, halaman: number): (number | null)[] {
 }
 
 /** Alamat halaman dengan semua parameter lain dipertahankan; halaman 1 tidak perlu ?p. */
-export function hrefHalaman(path: string, params: Record<string, string | undefined | null>, p: number): string {
+export function hrefHalaman(path: string, params: Record<string, string | undefined | null>, p: number, nama = "hal"): string {
   const q = new URLSearchParams();
-  for (const [k, v] of Object.entries(params)) if (v && k !== "hal" && k !== "n") q.set(k, v);
-  if (p > 1) q.set("hal", String(p));
+  for (const [k, v] of Object.entries(params)) if (v && k !== nama && k !== "n") q.set(k, v);
+  if (p > 1) q.set(nama, String(p));
   const s = q.toString();
   return s ? `${path}?${s}` : path;
 }

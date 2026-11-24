@@ -349,6 +349,8 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await p.goto(`${BASE}/app/manifest/${manifestId}`, { waitUntil: "networkidle" });
     let r = await act(p, p.getByRole("button", { name: "Ya, manifest sudah saya terima" }));
     ok("gudang Makassar menerima manifest (cabang tujuan)", r.ok && /sudah Anda terima/.test(r.ok), JSON.stringify(r));
+    ok("BN1 bongkar: tombol utama satu ketukan tersedia untuk gudang tujuan", (await p.getByRole("button", { name: /Semua 2 barang lengkap dan baik/ }).count()) === 1);
+    await p.locator("details.potong summary", { hasText: "Ada yang kurang atau rusak" }).click();
     ok("bongkar: 0 dari 2 barang dipindai", /0 dari 2 barang/.test(await text(p)));
     await p.fill("input[aria-label=Kode]", "KML-JKT-MKS-LJ-261118-1400-0998-RF-01"); await p.getByRole("button", { name: "Cocokkan" }).click();
     await p.waitForSelector(".mlog li.bad", { timeout: 15000 }).catch(() => {});
@@ -1537,9 +1539,9 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
       const capAktif = ar.page.locator(".arus-baris a.arus-cap:not(.fase):not(.on)").first();
       if (await capAktif.count()) {
         const nCap = Number((await capAktif.locator("b").innerText()).trim());
-        await capAktif.click(); await ar.page.waitForLoadState("networkidle");
+        await capAktif.click(); await ar.page.waitForURL(/[?&]f=/, { timeout: 15000 }); await ar.page.waitForSelector(".arus-reset", { timeout: 15000 });
         ok("AY6 saringan pintar: ketuk kapsul menyaring daftar sesuai angka di kapsul, dan ada tombol hapus saringan", (await ar.page.locator(".arus-kartu").count()) === nCap && (await ar.page.locator(".arus-reset").count()) === 1, String(nCap));
-        await ar.page.locator(".arus-reset").click(); await ar.page.waitForLoadState("networkidle");
+        await ar.page.locator(".arus-reset").click(); await ar.page.waitForFunction(() => !location.search.includes("f=")); await ar.page.waitForSelector(".arus-kartu");
         ok("AY7 saringan pintar: hapus semua saringan mengembalikan daftar penuh", (await ar.page.locator(".arus-kartu").count()) === semuaN);
       }
       await ar.page.goto(`${BASE}/app/arus?a=keluar&q=zzzzzz-tidak-ada`, { waitUntil: "networkidle" });
@@ -1549,6 +1551,94 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
       const infoP = await ar.page.locator(".pager-info").count();
       ok("AY9 pagination: nomor halaman kebesaran dialihkan ke halaman terakhir dan maksimal 15 data per halaman", (await ar.page.locator("main h1").count()) === 1 && (await ar.page.locator(".arus-kartu").count()) <= 15 && (infoP === 0 || /Menampilkan\s+\d+–\d+\s+dari/.test(await ar.page.locator(".pager-info").innerText())), `pager=${infoP}`);
       await ar.ctx.close();
+    }
+
+    // ===== Absensi QR tanpa login: HRD mengelola karyawan, Finance mencetak QR dan membaca rekap =====
+    {
+      const sa2 = await login(browser, "owner@uji.id", "Pemilik2026x", { width: 390, height: 844 });
+      const akun = async (nama, email, peran) => {
+        await sa2.page.goto(`${BASE}/app/petugas`, { waitUntil: "networkidle" });
+        await sa2.page.locator("details.admnew summary").click();
+        await sa2.page.fill("input[name=nama]", nama); await sa2.page.fill("input[name=email]", email); await sa2.page.selectOption("select[name=peran]", peran); await sa2.page.fill("input[name=sandi]", "Sandi2026a");
+        await sa2.page.locator("details.admnew button[type=submit], details.admnew .btn.green").first().click();
+        await sa2.page.waitForSelector(".ok, .err", { timeout: 20000 }).catch(() => {});
+        return (await sa2.page.locator(".ok, .err").first().innerText().catch(() => ""));
+      };
+      ok("AZ0 Super Admin membuat akun HRD dan Finance untuk absensi", /dibuat/.test(await akun("HRD Absensi", "hrd.absen@uji.id", "HRD")) && /dibuat/.test(await akun("Finance Absensi", "fin.absen@uji.id", "FINANCE")));
+      await sa2.ctx.close();
+
+      const hr = await login(browser, "hrd.absen@uji.id", "Sandi2026a", { width: 390, height: 844 });
+      await hr.page.goto(`${BASE}/app/karyawan`, { waitUntil: "networkidle" });
+      await hr.page.locator("details.admnew summary").click();
+      await hr.page.fill("details.admnew input[name=nama]", "Budi Absensi Uji");
+      await selectByText(hr.page, "details.admnew select[name=cabang]", "Makassar");
+      await hr.page.fill("details.admnew input[name=jabatan]", "Helper gudang");
+      await hr.page.locator("details.admnew button.btn.green").click();
+      await hr.page.waitForSelector(".pin-hasil", { timeout: 20000 }).catch(() => {});
+      const kartuPin = await hr.page.locator(".pin-hasil").innerText().catch(() => "");
+      const kodeP = (kartuPin.match(/KL-MKS-\d{3}/) || [])[0] || "", pinP = ((await hr.page.locator(".pin-angka").innerText().catch(() => "")).match(/\d{6}/) || [])[0] || "";
+      ok("AZ1 HRD membuat karyawan Makassar: kode KL-MKS-nnn dan PIN 6 angka tampil sekali", /^KL-MKS-\d{3}$/.test(kodeP) && /^\d{6}$/.test(pinP), `${kodeP} ${pinP}`);
+      await hr.page.goto(`${BASE}/app/karyawan?q=Budi+Absensi`, { waitUntil: "networkidle" });
+      ok("AZ2 daftar karyawan memuat karyawan baru dengan tanda belum absen, dan PIN tidak tampil lagi", /Budi Absensi Uji/.test(await text(hr.page)) && /Belum absen hari ini/.test(await text(hr.page)) && !(await text(hr.page)).includes(pinP));
+      await noOverflow(hr.page, "Karyawan dan absensi (HP)");
+      await hr.page.goto(`${BASE}/app/karyawan/cabang`, { waitUntil: "networkidle" });
+      ok("AZ3 pengaturan absen per cabang: jam masuk, toleransi, radius, selfie", (await hr.page.locator("form[id^=c-]").count()) >= 3 && (await hr.page.locator("input[name=radius]").count()) >= 3);
+      await hr.ctx.close();
+
+      const fn = await login(browser, "fin.absen@uji.id", "Sandi2026a", { width: 390, height: 844 });
+      await fn.page.goto(`${BASE}/app/absen/qr`, { waitUntil: "networkidle" });
+      const urlQr = ((await text(fn.page)).match(/https?:\/\/\S+\/absen\/[0-9a-f]{32}/) || [])[0] || "";
+      ok("AZ4 Finance melihat QR absensi tunggal dan alamat halaman absen", urlQr !== "" && (await fn.page.locator(".abs-qr-kotak svg").count()) === 1, urlQr);
+      const alamat = urlQr.replace(/^https?:\/\/[^/]+/, BASE);
+
+      const pub = await browser.newContext({ viewport: { width: 390, height: 844 }, permissions: ["geolocation"], geolocation: { latitude: -5.1477, longitude: 119.4327 } });
+      const pp = await pub.newPage();
+      await pp.goto(alamat, { waitUntil: "networkidle" });
+      ok("AZ5 halaman absen terbuka tanpa login", /\/absen\//.test(pp.url()) && (await pp.locator("#abs-kode").count()) === 1);
+      await noOverflow(pp, "Halaman absen (HP)");
+      await pp.fill("#abs-kode", kodeP.toLowerCase()); await pp.fill("#abs-pin", "000000");
+      await pp.waitForFunction(() => /Lokasi terbaca|Lokasi belum aktif/.test(document.body.innerText), null, { timeout: 15000 }).catch(() => {});
+      await pp.getByRole("button", { name: "Absen sekarang" }).click();
+      await pp.waitForSelector(".err", { timeout: 15000 }).catch(() => {});
+      ok("AZ6 PIN salah: pesan umum, tidak membocorkan data", /Kode pegawai atau PIN salah/.test(await text(pp)));
+      await pp.fill("#abs-pin", pinP);
+      await pp.getByRole("button", { name: "Absen sekarang" }).click();
+      await pp.waitForSelector(".abs-hasil", { timeout: 20000 }).catch(() => {});
+      const hasilP = await text(pp);
+      ok("AZ7 absen masuk tercatat dengan nama, cabang, jam, dan lokasi di dalam radius", /Absen masuk tercatat/.test(hasilP) && /Budi Absensi Uji/.test(hasilP) && /Makassar/.test(hasilP) && !/Di luar lokasi/.test(hasilP), hasilP.slice(0, 160));
+      await pp.getByRole("button", { name: "Lihat riwayat saya" }).click();
+      await pp.waitForSelector(".abs-riwayat", { timeout: 15000 }).catch(() => {});
+      ok("AZ8 karyawan melihat riwayat sendiri tanpa login", (await pp.locator(".abs-riwayat li").count()) >= 1);
+      await pub.close();
+
+      await fn.page.goto(`${BASE}/app/keuangan/kehadiran`, { waitUntil: "networkidle" });
+      ok("AZ9 Finance: rekap per cabang menampilkan kartu cabang dengan hadir dan terlambat", (await fn.page.locator(".kh-cab").count()) >= 2 && /Terlambat/.test(await text(fn.page)));
+      await fn.page.locator(".kh-cab", { hasText: "Makassar" }).first().click();
+      await fn.page.waitForURL(/c=/, { timeout: 15000 }).catch(() => {});
+      await fn.page.waitForSelector("h2:has-text('Rincian hari')", { timeout: 15000 }).catch(() => {});
+      const kh = await text(fn.page);
+      ok("AZ10 Finance: saringan cabang Makassar memuat Budi Absensi Uji di rincian harian dan rekap karyawan", /Rincian hari/.test(kh) && (kh.match(/Budi Absensi Uji/g) || []).length >= 2, kh.slice(0, 120));
+      await noOverflow(fn.page, "Rekap kehadiran (HP)");
+      await fn.page.locator("a.kh-peg", { hasText: "Budi Absensi Uji" }).first().click();
+      await fn.page.waitForURL(/kehadiran\/[0-9a-f-]{36}/, { timeout: 15000 }).catch(() => {});
+      ok("AZ11 Finance: rincian harian satu karyawan", /Budi Absensi Uji/.test(await text(fn.page)) && (await fn.page.locator(".kh-baris").count()) >= 1);
+      const csv = await fn.page.evaluate(async () => (await fetch("/app/ekspor/kehadiran")).text());
+      ok("AZ12 Finance: unduh CSV rekap kehadiran memuat karyawan", /Kode,Nama,Cabang/.test(csv.replace(/"/g, "")) && /Budi Absensi Uji/.test(csv));
+      await fn.page.goto(`${BASE}/app/absen/qr`, { waitUntil: "networkidle" });
+      await fn.page.locator("details summary", { hasText: "Ganti QR" }).click();
+      await fn.page.getByRole("button", { name: /Buat QR baru/ }).click();
+      await fn.page.waitForSelector(".ok", { timeout: 15000 }).catch(() => {});
+      const ln = await browser.newContext({ viewport: { width: 390, height: 844 } }); const lp = await ln.newPage();
+      await lp.goto(alamat, { waitUntil: "networkidle" });
+      ok("AZ13 QR lama dicabut setelah QR diganti", /sudah tidak berlaku/.test(await text(lp)));
+      await ln.close(); await fn.ctx.close();
+
+      const kr = await login(browser, "kurir@uji.id", PASS, { width: 390, height: 844 });
+      await kr.page.goto(`${BASE}/app/keuangan/kehadiran`, { waitUntil: "networkidle" });
+      ok("AZ14 kurir tidak boleh membuka rekap kehadiran Finance", !/\/keuangan\/kehadiran/.test(kr.page.url()));
+      await kr.page.goto(`${BASE}/app/karyawan`, { waitUntil: "networkidle" });
+      ok("AZ15 kurir tidak boleh membuka data karyawan", !/\/app\/karyawan/.test(kr.page.url()));
+      await kr.ctx.close();
     }
 
     const mv = await login(browser, "mv.jkt@uji.id", "Sandi2026a", { width: 390, height: 844 });

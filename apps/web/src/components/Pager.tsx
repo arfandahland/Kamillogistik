@@ -6,9 +6,9 @@ import { hrefHalaman, nomorHalaman, type Halaman } from "@/lib/halaman";
  * Pembagi halaman seragam untuk semua daftar. Tersembunyi bila datanya muat di satu halaman.
  * `params` berisi saringan yang sedang aktif, supaya berpindah halaman tidak menghapus saringan.
  */
-export default function Pager({ h, path, params = {}, satuan = "data" }: { h: Pick<Halaman<unknown>, "p" | "halaman" | "total" | "dari" | "sampai">; path: string; params?: Record<string, string | undefined | null>; satuan?: string }) {
+export default function Pager({ h, path, params = {}, satuan = "data", param = "hal" }: { h: Pick<Halaman<unknown>, "p" | "halaman" | "total" | "dari" | "sampai">; path: string; params?: Record<string, string | undefined | null>; satuan?: string; param?: string }) {
   if (h.halaman <= 1) return null;
-  const ke = (n: number) => hrefHalaman(path, params, n);
+  const ke = (n: number) => hrefHalaman(path, params, n, param);
   return (
     <nav className="pager" aria-label="Halaman">
       <p className="pager-info" role="status">Menampilkan <b>{h.dari}–{h.sampai}</b> dari {h.total} {satuan}</p>
