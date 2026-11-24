@@ -21,7 +21,7 @@ import BackLink from "@/components/BackLink";
 
 type Detail = {
   id: string; resiNo: string; status: AnyStatus; next: string | null;
-  inspections: Inspection[]; pickupType: "PICKUP" | "DROPOFF"; pickupAddress: string | null; mode: "LAUT" | "DARAT" | "UDARA"; segment: string; companyBasis?: "KG" | "M3" | null; company: string | null; manifest: { id: string; code: string; status: string } | null;
+  inspections: Inspection[]; pickupType: "PICKUP" | "DROPOFF"; pickupAddress: string | null; mode: "LAUT" | "DARAT" | "UDARA"; segment: string; finalDest?: { id: string; name: string; city: string } | null; companyBasis?: "KG" | "M3" | null; company: string | null; manifest: { id: string; code: string; status: string } | null;
   origin: { code: string; city: string; name: string }; dest: { code: string; city: string; name: string };
   senderName: string; senderPhone: string | null; receiverName: string; receiverPhone: string | null; receiverAddress: string | null; area?: { province: string; regency: string; district: string; village: string; code: string } | null; vehicle?: Record<string, string> | null;
   holder: { id: string; name: string } | null; iAmHolder: boolean;
@@ -190,7 +190,7 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
         )}
 
         <KendalaPanel shipmentId={s.id} role={atMine ? role : "VIEW"} status={s.status} />
-        <TeruskanPanel id={s.id} status={s.status} role={role} branchName={me.data.branchName ?? null} destName={s.dest.name} legs={s.legs ?? []}
+        <TeruskanPanel id={s.id} status={s.status} role={role} branchName={me.data.branchName ?? null} destName={s.dest.name} finalDest={s.finalDest ?? null} legs={s.legs ?? []}
           hubs={["MITRA_POS", "HUB_MANAGER"].includes(role) && s.status === "AT_DEST_HUB" ? (await staffRpc<{ id: string; name: string; city: string }[]>("staff_dest_hubs")).data ?? [] : []} />
         <TutupResiPanel s={s} role={role} branchName={me.data.branchName ?? null} />
         <RevisiPanel s={s} role={isOrigin ? role : "VIEW"} />
