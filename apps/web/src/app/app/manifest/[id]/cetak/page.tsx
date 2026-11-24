@@ -11,7 +11,7 @@ import BackLink from "@/components/BackLink";
 export const metadata: Metadata = { title: "Cetak Manifest" };
 export const dynamic = "force-dynamic";
 type M = { id: string; code: string; status: string; mode: "LAUT" | "DARAT" | "UDARA"; seal: string | null; container: string | null; carrier: string | null; departureAt: string | null; eta: string | null; createdAt: string;
-  origin: { city: string; name: string }; dest: { city: string; name: string }; shipments: { id: string; resiNo: string; receiver: string; items: { barcode: string; kg: number | null }[] }[]; totals: { resi: number; items: number; kg: number } };
+  origin: { city: string; name: string }; dest: { city: string; name: string }; shipments: { id: string; resiNo: string; receiver: string; items: { barcode: string; kg: number | null; cbm?: number }[] }[]; totals: { cbm?: number; resi: number; items: number; kg: number } };
 
 export default async function CetakManifest({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -37,10 +37,10 @@ export default async function CetakManifest({ params }: { params: Promise<{ id: 
           <tr><th>Kontainer / AWB</th><td>{m.container ?? "-"}</td><th>{m.mode === "UDARA" ? "Penerbangan" : m.mode === "DARAT" ? "Truk" : "Kapal"}</th><td>{m.carrier ?? "-"}</td></tr>
           <tr><th>Nomor segel</th><td>{m.seal ?? "-"}</td><th>Berangkat / tiba</th><td>{m.departureAt ? tanggalWaktu(m.departureAt) : "-"} / {m.eta ? tanggalWaktu(m.eta) : "-"}</td></tr>
         </tbody></table>
-        <table><thead><tr><th>No</th><th>Kode resi</th><th>Penerima</th><th>Barang</th><th>Berat</th><th>✓</th></tr></thead>
+        <table><thead><tr><th>No</th><th>Kode resi</th><th>Penerima</th><th>Barang</th><th>Berat</th><th>Kubikasi</th><th>✓</th></tr></thead>
           <tbody>{m.shipments.map((s, i) => (
-            <tr key={s.id}><td>{i + 1}</td><td style={{ fontFamily: "ui-monospace, Menlo, monospace", fontSize: 11.5, wordBreak: "break-all" }}>{s.resiNo}</td><td>{s.receiver}</td><td>{s.items.length}</td><td>{Number(s.items.reduce((a, it) => a + Number(it.kg ?? 0), 0)).toLocaleString("id-ID")} kg</td><td>☐</td></tr>))}
-            <tr><th colSpan={3}>Total</th><th>{m.totals.items}</th><th>{Number(m.totals.kg).toLocaleString("id-ID")} kg</th><th /></tr></tbody></table>
+            <tr key={s.id}><td>{i + 1}</td><td style={{ fontFamily: "ui-monospace, Menlo, monospace", fontSize: 11.5, wordBreak: "break-all" }}>{s.resiNo}</td><td>{s.receiver}</td><td>{s.items.length}</td><td>{Number(s.items.reduce((a, it) => a + Number(it.kg ?? 0), 0)).toLocaleString("id-ID")} kg</td><td>{Number(s.items.reduce((a, it) => a + Number(it.cbm ?? 0), 0)).toLocaleString("id-ID", { maximumFractionDigits: 3 })} m³</td><td>☐</td></tr>))}
+            <tr><th colSpan={3}>Total</th><th>{m.totals.items}</th><th>{Number(m.totals.kg).toLocaleString("id-ID")} kg</th><th>{Number(m.totals.cbm ?? 0).toLocaleString("id-ID", { maximumFractionDigits: 3 })} m³</th><th /></tr></tbody></table>
         <div className="sign"><div>Gudang asal<br /><small>nama dan tanda tangan</small></div><div>Sopir / pengangkut<br /><small>nama dan tanda tangan</small></div><div>Gudang tujuan<br /><small>nama dan tanda tangan</small></div></div>
         <p style={{ fontSize: 11, marginTop: 10 }}>Dicetak dari aplikasi Kamil Logistik. Pindai QR di atas untuk membuka manifest ini.</p>
       </article>

@@ -16,8 +16,8 @@ type Place = { code: string; city: string; name: string };
 type M = {
   id: string; code: string; status: "OPEN" | "SEALED" | "IN_TRANSIT" | "ARRIVED" | "UNLOADED"; mode: "LAUT" | "DARAT" | "UDARA"; seal: string | null; container: string | null; carrier: string | null; voyage?: string | null; portLoad?: string | null; portUnload?: string | null;
   departureAt: string | null; eta: string | null; note: string | null; createdAt: string; origin: Place; dest: Place; holder: string | null; iAmHolder: boolean; pendingTo: string | null; pendingToMe: boolean;
-  shipments: { id: string; resiNo: string; status: string; receiver: string; items: { barcode: string; kg: number | null; scanned: boolean }[] }[];
-  totals: { resi: number; items: number; scanned: number; kg: number };
+  shipments: { id: string; resiNo: string; status: string; receiver: string; items: { barcode: string; kg: number | null; cbm?: number; scanned: boolean }[] }[];
+  totals: { resi: number; items: number; scanned: number; kg: number; cbm?: number };
   cases: { id: string; expected: number; found: number; status: string; note: string | null }[];
 };
 type Cand = { id: string; resiNo: string; receiver: string; items: number; kg: number };
@@ -61,7 +61,7 @@ export default async function ManifestDetail({ params, searchParams }: { params:
           <span className="muted">Kode manifest</span>
           <h1 className="resicode">{m.code}</h1>
           <p><span className={`pill ${m.status === "UNLOADED" ? "done" : ""}`}>{MANIFEST_STATUS_LABEL[m.status]}</span> <span className="muted">{m.origin.city} → {m.dest.city}</span></p>
-          <p className="chipsrow"><span className="tag moda"><Icon name={modaIcon} size={14} /> {MODA_LABEL[m.mode]}</span><span className="tag"><Icon name="box" size={14} /> {m.totals.resi} resi · {m.totals.items} barang · {Number(m.totals.kg).toLocaleString("id-ID")} kg</span></p>
+          <p className="chipsrow"><span className="tag moda"><Icon name={modaIcon} size={14} /> {MODA_LABEL[m.mode]}</span><span className="tag"><Icon name="box" size={14} /> {m.totals.resi} resi · {m.totals.items} barang · {Number(m.totals.kg).toLocaleString("id-ID")} kg</span><span className="tag"><Icon name="box" size={14} /> {Number(m.totals.cbm ?? 0).toLocaleString("id-ID", { maximumFractionDigits: 3 })} m³</span></p>
           <ol className="mstep" aria-label="Tahap manifest">
             {STEPS.map((s, i) => <li key={s} className={i < cur ? "done" : i === cur ? "now" : ""}><span className="mn"><Icon name={i < cur ? "check" : i === 0 ? "layers" : i === 1 ? "lock" : i === 2 ? modaIcon : i === 3 ? "pin" : "box"} size={16} /></span>{SHORT[s]}</li>)}
           </ol>

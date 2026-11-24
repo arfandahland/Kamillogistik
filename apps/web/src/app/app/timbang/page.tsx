@@ -62,7 +62,7 @@ export default async function Timbang({ searchParams }: { searchParams: Promise<
             ) : (
               <>
                 {d.weightKg != null && <p className="hint" style={{ marginTop: 0 }}>Sudah tercatat {Number(d.weightKg).toLocaleString("id-ID")} kg. Simpan lagi untuk memperbaiki.</p>}
-                <TimbangForm key={d.barcode} kode={d.barcode} mode={d.mode} awal={{ berat: d.weightKg, l: d.lCm, w: d.wCm, h: d.hCm }} />
+                <TimbangForm key={d.barcode} kode={d.barcode} mode={d.mode} sisa={Math.max(0, d.total - d.weighed)} awal={{ berat: d.weightKg, l: d.lCm, w: d.wCm, h: d.hCm }} />
               </>
             )}
           </section>

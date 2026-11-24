@@ -7,16 +7,19 @@ const angka = (v: string) => { const n = Number(v.replace(",", ".")); return Num
 const fmt = (n: number) => n.toLocaleString("id-ID", { maximumFractionDigits: 2 });
 
 /** Form timbang satu barang: berat besar di tengah, ukuran tiga kolom, dan hitungan berat volume dan berat tertagih langsung terlihat. */
-export default function TimbangForm({ kode, mode, awal }: { kode: string; mode: string; awal: { berat: number | null; l: number | null; w: number | null; h: number | null } }) {
+export default function TimbangForm({ kode, mode, awal, sisa = 1 }: { kode: string; mode: string; sisa?: number; awal: { berat: number | null; l: number | null; w: number | null; h: number | null } }) {
   const t = (n: number | null) => (n == null ? "" : String(n).replace(".", ","));
   const [berat, setBerat] = useState(t(awal.berat)); const [l, setL] = useState(t(awal.l)); const [w, setW] = useState(t(awal.w)); const [h, setH] = useState(t(awal.h));
+  const [jumlah, setJumlah] = useState("1");
   const pembagi = mode === "UDARA" ? 6000 : 4000;
   const hit = useMemo(() => {
     const b = angka(berat), pl = angka(l), pw = angka(w), ph = angka(h);
     const vol = pl && pw && ph ? (pl * pw * ph) / pembagi : null;
     const tagih = b != null ? Math.max(b, vol ?? 0) : null;
-    return { b, vol, tagih, ukuranSebagian: [l, w, h].some((x) => x.trim() !== "") && !(pl && pw && ph) };
-  }, [berat, l, w, h, pembagi]);
+    const n = Math.max(1, Math.min(sisa, Math.floor(angka(jumlah) ?? 1)));
+    const cbmSatuan = pl && pw && ph ? (pl * pw * ph) / 1000000 : null;
+    return { n, totalKg: b != null ? b * n : null, totalCbm: cbmSatuan != null ? cbmSatuan * n : null, b, vol, tagih, ukuranSebagian: [l, w, h].some((x) => x.trim() !== "") && !(pl && pw && ph) };
+  }, [berat, l, w, h, pembagi, jumlah, sisa]);
   return (
     <form action={timbangBarang} className="tbform">
       <input type="hidden" name="kode" value={kode} />
@@ -34,6 +37,13 @@ export default function TimbangForm({ kode, mode, awal }: { kode: string; mode: 
         </div>
         {hit.ukuranSebagian && <p className="err" role="alert" style={{ margin: 0 }}>Isi ketiga ukuran, atau kosongkan semuanya.</p>}
       </section>
+      {sisa > 1 && (
+        <section className="tbblok">
+          <label className="tbjudul" htmlFor="jumlah"><span className="tbno">3</span> Jumlah barang dengan berat dan ukuran sama <small>isi bila banyak barang serupa; sisa {sisa} barang</small></label>
+          <div className="tbkecil"><input id="jumlah" name="jumlah" inputMode="numeric" autoComplete="off" value={jumlah} onChange={(e) => setJumlah(e.target.value.replace(/\D/g, ""))} aria-describedby="tb-jml" /><i>barang</i></div>
+          <p className="hint" id="tb-jml" style={{ margin: 0 }}>{hit.n > 1 ? `${hit.n} barang × ${hit.b != null ? fmt(hit.b) : "?"} kg = ${hit.totalKg != null ? fmt(hit.totalKg) : "-"} kg${hit.totalCbm != null ? ` · ${fmt(hit.totalCbm)} m³` : ""}. Sistem mencatat semuanya sekaligus.` : "Biarkan 1 bila hanya menimbang satu barang."}</p>
+        </section>
+      )}
       <section className="tbhasil" aria-live="polite">
         <div><small>Berat timbangan</small><b>{hit.b != null ? `${fmt(hit.b)} kg` : "-"}</b></div>
         <div><small>Berat volume</small><b>{hit.vol != null ? `${fmt(hit.vol)} kg` : "-"}</b></div>
