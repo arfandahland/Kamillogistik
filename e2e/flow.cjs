@@ -1780,6 +1780,31 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     }
   }
 
+  console.log("\n[AK5] Setiap tautan menu tiap peran dapat dibuka (tidak ditolak, tidak dialihkan)");
+  {
+    const akunMenu = [["owner@uji.id", "Pemilik", "Pemilik2026x"], ["manajer@uji.id", "Kepala gudang"], ["kasir@uji.id", "Kasir"], ["gudang@uji.id", "Staf gudang"], ["kurir@uji.id", "Kurir"], ["sopir@uji.id", "Sopir"],
+      ["finance@uji.id", "Finance"], ["hrd.uji@uji.id", "HRD"], ["cs@uji.id", "CS"], ["mv.jkt@uji.id", "MV"], ["mv.master@uji.id", "MV Master"], ["konten.uji@uji.id", "Konten"]];
+    for (const [em, nama, pw] of akunMenu) {
+      const s = await login(browser, em, pw || PASS);
+      if (!s.loggedIn) { ok(`AK5 ${nama}: bisa masuk`, false, em); await s.ctx.close(); continue; }
+      const links = new Set();
+      for (const start of ["/app", "/app/pusat"]) {
+        await s.page.goto(`${BASE}${start}`, { waitUntil: "domcontentloaded" }); await s.page.waitForTimeout(400);
+        (await s.page.$$eval("a[href^='/app']", (as) => as.map((a) => a.getAttribute("href")))).forEach((h) => links.add(h.split("#")[0]));
+      }
+      const target = [...links].filter((h) => !/\/ekspor|\/foto|\/unduh|\/cetak|\/keluar|\/resi\/|\/tagihan\/|\/manifest\/[0-9a-f]/.test(h) && h !== "/app").slice(0, 40);
+      const buruk = [];
+      for (const h of target) {
+        await s.page.goto(`${BASE}${h}`, { waitUntil: "domcontentloaded" }).catch(() => {}); await s.page.waitForTimeout(250);
+        const path = new URL(s.page.url()).pathname, want = h.split("?")[0];
+        const izin = await s.page.locator(".err").first().innerText().catch(() => "");
+        if (path !== want || /izin/i.test(izin)) buruk.push(`${h} → ${path}${izin ? " (" + izin.slice(0, 40) + ")" : ""}`);
+      }
+      ok(`AK5 ${nama}: ${target.length} tautan menu semuanya terbuka`, buruk.length === 0, buruk.join("; "));
+      await s.ctx.close();
+    }
+  }
+
   await browser.close();
   const fail = results.filter((r) => !r.ok);
   console.log(`\n==== HASIL: ${results.length - fail.length}/${results.length} lolos ====`);
