@@ -2041,3 +2041,38 @@ body:has(.appshell) .hubcard.nol .pill { display: none; }
 body:has(.appshell) .hubcard.nol > p { margin: 0; font-size: 13px; color: var(--muted); text-align: right; flex: 1; }
 .gl-bd { flex: none; min-width: 26px; height: 26px; padding: 0 8px; border-radius: 99px; display: inline-grid; place-items: center; font-weight: 800; font-size: 13px; background: #f2b25c; color: #2a1a00; box-shadow: 0 0 14px rgba(242, 178, 92, .45); }
 .gl-bento .gl-bd { position: absolute; top: 12px; right: 44px; }
+
+/* ARUS BARANG: pemisahan barang keluar dan masuk per cabang */
+.arus-sw { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.arus-sw-i { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 2px 10px; padding: 12px 14px; border-radius: 16px; text-decoration: none; color: var(--ink); background: var(--glass); border: 1px solid var(--rim); border-bottom: 3px solid transparent; }
+.arus-sw-i .ai { grid-row: span 3; width: 40px; height: 40px; border-radius: 13px; display: grid; place-items: center; background: rgba(255, 255, 255, .07); }
+.arus-sw-i b { font-size: 26px; line-height: 1; font-weight: 800; } .arus-sw-i .at { font-size: 13.5px; font-weight: 700; } .arus-sw-i small { color: var(--muted); font-size: 12px; line-height: 1.25; grid-column: 2; }
+.arus-sw-i.keluar .ai { color: #fdba74; background: rgba(249, 115, 22, .16); } .arus-sw-i.masuk .ai { color: #7dd3fc; background: rgba(56, 189, 248, .16); }
+.arus-sw-i.on { background: linear-gradient(160deg, rgba(16, 185, 129, .22), var(--glass)); border-color: rgba(52, 211, 153, .5); box-shadow: 0 10px 26px rgba(16, 185, 129, .2); }
+.arus-sw-i.keluar.on { border-bottom-color: #f59e0b; } .arus-sw-i.masuk.on { border-bottom-color: #38bdf8; }
+.arus-tugas { margin: 0; font-size: 13.5px; color: var(--muted); padding: 10px 12px; border-radius: 12px; background: rgba(255, 255, 255, .04); border-left: 3px solid rgba(110, 231, 183, .5); }
+.arus-fase { display: flex; gap: 8px; overflow-x: auto; padding: 2px 0 6px; scrollbar-width: none; margin-inline: -2px; }
+.arus-fase::-webkit-scrollbar { display: none; }
+.arus-chip { flex: none; display: grid; justify-items: start; gap: 0; min-width: 92px; max-width: 150px; padding: 8px 12px; border-radius: 14px; text-decoration: none; color: var(--ink); background: var(--glass); border: 1px solid var(--rim); }
+.arus-chip b { font-size: 20px; line-height: 1.1; } .arus-chip span { font-size: 12px; color: var(--muted); line-height: 1.2; }
+.arus-chip.kosong { opacity: .55; } .arus-chip.on { background: linear-gradient(160deg, #10b981, #34d399); border-color: transparent; color: #04241c; } .arus-chip.on span { color: #04241c; }
+.arus-chip.warn { border-color: rgba(251, 191, 36, .45); } .arus-chip.warn b { color: #fcd34d; }
+.arus-giliran { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 14px; text-decoration: none; font-size: 13.5px; font-weight: 600; color: #fde7bd; background: linear-gradient(160deg, rgba(245, 158, 11, .22), rgba(245, 158, 11, .08)); border: 1px solid rgba(251, 191, 36, .4); }
+.arus-giliran.on { background: rgba(245, 158, 11, .3); }
+.arus-grup { display: grid; gap: 10px; }
+.arus-grup > header { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; margin-top: 6px; }
+.arus-grup > header h2 { margin: 0; font-size: 17px; } .arus-grup > header small { flex-basis: 100%; color: var(--muted); font-size: 12.5px; margin-top: -2px; }
+.arus-list { display: grid; gap: 10px; }
+@media (min-width: 900px) { .arus-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.arus-kartu { display: grid; gap: 6px; padding: 13px 14px; border-radius: 16px; text-decoration: none; color: var(--ink); background: var(--glass); border: 1px solid var(--rim); border-left: 4px solid rgba(110, 231, 183, .5); box-shadow: 0 8px 20px rgba(0, 0, 0, .25); min-width: 0; }
+.arus-kartu.giliran { border-left-color: #f59e0b; background: linear-gradient(160deg, rgba(245, 158, 11, .14), var(--glass)); }
+.arus-atas { display: flex; align-items: center; justify-content: space-between; gap: 8px; } .arus-atas .no { font-size: 14.5px; overflow-wrap: anywhere; }
+.arus-tag { flex: none; font-size: 11.5px; font-weight: 800; padding: 3px 9px; border-radius: 99px; background: #f2b25c; color: #2a1a00; }
+.arus-rute { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; font-size: 15px; } .arus-rute em { font-style: normal; font-size: 11.5px; font-weight: 700; padding: 2px 8px; border-radius: 99px; background: rgba(16, 185, 129, .16); color: #a7f3d0; margin-left: 4px; }
+.arus-sub { color: var(--muted); font-size: 12.5px; }
+.arus-jalur { display: flex; gap: 4px; margin-top: 2px; } .arus-jalur i { flex: 1; height: 6px; border-radius: 99px; background: rgba(255, 255, 255, .1); }
+.arus-jalur i.done { background: #10b981; } .arus-jalur i.now { background: linear-gradient(90deg, #34d399, #5eead4); box-shadow: 0 0 10px rgba(94, 234, 212, .6); }
+.arus-now { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; } .arus-now b { font-size: 14px; } .arus-now small { color: var(--muted); font-size: 12px; }
+.arus-next { display: flex; gap: 8px; align-items: flex-start; padding: 8px 10px; border-radius: 12px; background: rgba(255, 255, 255, .05); font-size: 13px; line-height: 1.35; }
+.arus-next .ico { flex: none; margin-top: 2px; color: #fcd34d; } .arus-next small { display: block; color: var(--muted); font-size: 12px; margin-top: 1px; }
+@media (prefers-reduced-motion: no-preference) { .arus-list > * { animation: glmuncul .4s cubic-bezier(.2, .8, .2, 1) backwards; } }

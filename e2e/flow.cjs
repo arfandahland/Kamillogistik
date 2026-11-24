@@ -1517,6 +1517,23 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     }
     await sa.ctx.close();
 
+    {
+      const ar = await login(browser, "kasir@uji.id", PASS, { width: 390, height: 844 });
+      await ar.page.goto(`${BASE}/app/arus?a=keluar`, { waitUntil: "networkidle" });
+      const kota = ((await ar.page.locator(".arus-sw-i.keluar small").innerText()).match(/Dari (.+) ke tujuan/) || [])[1] || "";
+      const judulK = await ar.page.locator("main h1").innerText();
+      const asalK = await ar.page.locator(".arus-kartu .arus-rute b:first-child").allInnerTexts();
+      ok("AR1 Arus barang: halaman Keluar hanya memuat resi yang asalnya cabang saya, tiap resi punya tahap dan langkah berikutnya", /Barang keluar/.test(judulK) && kota !== "" && asalK.every((a) => a === kota) && (await ar.page.locator(".arus-kartu .arus-next").count()) >= 1, `${kota} ${asalK.length} resi`);
+      await ar.page.goto(`${BASE}/app/arus?a=masuk`, { waitUntil: "networkidle" });
+      const tujuanM = await ar.page.locator(".arus-kartu .arus-rute b:last-child").allInnerTexts();
+      ok("AR2 Arus barang: halaman Masuk hanya memuat resi yang tujuannya cabang saya dan tidak bercampur dengan Keluar", /Barang masuk/.test(await ar.page.locator("main h1").innerText()) && tujuanM.every((t) => t === kota) && (await ar.page.locator(".arus-sw-i").count()) === 2, `${tujuanM.length} resi`);
+      await ar.page.goto(`${BASE}/app/arus?a=keluar&g=1`, { waitUntil: "networkidle" });
+      const kartuG = await ar.page.locator(".arus-kartu").count();
+      ok("AR3 Arus barang: saringan 'giliran Anda' hanya menampilkan resi bertanda Giliran Anda", kartuG === (await ar.page.locator(".arus-kartu.giliran").count()));
+      ok("AR4 tab Arus ada di menu bawah Kasir", (await ar.page.locator(".tabbar a[href='/app/arus']").count()) === 1);
+      await ar.ctx.close();
+    }
+
     const mv = await login(browser, "mv.jkt@uji.id", "Sandi2026a", { width: 390, height: 844 });
     await mv.page.waitForURL(/\/app\/mv/, { timeout: 15000 }).catch(() => {});
     await mv.page.waitForSelector("text=Vendor aktif", { timeout: 15000 }).catch(() => {});
