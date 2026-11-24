@@ -174,17 +174,17 @@ UPDATE public.hr_employees SET pin_fail = 0, locked_until = NULL WHERE id = curr
 -- Finance: rekap per cabang, terpisah antar cabang, dengan rincian harian
 SELECT t.as_user(current_setting('t.fin')::uuid);
 DO $$ DECLARE r jsonb; c jsonb; BEGIN
-  r := public.fin_kehadiran_rekap(current_date - 3, current_date + 1, NULL);
+  r := public.fin_kehadiran_rekap(current_date - 3, current_date + 2, NULL);
   c := (SELECT x FROM jsonb_array_elements(r->'cabang') x WHERE x->>'kode' = 'MKS');
   ASSERT (c->>'hadir')::int = 1 AND (c->>'telat')::int = 1, 'rekap Makassar: 1 hadir, 1 telat';
   c := (SELECT x FROM jsonb_array_elements(r->'cabang') x WHERE x->>'kode' = 'JKT');
   ASSERT (c->>'luar')::int >= 1, 'rekap Jakarta: karyawan yang absen di luar lokasi terhitung';
   c := (SELECT x FROM jsonb_array_elements(r->'cabang') x WHERE x->>'kode' = 'SUB');
   ASSERT (c->>'tanpaLokasi')::int = 1, 'rekap Surabaya: satu absen tanpa lokasi';
-  r := public.fin_kehadiran_rekap(current_date - 3, current_date + 1, current_setting('t.b_mks')::uuid);
+  r := public.fin_kehadiran_rekap(current_date - 3, current_date + 2, current_setting('t.b_mks')::uuid);
   ASSERT (SELECT bool_and(p->>'cabang' ILIKE '%Makassar%') FROM jsonb_array_elements(r->'pegawai') p), 'saringan cabang hanya memuat karyawan cabang itu';
-  ASSERT jsonb_array_length(public.fin_kehadiran_harian(current_date, current_setting('t.b_mks')::uuid)) >= 1, 'rincian harian cabang';
-  ASSERT jsonb_array_length((public.fin_kehadiran_pegawai(current_setting('t.mks')::uuid, current_date - 3, current_date + 1))->'hari') = 1, 'rincian harian satu karyawan';
+  ASSERT jsonb_array_length(public.fin_kehadiran_harian((now() AT TIME ZONE 'Asia/Makassar')::date, current_setting('t.b_mks')::uuid)) >= 1, 'rincian harian cabang';
+  ASSERT jsonb_array_length((public.fin_kehadiran_pegawai(current_setting('t.mks')::uuid, current_date - 3, current_date + 2))->'hari') = 1, 'rincian harian satu karyawan';
 END $$;
 SELECT t.fails($$select public.fin_kehadiran_rekap(current_date - 200, current_date, NULL)$$, 'rentang');
 RESET ROLE;

@@ -1808,6 +1808,69 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     }
   }
 
+  console.log("\n[AQ] Admin depo, data darat dan udara, laba rugi, hub transit, surat jalan per moda");
+  try {
+    const cpq = require("child_process"), dbn = require("fs").readFileSync(__dirname + "/.dbname", "utf8").trim();
+    const dbq = (q) => cpq.spawnSync("su", ["postgres", "-c", `psql -At -q -X -d ${dbn}`], { input: q, encoding: "utf8" }).stdout.trim();
+    dbq(`INSERT INTO staff_invites(email, full_name, role, branch_id) VALUES ('depo.uji@uji.id','Admin Depo Uji','DEPO',(SELECT id FROM branches_partners WHERE code='JKT'));
+      INSERT INTO auth.users(id,email,encrypted_password,email_confirmed_at,aud,role,raw_app_meta_data,raw_user_meta_data) SELECT gen_random_uuid(), email, extensions.crypt('Test1234', extensions.gen_salt('bf')), now(),'authenticated','authenticated','{}','{}' FROM staff_invites WHERE email = 'depo.uji@uji.id';`);
+    const d = await login(browser, "depo.uji@uji.id", PASS, { width: 390, height: 844 });
+    ok("AQ1 Admin depo bisa masuk", d.loggedIn, d.page.url());
+    if (d.loggedIn) {
+      await d.page.goto(`${BASE}/app/baru`, { waitUntil: "networkidle" });
+      ok("AQ2 Admin depo membuka form resi baru (resi cepat di depo)", /\/app\/baru/.test(d.page.url()) && (await d.page.locator("form").count()) > 0, d.page.url());
+      await d.page.goto(`${BASE}/app/manifest`, { waitUntil: "networkidle" });
+      ok("AQ3 Admin depo melihat daftar manifest dan tombol buat manifest", /\/app\/manifest/.test(d.page.url()) && (await d.page.getByRole("link", { name: /Buat manifest|Manifest baru/ }).count()) > 0, d.page.url());
+      for (const jalan of ["/app/tagihan", "/app/keuangan", "/app/laba-rugi", "/app/petugas"]) {
+        await d.page.goto(`${BASE}${jalan}`, { waitUntil: "networkidle" }).catch(() => {});
+        ok(`AQ4 Admin depo ditolak masuk ${jalan}`, !d.page.url().includes(jalan), d.page.url());
+      }
+      await d.page.goto(`${BASE}/app/pusat`, { waitUntil: "networkidle" });
+      ok("AQ5 Pusat Admin depo tampil", /Pusat Depo/.test(await d.page.locator("body").innerText()));
+    }
+    await d.ctx.close();
+
+    // Manifest udara dan darat: data khusus tersimpan lewat form dan tampil di rincian dan surat jalan
+    const ko = await login(browser, "kasir@uji.id", PASS, { width: 1100, height: 900 });
+    const manUdara = dbq(`SELECT id FROM manifests WHERE mode = 'UDARA' AND status IN ('OPEN','SEALED') AND origin_id = (SELECT id FROM branches_partners WHERE code='JKT') LIMIT 1;`);
+    let idModa = manUdara;
+    if (!idModa) {
+      dbq(`INSERT INTO manifests(type, origin_id, dest_id, status, code, mode) SELECT 'MASTER', (SELECT id FROM branches_partners WHERE code='JKT'), (SELECT id FROM branches_partners WHERE code='MKS'), 'OPEN', 'MNF-JKT-MKS-U-AQTEST-01-X', 'UDARA';`);
+      idModa = dbq(`SELECT id FROM manifests WHERE code = 'MNF-JKT-MKS-U-AQTEST-01-X';`);
+    }
+    await ko.page.goto(`${BASE}/app/manifest/${idModa}`, { waitUntil: "networkidle" });
+    ok("AQ6 manifest udara punya form Data penerbangan", (await ko.page.getByText("Data penerbangan").count()) > 0);
+    await ko.page.fill("#md-smu", "126-12345675"); await ko.page.fill("#md-mk", "Garuda"); await ko.page.fill("#md-pn", "GA123");
+    await ko.page.selectOption("#md-xr", "LOLOS");
+    await ko.page.getByRole("button", { name: /Simpan data udara/ }).click();
+    await ko.page.waitForLoadState("networkidle");
+    const tersimpan = dbq(`SELECT moda_detail->>'smu' || '|' || (moda_detail->>'xray') FROM manifests WHERE id = '${idModa}';`);
+    ok("AQ7 data SMU dan X-Ray tersimpan", tersimpan === "126-12345675|LOLOS", tersimpan);
+    ok("AQ8 tombol Kirim lewat WhatsApp pada manifest terisi ringkasan", ((await ko.page.getByRole("link", { name: /Kirim lewat WhatsApp/ }).first().getAttribute("href")) || "").includes("wa.me/?text="));
+    dbq(`UPDATE manifests SET status = 'SEALED', sealed_at = now() WHERE id = '${idModa}' AND status = 'OPEN';`);
+    await ko.page.goto(`${BASE}/app/manifest/${idModa}/surat-jalan`, { waitUntil: "networkidle" });
+    const sj = await ko.page.locator("body").innerText();
+    ok("AQ9 surat jalan udara berjudul SMU dan memuat nomor SMU", /SMU \/ AIRWAY BILL/.test(sj) && /126-12345675/.test(sj));
+    await ko.ctx.close();
+
+    // Laba rugi: Finance dan Pemilik melihat; Kasir ditolak
+    const fi = await login(browser, "finance@uji.id", PASS, { width: 1100, height: 900 });
+    await fi.page.goto(`${BASE}/app/laba-rugi`, { waitUntil: "networkidle" });
+    const lr = await fi.page.locator("body").innerText();
+    ok("AQ10 Finance membuka Laba rugi per resi lengkap dengan tabel moda, rute, dan kapal", /Laba rugi per resi/.test(lr) && /Per moda/.test(lr) && /Per rute/.test(lr) && /Per kapal dan kontainer/.test(lr));
+    await fi.ctx.close();
+    const kl = await login(browser, "kasir@uji.id", PASS, { width: 390, height: 844 });
+    await kl.page.goto(`${BASE}/app/laba-rugi`, { waitUntil: "networkidle" }).catch(() => {});
+    ok("AQ11 Kasir ditolak masuk Laba rugi", !kl.page.url().includes("/app/laba-rugi"), kl.page.url());
+    await kl.ctx.close();
+
+    // Hub transit: Super Admin mengatur dari halaman Mitra dan cabang
+    const ow = await login(browser, "owner@uji.id", "Pemilik2026x", { width: 1100, height: 900 });
+    await ow.page.goto(`${BASE}/app/mitra`, { waitUntil: "networkidle" });
+    ok("AQ12 halaman Mitra punya pilihan Singgah di hub", (await ow.page.getByText("Singgah di hub").count()) > 0);
+    await ow.ctx.close();
+  } catch (e) { ok("AQ pemeriksaan berjalan sampai selesai", false, String(e.message || e).slice(0, 200)); }
+
   await browser.close();
   const fail = results.filter((r) => !r.ok);
   console.log(`\n==== HASIL: ${results.length - fail.length}/${results.length} lolos ====`);
