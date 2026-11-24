@@ -198,9 +198,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/cari/page.tsx": {
-    "mtime": 1795485590.593618,
-    "seen": 1795486047.6008825,
-    "ast_hash": "1d3e43e8a17952a260cac0ed3b0c345d",
+    "mtime": 1795555305.133176,
+    "seen": 1795555400.196306,
+    "ast_hash": "e07639a8738a7712653dc54aec837f98",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/catatan/page.tsx": {
@@ -300,9 +300,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/manifest/[id]/page.tsx": {
-    "mtime": 1795511527.4527495,
-    "seen": 1795511673.2055964,
-    "ast_hash": "1a6ee910214dfe25ae0579930573221d",
+    "mtime": 1795555304.7533379,
+    "seen": 1795555400.1976848,
+    "ast_hash": "ae8d1529bbeeb38e9d1dfc4618f4dc56",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/manifest/actions.ts": {
@@ -312,15 +312,15 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/manifest/baru/page.tsx": {
-    "mtime": 1795434857.3294213,
-    "seen": 1795435181.2504323,
-    "ast_hash": "6f8871a3e9e3ab195bdec172fb35da71",
+    "mtime": 1795555304.752157,
+    "seen": 1795555400.1978502,
+    "ast_hash": "25e519f9421441db927c6ae94b01f924",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/manifest/page.tsx": {
-    "mtime": 1795485387.2108932,
-    "seen": 1795486047.6009903,
-    "ast_hash": "54736127763ba79bdb2e1e76613dcdfe",
+    "mtime": 1795555304.4676285,
+    "seen": 1795555400.197852,
+    "ast_hash": "65eade8d34b5c4bf0b37101549ad54b5",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/mitra/page.tsx": {
@@ -360,9 +360,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/pindai/page.tsx": {
-    "mtime": 1795306675.9778678,
-    "seen": 1795307707.7703168,
-    "ast_hash": "0f802439072ba971dc8d80b2628ba11f",
+    "mtime": 1795555304.9142783,
+    "seen": 1795555400.1987348,
+    "ast_hash": "9c048e766c1f251777526e38d66f406d",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/resi/[id]/cetak/page.tsx": {
@@ -756,9 +756,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/StaffShell.tsx": {
-    "mtime": 1795510439.14419,
-    "seen": 1795510956.448021,
-    "ast_hash": "7a40d9899e454adbb2d5605b7d082e8d",
+    "mtime": 1795555303.7836545,
+    "seen": 1795555400.2031548,
+    "ast_hash": "e7f91517a9b9a5751ccfa69a02fedbb1",
     "semantic_hash": ""
   },
   "apps/web/src/components/SubmitButton.tsx": {
@@ -900,9 +900,9 @@
     "semantic_hash": ""
   },
   "db/test/run.sh": {
-    "mtime": 1795529198.582447,
-    "seen": 1795529216.5010247,
-    "ast_hash": "44f268e05b4c5d7e67bb490412ccc077",
+    "mtime": 1795530169.0553315,
+    "seen": 1795555400.2075176,
+    "ast_hash": "aa7b5e117dff2101930e4ad9a7230e1e",
     "semantic_hash": ""
   },
   "db/test/tariff-cases.json": {
@@ -954,9 +954,9 @@
     "semantic_hash": ""
   },
   "e2e/setup.sh": {
-    "mtime": 1795529113.6741815,
-    "seen": 1795529216.5012553,
-    "ast_hash": "4e451756a653ac79b033ed65797d1cf1",
+    "mtime": 1795530160.584883,
+    "seen": 1795555400.2078936,
+    "ast_hash": "c36b77fd5866d7c207a3cf07f37087df",
     "semantic_hash": ""
   },
   "e2e/skenario.cjs": {
@@ -1062,9 +1062,9 @@
     "semantic_hash": ""
   },
   "packages/core/src/service/staffText.ts": {
-    "mtime": 1795500016.9672415,
-    "seen": 1795500075.1393044,
-    "ast_hash": "def02edf255115f1638140af8a893ec3",
+    "mtime": 1795555334.7913396,
+    "seen": 1795555400.20846,
+    "ast_hash": "a118500be52930c1cdecb57c8bcace90",
     "semantic_hash": ""
   },
   "packages/core/src/service/supabaseRepo.ts": {
@@ -1080,9 +1080,9 @@
     "semantic_hash": ""
   },
   "packages/core/src/status.ts": {
-    "mtime": 1794982505.6225107,
-    "seen": 1795104170.4405055,
-    "ast_hash": "914f6267f1079247e91df36aecb0d7b1",
+    "mtime": 1795555303.7168324,
+    "seen": 1795555400.208522,
+    "ast_hash": "c73ff29b51e494beddc9834e401b2100",
     "semantic_hash": ""
   },
   "packages/core/src/tariff.ts": {
@@ -9000,9 +9000,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/lib/panduanAwal.ts": {
-    "mtime": 1795338096.765596,
-    "seen": 1795338167.6727452,
-    "ast_hash": "5964102ecc0269a55a6ecba46576091e",
+    "mtime": 1795555334.7925298,
+    "seen": 1795555400.2043068,
+    "ast_hash": "b07cfd03af9b6fbe70dcc36196af2d99",
     "semantic_hash": ""
   },
   "docs/panduan-penggunaan.html": {
@@ -9036,9 +9036,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/lib/pusat.ts": {
-    "mtime": 1795514609.3357222,
-    "seen": 1795514757.5995107,
-    "ast_hash": "2bce23a59c605e90b1566891b8767535",
+    "mtime": 1795555305.3002331,
+    "seen": 1795555400.2043595,
+    "ast_hash": "f5167c004c90e7501b02dc4399f685f6",
     "semantic_hash": ""
   },
   "db/migrations/056_data_awal_lengkap.sql": {
@@ -9216,9 +9216,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/arus/page.tsx": {
-    "mtime": 1795485732.892435,
-    "seen": 1795486047.600871,
-    "ast_hash": "73e49555bf2048b87ac69b31e02f0bb3",
+    "mtime": 1795555356.483515,
+    "seen": 1795555400.1962023,
+    "ast_hash": "8192cb4abc3a42cd32cd8b5d66fdd109",
     "semantic_hash": ""
   },
   "packages/core/src/service/arus.ts": {
@@ -9501,6 +9501,18 @@
     "mtime": 1795526898.5149739,
     "seen": 1795528769.4716914,
     "ast_hash": "800ff8e46061efa2787606d5c39efcee",
+    "semantic_hash": ""
+  },
+  "db/migrations/072_rute_hub_makassar.sql": {
+    "mtime": 1795529444.0199778,
+    "seen": 1795555400.2065482,
+    "ast_hash": "82f719dcfe8dee77c9b893d406382eed",
+    "semantic_hash": ""
+  },
+  "db/test/rute_hub.sql": {
+    "mtime": 1795529459.7840745,
+    "seen": 1795555400.2075212,
+    "ast_hash": "c85a412c84cbbca4f52ecee3b636a30a",
     "semantic_hash": ""
   },
   "package-lock.json": {

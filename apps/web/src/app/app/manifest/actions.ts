@@ -97,6 +97,13 @@ export async function isiVoyage(fd: FormData) {
   await hasil(id, "manifest_voyage_set", { p_id: id, p_voyage: str(fd, "voyage") || null, p_load: str(fd, "muat") || null, p_unload: str(fd, "bongkar") || null }, "Data voyage dan pelabuhan disimpan.");
 }
 
+export async function isiModa(fd: FormData) {
+  const id = str(fd, "id");
+  const data: Record<string, string> = {};
+  for (const k of ["sopir", "sopirHp", "segelBox", "hubTransit", "smu", "maskapai", "penerbangan", "xray", "berbahaya", "reroute"]) data[k] = str(fd, k);
+  await hasil(id, "manifest_moda_set", { p_id: id, p_data: data }, "Data moda disimpan.");
+}
+
 export async function terimaSemuaManifest(fd: FormData) {
   const id = str(fd, "id");
   const r = await staffRpc<{ scanned: number }>("manifest_accept_all", { p_id: id });

@@ -5,16 +5,16 @@ import Icon from "@/components/Icon";
 import BiayaManifest from "@/components/BiayaManifest";
 import SubmitButton from "@/components/SubmitButton";
 import ManifestPindai from "@/components/ManifestPindai";
-import { tanggalWaktu } from "@/lib/brand";
+import { BRAND, tanggalWaktu, waLink } from "@/lib/brand";
 import { getMe, staffRpc } from "@/lib/supabase/server";
-import { bukaSegel, hapusManifest, bongkarSemuaLengkap, terimaSemuaManifest, berangkatManifest, isiVoyage, keluarkanResi, segelManifest, selesaiBongkar, selesaikanSelisih, revisiEta, serahkanManifest, tambahResiForm, terimaManifest, tibaManifest, ubahManifest } from "../actions";
+import { isiModa, bukaSegel, hapusManifest, bongkarSemuaLengkap, terimaSemuaManifest, berangkatManifest, isiVoyage, keluarkanResi, segelManifest, selesaiBongkar, selesaikanSelisih, revisiEta, serahkanManifest, tambahResiForm, terimaManifest, tibaManifest, ubahManifest } from "../actions";
 import Potong from "@/components/Potong";
 import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Manifest" };
 type Place = { code: string; city: string; name: string };
 type M = {
-  id: string; code: string; status: "OPEN" | "SEALED" | "IN_TRANSIT" | "ARRIVED" | "UNLOADED"; mode: "LAUT" | "DARAT" | "UDARA"; seal: string | null; container: string | null; carrier: string | null; voyage?: string | null; portLoad?: string | null; portUnload?: string | null;
+  id: string; code: string; status: "OPEN" | "SEALED" | "IN_TRANSIT" | "ARRIVED" | "UNLOADED"; mode: "LAUT" | "DARAT" | "UDARA"; seal: string | null; container: string | null; carrier: string | null; voyage?: string | null; modaDetail?: Record<string, string>; portLoad?: string | null; portUnload?: string | null;
   departureAt: string | null; eta: string | null; note: string | null; createdAt: string; origin: Place; dest: Place; holder: string | null; iAmHolder: boolean; pendingTo: string | null; pendingToMe: boolean;
   shipments: { id: string; resiNo: string; status: string; receiver: string; items: { barcode: string; kg: number | null; cbm?: number; scanned: boolean }[] }[];
   totals: { resi: number; items: number; scanned: number; kg: number; cbm?: number };
@@ -69,6 +69,7 @@ export default async function ManifestDetail({ params, searchParams }: { params:
             {m.container && (<><dt>Kontainer / AWB</dt><dd>{m.container}</dd></>)}
             {m.carrier && (<><dt>{m.mode === "UDARA" ? "Penerbangan" : m.mode === "DARAT" ? "Truk" : "Kapal"}</dt><dd>{m.carrier}</dd></>)}
             {m.voyage && (<><dt>Nomor voyage</dt><dd>{m.voyage}</dd></>)}
+            {Object.entries(m.modaDetail ?? {}).map(([k, v]) => (<span key={k} style={{ display: "contents" }}><dt>{({ sopir: "Sopir", sopirHp: "HP sopir", segelBox: "Segel box", hubTransit: "Hub transit", smu: "SMU / AWB", maskapai: "Maskapai", penerbangan: "Penerbangan", xray: "X-Ray", berbahaya: "Barang berbahaya", reroute: "Alih penerbangan" } as Record<string, string>)[k] ?? k}</dt><dd>{v}</dd></span>))}
             {m.portLoad && (<><dt>Pelabuhan muat</dt><dd>{m.portLoad}</dd></>)}
             {m.portUnload && (<><dt>Pelabuhan bongkar</dt><dd>{m.portUnload}</dd></>)}
             {m.seal && (<><dt>Nomor segel</dt><dd>{m.seal}</dd></>)}
@@ -77,7 +78,7 @@ export default async function ManifestDetail({ params, searchParams }: { params:
             <dt>Dipegang</dt><dd>{m.iAmHolder ? "Anda" : m.holder ?? (m.status === "SEALED" ? "Menunggu gudang asal menyerahkan ke sopir" : "-")}{m.pendingTo ? ` (menunggu ${m.pendingTo} menerima)` : ""}</dd>
             {m.note && (<><dt>Catatan</dt><dd>{m.note}</dd></>)}
           </dl>
-          <div className="resiact"><Link className="btn" href={`/app/manifest/${m.id}/cetak`}><Icon name="print" size={20} /> Cetak manifest</Link>{m.status !== "OPEN" && <Link className="btn ghost" href={`/app/manifest/${m.id}/surat-jalan`}><Icon name="file" size={20} /> Surat jalan pelabuhan</Link>}<a className="btn ghost" href={`/app/manifest/${m.id}/unduh`}><Icon name="file" size={20} /> Unduh isi manifest (CSV)</a></div>
+          <div className="resiact"><Link className="btn" href={`/app/manifest/${m.id}/cetak`}><Icon name="print" size={20} /> Cetak manifest</Link>{m.status !== "OPEN" && <Link className="btn ghost" href={`/app/manifest/${m.id}/surat-jalan`}><Icon name="file" size={20} /> Surat jalan pelabuhan</Link>}<a className="btn ghost" href={`/app/manifest/${m.id}/unduh`}><Icon name="file" size={20} /> Unduh isi manifest (CSV)</a><a className="btn wabtn" href={waLink(`Manifest ${m.code}\n${m.origin.city} → ${m.dest.city} (${MODA_LABEL[m.mode]})\nStatus: ${MANIFEST_STATUS_LABEL[m.status]}\n${m.totals.resi} resi, ${m.totals.items} barang, ${Number(m.totals.kg).toLocaleString("id-ID")} kg${m.container ? `\n${m.mode === "UDARA" ? "AWB" : m.mode === "DARAT" ? "Plat truk" : "Kontainer"}: ${m.container}` : ""}${m.carrier ? `\nPengangkut: ${m.carrier}` : ""}${m.seal ? `\nSegel: ${m.seal}` : ""}`).replace("https://wa.me/" + BRAND.whatsappNumber, "https://wa.me/")} target="_blank" rel="noopener noreferrer"><Icon name="chat" size={20} /> Kirim lewat WhatsApp</a></div>
         </div>
         </div>
         <div className="dkol">
@@ -177,6 +178,26 @@ export default async function ManifestDetail({ params, searchParams }: { params:
             <div className="rbf"><label className="f" htmlFor="pmuat">Pelabuhan atau bandara muat</label><input id="pmuat" name="muat" defaultValue={m.portLoad ?? ""} maxLength={80} autoComplete="off" /></div>
             <div className="rbf"><label className="f" htmlFor="pbongkar">Pelabuhan atau bandara bongkar</label><input id="pbongkar" name="bongkar" defaultValue={m.portUnload ?? ""} maxLength={80} autoComplete="off" /></div>
             <SubmitButton className="btn ghost" steps={["Menyimpan…"]}>Simpan voyage dan pelabuhan</SubmitButton>
+          </form>
+        )}
+
+        {m.mode !== "LAUT" && ((kasirAsal && (m.status === "OPEN" || m.status === "SEALED")) || (role === "CONTAINER_DRIVER" && m.iAmHolder && (m.status === "SEALED" || m.status === "IN_TRANSIT"))) && (
+          <form action={isiModa} className="card rbsek">
+            <h2 className="cardh">{m.mode === "DARAT" ? "Data angkutan darat" : "Data penerbangan"}</h2><input type="hidden" name="id" value={m.id} />
+            {m.mode === "DARAT" ? (<>
+              <div className="rbf"><label className="f" htmlFor="md-sopir">Nama sopir</label><input id="md-sopir" name="sopir" defaultValue={m.modaDetail?.sopir ?? ""} maxLength={120} autoComplete="off" /></div>
+              <div className="rbf"><label className="f" htmlFor="md-hp">HP sopir</label><input id="md-hp" name="sopirHp" inputMode="tel" defaultValue={m.modaDetail?.sopirHp ?? ""} maxLength={30} autoComplete="off" /></div>
+              <div className="rbf"><label className="f" htmlFor="md-segel">Nomor segel box</label><input id="md-segel" name="segelBox" defaultValue={m.modaDetail?.segelBox ?? ""} maxLength={60} autoComplete="off" /></div>
+              <div className="rbf"><label className="f" htmlFor="md-hub">Hub transit (bila ada)</label><input id="md-hub" name="hubTransit" defaultValue={m.modaDetail?.hubTransit ?? ""} maxLength={80} autoComplete="off" /></div>
+            </>) : (<>
+              <div className="rbf"><label className="f" htmlFor="md-smu">Nomor SMU / AWB</label><input id="md-smu" name="smu" defaultValue={m.modaDetail?.smu ?? ""} maxLength={40} autoComplete="off" /></div>
+              <div className="rbf"><label className="f" htmlFor="md-mk">Maskapai</label><input id="md-mk" name="maskapai" defaultValue={m.modaDetail?.maskapai ?? ""} maxLength={60} autoComplete="off" /></div>
+              <div className="rbf"><label className="f" htmlFor="md-pn">Nomor penerbangan</label><input id="md-pn" name="penerbangan" defaultValue={m.modaDetail?.penerbangan ?? ""} maxLength={20} autoComplete="off" /></div>
+              <div className="rbf"><label className="f" htmlFor="md-xr">Pemeriksaan X-Ray</label><select id="md-xr" name="xray" defaultValue={m.modaDetail?.xray ?? ""}><option value="">Belum diisi</option><option value="BELUM">Belum diperiksa</option><option value="LOLOS">Lolos</option><option value="DITAHAN">Ditahan</option></select></div>
+              <div className="rbf"><label className="f" htmlFor="md-bb">Barang berbahaya ditahan</label><input id="md-bb" name="berbahaya" defaultValue={m.modaDetail?.berbahaya ?? ""} maxLength={120} placeholder="Kosongkan bila tidak ada" autoComplete="off" /></div>
+              <div className="rbf"><label className="f" htmlFor="md-rr">Catatan alih penerbangan</label><input id="md-rr" name="reroute" defaultValue={m.modaDetail?.reroute ?? ""} maxLength={120} autoComplete="off" /></div>
+            </>)}
+            <SubmitButton className="btn ghost" steps={["Menyimpan…"]}>Simpan data {m.mode === "DARAT" ? "darat" : "udara"}</SubmitButton>
           </form>
         )}
 
