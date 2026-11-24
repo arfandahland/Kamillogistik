@@ -756,9 +756,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/StaffShell.tsx": {
-    "mtime": 1795439956.2434642,
-    "seen": 1795440013.7004137,
-    "ast_hash": "6d9ac4574c6100613f4fd4577348885e",
+    "mtime": 1795479851.814816,
+    "seen": 1795479962.66126,
+    "ast_hash": "475bb60010f332eea86fb16b62d52f78",
     "semantic_hash": ""
   },
   "apps/web/src/components/SubmitButton.tsx": {
@@ -924,9 +924,9 @@
     "semantic_hash": ""
   },
   "e2e/flow.cjs": {
-    "mtime": 1795440210.0421019,
-    "seen": 1795440275.8278773,
-    "ast_hash": "56011d7290158064afe53b0e402ed582",
+    "mtime": 1795479865.63157,
+    "seen": 1795479962.661437,
+    "ast_hash": "30a117e57a4bfbeea2a7576601df95a8",
     "semantic_hash": ""
   },
   "e2e/kamera.cjs": {
@@ -990,9 +990,9 @@
     "semantic_hash": ""
   },
   "packages/core/src/index.ts": {
-    "mtime": 1795435208.377923,
-    "seen": 1795435593.1449401,
-    "ast_hash": "4666cd62c790a0d97a67bf50e4a720d6",
+    "mtime": 1795479691.343651,
+    "seen": 1795479962.661462,
+    "ast_hash": "2eccd07fd6c8b6d8410b8d13fb55b890",
     "semantic_hash": ""
   },
   "packages/core/src/inspection.ts": {
@@ -9213,6 +9213,24 @@
     "mtime": 1795479122.349471,
     "seen": 1795479227.6560404,
     "ast_hash": "52c429bfe8809d20d18fc08e1c1f0f06",
+    "semantic_hash": ""
+  },
+  "apps/web/src/app/app/arus/page.tsx": {
+    "mtime": 1795479734.521425,
+    "seen": 1795479962.6609735,
+    "ast_hash": "82363c6c7ace9516202e7a01c943dffc",
+    "semantic_hash": ""
+  },
+  "packages/core/src/service/arus.ts": {
+    "mtime": 1795479691.343651,
+    "seen": 1795479962.6614707,
+    "ast_hash": "2f2a9e740206def2114bcdf48964929f",
+    "semantic_hash": ""
+  },
+  "packages/core/test/arus.test.ts": {
+    "mtime": 1795479691.3456519,
+    "seen": 1795479962.6614892,
+    "ast_hash": "1edcce99da0fb8f33e623e441991e7de",
     "semantic_hash": ""
   },
   "package-lock.json": {

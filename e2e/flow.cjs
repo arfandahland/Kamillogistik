@@ -1523,14 +1523,28 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
       const kota = ((await ar.page.locator(".arus-sw-i.keluar small").innerText()).match(/Dari (.+) ke tujuan/) || [])[1] || "";
       const judulK = await ar.page.locator("main h1").innerText();
       const asalK = await ar.page.locator(".arus-kartu .arus-rute b:first-child").allInnerTexts();
-      ok("AR1 Arus barang: halaman Keluar hanya memuat resi yang asalnya cabang saya, tiap resi punya tahap dan langkah berikutnya", /Barang keluar/.test(judulK) && kota !== "" && asalK.every((a) => a === kota) && (await ar.page.locator(".arus-kartu .arus-next").count()) >= 1, `${kota} ${asalK.length} resi`);
+      ok("AY1 Arus barang: halaman Keluar hanya memuat resi yang asalnya cabang saya, tiap resi punya tahap dan langkah berikutnya", /Barang keluar/.test(judulK) && kota !== "" && asalK.every((a) => a === kota) && (await ar.page.locator(".arus-kartu .arus-next").count()) >= 1, `${kota} ${asalK.length} resi`);
       await ar.page.goto(`${BASE}/app/arus?a=masuk`, { waitUntil: "networkidle" });
       const tujuanM = await ar.page.locator(".arus-kartu .arus-rute b:last-child").allInnerTexts();
-      ok("AR2 Arus barang: halaman Masuk hanya memuat resi yang tujuannya cabang saya dan tidak bercampur dengan Keluar", /Barang masuk/.test(await ar.page.locator("main h1").innerText()) && tujuanM.every((t) => t === kota) && (await ar.page.locator(".arus-sw-i").count()) === 2, `${tujuanM.length} resi`);
+      ok("AY2 Arus barang: halaman Masuk hanya memuat resi yang tujuannya cabang saya dan tidak bercampur dengan Keluar", /Barang masuk/.test(await ar.page.locator("main h1").innerText()) && tujuanM.every((t) => t === kota) && (await ar.page.locator(".arus-sw-i").count()) === 2, `${tujuanM.length} resi`);
       await ar.page.goto(`${BASE}/app/arus?a=keluar&g=1`, { waitUntil: "networkidle" });
       const kartuG = await ar.page.locator(".arus-kartu").count();
-      ok("AR3 Arus barang: saringan 'giliran Anda' hanya menampilkan resi bertanda Giliran Anda", kartuG === (await ar.page.locator(".arus-kartu.giliran").count()));
-      ok("AR4 tab Arus ada di menu bawah Kasir", (await ar.page.locator(".tabbar a[href='/app/arus']").count()) === 1);
+      ok("AY3 Arus barang: saringan 'giliran Anda' hanya menampilkan resi bertanda Giliran Anda", kartuG === (await ar.page.locator(".arus-kartu.giliran").count()));
+      ok("AY4 tab Arus ada di menu bawah Kasir", (await ar.page.locator(".tabbar a[href='/app/arus']").count()) === 1);
+      await ar.page.goto(`${BASE}/app/arus?a=keluar`, { waitUntil: "networkidle" });
+      const semuaN = await ar.page.locator(".arus-kartu").count();
+      ok("AY5 saringan pintar: ada kolom cari, kapsul fase, dan ringkasan jumlah", (await ar.page.locator(".arus-cari input[type=search]").count()) === 1 && (await ar.page.locator(".arus-baris .arus-cap.fase").count()) === 1 && /Menampilkan\s+\d+\s+dari/.test(await ar.page.locator(".arus-hasil").innerText()), String(semuaN));
+      const capAktif = ar.page.locator(".arus-baris a.arus-cap:not(.fase):not(.on)").first();
+      if (await capAktif.count()) {
+        const nCap = Number((await capAktif.locator("b").innerText()).trim());
+        await capAktif.click(); await ar.page.waitForLoadState("networkidle");
+        ok("AY6 saringan pintar: ketuk kapsul menyaring daftar sesuai angka di kapsul, dan ada tombol hapus saringan", (await ar.page.locator(".arus-kartu").count()) === nCap && (await ar.page.locator(".arus-reset").count()) === 1, String(nCap));
+        await ar.page.locator(".arus-reset").click(); await ar.page.waitForLoadState("networkidle");
+        ok("AY7 saringan pintar: hapus semua saringan mengembalikan daftar penuh", (await ar.page.locator(".arus-kartu").count()) === semuaN);
+      }
+      await ar.page.goto(`${BASE}/app/arus?a=keluar&q=zzzzzz-tidak-ada`, { waitUntil: "networkidle" });
+      ok("AY8 saringan pintar: kata kunci tanpa hasil menampilkan pesan dan tombol hapus saringan", /Tidak ada resi yang cocok/.test(await ar.page.locator("main").innerText()));
+      await noOverflow(ar.page, "Arus barang (HP)");
       await ar.ctx.close();
     }
 

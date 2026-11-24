@@ -20,7 +20,11 @@ const TUGAS: Record<string, Record<ArahArus, string>> = {
   DRIVER: { KELUAR: "Jemput barang ke alamat pengirim.", MASUK: "Antar barang dari gudang ke penerima." },
 };
 
-export default async function Arus({ searchParams }: { searchParams: Promise<{ a?: string; f?: string; g?: string }> }) {
+const IKON_FASE: Record<string, string> = { siap: "box", muat: "layers", jalan: "ship", tiba: "pin", selesai: "check", asal: "box", gudang: "home", antar: "truck", kendala: "alert" };
+const MODA_KEY = ["LAUT", "UDARA", "DARAT"] as const;
+type Param = { f?: string; g?: string; m?: string; k?: string; u?: string; q?: string };
+
+export default async function Arus({ searchParams }: { searchParams: Promise<Param & { a?: string }> }) {
   const me = await requireRole(PERAN_ARUS);
   const sp = await searchParams;
   const a: ArahArus = sp.a === "masuk" ? "MASUK" : "KELUAR";
@@ -29,17 +33,48 @@ export default async function Arus({ searchParams }: { searchParams: Promise<{ a
   const keluar = hitungArus(semua, "KELUAR"), masuk = hitungArus(semua, "MASUK");
   const ringkas = a === "KELUAR" ? keluar : masuk;
   const kota = (a === "KELUAR" ? semua.find((x) => arahArus(x.arah) === "KELUAR")?.origin : semua.find((x) => arahArus(x.arah) === "MASUK")?.dest) ?? semua[0]?.origin ?? me.branchName ?? "cabang ini";
-  const f = fasePerArah(a).find((x) => x.k === sp.f)?.k ?? "";
-  const hanyaGiliran = sp.g === "1";
+
+  const faseList = [...fasePerArah(a).map((x) => ({ k: x.k, t: x.t, d: x.d, status: x.status as string[] })), { k: "kendala", t: "Terkendala", d: "Dibatalkan atau bermasalah", status: [] as string[] }];
+  const faseKey = (st: AnyStatus) => faseDari(a, st)?.k ?? "kendala";
+
+  // Saringan aktif (semua lewat alamat, tanpa JavaScript): fase, giliran, moda, kota lawan, umur resi, kata kunci.
+  const F = {
+    f: faseList.find((x) => x.k === sp.f)?.k ?? "",
+    g: sp.g === "1" ? "1" : "",
+    m: (MODA_KEY as readonly string[]).includes(sp.m ?? "") ? (sp.m as string) : "",
+    k: (sp.k ?? "").slice(0, 60),
+    u: sp.u === "baru" || sp.u === "lama" ? sp.u : "",
+    q: (sp.q ?? "").trim().slice(0, 60).toLowerCase(),
+  };
+  const sekarang = Date.now();
+  const hariIni = new Date(sekarang + 8 * 3600_000).toISOString().slice(0, 10);
+  const umurOk = (x: Row, u: string) => (u === "baru" ? new Date(new Date(x.createdAt).getTime() + 8 * 3600_000).toISOString().slice(0, 10) === hariIni : x.status !== "DELIVERED" && sekarang - new Date(x.createdAt).getTime() > 7 * 86400_000);
 
   const milik = semua.filter((x) => arahArus(x.arah) === a).map((x) => ({ x, g: giliran(a, x.status, me.role, x.pickupType === "DROPOFF" ? "DROPOFF" : "PICKUP", x.lawan) }));
-  const nGiliran = milik.filter((m) => m.g.milikAnda).length;
-  const tampil = milik.filter((m) => (!hanyaGiliran || m.g.milikAnda));
-  const href = (p: { a?: ArahArus; f?: string; g?: boolean }) => {
-    const q = new URLSearchParams({ a: (p.a ?? a).toLowerCase() });
-    if (p.f) q.set("f", p.f);
-    if (p.g) q.set("g", "1");
+  type Item = (typeof milik)[number];
+  // Hitungan tiap pilihan mengikuti saringan lain (faceted), jadi angkanya selalu sesuai dengan yang akan tampil.
+  const cocok = (m: Item, lewati: string) =>
+    (lewati === "f" || !F.f || faseKey(m.x.status) === F.f) && (lewati === "g" || !F.g || m.g.milikAnda) && (lewati === "m" || !F.m || m.x.mode === F.m) &&
+    (lewati === "k" || !F.k || m.x.lawan === F.k) && (lewati === "u" || !F.u || umurOk(m.x, F.u)) &&
+    (lewati === "q" || !F.q || `${m.x.resiNo} ${m.x.receiverName} ${m.x.senderName} ${m.x.origin} ${m.x.dest}`.toLowerCase().includes(F.q));
+  const tampil = milik.filter((m) => cocok(m, ""));
+  const hitung = (lewati: string, fn: (m: Item) => boolean) => milik.filter((m) => cocok(m, lewati) && fn(m)).length;
+  const nGiliran = hitung("g", (m) => m.g.milikAnda);
+  const kotaLawan = [...new Set(milik.map((m) => m.x.lawan).filter((v): v is string => !!v))].map((v) => ({ v, n: hitung("k", (m) => m.x.lawan === v) })).sort((p, q) => q.n - p.n || p.v.localeCompare(q.v));
+  const aktifLain = [F.g, F.m, F.k, F.u].filter(Boolean).length;
+  const aktif = aktifLain + [F.q, F.f].filter(Boolean).length;
+
+  const href = (ubah: Partial<Record<keyof Param | "a", string>>) => {
+    const nilai: Record<string, string> = { a: a.toLowerCase(), ...F, ...ubah };
+    const q = new URLSearchParams();
+    for (const [k, v] of Object.entries(nilai)) if (v) q.set(k, v);
     return `/app/arus?${q}`;
+  };
+  const toggle = (k: keyof Param, v: string) => href({ [k]: F[k] === v ? "" : v });
+  const Kapsul = ({ k, v, ikon, t, n }: { k: keyof Param; v: string; ikon?: string; t: string; n: number }) => {
+    const on = F[k] === v;
+    const isi = (<>{ikon && <Icon name={ikon} size={14} />}<span>{t}</span><b>{n}</b></>);
+    return on || n > 0 ? <Link href={toggle(k, v)} className={`arus-cap ${on ? "on" : ""}`} aria-pressed={on}>{isi}</Link> : <span className="arus-cap off" aria-disabled="true">{isi}</span>;
   };
 
   const kartu = (m: (typeof milik)[number]) => {
@@ -58,8 +93,7 @@ export default async function Arus({ searchParams }: { searchParams: Promise<{ a
     );
   };
 
-  const gabung = (fase: { k: string; t: string; d: string; status: string[] }) => tampil.filter((m) => (fase.status as string[]).includes(m.x.status));
-  const terkendala = tampil.filter((m) => faseDari(a, m.x.status) === null);
+  const isiFase = (k: string) => tampil.filter((m) => faseKey(m.x.status) === k);
 
   return (
     <main className="wrap stack arus">
@@ -70,49 +104,69 @@ export default async function Arus({ searchParams }: { searchParams: Promise<{ a
       </p>
 
       <nav className="arus-sw" aria-label="Arah barang">
-        <Link href={href({ a: "KELUAR" })} className={`arus-sw-i keluar ${a === "KELUAR" ? "on" : ""}`} aria-current={a === "KELUAR" ? "page" : undefined}>
+        <Link href={`/app/arus?a=keluar`} className={`arus-sw-i keluar ${a === "KELUAR" ? "on" : ""}`} aria-current={a === "KELUAR" ? "page" : undefined}>
           <span className="ai"><Icon name="up" size={20} /></span><b>{keluar.total}</b><span className="at">Keluar</span><small>Dari {kota} ke tujuan</small>
         </Link>
-        <Link href={href({ a: "MASUK" })} className={`arus-sw-i masuk ${a === "MASUK" ? "on" : ""}`} aria-current={a === "MASUK" ? "page" : undefined}>
+        <Link href={`/app/arus?a=masuk`} className={`arus-sw-i masuk ${a === "MASUK" ? "on" : ""}`} aria-current={a === "MASUK" ? "page" : undefined}>
           <span className="ai"><Icon name="down" size={20} /></span><b>{masuk.total}</b><span className="at">Masuk</span><small>Dari mana pun ke {kota}</small>
         </Link>
       </nav>
 
       <p className="arus-tugas">{TUGAS[me.role]?.[a]}</p>
 
-      <div className="arus-fase" role="list" aria-label="Fase perjalanan">
-        <Link role="listitem" href={href({ g: hanyaGiliran })} className={`arus-chip ${!f ? "on" : ""}`}><b>{ringkas.total}</b><span>Semua</span></Link>
-        {ringkas.fase.map((x) => (
-          <Link role="listitem" key={x.k} href={href({ f: x.k, g: hanyaGiliran })} className={`arus-chip ${f === x.k ? "on" : ""} ${x.n ? "" : "kosong"}`}><b>{x.n}</b><span>{x.t}</span></Link>
-        ))}
-        {ringkas.terkendala > 0 && <span role="listitem" className="arus-chip warn"><b>{ringkas.terkendala}</b><span>Terkendala</span></span>}
-      </div>
+      {ringkas.total > 0 && (
+        <section className="arus-filter" aria-label="Saring resi">
+          <form action="/app/arus" role="search" className="arus-cari">
+            <Icon name="search" size={18} className="ico" />
+            <input type="search" name="q" defaultValue={sp.q ?? ""} placeholder="Cari nomor resi, penerima, atau kota" aria-label="Cari resi" enterKeyHint="search" autoComplete="off" />
+            <input type="hidden" name="a" value={a.toLowerCase()} />
+            {(["f", "g", "m", "k", "u"] as const).map((k) => F[k] ? <input key={k} type="hidden" name={k} value={F[k]} /> : null)}
+            <button className="btn sm">Cari</button>
+          </form>
 
-      {nGiliran > 0 && (
-        <Link href={href({ f, g: !hanyaGiliran })} className={`arus-giliran ${hanyaGiliran ? "on" : ""}`} aria-pressed={hanyaGiliran}>
-          <Icon name="check" size={16} /> {hanyaGiliran ? "Menampilkan giliran Anda saja. Ketuk untuk semua." : `${nGiliran} resi menunggu tindakan Anda. Ketuk untuk menyaring.`}
-        </Link>
+          <div className="arus-baris" role="group" aria-label="Fase perjalanan">
+            <Link href={href({ f: "" })} className={`arus-cap fase ${!F.f ? "on" : ""}`} aria-pressed={!F.f}><span>Semua</span><b>{hitung("f", () => true)}</b></Link>
+            {faseList.map((x) => { const n = hitung("f", (m) => faseKey(m.x.status) === x.k); return x.k === "kendala" && n === 0 && F.f !== "kendala" ? null : <Kapsul key={x.k} k="f" v={x.k} ikon={IKON_FASE[x.k]} t={x.t} n={n} />; })}
+          </div>
+
+          <details className="arus-lanjut" open={aktifLain > 0}>
+            <summary><Icon name="sliders" size={16} /> Saringan lain{aktifLain > 0 ? <em>{aktifLain} aktif</em> : null}</summary>
+            <div className="arus-baris" role="group" aria-label="Saringan cepat">
+              <Kapsul k="g" v="1" ikon="check" t="Giliran Anda" n={nGiliran} />
+              <Kapsul k="u" v="baru" ikon="clock" t="Dibuat hari ini" n={hitung("u", (m) => umurOk(m.x, "baru"))} />
+              <Kapsul k="u" v="lama" ikon="alert" t="Lebih dari 7 hari" n={hitung("u", (m) => umurOk(m.x, "lama"))} />
+              {MODA_KEY.map((mk) => <Kapsul key={mk} k="m" v={mk} ikon={mk === "LAUT" ? "ship" : mk === "UDARA" ? "plane" : "truck"} t={MODA[mk]!} n={hitung("m", (m) => m.x.mode === mk)} />)}
+            </div>
+            {kotaLawan.length > 1 && (
+              <div className="arus-baris" role="group" aria-label={a === "KELUAR" ? "Kota tujuan" : "Kota asal"}>
+                {kotaLawan.map((c) => <Kapsul key={c.v} k="k" v={c.v} ikon="pin" t={`${a === "KELUAR" ? "ke" : "dari"} ${c.v}`} n={c.n} />)}
+              </div>
+            )}
+          </details>
+
+          <p className="arus-hasil" role="status">
+            <span>Menampilkan <b>{tampil.length}</b> dari {ringkas.total} resi</span>
+            {aktif > 0 && <Link href={`/app/arus?a=${a.toLowerCase()}`} className="arus-reset">Hapus semua saringan</Link>}
+          </p>
+        </section>
       )}
       {r.error && <div className="err">{r.error}</div>}
 
       {ringkas.total === 0 ? (
         <div className="card kosong-kartu"><span className="kosong-ik"><Icon name={a === "KELUAR" ? "up" : "down"} size={28} /></span><b>{a === "KELUAR" ? "Belum ada barang keluar" : "Belum ada barang masuk"}</b><p className="muted" style={{ margin: "4px 0 0" }}>{a === "KELUAR" ? "Resi yang asalnya cabang ini akan muncul di sini." : "Resi dari cabang lain yang tujuannya cabang ini akan muncul di sini."}</p></div>
+      ) : tampil.length === 0 ? (
+        <div className="card kosong-kartu"><span className="kosong-ik"><Icon name="search" size={28} /></span><b>Tidak ada resi yang cocok</b><p className="muted" style={{ margin: "4px 0 10px" }}>Coba longgarkan saringan di atas.</p><Link className="btn ghost sm" href={`/app/arus?a=${a.toLowerCase()}`}>Hapus semua saringan</Link></div>
       ) : (
-        <>
-          {ringkas.fase.filter((x) => !f || x.k === f).map((x) => {
-            const isi = gabung(x);
-            if (isi.length === 0) return null;
-            return (
-              <section key={x.k} className="arus-grup" aria-label={x.t}>
-                <header><h2>{x.t}</h2><span className="pill">{isi.length}</span><small>{x.d}</small></header>
-                <div className="arus-list stagger">{isi.map(kartu)}</div>
-              </section>
-            );
-          })}
-          {!f && terkendala.length > 0 && (
-            <section className="arus-grup" aria-label="Terkendala"><header><h2>Terkendala</h2><span className="pill warn">{terkendala.length}</span><small>Dibatalkan atau bermasalah</small></header><div className="arus-list">{terkendala.map(kartu)}</div></section>
-          )}
-        </>
+        faseList.map((x) => {
+          const isi = isiFase(x.k);
+          if (isi.length === 0) return null;
+          return (
+            <section key={x.k} className="arus-grup" aria-label={x.t}>
+              <header><h2>{x.t}</h2><span className={`pill ${x.k === "kendala" ? "warn" : ""}`}>{isi.length}</span><small>{x.d}</small></header>
+              <div className="arus-list stagger">{isi.map(kartu)}</div>
+            </section>
+          );
+        })
       )}
     </main>
   );

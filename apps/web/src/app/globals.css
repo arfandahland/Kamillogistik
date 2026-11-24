@@ -2076,3 +2076,30 @@ body:has(.appshell) .hubcard.nol > p { margin: 0; font-size: 13px; color: var(--
 .arus-next { display: flex; gap: 8px; align-items: flex-start; padding: 8px 10px; border-radius: 12px; background: rgba(255, 255, 255, .05); font-size: 13px; line-height: 1.35; }
 .arus-next .ico { flex: none; margin-top: 2px; color: #fcd34d; } .arus-next small { display: block; color: var(--muted); font-size: 12px; margin-top: 1px; }
 @media (prefers-reduced-motion: no-preference) { .arus-list > * { animation: glmuncul .4s cubic-bezier(.2, .8, .2, 1) backwards; } }
+
+/* Saringan pintar Arus barang: kapsul, pencarian, dan ringkasan hasil */
+.arus-filter { display: grid; gap: 10px; }
+.arus-cari { display: flex; align-items: center; gap: 8px; padding: 6px 6px 6px 12px; border-radius: 14px; background: var(--glass); border: 1px solid var(--rim); }
+.arus-cari .ico { flex: none; color: var(--muted); }
+.arus-cari input[type="search"] { flex: 1; min-width: 0; background: transparent; border: 0; outline: 0; color: var(--ink); font: inherit; font-size: 15px; padding: 8px 0; }
+.arus-baris { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 6px; scrollbar-width: none; scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch; }
+.arus-baris::-webkit-scrollbar { display: none; }
+.arus-cap { flex: none; scroll-snap-align: start; display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px; border-radius: 99px; text-decoration: none; font-size: 13.5px; font-weight: 600; color: var(--ink); background: var(--glass); border: 1px solid var(--rim); white-space: nowrap; }
+.arus-cap b { min-width: 22px; height: 22px; padding: 0 6px; border-radius: 99px; display: inline-grid; place-items: center; font-size: 12px; background: rgba(255, 255, 255, .1); }
+.arus-cap .ico { color: #6ee7b7; }
+.arus-cap.on { background: linear-gradient(160deg, #10b981, #34d399); border-color: transparent; color: #04241c; box-shadow: 0 6px 16px rgba(16, 185, 129, .3); }
+.arus-cap.on b { background: rgba(4, 36, 28, .18); } .arus-cap.on .ico { color: #04241c; }
+.arus-cap.off { opacity: .4; cursor: default; }
+.arus-lanjut { border-radius: 14px; background: rgba(255, 255, 255, .03); border: 1px solid var(--rim); padding: 0 12px; }
+.arus-lanjut > summary { display: flex; align-items: center; gap: 8px; min-height: 44px; cursor: pointer; font-size: 13.5px; font-weight: 700; list-style: none; }
+.arus-lanjut > summary::-webkit-details-marker { display: none; }
+.arus-lanjut > summary em { font-style: normal; font-size: 11.5px; padding: 2px 9px; border-radius: 99px; background: #f2b25c; color: #2a1a00; }
+.arus-lanjut[open] { padding-bottom: 6px; } .arus-lanjut .arus-baris { padding-bottom: 8px; }
+.arus-hasil { margin: 0; display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 13px; color: var(--muted); }
+.arus-hasil b { color: var(--ink); } .arus-reset { color: #6ee7b7; font-weight: 700; text-decoration: none; min-height: 36px; display: inline-flex; align-items: center; }
+
+/* Animasi geser halaman tidak boleh membuat dokumen sempat melebar (kedipan bilah geser di HP) */
+body:has(.appshell) .appmain { overflow-x: clip; }
+body:has(.appshell) .arus-cari input[type="search"] { flex: 1 1 auto; width: auto; min-width: 0; margin: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; padding: 8px 0; min-height: 0; -webkit-appearance: none; appearance: none; }
+body:has(.appshell) .arus-cari input[type="search"]::-webkit-search-cancel-button { display: none; }
+body:has(.appshell) .arus-cari { flex-wrap: nowrap; overflow: hidden; }
