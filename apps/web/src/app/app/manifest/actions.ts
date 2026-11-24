@@ -26,6 +26,10 @@ export async function ubahManifest(fd: FormData) {
   const id = str(fd, "id");
   await hasil(id, "manifest_update", { p_id: id, p_container: str(fd, "kontainer") || null, p_carrier: str(fd, "pengangkut") || null, p_departure: waktu(fd, "berangkat"), p_eta: waktu(fd, "tiba"), p_note: str(fd, "catatan") || null }, "Data manifest disimpan.");
 }
+export async function bukaSegel(fd: FormData) {
+  const id = str(fd, "id");
+  await hasil(id, "manifest_unseal", { p_id: id }, "Segel dibuka. Manifest bisa diubah lagi: tambah atau keluarkan resi, lalu segel ulang.");
+}
 export async function hapusManifest(fd: FormData) {
   const id = str(fd, "id");
   const r = await staffRpc("manifest_cancel", { p_id: id });

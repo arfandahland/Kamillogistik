@@ -7,7 +7,7 @@ import SubmitButton from "@/components/SubmitButton";
 import ManifestPindai from "@/components/ManifestPindai";
 import { tanggalWaktu } from "@/lib/brand";
 import { getMe, staffRpc } from "@/lib/supabase/server";
-import { hapusManifest, bongkarSemuaLengkap, terimaSemuaManifest, berangkatManifest, isiVoyage, keluarkanResi, segelManifest, selesaiBongkar, selesaikanSelisih, revisiEta, serahkanManifest, tambahResiForm, terimaManifest, tibaManifest, ubahManifest } from "../actions";
+import { bukaSegel, hapusManifest, bongkarSemuaLengkap, terimaSemuaManifest, berangkatManifest, isiVoyage, keluarkanResi, segelManifest, selesaiBongkar, selesaikanSelisih, revisiEta, serahkanManifest, tambahResiForm, terimaManifest, tibaManifest, ubahManifest } from "../actions";
 import Potong from "@/components/Potong";
 import BackLink from "@/components/BackLink";
 
@@ -109,11 +109,19 @@ export default async function ManifestDetail({ params, searchParams }: { params:
               <div className="rbf"><label className="f" htmlFor="catatan">Catatan</label><input id="catatan" name="catatan" defaultValue={m.note ?? ""} autoComplete="off" /></div>
               <SubmitButton className="btn ghost" steps={["Menyimpan…"]}>Simpan data pengangkutan</SubmitButton>
             </form>)}
-  {kasirAsal && m.status === "OPEN" && m.shipments.length === 0 && (
+  {kasirAsal && (m.status as string) === "SEALED" && !m.pendingTo && (
+            <form action={bukaSegel} className="card rbsek">
+              <input type="hidden" name="id" value={m.id} />
+              <h2 className="cardh">Koreksi manifest</h2>
+              <p className="hint">Salah isi atau salah segel? Buka segelnya selama manifest belum diserahkan atau berangkat. Resi kembali ke &quot;Sudah ditimbang&quot;, lalu Anda bisa mengubah isinya dan menyegel ulang atau menghapus manifest ini.</p>
+              <SubmitButton className="btn ghost" steps={["Membuka segel…"]}>Buka segel manifest</SubmitButton>
+            </form>)}
+  {kasirAsal && m.status === "OPEN" && (
             <form action={hapusManifest} className="card rbsek">
               <input type="hidden" name="id" value={m.id} />
-              <p className="hint">Manifest ini masih kosong. Kalau dibuat keliru, hapus saja lalu buat yang baru.</p>
-              <SubmitButton className="btn ghost" style={{ borderColor: "var(--danger)", color: "var(--danger)" }} steps={["Menghapus manifest…"]}>Hapus manifest kosong</SubmitButton>
+              <h2 className="cardh">Hapus manifest</h2>
+              <p className="hint">{m.shipments.length === 0 ? "Manifest ini masih kosong. Kalau dibuat keliru, hapus saja lalu buat yang baru." : `Manifest ini berisi ${m.shipments.length} resi. Bila dihapus, semua resi dilepas dan kembali ke "Sudah ditimbang", siap dimasukkan ke manifest lain.`}</p>
+              <SubmitButton className="btn ghost" style={{ borderColor: "var(--danger)", color: "var(--danger)" }} steps={["Menghapus manifest…"]}>Hapus manifest</SubmitButton>
             </form>)}
   {kasirAsal && (          <form action={segelManifest} className="card rbsek">
               <h2 className="cardh">Segel dan muat</h2><input type="hidden" name="id" value={m.id} />

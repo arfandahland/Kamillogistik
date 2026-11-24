@@ -65,4 +65,40 @@ END $$;
 SELECT t.as_user('00000000-0000-0000-0000-00000000000f');
 SELECT t.fails($$select public.staff_pickup_create('Budi Telepon','081122334455','Jakarta','Jl. Mawar No 1 Jakarta','Makassar','LAUT','Kardus pakaian')$$, 'izin');
 RESET ROLE;
+-- 070: koreksi manifest (buka segel, hapus berisi resi)
+SELECT t.as_user('00000000-0000-0000-0000-000000000002');
+DO $$ DECLARE a jsonb; m jsonb; BEGIN
+  a := public.create_shipment('jakarta-makassar-port-to-door-kg','Pengirim Koreksi','0811','Penerima Koreksi','0822','Makassar',1,NULL,NULL,'DROPOFF');
+  PERFORM set_config('t.kr', a->>'id', false); PERFORM set_config('t.krn', a->>'resiNo', false);
+END $$;
+RESET ROLE;
+UPDATE shipments SET status = 'SORTED_INVOICED', current_holder_user_id = '00000000-0000-0000-0000-000000000004' WHERE id = current_setting('t.kr')::uuid;
+UPDATE shipment_items SET weight_kg = 12 WHERE shipment_id = current_setting('t.kr')::uuid;
+SELECT t.as_user('00000000-0000-0000-0000-000000000002');
+DO $$ DECLARE m jsonb; BEGIN
+  m := public.manifest_create('MKS', 'LAUT', NULL, 'KM Koreksi', now() + interval '1 day', now() + interval '5 days', 'uji koreksi');
+  PERFORM set_config('t.km', m->>'id', false);
+  PERFORM public.manifest_add(current_setting('t.km')::uuid, current_setting('t.krn'));
+  PERFORM public.manifest_seal(current_setting('t.km')::uuid, 'SEGEL-KOREKSI');
+END $$;
+SELECT t.fails($$select public.manifest_cancel(current_setting('t.km')::uuid)$$, 'Buka segelnya');
+DO $$ DECLARE r jsonb; BEGIN
+  r := public.manifest_unseal(current_setting('t.km')::uuid);
+  ASSERT r->>'status' = 'OPEN' AND (r->>'resi')::int = 1, 'segel dibuka: ' || r::text;
+  ASSERT public.manifest_get(current_setting('t.km')::uuid)->>'status' = 'OPEN', 'manifest kembali terbuka';
+END $$;
+SELECT t.fails($$select public.manifest_unseal(current_setting('t.km')::uuid)$$, 'sudah disegel dan belum berangkat');
+DO $$ BEGIN
+  PERFORM public.manifest_seal(current_setting('t.km')::uuid, 'SEGEL-ULANG');
+  PERFORM public.manifest_unseal(current_setting('t.km')::uuid);
+  PERFORM public.manifest_cancel(current_setting('t.km')::uuid);
+END $$;
+RESET ROLE;
+DO $$ BEGIN
+  ASSERT NOT EXISTS (SELECT 1 FROM manifests WHERE id = current_setting('t.km')::uuid), 'manifest berisi resi terhapus';
+  ASSERT (SELECT manifest_id IS NULL AND status = 'SORTED_INVOICED' FROM shipments WHERE id = current_setting('t.kr')::uuid), 'resi dilepas dan kembali Sudah ditimbang';
+END $$;
+SELECT t.as_user('00000000-0000-0000-0000-00000000000f');
+SELECT t.fails($$select public.manifest_unseal(gen_random_uuid())$$, 'izin');
+RESET ROLE;
 SELECT 'crud OK' AS hasil;
