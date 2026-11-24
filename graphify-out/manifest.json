@@ -924,9 +924,9 @@
     "semantic_hash": ""
   },
   "e2e/flow.cjs": {
-    "mtime": 1795479865.63157,
-    "seen": 1795479962.661437,
-    "ast_hash": "30a117e57a4bfbeea2a7576601df95a8",
+    "mtime": 1795480499.8303003,
+    "seen": 1795480905.0222363,
+    "ast_hash": "e99fe579f5cb65c69b87622e7bfe9be5",
     "semantic_hash": ""
   },
   "e2e/kamera.cjs": {
@@ -9216,9 +9216,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/arus/page.tsx": {
-    "mtime": 1795479734.521425,
-    "seen": 1795479962.6609735,
-    "ast_hash": "82363c6c7ace9516202e7a01c943dffc",
+    "mtime": 1795480775.5625415,
+    "seen": 1795480905.0218525,
+    "ast_hash": "73c153f7fd9868ad77c2ddde4cbd2aeb",
     "semantic_hash": ""
   },
   "packages/core/src/service/arus.ts": {
