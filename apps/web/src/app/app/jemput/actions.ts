@@ -1,4 +1,5 @@
 "use server";
+import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { staffRpc } from "@/lib/supabase/server";
 
@@ -9,4 +10,17 @@ export async function ubahJemput(id: string, status: string, catatan: string): P
   if (error) return { ok: false, error };
   revalidatePath("/app/jemput");
   return { ok: true };
+}
+
+const str = (fd: FormData, k: string) => String(fd.get(k) ?? "").trim();
+/** CS, Kasir, atau Super Admin mencatat pesanan jemput dari telepon atau WhatsApp pelanggan. */
+export async function catatJemput(fd: FormData) {
+  const { data, error } = await staffRpc<{ code: string }>("staff_pickup_create", {
+    p_name: str(fd, "nama"), p_phone: str(fd, "hp"), p_city: str(fd, "kota"), p_address: str(fd, "alamat"), p_destination: str(fd, "tujuan"),
+    p_service: str(fd, "layanan") || "LAUT", p_item: str(fd, "barang"), p_weight: str(fd, "berat") ? Number(str(fd, "berat").replace(",", ".")) : null,
+    p_date: str(fd, "tanggal") || null, p_note: str(fd, "catatan") || null, p_intake: str(fd, "cara") === "ANTAR" ? "ANTAR" : "JEMPUT",
+  });
+  revalidatePath("/app/jemput");
+  if (error || !data) redirect(`/app/jemput?e=${encodeURIComponent(error ?? "Pesanan belum tersimpan")}`);
+  redirect(`/app/jemput?ok=${encodeURIComponent(`Pesanan ${data.code} tercatat. Tampil di antrean di bawah.`)}`);
 }

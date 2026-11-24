@@ -52,4 +52,17 @@ DO $$ BEGIN ASSERT NOT EXISTS (SELECT 1 FROM manifests WHERE id = current_settin
 SELECT t.as_user('00000000-0000-0000-0000-00000000000f');
 SELECT t.fails($$select public.manifest_cancel(gen_random_uuid())$$, 'izin');
 RESET ROLE;
+-- 069: pesanan jemput oleh staf
+SELECT t.as_user('00000000-0000-0000-0000-000000000002');
+SELECT t.fails($$select public.staff_pickup_create('A','081122334455','Jakarta','Jl. Mawar No 1 Jakarta','Makassar','LAUT','Kardus pakaian')$$, 'nama pelanggan');
+SELECT t.fails($$select public.staff_pickup_create('Budi Telepon','081122334455','Jakarta','pendek','Makassar','LAUT','Kardus pakaian')$$, 'alamat penjemputan');
+SELECT t.fails($$select public.staff_pickup_create('Budi Telepon','081122334455','Jakarta','Jl. Mawar No 1 Jakarta','Makassar','TERBANG','Kardus pakaian')$$, 'jenis layanan');
+DO $$ DECLARE r jsonb; BEGIN
+  r := public.staff_pickup_create('Budi Telepon','0811-2233-4455','Jakarta','Jl. Mawar No 1 Jakarta','Makassar','LAUT','Kardus pakaian', 25);
+  ASSERT (r->>'ok')::boolean AND r->>'code' LIKE 'JMP-%', 'pesanan tercatat: ' || r::text;
+  ASSERT (public.staff_pickups(NULL))::text LIKE '%Budi Telepon%', 'muncul di antrean jemput';
+END $$;
+SELECT t.as_user('00000000-0000-0000-0000-00000000000f');
+SELECT t.fails($$select public.staff_pickup_create('Budi Telepon','081122334455','Jakarta','Jl. Mawar No 1 Jakarta','Makassar','LAUT','Kardus pakaian')$$, 'izin');
+RESET ROLE;
 SELECT 'crud OK' AS hasil;
