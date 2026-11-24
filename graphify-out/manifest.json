@@ -192,9 +192,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/baru/page.tsx": {
-    "mtime": 1795499106.5522532,
-    "seen": 1795499420.8561995,
-    "ast_hash": "76fc8a762f9cfa656e1bbcc18e8b4627",
+    "mtime": 1795508992.4601815,
+    "seen": 1795509110.8819973,
+    "ast_hash": "225ff83d0b039841d46ec7d3e67b16bc",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/cari/page.tsx": {
@@ -474,9 +474,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/layout.tsx": {
-    "mtime": 1795372583.6247137,
-    "seen": 1795377435.314314,
-    "ast_hash": "18175f356d77460ecdd64e0a0d646119",
+    "mtime": 1795509020.2078712,
+    "seen": 1795509110.8822305,
+    "ast_hash": "6452d084e7dc07d441ef96f7f3840b8a",
     "semantic_hash": ""
   },
   "apps/web/src/app/llms.txt/route.ts": {
@@ -9453,6 +9453,18 @@
     "mtime": 1795499976.7559872,
     "seen": 1795500179.5392308,
     "ast_hash": "8b56d5aa8a8b4d2f5840b2cd44306a00",
+    "semantic_hash": ""
+  },
+  "apps/web/src/components/SuratJalanField.tsx": {
+    "mtime": 1795508992.4117165,
+    "seen": 1795509110.8824382,
+    "ast_hash": "0e97d366281eb16739b922e57d845681",
+    "semantic_hash": ""
+  },
+  "apps/web/src/components/ValidasiTampak.tsx": {
+    "mtime": 1795509020.1943846,
+    "seen": 1795509110.8824575,
+    "ast_hash": "f8b3702b0050e08e9424b6423600d9b8",
     "semantic_hash": ""
   },
   "package-lock.json": {
