@@ -9,6 +9,7 @@ export type HasilAbsen = {
 export type HasilPortal = {
   ok: boolean; pesan?: string; nama?: string; kode?: string; cabang?: string; jabatan?: string | null; jamMasukStandar?: string;
   riwayat?: { tanggal: string; masuk: string | null; pulang: string | null; telat: boolean; luar: boolean; koreksi: boolean }[];
+  cuti?: { jenis: string; dari: string; sampai: string; status: string; catatan: string | null }[];
 };
 const TAMPIL = /QR|selfie|foto|JPEG|kode|PIN|cuti|besar|berlaku/i;
 const TOKEN = /^[0-9a-f]{32}$/;
@@ -31,5 +32,17 @@ export async function absenPortal(i: { token: string; kode: string; pin: string 
   const g = cek(i); if (g) return { ok: false, pesan: g };
   const { data, error } = await publicRpcResult<HasilPortal>("absen_portal", { p_token: i.token, p_kode: i.kode.trim(), p_pin: i.pin }, TAMPIL);
   if (error || !data) return { ok: false, pesan: error ?? "Riwayat belum bisa dibuka. Coba lagi." };
+  return data;
+}
+
+/** Karyawan tanpa akun mengajukan cuti, izin, atau sakit. Diputuskan HRD. */
+export async function ajukanCuti(i: { token: string; kode: string; pin: string; jenis: string; dari: string; sampai: string; alasan: string }): Promise<{ ok: boolean; pesan: string }> {
+  const g = cek(i); if (g) return { ok: false, pesan: g };
+  if (!["CUTI", "IZIN", "SAKIT"].includes(i.jenis)) return { ok: false, pesan: "Pilih jenis: cuti, izin, atau sakit." };
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(i.dari) || !/^\d{4}-\d{2}-\d{2}$/.test(i.sampai)) return { ok: false, pesan: "Isi tanggal mulai dan selesai." };
+  const { data, error } = await publicRpcResult<{ ok: boolean; pesan: string }>("absen_cuti_ajukan", {
+    p_token: i.token, p_kode: i.kode.trim(), p_pin: i.pin, p_jenis: i.jenis, p_dari: i.dari, p_sampai: i.sampai, p_alasan: i.alasan.trim().slice(0, 300),
+  }, TAMPIL);
+  if (error || !data) return { ok: false, pesan: error ?? "Pengajuan belum terkirim. Coba lagi." };
   return data;
 }

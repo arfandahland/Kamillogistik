@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, useTransition } from "react";
 import Icon from "./Icon";
-import { absenCatat, absenPortal, type HasilAbsen, type HasilPortal } from "@/app/absen/[token]/aksi";
+import { absenCatat, absenPortal, ajukanCuti, type HasilAbsen, type HasilPortal } from "@/app/absen/[token]/aksi";
 
 type Lokasi = { lat: number; lng: number; akurasi: number } | null;
 const hariPendek = (iso: string) => new Date(iso.slice(0, 10) + "T00:00:00Z").toLocaleDateString("id-ID", { timeZone: "UTC", weekday: "short", day: "numeric", month: "short" });
@@ -28,7 +28,7 @@ export default function AbsenForm({ token }: { token: string }) {
   const [kode, setKode] = useState(""); const [pin, setPin] = useState("");
   const [lokasi, setLokasi] = useState<Lokasi>(null); const [gps, setGps] = useState<"cari" | "ok" | "mati">("cari");
   const [foto, setFoto] = useState<string | null>(null); const [perluFoto, setPerluFoto] = useState(false);
-  const [galat, setGalat] = useState(""); const [hasil, setHasil] = useState<HasilAbsen | null>(null); const [portal, setPortal] = useState<HasilPortal | null>(null);
+  const [info, setInfo] = useState(""); const [galat, setGalat] = useState(""); const [hasil, setHasil] = useState<HasilAbsen | null>(null); const [portal, setPortal] = useState<HasilPortal | null>(null);
   const [sibuk, mulai] = useTransition();
   const [perangkat, setPerangkat] = useState("");
 
@@ -68,7 +68,24 @@ export default function AbsenForm({ token }: { token: string }) {
           <ul className="abs-riwayat">{r.map((x) => (
             <li key={x.tanggal}><b>{hariPendek(x.tanggal)}</b><span>{x.masuk ?? "–"} → {x.pulang ?? "belum pulang"}</span>
               {x.telat && <em className="warn">Terlambat</em>}{x.luar && <em className="warn">Di luar lokasi</em>}{x.koreksi && <em>Dikoreksi HRD</em>}</li>))}</ul>)}
-        <button type="button" className="btn ghost" onClick={() => setPortal(null)}>Kembali</button>
+        <div><h3 className="cardh">Cuti, izin, dan sakit</h3>
+          {(portal.cuti ?? []).length === 0 ? <p className="muted" style={{ margin: 0 }}>Belum ada pengajuan.</p> : (
+            <ul className="abs-riwayat">{(portal.cuti ?? []).map((c, i) => (
+              <li key={i}><b>{c.jenis === "CUTI" ? "Cuti" : c.jenis === "IZIN" ? "Izin" : "Sakit"}</b><span>{hariPendek(c.dari)}{c.sampai !== c.dari ? ` – ${hariPendek(c.sampai)}` : ""}</span>
+                <em className={c.status === "DITOLAK" ? "warn" : ""}>{c.status === "PENGAJUAN" ? "Menunggu HRD" : c.status === "DISETUJUI" ? "Disetujui" : "Ditolak"}</em>{c.catatan && <small className="muted">{c.catatan}</small>}</li>))}</ul>)}
+        </div>
+        <form className="stack" onSubmit={(e) => { e.preventDefault(); setGalat(""); setInfo(""); const f = new FormData(e.currentTarget);
+          mulai(async () => { const r = await ajukanCuti({ token, kode, pin, jenis: String(f.get("jenis")), dari: String(f.get("dari")), sampai: String(f.get("sampai") || f.get("dari")), alasan: String(f.get("alasan")) });
+            if (!r.ok) { setGalat(r.pesan); return; } setInfo(r.pesan); const p = await absenPortal({ token, kode, pin }); if (p.ok) setPortal(p); }); }}>
+          <h3 className="cardh">Ajukan cuti, izin, atau sakit</h3>
+          <div className="rbf"><label className="f" htmlFor="cj">Jenis</label><select id="cj" name="jenis" defaultValue="IZIN"><option value="CUTI">Cuti</option><option value="IZIN">Izin</option><option value="SAKIT">Sakit</option></select></div>
+          <div className="rbrow"><div className="rbf"><label className="f" htmlFor="cd">Mulai</label><input id="cd" name="dari" type="date" required /></div><div className="rbf"><label className="f" htmlFor="cs">Sampai (boleh kosong)</label><input id="cs" name="sampai" type="date" /></div></div>
+          <div className="rbf"><label className="f" htmlFor="ca">Alasan singkat</label><input id="ca" name="alasan" required minLength={3} maxLength={300} autoComplete="off" /></div>
+          <button className="btn green" disabled={sibuk}>{sibuk ? "Mengirim…" : "Kirim ke HRD"}</button>
+        </form>
+        {info && <div className="ok" role="status">{info}</div>}
+        {galat && <div className="err" role="alert">{galat}</div>}
+        <button type="button" className="btn ghost" onClick={() => { setPortal(null); setInfo(""); }}>Kembali</button>
       </section>
     );
   }

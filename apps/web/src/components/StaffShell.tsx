@@ -23,7 +23,7 @@ export default function StaffShell({ me, pending, children, forceFull }: { me: M
   const lurus: Tab[] = me.role === "HRD"
     ? [{ href: "/app/rekrutmen", label: "Dashboard", icon: "chart" }, { href: "/app/lamaran", label: "Lamaran", icon: "users" }, { href: "/app/karyawan", label: "Absensi", icon: "clock", also: ["/app/absen/qr", "/app/karyawan/cabang"] }, { href: "/app/pegawai", label: "Pegawai", icon: "user" }]
     : me.role === "FINANCE"
-    ? [{ href: "/app/keuangan", label: "Keuangan", icon: "cash" }, { href: "/app/keuangan/belum-ditagih", label: "Buat invoice", icon: "plus" }, { href: "/app/tagihan", label: "Tagihan", icon: "file" }, { href: "/app/laporan", label: "Laporan", icon: "chart" }, { href: "/app/margin", label: "Margin", icon: "tag" }, { href: "/app/keuangan/kehadiran", label: "Kehadiran", icon: "clock" }]
+    ? [{ href: "/app/keuangan", label: "Keuangan", icon: "cash" }, { href: "/app/keuangan/belum-ditagih", label: "Buat invoice", icon: "plus" }, { href: "/app/tagihan", label: "Tagihan", icon: "file" }, { href: "/app/laporan", label: "Laporan", icon: "chart" }, { href: "/app/margin", label: "Margin", icon: "tag" }, { href: "/app/keuangan/kehadiran", label: "Kehadiran", icon: "clock" }, { href: "/app/keuangan/input-absen", label: "Input absen", icon: "user" }]
     : me.role === "CS_SALES"
     ? [{ href: "/app", label: "Beranda", icon: "home" }, { href: "/app/jemput", label: "Jemput", icon: "truck" }, { href: "/app/klaim", label: "Klaim", icon: "shield" }]
     : me.role === "MV" || me.role === "MV_MASTER"

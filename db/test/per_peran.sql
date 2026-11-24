@@ -7,9 +7,14 @@ DO $$ BEGIN
   PERFORM set_config('t.kas', (public.owner_create_staff('pp.kasir@uji.id','Kasir PP','MITRA_POS',current_setting('t.br')::uuid,'Sandi1234'))->>'userId', false);
   PERFORM set_config('t.kur', (public.owner_create_staff('pp.kurir@uji.id','Kurir PP','DRIVER',current_setting('t.br')::uuid,'Sandi1234'))->>'userId', false);
   PERFORM set_config('t.gud', (public.owner_create_staff('pp.gudang@uji.id','Gudang PP','WAREHOUSE',current_setting('t.br')::uuid,'Sandi1234'))->>'userId', false);
-  PERFORM set_config('t.sop', (public.owner_create_staff('pp.sopir@uji.id','Sopir PP','CONTAINER_DRIVER',current_setting('t.br')::uuid,'Sandi1234'))->>'userId', false);
+  PERFORM set_config('t.sop', (public.owner_create_staff('pp.sopir@uji.id','Sopir PP','DRIVER',current_setting('t.br')::uuid,'Sandi1234'))->>'userId', false);
   PERFORM set_config('t.knt', (public.owner_create_staff('pp.konten@uji.id','Konten PP','KONTEN',NULL,'Sandi1234'))->>'userId', false);
 END $$;
+-- Akun Sopir baru tidak dibuat lagi; akun lama (di sini diubah langsung) tetap berfungsi
+SELECT t.fails($$select public.owner_create_staff('pp.sopir2@uji.id','Sopir Baru','CONTAINER_DRIVER',current_setting('t.br')::uuid,'Sandi1234')$$, 'tidak dibuat lagi');
+RESET ROLE;
+UPDATE employee_profiles SET role = 'CONTAINER_DRIVER' WHERE user_id = current_setting('t.sop')::uuid;
+SELECT t.as_user('00000000-0000-0000-0000-000000000001');
 -- Pemilik: wawasan + target
 DO $$ DECLARE r jsonb; k text; BEGIN
   r := public.owner_insights();

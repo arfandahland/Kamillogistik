@@ -6,7 +6,7 @@ import { ROLE_LABEL } from "@kamil/core";
 import Icon from "@/components/Icon";
 import SubmitButton from "@/components/SubmitButton";
 import { staffRpc } from "@/lib/supabase/server";
-import { aturShift, hapusDokumen, putusCuti, simpanDokumen } from "./actions";
+import { aturShift, hapusDokumen, putusCuti, putusCutiPegawai, simpanDokumen } from "./actions";
 import { requireRole } from "@/lib/auth";
 import BackLink from "@/components/BackLink";
 
@@ -15,6 +15,7 @@ const TABS = [["daftar", "Pegawai"], ["dokumen", "Dokumen"], ["shift", "Shift"],
 type Staf = { id: string; nama: string; peran: string; cabang: string | null; aktif: boolean; masuk: string | null; pulang: string | null; shift: string | null; cutiHariIni: boolean; dokumenHabis: number; dokumenHampir: number; dokumen: number };
 type Dok = { id: string; userId: string; nama: string; kind: string; nomor: string | null; berlaku: string | null; catatan: string | null; sisaHari: number | null };
 type Cuti = { id: string; nama: string; peran: string; kind: string; dari: string; sampai: string; hari: number; alasan: string; status: string; catatan: string | null };
+type CutiPeg = { id: string; nama: string; kode: string; cabang: string; jenis: string; dari: string; sampai: string; hari: number; alasan: string; status: string; catatan: string | null };
 type Papan = { dari: string; baris: { id: string; nama: string; peran: string; hari: Record<string, string> }[] };
 type Rekap = { id: string; nama: string; peran: string; cabang: string | null; hadir: number; tanpaPulang: number; cutiHari: number; shiftTerjadwal: number; langkah: number; dijemput: number; ditimbang: number; diantar: number };
 const jam = (iso: string | null) => (iso ? new Date(iso).toLocaleTimeString("id-ID", { timeZone: "Asia/Makassar", hour: "2-digit", minute: "2-digit" }).replace(".", ":") : "—");
@@ -32,15 +33,16 @@ export default async function Pegawai({ searchParams }: { searchParams: Promise<
   const sampai = /^\d{4}-\d{2}-\d{2}$/.test(sp.sampai ?? "") ? sp.sampai! : hariIni;
   const daftar = await staffRpc<Staf[]>("hr_staff_list");
   const staf = daftar.data ?? [];
-  const [dok, papan, cuti, rekap] = await Promise.all([
+  const [dok, papan, cuti, rekap, cutiPeg] = await Promise.all([
     tab === "dokumen" ? staffRpc<Dok[]>("hr_documents_list") : null,
     tab === "shift" ? staffRpc<Papan>("hr_shift_board") : null,
     tab === "cuti" ? staffRpc<Cuti[]>("hr_leaves_list") : null,
     tab === "rekap" ? staffRpc<Rekap[]>("hr_recap", { p_from: dari, p_to: sampai }) : null,
+    tab === "cuti" ? staffRpc<CutiPeg[]>("hr_cuti_pegawai_list") : null,
   ]);
   const aktif = staf.filter((s) => s.aktif && s.peran !== "SUPER_ADMIN");
   const pgStaf = halamanDari(staf, tab === "daftar" ? sp.hal : 1), pgDok = halamanDari(dok?.data ?? [], sp.hal), pgCuti = halamanDari(cuti?.data ?? [], sp.hal), pgRekap = halamanDari(rekap?.data ?? [], sp.hal);
-  const err = daftar.error ?? dok?.error ?? papan?.error ?? cuti?.error ?? rekap?.error;
+  const err = daftar.error ?? cutiPeg?.error ?? dok?.error ?? papan?.error ?? cuti?.error ?? rekap?.error;
   return (
     <main className="wrap stack" style={{ paddingTop: 8 }}>
       <BackLink />
@@ -138,7 +140,24 @@ export default async function Pegawai({ searchParams }: { searchParams: Promise<
             </div>
           ))}
           <Pager h={pgCuti} path="/app/pegawai" params={{ t: tab }} satuan="pengajuan" />
-          {cuti?.data?.length === 0 && <div className="card"><p className="muted" style={{ margin: 0 }}>Belum ada pengajuan cuti atau izin.</p></div>}
+          {cuti?.data?.length === 0 && (cutiPeg?.data ?? []).length === 0 && <div className="card"><p className="muted" style={{ margin: 0 }}>Belum ada pengajuan cuti atau izin.</p></div>}
+          {(cutiPeg?.data ?? []).length > 0 && <h2 className="cardh" style={{ marginBottom: 0 }}>Karyawan tanpa akun (lewat portal absen)</h2>}
+          {(cutiPeg?.data ?? []).map((c) => (
+            <div key={c.id} className={`card stack ${c.status === "PENGAJUAN" ? "flag" : ""}`}>
+              <p style={{ margin: 0 }}><b>{c.nama}</b> <small className="muted">{c.kode} · {c.cabang}</small> <span className={`pill ${c.status === "PENGAJUAN" ? "new" : c.status === "DISETUJUI" ? "done" : ""}`}>{c.status === "PENGAJUAN" ? "Menunggu keputusan" : c.status === "DISETUJUI" ? "Disetujui" : "Ditolak"}</span></p>
+              <p className="muted" style={{ margin: 0 }}>{JENIS_CUTI[c.jenis]} · {tanggalWita(c.dari)}{c.sampai !== c.dari ? ` sampai ${tanggalWita(c.sampai)}` : ""} ({c.hari} hari)<br />{c.alasan}{c.catatan ? <><br /><small>Catatan: {c.catatan}</small></> : null}</p>
+              {c.status === "PENGAJUAN" && (
+                <>
+                  <form action={putusCutiPegawai}><input type="hidden" name="id" value={c.id} /><input type="hidden" name="putusan" value="DISETUJUI" /><SubmitButton steps={["Menyimpan keputusan…"]}>Setujui</SubmitButton></form>
+                  <form action={putusCutiPegawai} className="stack">
+                    <input type="hidden" name="id" value={c.id} /><input type="hidden" name="putusan" value="DITOLAK" />
+                    <label className="f" htmlFor={`cp-${c.id}`}>Alasan bila ditolak</label><input id={`cp-${c.id}`} name="catatan" autoComplete="off" />
+                    <SubmitButton className="btn ghost" steps={["Menyimpan keputusan…"]}>Tolak</SubmitButton>
+                  </form>
+                </>
+              )}
+            </div>
+          ))}
         </div>
       )}
 

@@ -174,15 +174,15 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/actions.ts": {
-    "mtime": 1795499117.9184744,
-    "seen": 1795499420.8561196,
-    "ast_hash": "37174377bfe273d27e185a796a37e10e",
+    "mtime": 1795499843.6502264,
+    "seen": 1795499871.743812,
+    "ast_hash": "fdb8da2ae75834830b4c4f9c3985d055",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/admin-actions.ts": {
-    "mtime": 1795245367.9400105,
-    "seen": 1795245449.9369369,
-    "ast_hash": "99438079a5623c25bf513b009e5f8772",
+    "mtime": 1795499815.511341,
+    "seen": 1795499871.7438152,
+    "ast_hash": "183d237d6b9d3f40ab44e38a28981a6a",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/akun/page.tsx": {
@@ -252,9 +252,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/korporat/[id]/page.tsx": {
-    "mtime": 1795306690.9675045,
-    "seen": 1795307707.7702906,
-    "ast_hash": "16d923fbd8c0e7d4116a8051d97bd1eb",
+    "mtime": 1795499798.3570452,
+    "seen": 1795499871.744715,
+    "ast_hash": "8f68ab6cc17ad0777389ba9a9aa23436",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/korporat/actions.ts": {
@@ -378,9 +378,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/resi/[id]/page.tsx": {
-    "mtime": 1795499124.7022955,
-    "seen": 1795499420.85778,
-    "ast_hash": "e955e7b70a7eb4c50c78d55a1600228e",
+    "mtime": 1795499859.2067206,
+    "seen": 1795499871.745991,
+    "ast_hash": "c4a568c7dd99d13ca9386f233e7870aa",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/ringkasan/page.tsx": {
@@ -408,15 +408,15 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/tagihan/[id]/page.tsx": {
-    "mtime": 1795442208.1148324,
-    "seen": 1795442255.2173905,
-    "ast_hash": "e016ed3308925fac1bf1a6866cb0fadf",
+    "mtime": 1795499815.5117173,
+    "seen": 1795499871.7461357,
+    "ast_hash": "d4ab7756e2ca6f962092d970f83f4a14",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/tagihan/page.tsx": {
-    "mtime": 1795485387.2147233,
-    "seen": 1795486047.6010897,
-    "ast_hash": "48a6c1b6d1de5e3ff08c0370d57ea8b6",
+    "mtime": 1795499798.3532047,
+    "seen": 1795499871.7461374,
+    "ast_hash": "dd92f7413daf7ba66eb7fc536abbc51d",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/tarif/page.tsx": {
@@ -498,9 +498,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/portal/[token]/page.tsx": {
-    "mtime": 1794995493.3808525,
-    "seen": 1795104170.4404185,
-    "ast_hash": "df5bd7d754dd53a3144931b8de1008a6",
+    "mtime": 1795499798.361714,
+    "seen": 1795499871.7466536,
+    "ast_hash": "83c2e41d8dd06e40443b362d5e34b75d",
     "semantic_hash": ""
   },
   "apps/web/src/app/robots.ts": {
@@ -582,9 +582,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/InvoiceDocument.tsx": {
-    "mtime": 1795442208.1143596,
-    "seen": 1795442255.2175117,
-    "ast_hash": "9d370d44aa8670f92c662b5310bc2983",
+    "mtime": 1795499815.5120878,
+    "seen": 1795499871.7475038,
+    "ast_hash": "7bc18940f3627b6fc84a798aa9f540ff",
     "semantic_hash": ""
   },
   "apps/web/src/components/JsonLd.tsx": {
@@ -756,9 +756,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/StaffShell.tsx": {
-    "mtime": 1795487168.2737784,
-    "seen": 1795489355.18383,
-    "ast_hash": "2e9c7c7a906cf1613fba3c369079ed86",
+    "mtime": 1795499839.963169,
+    "seen": 1795499871.7487645,
+    "ast_hash": "e79c1eadacbf55944d7dcbdc765ca3a6",
     "semantic_hash": ""
   },
   "apps/web/src/components/SubmitButton.tsx": {
@@ -900,9 +900,9 @@
     "semantic_hash": ""
   },
   "db/test/run.sh": {
-    "mtime": 1795499502.9406803,
-    "seen": 1795499620.4112835,
-    "ast_hash": "d59496174d2a01f6b424450c344f6cca",
+    "mtime": 1795499689.0885441,
+    "seen": 1795499871.7516844,
+    "ast_hash": "a8dd789548ad7ee3d07563d0ba4e31de",
     "semantic_hash": ""
   },
   "db/test/tariff-cases.json": {
@@ -954,9 +954,9 @@
     "semantic_hash": ""
   },
   "e2e/setup.sh": {
-    "mtime": 1795499502.9429975,
-    "seen": 1795499620.4116285,
-    "ast_hash": "42c5429baebc80cc99227186659ce9b9",
+    "mtime": 1795499689.0906355,
+    "seen": 1795499871.7519014,
+    "ast_hash": "791daaad4f5b5563fd33b02db4fce7c3",
     "semantic_hash": ""
   },
   "e2e/skenario.cjs": {
@@ -1490,7 +1490,7 @@
   "db/test/korporat.sql": {
     "mtime": 1795499196.6922212,
     "seen": 1795499476.0326567,
-    "ast_hash": "b95103b7394da135405632ffdf000b4a",
+    "ast_hash": "",
     "semantic_hash": ""
   },
   "db/test/lamaran.sql": {
@@ -2154,9 +2154,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/InvoiceForm.tsx": {
-    "mtime": 1795499117.9196424,
-    "seen": 1795499420.859026,
-    "ast_hash": "1735c38b59c9b99a51df6073a131829e",
+    "mtime": 1795499846.973492,
+    "seen": 1795499871.7475066,
+    "ast_hash": "b2ed94e73a4b42f98fae1469dfea88da",
     "semantic_hash": ""
   },
   "db/migrations/035_resi_satu_pintu.sql": {
@@ -8982,9 +8982,9 @@
     "semantic_hash": ""
   },
   "db/test/mv.sql": {
-    "mtime": 1795435120.2875037,
-    "seen": 1795435593.1449032,
-    "ast_hash": "",
+    "mtime": 1795499531.716214,
+    "seen": 1795499871.7514808,
+    "ast_hash": "cabca7bce00ab9fb4ce1f9b85b99ba56",
     "semantic_hash": ""
   },
   "apps/web/src/components/PanduanAwal.tsx": {
@@ -9036,9 +9036,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/lib/pusat.ts": {
-    "mtime": 1795487168.2733645,
-    "seen": 1795489355.1846814,
-    "ast_hash": "38f03670fa0a41f174e207689172bf50",
+    "mtime": 1795499839.9626968,
+    "seen": 1795499871.7496417,
+    "ast_hash": "eb73757e8949d362c291b27466e65211",
     "semantic_hash": ""
   },
   "db/migrations/056_data_awal_lengkap.sql": {
@@ -9405,6 +9405,24 @@
     "mtime": 1795499444.4377394,
     "seen": 1795499620.411362,
     "ast_hash": "7f3c02665b06fe50d7df1d580f1093a6",
+    "semantic_hash": ""
+  },
+  "apps/web/src/app/app/keuangan/belum-ditagih/page.tsx": {
+    "mtime": 1795499843.63587,
+    "seen": 1795499871.7443652,
+    "ast_hash": "5cf68f513a15d79efc165036781405a0",
+    "semantic_hash": ""
+  },
+  "apps/web/src/lib/tagih.ts": {
+    "mtime": 1795499798.3297606,
+    "seen": 1795499871.749756,
+    "ast_hash": "c531c7f6dbcce281560437c9df5275b4",
+    "semantic_hash": ""
+  },
+  "db/migrations/065_tagihan_vendor.sql": {
+    "mtime": 1795499499.972857,
+    "seen": 1795499871.7511008,
+    "ast_hash": "93acf3f9e2c2b80697b29e58cdd7d549",
     "semantic_hash": ""
   },
   "package-lock.json": {

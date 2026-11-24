@@ -27,6 +27,9 @@ export async function hapusDokumen(fd: FormData) {
 export async function aturShift(fd: FormData) {
   selesai("/app/pegawai?t=shift", await staffRpc("hr_shift_set", { p_user: str(fd, "pegawai"), p_from: tglOk(str(fd, "dari")), p_to: tglOk(str(fd, "sampai")) ?? tglOk(str(fd, "dari")), p_shift: str(fd, "shift") }), "Shift disimpan.");
 }
+export async function putusCutiPegawai(fd: FormData) {
+  selesai("/app/pegawai?t=cuti", await staffRpc("hr_cuti_pegawai_decide", { p_id: str(fd, "id"), p_status: str(fd, "putusan"), p_note: str(fd, "catatan") || null }), "Keputusan tersimpan.");
+}
 export async function putusCuti(fd: FormData) {
   selesai("/app/pegawai?t=cuti", await staffRpc("hr_leave_decide", { p_id: str(fd, "id"), p_status: str(fd, "putusan"), p_note: str(fd, "catatan") || null }), "Keputusan tersimpan.");
 }

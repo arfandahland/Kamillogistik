@@ -93,7 +93,8 @@ export const OWNER_VIEW: readonly string[] = ["SUPER_ADMIN", "OWNER"];
 export const SEES_MONEY = ["SUPER_ADMIN", "OWNER", "HUB_MANAGER", "MITRA_POS", "FINANCE"];
 
 /** Peran yang bisa dipilih saat Pemilik membuat akun baru. Tiga yang terakhir tidak terikat cabang. */
-export const PERAN_BARU = ["DRIVER", "WAREHOUSE", "CONTAINER_DRIVER", "MITRA_POS", "HUB_MANAGER", "HRD", "KONTEN", "FINANCE", "CS_SALES", "MV", "MV_MASTER", "OWNER", "SUPER_ADMIN"] as const;
+/** Peran untuk akun baru. Sopir (CONTAINER_DRIVER) tidak dibuat lagi: nama sopir dan vendor dicatat sebagai teks pada manifest. */
+export const PERAN_BARU = ["DRIVER", "WAREHOUSE", "MITRA_POS", "HUB_MANAGER", "HRD", "KONTEN", "FINANCE", "CS_SALES", "MV", "MV_MASTER", "OWNER", "SUPER_ADMIN"] as const;
 export const PERAN_TANPA_CABANG = ["HRD", "KONTEN", "FINANCE", "MV_MASTER", "OWNER", "SUPER_ADMIN"] as const;
 export const PERAN_KETERANGAN: Record<string, string> = {
   HRD: "Kepegawaian (dokumen, shift, absensi, cuti, rekap) dan Lamaran kerja. Tidak melihat resi maupun keuangan.",
