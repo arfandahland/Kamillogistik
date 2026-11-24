@@ -103,8 +103,11 @@
   "101": "InvoiceForm.tsx",
   "102": "react",
   "103": "Icon.tsx",
+  "104": "akun/page.tsx",
+  "105": "laporan/page.tsx",
   "106": "publicView.ts",
   "107": "vitest",
+  "108": "pusat/page.tsx",
   "113": "KlaimKartu.tsx",
   "117": "vendor/[token]/page.tsx"
 }
