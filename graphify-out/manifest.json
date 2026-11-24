@@ -180,9 +180,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/admin-actions.ts": {
-    "mtime": 1795499815.511341,
-    "seen": 1795499871.7438152,
-    "ast_hash": "183d237d6b9d3f40ab44e38a28981a6a",
+    "mtime": 1795510040.7311707,
+    "seen": 1795510310.455806,
+    "ast_hash": "f1313a971cb1bca2bb37771faa291d10",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/akun/page.tsx": {
@@ -300,15 +300,15 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/manifest/[id]/page.tsx": {
-    "mtime": 1795499408.3881004,
-    "seen": 1795499420.856992,
-    "ast_hash": "ac94523a3b20c59c62199eeb258fcf5c",
+    "mtime": 1795510052.380724,
+    "seen": 1795510310.4575322,
+    "ast_hash": "05c3c5fad93fcaecaf97ef034dd52e45",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/manifest/actions.ts": {
-    "mtime": 1795487502.531953,
-    "seen": 1795489355.1795814,
-    "ast_hash": "b5e6907a61b056d8eab11cbae435bde9",
+    "mtime": 1795510052.379473,
+    "seen": 1795510310.4576123,
+    "ast_hash": "6e3b8efe84ed5e5ebffdf9efc2e109cc",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/manifest/baru/page.tsx": {
@@ -348,9 +348,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/petugas/page.tsx": {
-    "mtime": 1795326215.7196817,
-    "seen": 1795326331.154698,
-    "ast_hash": "28e63244d9adcd3cc5789627503bbd08",
+    "mtime": 1795510040.7317488,
+    "seen": 1795510310.4585297,
+    "ast_hash": "e2ddc491313f9baa5c78cd12ffa884e1",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/pindai/actions.ts": {
@@ -408,9 +408,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/tagihan/[id]/page.tsx": {
-    "mtime": 1795499815.5117173,
-    "seen": 1795499871.7461357,
-    "ast_hash": "d4ab7756e2ca6f962092d970f83f4a14",
+    "mtime": 1795510040.7320411,
+    "seen": 1795510310.4590278,
+    "ast_hash": "013ae1faa4b318d288011e9119ea2f5e",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/tagihan/page.tsx": {
@@ -900,9 +900,9 @@
     "semantic_hash": ""
   },
   "db/test/run.sh": {
-    "mtime": 1795499965.70624,
-    "seen": 1795500075.138658,
-    "ast_hash": "32736402aee3637160ad05ca9089845f",
+    "mtime": 1795510012.3396554,
+    "seen": 1795510310.4664273,
+    "ast_hash": "5c5bf9332a561d5a30dd2bf8e3383d18",
     "semantic_hash": ""
   },
   "db/test/tariff-cases.json": {
@@ -954,9 +954,9 @@
     "semantic_hash": ""
   },
   "e2e/setup.sh": {
-    "mtime": 1795499940.850165,
-    "seen": 1795500075.1388898,
-    "ast_hash": "ac7270ad8ac401617f021c41658271ee",
+    "mtime": 1795509995.7698362,
+    "seen": 1795510310.4667192,
+    "ast_hash": "4c03f47e519e8a678686edc6f487f584",
     "semantic_hash": ""
   },
   "e2e/skenario.cjs": {
