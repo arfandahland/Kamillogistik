@@ -1,17 +1,17 @@
 # Graph Report - Kamillogistik  (2026-11-24)
 
 ## Corpus Check
-- 1566 files · ~498,399 words
+- 1568 files · ~499,139 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 41 file(s) not represented in the graph (top: .csv 35, (none) 3, .example 1)
 
 ## Summary
-- 2388 nodes · 6203 edges · 113 communities (100 shown, 13 thin omitted)
+- 2388 nodes · 6202 edges · 113 communities (100 shown, 13 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 21 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `c15909cd`
+- Built from commit: `24205c76`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -141,14 +141,14 @@
 ## Surprising Connections (you probably didn't know these)
 - `1. Dua jalur masuk dan dua arah` --references--> `nextStatus()`  [INFERRED]
   docs/AUDIT-SPESIFIKASI.md → packages/core/src/status.ts
-- `ResiDetail()` --indirect_call--> `isProblem()`  [INFERRED]
-  apps/web/src/app/app/resi/[id]/page.tsx → packages/core/src/inspection.ts
 - `harga()` --calls--> `priceLabel()`  [EXTRACTED]
   apps/web/src/lib/panduan.tsx → packages/core/src/service/seo.ts
+- `ResiDetail()` --indirect_call--> `isProblem()`  [INFERRED]
+  apps/web/src/app/app/resi/[id]/page.tsx → packages/core/src/inspection.ts
 - `POST()` --calls--> `jawab()`  [EXTRACTED]
   apps/web/src/app/api/chat/route.ts → packages/core/src/service/chat.ts
-- `Og()` --calls--> `handleTrack()`  [EXTRACTED]
-  apps/web/src/app/(publik)/lacak/[resi]/opengraph-image.tsx → packages/core/src/service/handlers.ts
+- `ResiStepper()` --calls--> `stagesFor()`  [EXTRACTED]
+  apps/web/src/components/ResiStepper.tsx → packages/core/src/status.ts
 
 ## Import Cycles
 - None detected.
@@ -288,7 +288,7 @@ Cohesion: 0.17
 Nodes (11): Berikutnya, Catatan data (perlu konfirmasi Fase 0), Fitur inti, Fitur tambahan (migrasi 014-018), Identitas visual (dari materi promosi), Kamil Logistik Express, Keamanan dan uji penetrasi, Pricelist dan data (+3 more)
 
 ### Community 33 - "publicRpc.ts"
-Cohesion: 0.16
+Cohesion: 0.15
 Nodes (13): kirimNilai(), NilaiHasil, kirimVendor(), dynamic, Info, metadata, MODA, Vendor() (+5 more)
 
 ### Community 34 - "compilerOptions"
@@ -564,16 +564,16 @@ Nodes (3): GET(), ok(), sel()
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `next` connect `next` to `FollowupCard.tsx`, `alokasi/page.tsx`, `getRoutePairs`, `mv/actions.ts`, `(publik)/[slug]/page.tsx`, `admin-actions.ts`, `PeranDashboard.tsx`, `konten/actions.ts`, `StaffHome.tsx`, `manifest/[id]/page.tsx`, `StaffShell.tsx`, `brand.ts`, `kehadiran/page.tsx`, `[resi]/page.tsx`, `lib/seo.ts`, `next`, `ResiStepper.tsx`, `Calculator.tsx`, `input-absen/page.tsx`, `OwnerDashboard.tsx`, `publicRpc.ts`, `HubDashboard.tsx`, `waLink`, `publicRpc.ts`, `(publik)/page.tsx`, `app/baru/page.tsx`, `resi/[id]/page.tsx`, `Pager`, `panduan-lanjutan.tsx`, `owner/page.tsx`, `rekrutmen/page.tsx`, `masuk/page.tsx`, `app/baru/page.tsx`, `pindai/actions.ts`, `karyawan/actions.ts`, `fake-supabase.mjs`, `kendala/actions.ts`, `src/app/layout.tsx`, `Icon`, `ringkasan/page.tsx`, `web/package.json`, `resi/[id]/cetak/page.tsx`, `staffRpc`, `waNumber`, `laporan/page.tsx`, `AbsenForm.tsx`, `pegawai/page.tsx`, `index.ts`?**
-  _High betweenness centrality (0.152) - this node is a cross-community bridge._
+  _High betweenness centrality (0.141) - this node is a cross-community bridge._
 - **What connects `../../tsconfig.base.json`, `NODE_PATH`, `SITE_URL` to the rest of the system?**
   _9 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `alokasi/page.tsx` be split into smaller, more focused modules?**
   _Cohesion score 0.0636030636030636 - nodes in this community are weakly interconnected._
 - **Why does `staffRpc()` connect `staffRpc` to `kehadiran/route.ts`, `FollowupCard.tsx`, `alokasi/page.tsx`, `mv/actions.ts`, `admin-actions.ts`, `PeranDashboard.tsx`, `konten/actions.ts`, `manifest/[id]/page.tsx`, `brand.ts`, `kehadiran/page.tsx`, `input-absen/page.tsx`, `next`, `app/baru/page.tsx`, `resi/[id]/page.tsx`, `Pager`, `rekrutmen/page.tsx`, `masuk/page.tsx`, `app/baru/page.tsx`, `pindai/actions.ts`, `karyawan/actions.ts`, `fake-supabase.mjs`, `kendala/actions.ts`, `KondisiForm.tsx`, `Icon`, `ringkasan/page.tsx`, `resi/[id]/cetak/page.tsx`, `waNumber`, `laporan/page.tsx`, `pegawai/page.tsx`, `react`?**
-  _High betweenness centrality (0.073) - this node is a cross-community bridge._
+  _High betweenness centrality (0.092) - this node is a cross-community bridge._
 - **Should `getRoutePairs` be split into smaller, more focused modules?**
   _Cohesion score 0.08571428571428572 - nodes in this community are weakly interconnected._
 - **Why does `react` connect `react` to `FollowupCard.tsx`, `alokasi/page.tsx`, `getRoutePairs`, `mv/actions.ts`, `PeranDashboard.tsx`, `chat.ts`, `konten/actions.ts`, `StaffHome.tsx`, `StaffShell.tsx`, `brand.ts`, `[resi]/page.tsx`, `lib/seo.ts`, `next`, `ResiStepper.tsx`, `Calculator.tsx`, `OwnerDashboard.tsx`, `karir/page.tsx`, `publicRpc.ts`, `HubDashboard.tsx`, `publicRpc.ts`, `(publik)/page.tsx`, `app/baru/page.tsx`, `Toast.tsx`, `LabelStudio.tsx`, `HitungVolume.tsx`, `Pager`, `rekrutmen/page.tsx`, `masuk/page.tsx`, `app/baru/page.tsx`, `pindai/actions.ts`, `karyawan/actions.ts`, `fake-supabase.mjs`, `InvoiceForm.tsx`, `src/app/layout.tsx`, `KondisiForm.tsx`, `Icon`, `web/package.json`, `resi/[id]/cetak/page.tsx`, `staffRpc`, `klaim/aksi.ts`, `waNumber`, `AbsenForm.tsx`, `jemput/aksi.ts`?**
-  _High betweenness centrality (0.065) - this node is a cross-community bridge._
+  _High betweenness centrality (0.053) - this node is a cross-community bridge._
 - **Should `mv/actions.ts` be split into smaller, more focused modules?**
   _Cohesion score 0.11529411764705882 - nodes in this community are weakly interconnected._
