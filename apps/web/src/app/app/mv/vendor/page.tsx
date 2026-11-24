@@ -9,8 +9,9 @@ import SubmitButton from "@/components/SubmitButton";
 import { requireRole } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
 import { daftarCabang, daftarWilayah } from "@/lib/mvdata";
-import { MV_BACA, MV_TULIS, MODA_NAMA, VENDOR_JENIS, VENDOR_STATUS, href, pilih, type Vendor } from "@/lib/mv";
-import { hapusRute, simpanVendor, tambahRute, ubahStatusVendor } from "../actions";
+import { MV_BACA, MV_TULIS, MODA_NAMA, VENDOR_JENIS, VENDOR_STATUS, href, pilih, rp, type TagihanVendor, type Vendor } from "@/lib/mv";
+import { tanggalWaktu } from "@/lib/brand";
+import { hapusRute, simpanVendor, tambahRute, tandaiLunasVendor, ubahStatusVendor } from "../actions";
 
 export const metadata: Metadata = { title: "Vendor MV" };
 const STATUS = [["", "Semua"], ["BELUM_VERIFIKASI", "Belum diverifikasi"], ["AKTIF", "Aktif"], ["NONAKTIF", "Nonaktif"], ["DITOLAK", "Ditolak"]] as const;
@@ -46,7 +47,10 @@ function FormVendor({ v, back }: { v?: Vendor; back: string }) {
 export default async function VendorMV({ searchParams }: { searchParams: Promise<{ hal?: string; s?: string; j?: string; ok?: string; e?: string }> }) {
   const me = await requireRole(MV_BACA); const sp = await searchParams;
   const s = pilih(sp.s, ["BELUM_VERIFIKASI", "AKTIF", "NONAKTIF", "DITOLAK"] as const), j = pilih(sp.j, ["DARAT", "LAUT", "UDARA", "MULTI"] as const);
-  const [r, cabang, wilayah] = await Promise.all([staffRpc<Vendor[]>("mv_vendor_list", { p_status: s || null, p_kind: j || null }), daftarCabang(), daftarWilayah()]);
+  const [r, cabang, wilayah, tg] = await Promise.all([staffRpc<Vendor[]>("mv_vendor_list", { p_status: s || null, p_kind: j || null }), daftarCabang(), daftarWilayah(), staffRpc<TagihanVendor[]>("mv_vendor_payables", {})]);
+  const tagihan = new Map((tg.data ?? []).map((x) => [x.vendorId, x]));
+  const totalBelum = (tg.data ?? []).reduce((a, x) => a + Number(x.belumLunas), 0), totalLunas = (tg.data ?? []).reduce((a, x) => a + Number(x.lunas), 0);
+  const bisaBayar = ["FINANCE", "SUPER_ADMIN", "MV_MASTER"].includes(me.role);
   const tulis = MV_TULIS.includes(me.role), master = me.role === "SUPER_ADMIN" || me.role === "MV_MASTER";
   const back = href("/app/mv/vendor", { s, j });
   const list = r.data ?? [];
@@ -57,6 +61,24 @@ export default async function VendorMV({ searchParams }: { searchParams: Promise
       <Ringkas key={v.id} judul={v.name}
         ringkas={<span className="mvsum"><span className={`pill ${st.kelas}`}>{st.label}</span>{v.status === "AKTIF" && <span className={`pill ${v.verified ? "done" : "warn"}`}>{v.verified ? "Terverifikasi" : "Belum diverifikasi"}</span>}<span>{VENDOR_JENIS[v.kind] ?? v.kind}{v.contact ? ` · ${v.contact}` : ""}</span>
           {v.routes.length > 0 && <span className="mvchips">{v.routes.map((x) => <span key={x.id} className={`pill ${x.mode === "LAUT" ? "sea" : x.mode === "UDARA" ? "part" : ""}`}>{MODA_NAMA[x.mode]}{x.region ? ` · ${x.region}` : ""}</span>)}</span>}</span>}>
+        {(() => {
+          const t = tagihan.get(v.id);
+          return (
+            <section className="mvkotak" aria-label={`Tagihan ${v.name}`}>
+              <b>Tagihan vendor</b>
+              {!t ? <p className="muted" style={{ margin: 0 }}>Belum ada HPP yang diinput untuk vendor ini.</p> : (<>
+                <dl className="infogrid"><div><dt>Belum lunas</dt><dd>{rp(t.belumLunas)}<small>{t.jumlahBelum} pengiriman</small></dd></div><div><dt>Sudah lunas</dt><dd>{rp(t.lunas)}<small>{t.jumlahLunas} pengiriman</small></dd></div>
+                  {t.bank && <div><dt>Rekening</dt><dd>{t.bank}{t.rekening ? ` · ${t.rekening}` : ""}</dd></div>}</dl>
+                <ul className="mvrute">{t.items.map((i) => (
+                  <li key={i.allocId}><span><b>{i.resiNo}</b> · {i.origin} → {i.dest} · {rp(i.hpp)} · <span className={`pill ${i.paidAt ? "done" : "warn"}`}>{i.paidAt ? `Lunas ${tanggalWaktu(i.paidAt)}` : "Belum lunas"}</span>{i.paidRef ? <small> Ref {i.paidRef}</small> : null}</span>
+                    {bisaBayar && !i.paidAt && (
+                      <form action={tandaiLunasVendor} className="mvform"><input type="hidden" name="back" value={back} /><input type="hidden" name="alloc" value={i.allocId} /><input type="hidden" name="lunas" value="1" />
+                        <input name="ref" maxLength={120} placeholder="No. referensi (boleh kosong)" aria-label="Nomor referensi transfer" /><SubmitButton className="btn green sm" steps={["Menyimpan…"]}>Tandai lunas</SubmitButton></form>)}
+                  </li>))}</ul>
+              </>)}
+            </section>
+          );
+        })()}
         <dl className="infogrid">
           <div><dt>Telepon</dt><dd>{v.phone ?? "-"}</dd></div>
           <div><dt>Email</dt><dd>{v.email ?? "-"}</dd></div>
@@ -108,7 +130,8 @@ export default async function VendorMV({ searchParams }: { searchParams: Promise
     <main className="wrap stack" style={{ paddingTop: 8 }}>
       <BackLink href="/app/mv" ke="beranda MV" />
       <div className="pghead"><div><h1>Vendor</h1><p className="muted">Mitra pengangkut darat, laut, dan udara. Usulan baru aktif setelah diverifikasi MV Master.</p></div></div>
-      <MvPesan ok={sp.ok} e={sp.e} galat={[r.error]} />
+      <MvPesan ok={sp.ok} e={sp.e} galat={[r.error, tg.error]} />
+      <section className="card" aria-label="Ringkasan tagihan vendor"><dl className="infogrid"><div><dt>Belum dibayar ke vendor</dt><dd>{rp(totalBelum)}</dd></div><div><dt>Sudah dibayar</dt><dd>{rp(totalLunas)}</dd></div></dl></section>
       <div className="fchips" role="tablist" aria-label="Status">{STATUS.map(([k, t]) => <Link key={k} href={href("/app/mv/vendor", { s: k, j })} className={`fchip ${s === k ? "on" : ""}`}>{t}</Link>)}</div>
       <div className="fchips" role="tablist" aria-label="Jenis">{JENIS.map(([k, t]) => <Link key={k} href={href("/app/mv/vendor", { s, j: k })} className={`fchip ${j === k ? "on" : ""}`}>{t}</Link>)}</div>
       {tulis && <Ringkas judul={<><Icon name="plus" size={18} /> Catat vendor baru</>} ringkas="Langsung aktif. Vendor yang diketik di alokasi juga tercatat otomatis di sini." buka={!!sp.e}><FormVendor back={back} /></Ringkas>}

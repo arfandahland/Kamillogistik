@@ -58,13 +58,31 @@ export async function hapusRute(fd: FormData) {
 /* ---------- Alokasi dan HPP ---------- */
 export async function simpanAlokasi(fd: FormData) {
   const back = balik(fd, "/app/mv/alokasi"), internal = flag(fd, "internal");
-  const { error } = await staffRpc("mv_alloc_save", {
-    p_shipment: uuid(str(fd, "shipment")), p_vendor: null, p_vendor_name: internal ? null : (str(fd, "vendor_nama") || null), p_internal: internal,
+  const shipment = uuid(str(fd, "shipment")), darat = str(fd, "moda") === "DARAT";
+  const { data, error } = await staffRpc<{ id: string }>("mv_alloc_save", {
+    p_shipment: shipment, p_vendor: null, p_vendor_name: internal ? null : (str(fd, "vendor_nama") || null), p_internal: internal,
     p_driver: str(fd, "sopir") || null, p_plate: str(fd, "plat") || null, p_note: str(fd, "catatan") || null,
   });
   segar();
-  if (error) go(back, "e", error);
+  if (error || !data) go(back, "e", error ?? "Pilihan vendor gagal disimpan.");
+  const hpp = angka(fd, "hpp");
+  const buka = shipment && !/[?&]r=/.test(back) ? `${back}${back.includes("?") ? "&" : "?"}r=${shipment}` : back;
+  if (darat && !internal) {
+    if (hpp == null) return go(buka, "ok", "Vendor tersimpan. Isi HPP-nya di bawah supaya tagihan vendor tercatat.");
+    if (!Number.isInteger(hpp) || hpp <= 0) return go(buka, "e", "Vendor tersimpan, tetapi HPP harus berupa angka rupiah lebih dari nol, tanpa koma.");
+    const h = await staffRpc("mv_alloc_set_hpp", { p_alloc: data!.id, p_hpp: hpp, p_reason: null });
+    segar();
+    if (h.error) go(buka, "e", `Vendor tersimpan, tetapi HPP belum tersimpan: ${h.error}`);
+    go(buka, "ok", "Vendor dan HPP tersimpan. Nominalnya sudah masuk tagihan vendor yang belum lunas.");
+  }
   go(back, "ok", "Pilihan vendor tersimpan.");
+}
+export async function tandaiLunasVendor(fd: FormData) {
+  const back = balik(fd, "/app/mv/vendor"), lunas = str(fd, "lunas") !== "0";
+  const { error } = await staffRpc("mv_vendor_pay", { p_alloc: uuid(str(fd, "alloc")), p_paid: lunas, p_ref: str(fd, "ref") || null });
+  segar();
+  if (error) go(back, "e", error);
+  go(back, "ok", lunas ? "Pembayaran ke vendor ditandai lunas." : "Tanda lunas dibatalkan.");
 }
 export async function simpanHpp(fd: FormData) {
   const back = balik(fd, "/app/mv/alokasi"), n = angka(fd, "hpp");

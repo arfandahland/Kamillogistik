@@ -900,9 +900,9 @@
     "semantic_hash": ""
   },
   "db/test/run.sh": {
-    "mtime": 1795499238.803382,
-    "seen": 1795499420.8621168,
-    "ast_hash": "294e807479be9a7da979aab202542ef3",
+    "mtime": 1795499444.4377394,
+    "seen": 1795499476.032915,
+    "ast_hash": "de36824dd3f005ea8af79509ba1dd5e6",
     "semantic_hash": ""
   },
   "db/test/tariff-cases.json": {
@@ -954,9 +954,9 @@
     "semantic_hash": ""
   },
   "e2e/setup.sh": {
-    "mtime": 1795499160.5372105,
-    "seen": 1795499420.8622334,
-    "ast_hash": "12556337a2c17b72361d1b4747379874",
+    "mtime": 1795499426.27622,
+    "seen": 1795499476.0331044,
+    "ast_hash": "c8bc927b744a94d98fe8d675e06388c0",
     "semantic_hash": ""
   },
   "e2e/skenario.cjs": {
@@ -1488,9 +1488,9 @@
     "semantic_hash": ""
   },
   "db/test/korporat.sql": {
-    "mtime": 1795434995.9745426,
-    "seen": 1795435593.1448987,
-    "ast_hash": "",
+    "mtime": 1795499196.6922212,
+    "seen": 1795499476.0326567,
+    "ast_hash": "b95103b7394da135405632ffdf000b4a",
     "semantic_hash": ""
   },
   "db/test/lamaran.sql": {
@@ -1542,9 +1542,9 @@
     "semantic_hash": ""
   },
   "db/test/security.sql": {
-    "mtime": 1795435000.0716004,
-    "seen": 1795435593.1449158,
-    "ast_hash": "",
+    "mtime": 1795499180.763463,
+    "seen": 1795499476.032917,
+    "ast_hash": "0c14639d91579e271cb190cceb215bf3",
     "semantic_hash": ""
   },
   "db/test/staff_flow.sql": {
@@ -8634,9 +8634,9 @@
     "semantic_hash": ""
   },
   "db/test/revisi_resi.sql": {
-    "mtime": 1795332164.1960647,
-    "seen": 1795334301.218388,
-    "ast_hash": "",
+    "mtime": 1795499215.8136046,
+    "seen": 1795499476.0328925,
+    "ast_hash": "78b4cbe1031a649bc9926edb36994f37",
     "semantic_hash": ""
   },
   "apps/web/src/components/TutupResiPanel.tsx": {
@@ -8730,21 +8730,21 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/timbang/actions.ts": {
-    "mtime": 1795266368.9071848,
-    "seen": 1795266524.5343382,
-    "ast_hash": "beb233d291b40c86a9e60fe9bcc99090",
+    "mtime": 1795499420.2755818,
+    "seen": 1795499476.0264165,
+    "ast_hash": "0ce25ce961a2d049d74abc6f8616f864",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/timbang/page.tsx": {
-    "mtime": 1795377843.2951255,
-    "seen": 1795380629.5367763,
-    "ast_hash": "26b594dc100186cfc90bdf7bfea93d14",
+    "mtime": 1795499420.2761257,
+    "seen": 1795499476.0264215,
+    "ast_hash": "3e9887f205b59c059713b1aaa2a03301",
     "semantic_hash": ""
   },
   "apps/web/src/components/TimbangForm.tsx": {
-    "mtime": 1795268109.098264,
-    "seen": 1795268133.756196,
-    "ast_hash": "35c9b8291310d1580dee4e6bf3ad79cb",
+    "mtime": 1795499420.2768097,
+    "seen": 1795499476.0299635,
+    "ast_hash": "a9e6703818f0b3941d799b72a7984daf",
     "semantic_hash": ""
   },
   "db/migrations/047_data_awal_resi_timbang_cepat.sql": {
@@ -9375,6 +9375,18 @@
     "mtime": 1795487449.1497588,
     "seen": 1795499420.8618371,
     "ast_hash": "54937c0c41314efa9ec37c15b6722561",
+    "semantic_hash": ""
+  },
+  "db/migrations/063_aturan_resi_kasir.sql": {
+    "mtime": 1795499038.9137154,
+    "seen": 1795499476.0323195,
+    "ast_hash": "3cacba2d1496c3d9437574e763daa887",
+    "semantic_hash": ""
+  },
+  "db/test/aturan_resi.sql": {
+    "mtime": 1795499238.803382,
+    "seen": 1795499476.032481,
+    "ast_hash": "d9a139273171ccc3d400d3713d2bb6ba",
     "semantic_hash": ""
   },
   "package-lock.json": {

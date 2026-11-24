@@ -7,12 +7,13 @@ import BackLink from "@/components/BackLink";
 import MvPesan from "@/components/MvPesan";
 import SubmitButton from "@/components/SubmitButton";
 import FormDokumen from "@/components/FormDokumen";
+import HppOtomatis from "@/components/HppOtomatis";
 import { requireRole } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
 import { tanggalWaktu } from "@/lib/brand";
 import { daftarCabang, daftarWilayah } from "@/lib/mvdata";
 import { ALOK_FILTER, ALOK_STATUS, DOK_JENIS, MODA_NAMA, MV_BACA, MV_SEMUA_CABANG, MV_TULIS, href, pilih, rp, uuidOk, type ResiAlokasi, type Vendor } from "@/lib/mv";
-import { buatLinkVendor, cabutLinkVendor, kunciHpp, simpanAlokasi, simpanHpp, ubahStatusAlokasi } from "../actions";
+import { buatLinkVendor, cabutLinkVendor, kunciHpp, simpanAlokasi, simpanHpp, tandaiLunasVendor, ubahStatusAlokasi } from "../actions";
 import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = { title: "Alokasi dan HPP" };
@@ -69,11 +70,12 @@ export default async function Alokasi({ searchParams }: { searchParams: Promise<
         {tulis && !a?.locked && !(a && ["BERANGKAT", "TIBA", "SELESAI"].includes(a.status)) && !["DELIVERED", "CANCELLED"].includes(x.shipStatus) && (
           <form action={simpanAlokasi} className="mvform mvkotak">
             <b>Vendor atau armada</b>
-            <input type="hidden" name="back" value={back} /><input type="hidden" name="shipment" value={x.shipmentId} />
+            <input type="hidden" name="back" value={back} /><input type="hidden" name="shipment" value={x.shipmentId} /><input type="hidden" name="moda" value={x.mode} />
             <div className="rbf"><label className="f" htmlFor={`vn-${x.shipmentId}`}>Nama vendor</label>
               <input id={`vn-${x.shipmentId}`} name="vendor_nama" list={`vd-${x.mode}`} defaultValue={a?.vendor ?? ""} maxLength={120} autoComplete="off" placeholder="Ketik nama vendor, atau pilih dari yang pernah dicatat" />
               <p className="hint">Vendor baru otomatis tercatat dan tersimpan riwayatnya. Nama yang sama dipakai ulang.</p></div>
             <label className="rbcek"><input type="checkbox" name="internal" defaultChecked={!!a?.internal} /> Armada internal (tanpa vendor)</label>
+            {x.mode === "DARAT" && a?.hpp == null && <HppOtomatis vendorId={`vn-${x.shipmentId}`} awal={null} />}
             <div className="rbrow">
               <div className="rbf"><label className="f">Nama sopir</label><input name="sopir" maxLength={80} defaultValue={a?.driver ?? ""} /></div>
               <div className="rbf"><label className="f">Nomor polisi</label><input name="plat" maxLength={20} autoCapitalize="characters" defaultValue={a?.plate ?? ""} /></div>
@@ -86,6 +88,19 @@ export default async function Alokasi({ searchParams }: { searchParams: Promise<
         {x.mode !== "DARAT" && <p className="hint">HPP laut dan udara dicatat lewat Biaya manifest.</p>}
         {x.mode === "DARAT" && a && (
           <dl className="infogrid"><div><dt>HPP</dt><dd>{rp(a.hpp)}{a.locked && <small>Sudah dicocokkan Finance, terkunci</small>}</dd></div><div><dt>Margin kasar</dt><dd>{margin != null ? rp(margin) : "-"}{margin != null && x.tagihan ? <small>{Math.round((margin / x.tagihan) * 100)}% dari tagihan</small> : null}</dd></div></dl>
+        )}
+        {a && a.vendorId && a.hpp != null && (
+          <div className="mvkotak" aria-label="Pembayaran ke vendor">
+            <b>Pembayaran ke vendor</b>
+            <p style={{ margin: 0 }}><span className={`pill ${a.paidAt ? "done" : "warn"}`}>{a.paidAt ? `Lunas · ${tanggalWaktu(a.paidAt)}` : "Belum lunas"}</span> {rp(a.hpp)}{a.paidRef ? <small> · Ref {a.paidRef}</small> : null}</p>
+            {["FINANCE", "SUPER_ADMIN", "MV_MASTER"].includes(me.role) && (
+              <form action={tandaiLunasVendor} className="mvform">
+                <input type="hidden" name="back" value={backR} /><input type="hidden" name="alloc" value={a.id} /><input type="hidden" name="lunas" value={a.paidAt ? "0" : "1"} />
+                {!a.paidAt && <div className="rbf"><label className="f">Nomor referensi transfer (boleh kosong)</label><input name="ref" maxLength={120} /></div>}
+                <SubmitButton className={a.paidAt ? "btn ghost" : "btn green"} steps={["Menyimpan…"]}>{a.paidAt ? "Batalkan tanda lunas" : "Tandai lunas"}</SubmitButton>
+              </form>
+            )}
+          </div>
         )}
         {bisaHpp && (
           <form action={simpanHpp} className="mvform mvkotak">

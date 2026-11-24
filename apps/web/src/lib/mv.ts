@@ -27,7 +27,9 @@ export const VENDOR_STATUS: Record<string, { label: string; kelas: string }> = {
 };
 export const VENDOR_JENIS: Record<string, string> = { DARAT: "Darat", LAUT: "Laut", UDARA: "Udara", MULTI: "Campuran" };
 
-export type Alokasi = { vendorVerified?: boolean; id: string; status: string; vendorId: string | null; vendor: string | null; vendorCode: string | null; internal: boolean; driver: string | null; plate: string | null; hpp: number | null; locked: boolean; note: string | null };
+export type Alokasi = { vendorVerified?: boolean; id: string; status: string; vendorId: string | null; vendor: string | null; vendorCode: string | null; internal: boolean; driver: string | null; plate: string | null; hpp: number | null; locked: boolean; paidAt?: string | null; paidRef?: string | null; note: string | null };
+export type TagihanVendor = { vendorId: string; name: string; code: string; belumLunas: number; lunas: number; jumlahBelum: number; jumlahLunas: number; bank: string | null; rekening: string | null;
+  items: { allocId: string; shipmentId: string; resiNo: string; origin: string; dest: string; hpp: number; status: string; paidAt: string | null; paidRef: string | null; createdAt: string }[] };
 export type ResiAlokasi = { shipmentId: string; resiNo: string; origin: string; originId: string; dest: string; mode: Moda; shipStatus: string; destProvince: string | null; destRegency: string | null;
   createdAt: string; tagihan: number | null; alloc: Alokasi | null };
 

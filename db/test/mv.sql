@@ -290,5 +290,25 @@ SELECT t.as_user(current_setting('t.mvj')::uuid);
 SELECT public.mv_vendor_link_revoke(current_setting('t.al')::uuid);
 SELECT t.as_anon();
 SELECT t.fails($$select public.vendor_link_submit(current_setting('t.tok'), 'LAPORAN', 'Setelah dicabut', NULL, 'Sopir Uji')$$, 'tidak berlaku');
+-- ===== 065: tagihan vendor =====
+SELECT t.as_user(current_setting('t.mvj')::uuid);
+DO $$ DECLARE p jsonb; BEGIN
+  p := public.mv_vendor_payables();
+  ASSERT EXISTS (SELECT 1 FROM jsonb_array_elements(p) x WHERE x->>'vendorId' = current_setting('t.v1') AND (x->>'belumLunas')::bigint = 810000 AND (x->>'jumlahBelum')::int = 1), 'HPP terisi otomatis jadi tagihan vendor belum lunas: ' || p::text;
+  ASSERT (SELECT a->'alloc'->>'paidAt' FROM jsonb_array_elements(public.mv_alloc_list()) a WHERE a->>'shipmentId' = current_setting('t.ra')) IS NULL, 'belum ada tanggal bayar';
+END $$;
+SELECT t.fails($$select public.mv_vendor_pay(current_setting('t.al')::uuid, true, 'TRF-1')$$, 'izin');
+SELECT t.as_user(current_setting('t.mvm')::uuid);
+DO $$ BEGIN ASSERT NOT EXISTS (SELECT 1 FROM jsonb_array_elements(public.mv_vendor_payables()) x WHERE x->>'vendorId' = current_setting('t.v1')), 'MV cabang lain tidak melihat tagihan vendor cabang Jakarta'; END $$;
+SELECT t.as_user(current_setting('t.fin')::uuid);
+SELECT t.fails($$select public.mv_vendor_pay(current_setting('t.al')::uuid, false)$$, 'belum ditandai lunas');
+DO $$ BEGIN
+  PERFORM public.mv_vendor_pay(current_setting('t.al')::uuid, true, 'TRF-BCA-0001');
+  ASSERT EXISTS (SELECT 1 FROM jsonb_array_elements(public.mv_vendor_payables(current_setting('t.v1')::uuid)) x WHERE (x->>'belumLunas')::bigint = 0 AND (x->>'lunas')::bigint = 810000 AND (x->>'jumlahLunas')::int = 1), 'setelah lunas pindah ke kolom lunas';
+END $$;
+SELECT t.fails($$select public.mv_vendor_pay(current_setting('t.al')::uuid, true)$$, 'sudah ditandai lunas');
+DO $$ BEGIN PERFORM public.mv_vendor_pay(current_setting('t.al')::uuid, false); ASSERT (SELECT (x->>'belumLunas')::bigint FROM jsonb_array_elements(public.mv_vendor_payables(current_setting('t.v1')::uuid)) x) = 810000, 'batal lunas mengembalikan tagihan'; END $$;
+SELECT t.as_user('00000000-0000-0000-0000-000000000002');
+SELECT t.fails($$select public.mv_vendor_payables()$$, 'izin');
 RESET ROLE;
 SELECT 'mv OK' AS hasil;
