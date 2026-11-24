@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `76b1f79b`
+- Built from commit: `3ed54571`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -567,16 +567,16 @@ Nodes (3): GET(), ok(), sel()
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `next` connect `next` to `FollowupCard.tsx`, `mv.ts`, `lib/seo.ts`, `(publik)/[slug]/page.tsx`, `web/package.json`, `konten/actions.ts`, `rekrutmen/page.tsx`, `manifest/[id]/page.tsx`, `StaffShell.tsx`, `Icon`, `kehadiran/page.tsx`, `arus/page.tsx`, `tentang/page.tsx`, `publicView.ts`, `mv/actions.ts`, `input-absen/page.tsx`, `SubmitButton.tsx`, `PeranDashboard.tsx`, `dependencies`, `publicRpc.ts`, `waLink`, `(publik)/page.tsx`, `react`, `resi/[id]/page.tsx`, `brand.ts`, `vendor/[token]/page.tsx`, `arus/page.tsx`, `panduan-lanjutan.tsx`, `staffRpc`, `karir/page.tsx`, `korporat/[id]/page.tsx`, `karir.ts`, `index.ts`, `src/app/layout.tsx`, `middleware.ts`, `auth.ts`, `calon-mitra/page.tsx`, `Daftar`, `KlaimKartu.tsx`, `ManifestPindai.tsx`, `BiayaManifest.tsx`, `rupiah`, `pusat/page.tsx`, `AbsenForm.tsx`, `pegawai/page.tsx`, `timbang/page.tsx`, `requireRole`, `abs`?**
-  _High betweenness centrality (0.142) - this node is a cross-community bridge._
+  _High betweenness centrality (0.151) - this node is a cross-community bridge._
 - **What connects `../../tsconfig.base.json`, `NODE_PATH`, `SITE_URL` to the rest of the system?**
   _9 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `mv.ts` be split into smaller, more focused modules?**
   _Cohesion score 0.06140350877192982 - nodes in this community are weakly interconnected._
-- **Why does `staffRpc()` connect `staffRpc` to `kehadiran/route.ts`, `FollowupCard.tsx`, `mv.ts`, `next`, `konten/actions.ts`, `rekrutmen/page.tsx`, `manifest/[id]/page.tsx`, `Icon`, `kehadiran/page.tsx`, `arus/page.tsx`, `mv/actions.ts`, `input-absen/page.tsx`, `SubmitButton.tsx`, `PeranDashboard.tsx`, `ekspor/[jenis]/route.ts`, `react`, `resi/[id]/page.tsx`, `unduh/route.ts`, `arus/page.tsx`, `korporat/[id]/page.tsx`, `karir.ts`, `auth.ts`, `SubmitButton`, `calon-mitra/page.tsx`, `Daftar`, `KlaimKartu.tsx`, `BiayaManifest.tsx`, `rupiah`, `pusat/page.tsx`, `pegawai/page.tsx`, `timbang/page.tsx`, `requireRole`?**
-  _High betweenness centrality (0.091) - this node is a cross-community bridge._
+- **Why does `react` connect `react` to `FollowupCard.tsx`, `mv.ts`, `lib/seo.ts`, `next`, `web/package.json`, `konten/actions.ts`, `rekrutmen/page.tsx`, `StaffShell.tsx`, `tentang/page.tsx`, `SJDaftar.tsx`, `publicView.ts`, `SubmitButton.tsx`, `PeranDashboard.tsx`, `dependencies`, `publicRpc.ts`, `(publik)/page.tsx`, `resi/[id]/page.tsx`, `brand.ts`, `Toast.tsx`, `arus/page.tsx`, `staffRpc`, `karir/page.tsx`, `Pemindai.tsx`, `karir.ts`, `index.ts`, `LamarForm.tsx`, `src/app/layout.tsx`, `SubmitButton`, `calon-mitra/page.tsx`, `Daftar`, `KlaimKartu.tsx`, `ManifestPindai.tsx`, `rupiah`, `pusat/page.tsx`, `AbsenForm.tsx`, `timbang/page.tsx`, `jemput/aksi.ts`, `klaim/aksi.ts`, `abs`?**
+  _High betweenness centrality (0.073) - this node is a cross-community bridge._
 - **Should `lib/seo.ts` be split into smaller, more focused modules?**
   _Cohesion score 0.09936575052854123 - nodes in this community are weakly interconnected._
-- **Why does `bwip-js` connect `dependencies` to `next`, `laporan.cjs`, `web/package.json`?**
-  _High betweenness centrality (0.048) - this node is a cross-community bridge._
+- **Why does `staffRpc()` connect `staffRpc` to `kehadiran/route.ts`, `FollowupCard.tsx`, `mv.ts`, `next`, `konten/actions.ts`, `rekrutmen/page.tsx`, `manifest/[id]/page.tsx`, `Icon`, `kehadiran/page.tsx`, `arus/page.tsx`, `mv/actions.ts`, `input-absen/page.tsx`, `SubmitButton.tsx`, `PeranDashboard.tsx`, `ekspor/[jenis]/route.ts`, `react`, `resi/[id]/page.tsx`, `unduh/route.ts`, `arus/page.tsx`, `korporat/[id]/page.tsx`, `karir.ts`, `auth.ts`, `SubmitButton`, `calon-mitra/page.tsx`, `Daftar`, `KlaimKartu.tsx`, `BiayaManifest.tsx`, `rupiah`, `pusat/page.tsx`, `pegawai/page.tsx`, `timbang/page.tsx`, `requireRole`?**
+  _High betweenness centrality (0.056) - this node is a cross-community bridge._
 - **Should `next` be split into smaller, more focused modules?**
   _Cohesion score 0.06359189378057302 - nodes in this community are weakly interconnected._

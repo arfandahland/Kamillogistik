@@ -35,7 +35,7 @@ async function isiWilayah(p, nama = "area") {
   await tunggu(`${b}-kab`); await p.selectOption(`${b}-kab`, { label: "Kota Makassar" });
   await tunggu(`${b}-kec`); await p.selectOption(`${b}-kec`, { label: "Panakkukang" });
   await tunggu(`${b}-desa`); const v = await p.$eval(`${b}-desa option:nth-child(2)`, (o) => o.value); await p.selectOption(`${b}-desa`, v);
-  if (nama === "area" && (await p.locator("input[name=sj]").count()) > 0) { await p.locator("input[name=sj][value=tidak]").check({ force: true }); }
+  if (nama === "area" && (await p.locator("input[name=sj]").count()) > 0) { await p.locator("label", { has: p.locator("input[name=sj][value=tidak]") }).click(); }
 }
 /** Kasir menerbitkan invoice dengan harga manual untuk satu resi (setelah gudang menimbang). */
 async function invoiceKasir(browser, email, resiId, qty, harga) {
