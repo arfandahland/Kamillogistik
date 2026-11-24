@@ -900,9 +900,9 @@
     "semantic_hash": ""
   },
   "db/test/run.sh": {
-    "mtime": 1795499444.4377394,
-    "seen": 1795499476.032915,
-    "ast_hash": "de36824dd3f005ea8af79509ba1dd5e6",
+    "mtime": 1795499502.9406803,
+    "seen": 1795499620.4112835,
+    "ast_hash": "d59496174d2a01f6b424450c344f6cca",
     "semantic_hash": ""
   },
   "db/test/tariff-cases.json": {
@@ -954,9 +954,9 @@
     "semantic_hash": ""
   },
   "e2e/setup.sh": {
-    "mtime": 1795499426.27622,
-    "seen": 1795499476.0331044,
-    "ast_hash": "c8bc927b744a94d98fe8d675e06388c0",
+    "mtime": 1795499502.9429975,
+    "seen": 1795499620.4116285,
+    "ast_hash": "42c5429baebc80cc99227186659ce9b9",
     "semantic_hash": ""
   },
   "e2e/skenario.cjs": {
@@ -8832,15 +8832,15 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/mv/actions.ts": {
-    "mtime": 1795430517.6235576,
-    "seen": 1795430740.334646,
-    "ast_hash": "9db4aefd3a267289cc953ee66024f843",
+    "mtime": 1795499590.2454772,
+    "seen": 1795499620.4028416,
+    "ast_hash": "78a084e82dbaeb0f6bee1b9d895804a7",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/mv/alokasi/page.tsx": {
-    "mtime": 1795485599.8994548,
-    "seen": 1795486047.6010065,
-    "ast_hash": "91cc266a06124f97170b6724b6ec3146",
+    "mtime": 1795499569.0438042,
+    "seen": 1795499620.4028451,
+    "ast_hash": "8348606bf4a631781914bf7f768761bc",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/mv/dokumen/[id]/route.ts": {
@@ -8898,9 +8898,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/mv/vendor/page.tsx": {
-    "mtime": 1795485599.9002976,
-    "seen": 1795486047.6010373,
-    "ast_hash": "f7232bd90abd6b3aa6d7ab087c10ee05",
+    "mtime": 1795499579.6284695,
+    "seen": 1795499620.403243,
+    "ast_hash": "b8c07ce8c4ff32814784e108612223ee",
     "semantic_hash": ""
   },
   "apps/web/src/components/FormDokumen.tsx": {
@@ -8934,9 +8934,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/lib/mv.ts": {
-    "mtime": 1795334999.0661612,
-    "seen": 1795335067.249814,
-    "ast_hash": "fc90c1b85d22908f227753abe6bc538c",
+    "mtime": 1795499551.4961667,
+    "seen": 1795499620.4081047,
+    "ast_hash": "026f53cf66fe161ca5ccb75dc16779c3",
     "semantic_hash": ""
   },
   "apps/web/src/lib/mvdata.ts": {
@@ -8984,7 +8984,7 @@
   "db/test/mv.sql": {
     "mtime": 1795435120.2875037,
     "seen": 1795435593.1449032,
-    "ast_hash": "b74fca8d2284ed8b78374dd5f1e91fce",
+    "ast_hash": "",
     "semantic_hash": ""
   },
   "apps/web/src/components/PanduanAwal.tsx": {
@@ -9387,6 +9387,24 @@
     "mtime": 1795499238.803382,
     "seen": 1795499476.032481,
     "ast_hash": "d9a139273171ccc3d400d3713d2bb6ba",
+    "semantic_hash": ""
+  },
+  "apps/web/src/components/HppOtomatis.tsx": {
+    "mtime": 1795499551.4836307,
+    "seen": 1795499620.4056153,
+    "ast_hash": "7616ce4fdefc4cb73f3d7d3183209ae7",
+    "semantic_hash": ""
+  },
+  "db/migrations/064_timbang_massal_kubikasi.sql": {
+    "mtime": 1795499396.9401214,
+    "seen": 1795499620.4105365,
+    "ast_hash": "0fdc8d9552e48f1000f9545a69790d95",
+    "semantic_hash": ""
+  },
+  "db/test/timbang_massal.sql": {
+    "mtime": 1795499444.4377394,
+    "seen": 1795499620.411362,
+    "ast_hash": "7f3c02665b06fe50d7df1d580f1093a6",
     "semantic_hash": ""
   },
   "package-lock.json": {

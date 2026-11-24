@@ -8,7 +8,9 @@ import { staffRpc } from "@/lib/supabase/server";
 import { waNumber } from "@/lib/publicRpc";
 import StatRow from "@/components/StatRow";
 import { rupiah, tanggal } from "@/lib/brand";
-import { catatBayar } from "../../admin-actions";
+import { aturTempo, catatBayar, hardcopyDiterima } from "../../admin-actions";
+import { requireRole } from "@/lib/auth";
+import { SKEMA_NAMA, teksJatuhTempo } from "@/lib/tagih";
 import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Detail Tagihan" };
@@ -17,6 +19,7 @@ type Detail = InvoiceView & { id: string; token: string; shipmentId: string; sen
 
 export default async function TagihanDetail({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ ok?: string; e?: string }> }) {
   const { id } = await params; const sp = await searchParams;
+  const me = await requireRole(["SUPER_ADMIN", "OWNER", "MITRA_POS", "FINANCE"]);
   const r = await staffRpc<Detail>("invoice_detail", { p_id: id });
   if (r.error || !r.data) return <main className="wrap section stack"><BackLink href="/app/tagihan" /><div className="err">{r.error ?? "Tagihan tidak ditemukan."}</div></main>;
   const inv = r.data;
@@ -39,10 +42,34 @@ export default async function TagihanDetail({ params, searchParams }: { params: 
         { ikon: "file", n: rupiah(inv.total), label: "Total tagihan" },
         { ikon: "check", n: rupiah(inv.paid), label: "Sudah dibayar" },
         { ikon: "cash", n: rupiah(inv.outstanding), label: "Sisa tagihan", warm: inv.outstanding > 0 },
-        { ikon: "clock", n: inv.dueDate ? tanggal(inv.dueDate).replace(/ (\w{3})\w* /, " $1 ") : "-", label: "Jatuh tempo" },
+        { ikon: "clock", n: inv.dueDate ? tanggal(inv.dueDate).replace(/ (\w{3})\w* /, " $1 ") : inv.billingRule === "SEBELUM_DOORING" ? "Sebelum diantar" : "Setelah hard copy", label: "Jatuh tempo" },
       ]} />
       <div className="dcols">
         <div className="dkol">
+          {inv.billingRule && (
+            <section className="card rbsek no-print" aria-label="Skema penagihan">
+              <h2 className="cardh">Skema penagihan</h2>
+              <p style={{ margin: 0 }}><b>{SKEMA_NAMA[inv.billingRule] ?? inv.billingRule}</b></p>
+              <p className="hint">Jatuh tempo: {teksJatuhTempo(inv)}.{inv.hardcopyAt ? ` Hard copy diterima ${tanggal(inv.hardcopyAt)}.` : " Hard copy invoice belum dicatat diterima customer."}</p>
+              {["FINANCE", "SUPER_ADMIN", "MITRA_POS"].includes(me.role) && !inv.hardcopyAt && inv.status !== "PAID" && (
+                <form action={hardcopyDiterima} className="rbf">
+                  <input type="hidden" name="id" value={inv.id} />
+                  <label className="f" htmlFor="tgl-hc">Tanggal hard copy diterima customer</label>
+                  <input id="tgl-hc" name="tanggal" type="date" max={new Date(Date.now() + 8 * 3600000).toISOString().slice(0, 10)} />
+                  <p className="hint">Kosongkan bila diterima hari ini.{inv.billingRule === "TEMPO" ? ` Tempo ${inv.tempoDays ?? 14} hari mulai dihitung dari tanggal ini.` : ""}</p>
+                  <SubmitButton className="btn green" steps={["Mencatat hard copy…"]}>Hard copy sudah diterima customer</SubmitButton>
+                </form>
+              )}
+              {inv.billingRule === "TEMPO" && ["FINANCE", "SUPER_ADMIN"].includes(me.role) && inv.status !== "PAID" && (
+                <form action={aturTempo} className="rbf">
+                  <input type="hidden" name="id" value={inv.id} />
+                  <label className="f" htmlFor="hari-tempo">Lama tempo (hari), sesuai PKS</label>
+                  <div className="row"><input id="hari-tempo" name="hari" inputMode="numeric" defaultValue={inv.tempoDays ?? 14} list="tempo-umum" required /><datalist id="tempo-umum"><option value="14" /><option value="30" /></datalist>
+                    <SubmitButton className="btn ghost" steps={["Menyimpan tempo…"]}>Simpan tempo</SubmitButton></div>
+                </form>
+              )}
+            </section>
+          )}
           {inv.outstanding > 0 && (
             <form action={catatBayar} className="card rbsek no-print">
               <h2 className="cardh">Catat pembayaran</h2>

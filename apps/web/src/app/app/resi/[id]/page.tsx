@@ -1,3 +1,4 @@
+import { teksJatuhTempo } from "@/lib/tagih";
 import Link from "next/link";
 import { CAN_PRINT_LABEL, chatLink, displayPhone, isProblem, KEMASAN_LABEL, KONDISI_LABEL, STAGE_LABEL, type Inspection, MASUK_LABEL, MODA_LABEL, nextAction, normalizePhone, telLink, OWNER_ROLE, ROLE_LABEL, SEES_MONEY, statusLabel, type Actor, type AnyStatus } from "@kamil/core";
 import { staffRpc, getMe, type Staff } from "@/lib/supabase/server";
@@ -31,7 +32,7 @@ type Detail = {
   at?: string | null;
   details?: { contents: string | null; declaredValue: number | null; estWeightKg: number | null; packaging: string | null; fragile: boolean; extra?: { suratJalanKembali?: boolean; rincian?: { nama: string; qty: number }[]; jadwalJemput?: string; waktuJemput?: string; asuransi?: boolean; caraBayar?: string; refPelanggan?: string } } | null;
   closed?: { at: string; byName: string | null; note: string | null; proofUrl: string | null; senderPhone: string | null } | null;
-  invoice: { invoiceNo: string; total: number; status: string; dueDate: string; calc: any } | null;
+  invoice: { invoiceNo: string; total: number; status: string; dueDate: string | null; billingRule?: string | null; tempoDays?: number | null; hardcopyAt?: string | null; calc: any } | null;
 };
 
 type Pod = { receiverName: string; photo: string; signature: string; signedAt: string; lat: number | null; lng: number | null; by: string | null };
@@ -146,7 +147,7 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
           );
         })()}
 
-        {role === "MITRA_POS" && isOrigin && !["CREATED", "PICKED_UP", "AT_ORIGIN_HUB", "CANCELLED", "EXCEPTION"].includes(s.status) && (!s.invoice || s.invoice.status !== "PAID") && (() => {
+        {((role === "MITRA_POS" && isOrigin) || (role as string) === "FINANCE") && !["CREATED", "PICKED_UP", "AT_ORIGIN_HUB", "CANCELLED", "EXCEPTION"].includes(s.status) && (!s.invoice || s.invoice.status !== "PAID") && (() => {
           const aktual = s.items.reduce((a, x) => a + Number(x.weightKg ?? 0), 0), cm3 = s.items.reduce((a, x) => a + Number(x.lCm ?? 0) * Number(x.wCm ?? 0) * Number(x.hCm ?? 0), 0);
           const div = s.mode === "UDARA" ? 6000 : 4000;
           return <InvoiceForm id={s.id} aktualKg={aktual} volumeKg={Math.round((cm3 / div) * 100) / 100} volumeM3={Math.round((cm3 / 1e6) * 10000) / 10000} ada={!!s.invoice} judul={s.invoice ? "Ubah invoice" : "Buat invoice"} />;
@@ -232,7 +233,7 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
           <div className="card">
             <h2>Tagihan</h2>
             <div className="price">{rupiah(s.invoice.total)}</div>
-            <p className="muted">{s.invoice.invoiceNo} · {s.invoice.status === "PAID" ? "Lunas" : "Belum dibayar"} · jatuh tempo {s.invoice.dueDate}</p>
+            <p className="muted">{s.invoice.invoiceNo} · {s.invoice.status === "PAID" ? "Lunas" : "Belum dibayar"} · jatuh tempo: {teksJatuhTempo(s.invoice)}</p>
             {invId && <Link href={`/app/tagihan/${invId}`} className="btn ghost" style={{ marginBottom: 10 }}>Buka invoice, cetak, dan catat pembayaran</Link>}
             <p className="hint">Dihitung dari {Number(s.invoice.calc.chargeable).toLocaleString("id-ID")} {s.invoice.calc.unit === "kg" ? "kg" : "m³"} × {rupiah(s.invoice.calc.unitPrice)}
               {s.invoice.calc.surchargeTotal > 0 ? ` + biaya tambahan ${rupiah(s.invoice.calc.surchargeTotal)}` : ""}.</p>

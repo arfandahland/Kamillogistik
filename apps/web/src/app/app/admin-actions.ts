@@ -19,6 +19,23 @@ export async function catatBayar(fd: FormData) {
   go(back, "ok", data!.outstanding > 0 ? "Pembayaran tercatat. Tagihan masih punya sisa." : "Pembayaran tercatat. Tagihan sudah lunas.");
 }
 
+/** Finance mencatat hard copy invoice sudah diterima customer (untuk rekanan, tempo dihitung dari tanggal ini). */
+export async function hardcopyDiterima(fd: FormData) {
+  const id = str(fd, "id"), back = `/app/tagihan/${id}`;
+  const { data, error } = await staffRpc<{ dueDate: string | null }>("invoice_hardcopy", { p_invoice: id, p_received: str(fd, "tanggal") || null });
+  revalidatePath("/app", "layout");
+  if (error || !data) go(back, "e", error ?? "Gagal mencatat hard copy");
+  go(back, "ok", data!.dueDate ? `Hard copy tercatat diterima. Jatuh tempo ${data!.dueDate}.` : "Hard copy tercatat diterima.");
+}
+/** Finance menyesuaikan lama tempo (14, 30, atau sesuai PKS). */
+export async function aturTempo(fd: FormData) {
+  const id = str(fd, "id"), back = `/app/tagihan/${id}`;
+  const { error } = await staffRpc("invoice_set_tempo", { p_invoice: id, p_days: Math.round(num(fd, "hari") ?? 0) });
+  revalidatePath("/app", "layout");
+  if (error) go(back, "e", error);
+  go(back, "ok", "Lama tempo diperbarui.");
+}
+
 /* ---------- Mitra dan cabang ---------- */
 export async function simpanMitra(fd: FormData) {
   const id = str(fd, "id") || null, base = "/app/mitra";

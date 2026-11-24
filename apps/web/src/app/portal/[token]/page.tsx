@@ -1,3 +1,4 @@
+import { teksJatuhTempo } from "@/lib/tagih";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { publicRpc } from "@/lib/publicRpc";
@@ -9,7 +10,7 @@ export const metadata: Metadata = { title: "Portal Pelanggan", robots: { index: 
 export const dynamic = "force-dynamic";
 type P = { name: string; top: number; credit: number; outstanding: number; overdue: number;
   shipments: { resiNo: string; status: AnyStatus; mode: "LAUT" | "DARAT" | "UDARA"; origin: string; dest: string; receiver: string; createdAt: string }[];
-  invoices: { invoiceNo: string; resiNo: string; total: number; paid: number; dueDate: string; token: string; status: string }[] };
+  invoices: { invoiceNo: string; resiNo: string; total: number; paid: number; dueDate: string | null; token: string; status: string }[] };
 const LBL: Record<string, string> = { UNPAID: "Belum dibayar", PARTIAL: "Sebagian", PAID: "Lunas", OVERDUE: "Telat" };
 
 /** Portal perusahaan langganan: resi dan tagihan miliknya saja, lewat tautan rahasia dari Kamil Logistik. */
@@ -40,7 +41,7 @@ export default async function Portal({ params }: { params: Promise<{ token: stri
           <Link key={i.invoiceNo} href={`/invoice/${i.token}`} className="card lift resi">
             <span className="ic"><Icon name="file" size={24} /></span>
             <span className="meta"><span className="toprow"><b className="no">{i.invoiceNo}</b><span className={`pill ${i.status === "PAID" ? "done" : ""}`}>{LBL[i.status] ?? i.status}</span></span>
-              <small>{i.resiNo}</small><small>{rupiah(i.total)}{i.paid > 0 && i.paid < i.total ? ` · sisa ${rupiah(i.total - i.paid)}` : ""} · jatuh tempo {tanggal(i.dueDate)}</small></span>
+              <small>{i.resiNo}</small><small>{rupiah(i.total)}{i.paid > 0 && i.paid < i.total ? ` · sisa ${rupiah(i.total - i.paid)}` : ""} · jatuh tempo: {teksJatuhTempo(i)}</small></span>
           </Link>))}
         {p.invoices.length === 0 && <div className="card"><p className="muted" style={{ margin: 0 }}>Belum ada tagihan.</p></div>}
       </div>

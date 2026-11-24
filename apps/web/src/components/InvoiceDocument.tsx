@@ -1,8 +1,9 @@
+import { teksJatuhTempo } from "@/lib/tagih";
 import Icon from "./Icon";
 import { rupiah, tanggal, tanggalWaktu } from "@/lib/brand";
 
 export type InvoiceView = {
-  invoiceNo: string; status: string; total: number; paid: number; outstanding: number; dueDate: string | null; createdAt: string;
+  invoiceNo: string; status: string; total: number; paid: number; outstanding: number; dueDate: string | null; billingRule?: string | null; tempoDays?: number | null; hardcopyAt?: string | null; createdAt: string;
   resiNo: string; sender: string; receiver: string; origin: string; dest: string;
   lines: { text: string; amount: number }[];
   payments?: { method: string; amount: number; reference: string | null; note: string | null; at: string; by: string | null }[];
@@ -32,7 +33,7 @@ export default function InvoiceDocument({ inv, judul = "h1" }: { inv: InvoiceVie
       <dl className="inv-meta">
         <div><dt>Nomor invoice</dt><dd>{inv.invoiceNo}</dd></div>
         <div><dt>Tanggal</dt><dd>{tanggal(inv.createdAt)}</dd></div>
-        <div><dt>Jatuh tempo</dt><dd>{inv.dueDate ? tanggal(inv.dueDate) : "-"}</dd></div>
+        <div><dt>Jatuh tempo</dt><dd>{teksJatuhTempo(inv)}</dd></div>
         <div><dt>Nomor resi</dt><dd>{inv.resiNo}</dd></div>
         <div><dt>Pengirim</dt><dd>{inv.sender}</dd></div>
         <div><dt>Penerima</dt><dd>{inv.receiver}</dd></div>

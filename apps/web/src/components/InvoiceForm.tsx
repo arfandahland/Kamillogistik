@@ -46,8 +46,8 @@ export default function InvoiceForm({ id, aktualKg, volumeKg, volumeM3, ada, jud
         ))}
         <div className="kchips">{SARAN.map((s) => <button key={s} type="button" className="kchip" disabled={baris.length >= 10} onClick={() => setBaris((x) => [...x, { label: s === "Biaya lain" ? "" : s, amount: "" }])}>+ {s}</button>)}</div>
       </div>
-      <label className="f" htmlFor="inv-tempo">Jatuh tempo, hari dari sekarang (kosong = ikuti tempo pelanggan)</label>
-      <input id="inv-tempo" name="tempo" inputMode="numeric" placeholder="0" />
+      <label className="f" htmlFor="inv-tempo">Tempo rekanan, dalam hari setelah hard copy diterima (kosong = ikuti PKS pelanggan, biasanya 14 atau 30). Customer retail membayar sebelum barang diantar, jadi kolom ini tidak dipakai.</label>
+      <input id="inv-tempo" name="tempo" inputMode="numeric" placeholder="14 atau 30" />
       <label className="f" htmlFor="inv-catatan">Catatan (boleh kosong)</label>
       <input id="inv-catatan" name="catatan" maxLength={300} autoComplete="off" />
       <div className="shiftnums three" aria-live="polite">

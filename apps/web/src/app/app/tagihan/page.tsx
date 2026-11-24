@@ -1,3 +1,4 @@
+import { teksJatuhTempo } from "@/lib/tagih";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Icon from "@/components/Icon";
@@ -11,7 +12,7 @@ import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Daftar Tagihan" };
 
-type Row = { id: string; invoiceNo: string; resiNo: string; customer: string; total: number; paid: number; outstanding: number; dueDate: string; status: string };
+type Row = { id: string; invoiceNo: string; resiNo: string; customer: string; total: number; paid: number; outstanding: number; dueDate: string | null; billingRule?: string | null; tempoDays?: number | null; hardcopyAt?: string | null; status: string };
 const TABS = [
   { k: "belum", t: "Belum dibayar" }, { k: "telat", t: "Lewat tempo" }, { k: "lunas", t: "Lunas" }, { k: "semua", t: "Semua" },
 ] as const;
@@ -56,7 +57,7 @@ export default async function Tagihan({ searchParams }: { searchParams: Promise<
               <span className="meta">
                 <span className="toprow"><b className="no">{x.invoiceNo}</b><span className={`pill ${l.cls}`}>{l.t}</span></span>
                 <small>{x.customer} · resi {x.resiNo}</small>
-                <small>Jatuh tempo {tanggal(x.dueDate)}</small>
+                <small>Jatuh tempo: {teksJatuhTempo(x)}</small>
                 <small><b>{rupiah(x.outstanding)}</b>{x.paid > 0 ? ` sisa dari ${rupiah(x.total)}` : " belum dibayar"}</small>
               </span>
             </Link>

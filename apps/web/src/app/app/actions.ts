@@ -102,7 +102,7 @@ export async function terbitkanInvoice(fd: FormData) {
   const hari = String(fd.get("tempo") ?? "").trim();
   const { data, error } = await staffRpc<{ invoiceNo: string; total: number }>("invoice_issue", {
     p_shipment: id, p_basis: String(fd.get("satuan") ?? "KG"), p_qty: num(String(fd.get("jumlah") ?? "").replace(",", ".")) ?? 0, p_unit_price: Math.round(num(String(fd.get("harga") ?? "").replace(/\D/g, "")) ?? 0),
-    p_lines: baris, p_due_days: hari ? Math.max(0, Math.min(365, Math.round(Number(hari)))) : null, p_note: String(fd.get("catatan") ?? "").trim().slice(0, 300) || null,
+    p_lines: baris, p_due_days: hari && Number(hari) > 0 ? Math.max(1, Math.min(120, Math.round(Number(hari)))) : null, p_note: String(fd.get("catatan") ?? "").trim().slice(0, 300) || null,
   });
   revalidatePath("/app"); revalidatePath(`/app/resi/${id}`);
   if (error || !data) back(id, "e", error ?? "Gagal menerbitkan invoice");

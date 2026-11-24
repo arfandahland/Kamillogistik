@@ -1,3 +1,4 @@
+import { teksJatuhTempo } from "@/lib/tagih";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Icon from "@/components/Icon";
@@ -48,7 +49,7 @@ export default async function KorporatDetail({ params, searchParams }: { params:
       <section className="card"><h2>Rekap tagihan</h2>
         {c.invoices.length === 0 ? <p className="muted" style={{ margin: 0 }}>Belum ada tagihan.</p> : (
           <table className="contoh"><thead><tr><th>Invoice</th><th>Jatuh tempo</th><th>Total</th><th>Status</th></tr></thead>
-            <tbody>{c.invoices.map((i) => <tr key={i.id}><td><Link href={`/app/tagihan/${i.id}`}><b>{i.invoiceNo}</b></Link><br /><small className="muted" style={{ wordBreak: "break-all" }}>{i.resiNo}</small></td><td>{tanggal(i.dueDate)}</td><td>{rupiah(i.total)}{i.paid > 0 && i.paid < i.total ? <><br /><small className="muted">sisa {rupiah(i.total - i.paid)}</small></> : null}</td><td>{LBL[i.status] ?? i.status}</td></tr>)}</tbody></table>
+            <tbody>{c.invoices.map((i) => <tr key={i.id}><td><Link href={`/app/tagihan/${i.id}`}><b>{i.invoiceNo}</b></Link><br /><small className="muted" style={{ wordBreak: "break-all" }}>{i.resiNo}</small></td><td>{teksJatuhTempo(i)}</td><td>{rupiah(i.total)}{i.paid > 0 && i.paid < i.total ? <><br /><small className="muted">sisa {rupiah(i.total - i.paid)}</small></> : null}</td><td>{LBL[i.status] ?? i.status}</td></tr>)}</tbody></table>
         )}
       </section>
 
