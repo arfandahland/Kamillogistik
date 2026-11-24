@@ -2151,3 +2151,6 @@ body:has(.appshell) .arus-cari { flex-wrap: nowrap; overflow: hidden; }
 /* Pilihan wajib yang masih kosong (pencari wilayah, tombol pilihan) disorot supaya tombol kirim tidak terasa mati */
 .cp-salah { outline: 2px solid #ff8a5b; outline-offset: 3px; border-radius: 14px; }
 .cp-pesan { margin: 6px 2px 0; }
+
+/* Tema Malam: kapsul pilihan (Lewat apa, Jenis kemasan, dst) harus jelas bedanya saat terpilih */
+body:has(.appshell) .cp-chips button.on, body:has(.appshell) .cp-chips button[aria-checked=true] { background: var(--aqua); color: #03211b; border-color: transparent; box-shadow: var(--aqua-glow); }
