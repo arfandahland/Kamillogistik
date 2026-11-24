@@ -29,8 +29,8 @@ CREATE OR REPLACE FUNCTION public.owner_set_transit_hub(p_branch uuid, p_hub uui
 LANGUAGE plpgsql SECURITY DEFINER SET search_path = '' AS $$
 BEGIN
   PERFORM public.require_role(ARRAY['SUPER_ADMIN']);
-  IF p_hub IS NOT NULL AND NOT EXISTS (SELECT 1 FROM public.branches_partners WHERE id = p_hub AND status = 'ACTIVE' AND type = 'HUB') THEN RAISE EXCEPTION 'Hub transit harus berupa gudang hub yang aktif.'; END IF;
   IF p_hub = p_branch THEN RAISE EXCEPTION 'Hub transit tidak boleh cabang itu sendiri.'; END IF;
+  IF p_hub IS NOT NULL AND NOT EXISTS (SELECT 1 FROM public.branches_partners WHERE id = p_hub AND status = 'ACTIVE' AND type = 'HUB') THEN RAISE EXCEPTION 'Hub transit harus berupa gudang hub yang aktif.'; END IF;
   UPDATE public.branches_partners SET transit_hub_id = p_hub, updated_at = now() WHERE id = p_branch;
   IF NOT FOUND THEN RAISE EXCEPTION 'Cabang tidak ditemukan.'; END IF;
   PERFORM public.log_audit('owner_set_transit_hub', 'branches_partners', p_branch, NULL, jsonb_build_object('hub', p_hub));

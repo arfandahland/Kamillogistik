@@ -1356,7 +1356,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     }
 
     // Harga manual kasir: satuan per m3 + baris biaya bebas, terbit ulang selagi belum dibayar
-    const ridI = sqlq(`SELECT s.id FROM shipments s JOIN invoices i ON i.shipment_id = s.id AND i.status = 'UNPAID' WHERE s.origin_id = (SELECT id FROM branches_partners WHERE code='JKT') AND s.status NOT IN ('CANCELLED','DELIVERED') AND NOT EXISTS (SELECT 1 FROM payment_allocations pa WHERE pa.invoice_id = i.id) ORDER BY s.created_at DESC LIMIT 1;`);
+    const ridI = sqlq(`SELECT s.id FROM shipments s JOIN invoices i ON i.shipment_id = s.id AND i.status = 'UNPAID' WHERE s.origin_id = (SELECT id FROM branches_partners WHERE code='JKT') AND s.company_id IS NULL AND s.mode <> 'UDARA' AND s.status NOT IN ('CANCELLED','DELIVERED') AND NOT EXISTS (SELECT 1 FROM payment_allocations pa WHERE pa.invoice_id = i.id) ORDER BY s.created_at DESC LIMIT 1;`);
     const ki = await login(browser, "kasir@uji.id", PASS, { width: 390, height: 844 });
     await ki.page.goto(`${BASE}/app/resi/${ridI}`, { waitUntil: "networkidle" });
     await ki.page.getByText("Per m³").click(); let volM3 = Number((await ki.page.inputValue("#inv-jumlah")).replace(",", ".")); if (!volM3) { await ki.page.getByText("Per kg").click(); volM3 = Number((await ki.page.inputValue("#inv-jumlah")).replace(",", ".")); } const totM3 = "Rp" + (Math.round(volM3 * 500000) + 50000).toLocaleString("id-ID"); await ki.page.fill("#inv-harga", "500000");

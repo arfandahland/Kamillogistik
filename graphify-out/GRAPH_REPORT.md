@@ -1,7 +1,7 @@
 # Graph Report - Kamillogistik  (2026-11-24)
 
 ## Corpus Check
-- 1559 files · ~495,393 words
+- 1562 files · ~496,762 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 41 file(s) not represented in the graph (top: .csv 35, (none) 3, .example 1)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `d2bae7c0`
+- Built from commit: `b2a98a1b`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -158,10 +158,10 @@
   docs/AUDIT-SPESIFIKASI.md → packages/core/src/status.ts
 - `ResiDetail()` --indirect_call--> `isProblem()`  [INFERRED]
   apps/web/src/app/app/resi/[id]/page.tsx → packages/core/src/inspection.ts
-- `KodeResi()` --calls--> `parseResi()`  [EXTRACTED]
-  apps/web/src/components/KodeResi.tsx → packages/core/src/resi.ts
 - `PemindaiPublik()` --calls--> `normalizeResi()`  [EXTRACTED]
   apps/web/src/components/PemindaiPublik.tsx → packages/core/src/resi.ts
+- `KodeResi()` --calls--> `parseResi()`  [EXTRACTED]
+  apps/web/src/components/KodeResi.tsx → packages/core/src/resi.ts
 - `PemindaiPublik()` --calls--> `splitItem()`  [EXTRACTED]
   apps/web/src/components/PemindaiPublik.tsx → packages/core/src/resi.ts
 
@@ -631,16 +631,16 @@ Nodes (3): GET(), ok(), sel()
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `next` connect `next` to `FollowupCard.tsx`, `alokasi/page.tsx`, `getRoutePairs`, `mv/actions.ts`, `(publik)/[slug]/page.tsx`, `web/package.json`, `konten/actions.ts`, `Icon`, `manifest/[id]/page.tsx`, `pusat.ts`, `tagihan/[id]/page.tsx`, `Daftar`, `arus/page.tsx`, `lib/seo.ts`, `ResiStepper.tsx`, `Calculator.tsx`, `input-absen/page.tsx`, `server.ts`, `PeranDashboard.tsx`, `publicRpc.ts`, `alokasi/page.tsx`, `waLink`, `karir/page.tsx`, `(publik)/page.tsx`, `app/baru/page.tsx`, `resi/[id]/page.tsx`, `pegawai/page.tsx`, `abs`, `Pager`, `panduan-lanjutan.tsx`, `Icon.tsx`, `StaffShell.tsx`, `rekrutmen/page.tsx`, `brand.ts`, `app/baru/page.tsx`, `karyawan/actions.ts`, `LamaranKartu.tsx`, `lib/repo.ts`, `SubmitButton.tsx`, `src/app/layout.tsx`, `requireRole`, `ManifestPindai.tsx`, `ringkasan/page.tsx`, `timbang/page.tsx`, `resi/[id]/cetak/page.tsx`, `PanduanAwal.tsx`, `staffRpc`, `waNumber`, `TabBar.tsx`, `tagihan/[id]/page.tsx`, `keuangan/page.tsx`, `middleware.ts`, `AbsenForm.tsx`, `cabang/page.tsx`, `akun/page.tsx`, `app/app/layout.tsx`, `SubmitButton.tsx`, `pusat/page.tsx`, `owner/page.tsx`, `[resi]/page.tsx`?**
-  _High betweenness centrality (0.141) - this node is a cross-community bridge._
+  _High betweenness centrality (0.133) - this node is a cross-community bridge._
 - **What connects `../../tsconfig.base.json`, `NODE_PATH`, `SITE_URL` to the rest of the system?**
   _9 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `alokasi/page.tsx` be split into smaller, more focused modules?**
   _Cohesion score 0.061581920903954805 - nodes in this community are weakly interconnected._
-- **Why does `staffRpc()` connect `staffRpc` to `kehadiran/route.ts`, `FollowupCard.tsx`, `alokasi/page.tsx`, `mv/actions.ts`, `konten/actions.ts`, `Icon`, `manifest/[id]/page.tsx`, `tagihan/[id]/page.tsx`, `Daftar`, `arus/page.tsx`, `input-absen/page.tsx`, `server.ts`, `PeranDashboard.tsx`, `alokasi/page.tsx`, `app/baru/page.tsx`, `resi/[id]/page.tsx`, `pegawai/page.tsx`, `Pager`, `rekrutmen/page.tsx`, `app/baru/page.tsx`, `Pemindai.tsx`, `karyawan/actions.ts`, `LamaranKartu.tsx`, `SubmitButton.tsx`, `requireRole`, `ringkasan/page.tsx`, `timbang/page.tsx`, `resi/[id]/cetak/page.tsx`, `waNumber`, `tagihan/[id]/page.tsx`, `keuangan/page.tsx`, `cabang/page.tsx`, `akun/page.tsx`, `app/app/layout.tsx`, `SubmitButton.tsx`, `pusat/page.tsx`?**
-  _High betweenness centrality (0.085) - this node is a cross-community bridge._
+- **Why does `react` connect `Icon.tsx` to `FollowupCard.tsx`, `getRoutePairs`, `web/package.json`, `konten/actions.ts`, `Icon`, `pusat.ts`, `lib/seo.ts`, `next`, `ResiStepper.tsx`, `Calculator.tsx`, `server.ts`, `PeranDashboard.tsx`, `karir/page.tsx`, `publicRpc.ts`, `alokasi/page.tsx`, `karir/page.tsx`, `(publik)/page.tsx`, `app/baru/page.tsx`, `resi/[id]/page.tsx`, `Toast.tsx`, `abs`, `Pager`, `StaffShell.tsx`, `rekrutmen/page.tsx`, `brand.ts`, `app/baru/page.tsx`, `Pemindai.tsx`, `karyawan/actions.ts`, `LamaranKartu.tsx`, `SubmitButton.tsx`, `src/app/layout.tsx`, `KondisiForm.tsx`, `ManifestPindai.tsx`, `timbang/page.tsx`, `resi/[id]/cetak/page.tsx`, `PanduanAwal.tsx`, `klaim/aksi.ts`, `waNumber`, `TabBar.tsx`, `Scene3D.tsx`, `tagihan/[id]/page.tsx`, `AbsenForm.tsx`, `SubmitButton.tsx`, `jemput/aksi.ts`, `[resi]/page.tsx`?**
+  _High betweenness centrality (0.076) - this node is a cross-community bridge._
 - **Should `getRoutePairs` be split into smaller, more focused modules?**
   _Cohesion score 0.07616892911010557 - nodes in this community are weakly interconnected._
-- **Why does `react` connect `Icon.tsx` to `FollowupCard.tsx`, `getRoutePairs`, `web/package.json`, `konten/actions.ts`, `Icon`, `pusat.ts`, `lib/seo.ts`, `next`, `ResiStepper.tsx`, `Calculator.tsx`, `server.ts`, `PeranDashboard.tsx`, `karir/page.tsx`, `publicRpc.ts`, `alokasi/page.tsx`, `karir/page.tsx`, `(publik)/page.tsx`, `app/baru/page.tsx`, `resi/[id]/page.tsx`, `Toast.tsx`, `abs`, `Pager`, `StaffShell.tsx`, `rekrutmen/page.tsx`, `brand.ts`, `app/baru/page.tsx`, `Pemindai.tsx`, `karyawan/actions.ts`, `LamaranKartu.tsx`, `SubmitButton.tsx`, `src/app/layout.tsx`, `KondisiForm.tsx`, `ManifestPindai.tsx`, `timbang/page.tsx`, `resi/[id]/cetak/page.tsx`, `PanduanAwal.tsx`, `klaim/aksi.ts`, `waNumber`, `TabBar.tsx`, `Scene3D.tsx`, `tagihan/[id]/page.tsx`, `AbsenForm.tsx`, `SubmitButton.tsx`, `jemput/aksi.ts`, `[resi]/page.tsx`?**
-  _High betweenness centrality (0.069) - this node is a cross-community bridge._
+- **Why does `staffRpc()` connect `staffRpc` to `kehadiran/route.ts`, `FollowupCard.tsx`, `alokasi/page.tsx`, `mv/actions.ts`, `konten/actions.ts`, `Icon`, `manifest/[id]/page.tsx`, `tagihan/[id]/page.tsx`, `Daftar`, `arus/page.tsx`, `input-absen/page.tsx`, `server.ts`, `PeranDashboard.tsx`, `alokasi/page.tsx`, `app/baru/page.tsx`, `resi/[id]/page.tsx`, `pegawai/page.tsx`, `Pager`, `rekrutmen/page.tsx`, `app/baru/page.tsx`, `Pemindai.tsx`, `karyawan/actions.ts`, `LamaranKartu.tsx`, `SubmitButton.tsx`, `requireRole`, `ringkasan/page.tsx`, `timbang/page.tsx`, `resi/[id]/cetak/page.tsx`, `waNumber`, `tagihan/[id]/page.tsx`, `keuangan/page.tsx`, `cabang/page.tsx`, `akun/page.tsx`, `app/app/layout.tsx`, `SubmitButton.tsx`, `pusat/page.tsx`?**
+  _High betweenness centrality (0.062) - this node is a cross-community bridge._
 - **Should `web/package.json` be split into smaller, more focused modules?**
   _Cohesion score 0.14035087719298245 - nodes in this community are weakly interconnected._

@@ -5,10 +5,11 @@ INSERT INTO public.branches_partners(type, code, name, city, status) VALUES ('MI
 SELECT set_config('t.ttx', (SELECT id::text FROM public.branches_partners WHERE code = 'TTX'), false),
        set_config('t.mks', (SELECT id::text FROM public.branches_partners WHERE code = 'MKS'), false),
        set_config('t.jkt', (SELECT id::text FROM public.branches_partners WHERE code = 'JKT'), false),
-       set_config('t.sub', (SELECT id::text FROM public.branches_partners WHERE code = 'SUB'), false);
+       set_config('t.sub', (SELECT id::text FROM public.branches_partners WHERE code = 'SUB'), false),
+       set_config('t.mitra', (SELECT id::text FROM public.branches_partners WHERE type = 'MITRA' AND code <> 'TTX' LIMIT 1), false);
 SELECT t.as_user('00000000-0000-0000-0000-000000000001');
 SELECT t.fails($$select public.owner_set_transit_hub(current_setting('t.ttx')::uuid, current_setting('t.ttx')::uuid)$$, 'cabang itu sendiri');
-SELECT t.fails($$select public.owner_set_transit_hub(current_setting('t.ttx')::uuid, (select id from public.branches_partners where type = 'MITRA' limit 1))$$, 'hub yang aktif');
+SELECT t.fails($$select public.owner_set_transit_hub(current_setting('t.ttx')::uuid, current_setting('t.mitra')::uuid)$$, 'hub yang aktif');
 DO $$ BEGIN
   PERFORM public.owner_set_transit_hub(current_setting('t.ttx')::uuid, current_setting('t.mks')::uuid);
   PERFORM set_config('t.kt', (public.owner_create_staff('kasir.timur@uji.id','Kasir Timur','MITRA_POS',current_setting('t.ttx')::uuid,'Sandi1234'))->>'userId', false);
