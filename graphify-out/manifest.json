@@ -180,9 +180,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/admin-actions.ts": {
-    "mtime": 1795510040.7311707,
-    "seen": 1795510310.455806,
-    "ast_hash": "f1313a971cb1bca2bb37771faa291d10",
+    "mtime": 1795559724.424934,
+    "seen": 1795559785.5945067,
+    "ast_hash": "584ed73c0a1261796c72b5313e41a0d4",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/akun/page.tsx": {
@@ -324,9 +324,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/mitra/page.tsx": {
-    "mtime": 1795326209.3179517,
-    "seen": 1795326331.1546926,
-    "ast_hash": "7d91e28b5c71ed434a59f52a19e7680c",
+    "mtime": 1795559727.6680346,
+    "seen": 1795559785.596114,
+    "ast_hash": "b80530e01051a26998e1bd4ed608d969",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/page.tsx": {
@@ -900,9 +900,9 @@
     "semantic_hash": ""
   },
   "db/test/run.sh": {
-    "mtime": 1795559394.5877564,
-    "seen": 1795559577.1771708,
-    "ast_hash": "25d5189acbe175d3e1ad576018b83695",
+    "mtime": 1795559724.4243758,
+    "seen": 1795559785.6037881,
+    "ast_hash": "8d03bdf0163dc9e436df43266ac77fcd",
     "semantic_hash": ""
   },
   "db/test/tariff-cases.json": {
@@ -954,9 +954,9 @@
     "semantic_hash": ""
   },
   "e2e/setup.sh": {
-    "mtime": 1795559394.589913,
-    "seen": 1795559577.1774464,
-    "ast_hash": "331516276ff3f976abd4831440a59e8d",
+    "mtime": 1795559724.4247277,
+    "seen": 1795559785.604074,
+    "ast_hash": "5c8638a3317e7cff14bde3f507678195",
     "semantic_hash": ""
   },
   "e2e/skenario.cjs": {
@@ -2136,9 +2136,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/manifest/[id]/surat-jalan/page.tsx": {
-    "mtime": 1795499408.3893967,
-    "seen": 1795499420.8569946,
-    "ast_hash": "74ac98bbc0d42279de42481776b8f08f",
+    "mtime": 1795559773.9880695,
+    "seen": 1795559785.5959198,
+    "ast_hash": "623534180566f8ac604fe9e78d4f48a7",
     "semantic_hash": ""
   },
   "db/migrations/033_prebooking_antar.sql": {
@@ -9555,6 +9555,18 @@
     "mtime": 1795559189.6244316,
     "seen": 1795559577.177292,
     "ast_hash": "c4a5ab6aecc614c4ec7857273ded7eeb",
+    "semantic_hash": ""
+  },
+  "db/migrations/076_laba_rugi_resi.sql": {
+    "mtime": 1795559403.546631,
+    "seen": 1795559785.6030104,
+    "ast_hash": "5d289f7fcfbb80e494b5795b7abb53d3",
+    "semantic_hash": ""
+  },
+  "db/test/laba_rugi.sql": {
+    "mtime": 1795559406.7692127,
+    "seen": 1795559785.603426,
+    "ast_hash": "ce23a7b0fcb773cab40f1eb8c4bf116a",
     "semantic_hash": ""
   },
   "package-lock.json": {
