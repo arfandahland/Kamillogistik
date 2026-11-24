@@ -756,8 +756,8 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/StaffShell.tsx": {
-    "mtime": 1795500051.3015192,
-    "seen": 1795500075.1356387,
+    "mtime": 1795510439.14419,
+    "seen": 1795510956.448021,
     "ast_hash": "7a40d9899e454adbb2d5605b7d082e8d",
     "semantic_hash": ""
   },
@@ -900,9 +900,9 @@
     "semantic_hash": ""
   },
   "db/test/run.sh": {
-    "mtime": 1795510012.3396554,
-    "seen": 1795510310.4664273,
-    "ast_hash": "5c5bf9332a561d5a30dd2bf8e3383d18",
+    "mtime": 1795510665.0535004,
+    "seen": 1795510956.4513404,
+    "ast_hash": "86ef2ce627463333eafb3bb18f0199d6",
     "semantic_hash": ""
   },
   "db/test/tariff-cases.json": {
@@ -954,9 +954,9 @@
     "semantic_hash": ""
   },
   "e2e/setup.sh": {
-    "mtime": 1795509995.7698362,
-    "seen": 1795510310.4667192,
-    "ast_hash": "4c03f47e519e8a678686edc6f487f584",
+    "mtime": 1795510665.0575576,
+    "seen": 1795510956.45159,
+    "ast_hash": "3c4df33062e79247e3a253942ae23984",
     "semantic_hash": ""
   },
   "e2e/skenario.cjs": {
@@ -1806,15 +1806,15 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/jemput/actions.ts": {
-    "mtime": 1795186256.3783917,
-    "seen": 1795186434.3325624,
-    "ast_hash": "72746c1d8e118883a6e9ce741e8c3234",
+    "mtime": 1795510716.869606,
+    "seen": 1795510956.4428234,
+    "ast_hash": "d862d24f391d5bbaafdadbab15814f91",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/jemput/page.tsx": {
-    "mtime": 1795485400.8743496,
-    "seen": 1795486047.6009002,
-    "ast_hash": "3333f1eb07803f8924365c0b6279b977",
+    "mtime": 1795510716.8701005,
+    "seen": 1795510956.4428263,
+    "ast_hash": "eb575a6c8438e38e95eda6e22b289767",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/klaim/actions.ts": {
@@ -9465,6 +9465,12 @@
     "mtime": 1795509020.1943846,
     "seen": 1795509110.8824575,
     "ast_hash": "f8b3702b0050e08e9424b6423600d9b8",
+    "semantic_hash": ""
+  },
+  "db/migrations/068_crud_lengkap.sql": {
+    "mtime": 1795509995.7498362,
+    "seen": 1795510956.4507105,
+    "ast_hash": "6720a92e0154941ab0089d02b48c2336",
     "semantic_hash": ""
   },
   "package-lock.json": {
