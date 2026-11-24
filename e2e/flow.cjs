@@ -459,7 +459,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await page.goto(`${BASE}/lacak/${resiNo}`, { waitUntil: "networkidle" });
     const tl = await text(page);
     ok("lacak publik: status Sudah diterima, Tahap 10 dari 10", /Sudah diterima/.test(tl) && /Tahap 10 dari 10/.test(tl), tl.slice(0, 300));
-    ok("lacak publik: nama penerima disamarkan, foto/tanda tangan TIDAK tampil", /Diterima oleh/.test(tl) && !/Budi Santoso/.test(tl) && (await page.locator("img[src^=\"data:\"]").count()) === 0, tl.slice(0, 600));
+    ok("lacak publik: nama penerima disamarkan, foto bukti terima tampil (transparansi), tanda tangan tidak", /Diterima oleh/.test(tl) && !/Budi Santoso/.test(tl) && (await page.locator("img[src^=\"data:\"]").count()) === 1 && /Foto bukti terima/.test(tl), tl.slice(0, 600));
     ok("lacak publik TIDAK membocorkan nama petugas", !/Kurir (Jakarta|Makassar)|Sopir Kontainer|Gudang (Jakarta|Makassar) \(|Kasir Jakarta/.test(tl.replace(/Gudang (Jakarta|Makassar)/g, "Gudang")));
     ok("lacak publik TIDAK membocorkan data keuangan", !/Rp61\.600|INV-/.test(tl));
     await page.screenshot({ path: `${OUT}/e2e-lacak-publik.png`, fullPage: true });
@@ -1360,7 +1360,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     sqlq(`UPDATE companies SET billing_basis = 'M3' WHERE id = (SELECT company_id FROM shipments WHERE id = '${ridI}')`); // akun korporat ditagih per m3 agar pilihan Per m³ tersedia
     const ki = await login(browser, "kasir@uji.id", PASS, { width: 390, height: 844 });
     await ki.page.goto(`${BASE}/app/resi/${ridI}`, { waitUntil: "networkidle" });
-    await ki.page.getByText("Per m³").click(); let volM3 = Number((await ki.page.inputValue("#inv-jumlah")).replace(",", ".")); if (!volM3) { await ki.page.getByText("Per kg").click(); volM3 = Number((await ki.page.inputValue("#inv-jumlah")).replace(",", ".")); } const totM3 = "Rp" + (Math.round(volM3 * 500000) + 50000).toLocaleString("id-ID"); await ki.page.fill("#inv-harga", "500000");
+    await ki.page.getByText("Per m³", { exact: true }).click(); let volM3 = Number((await ki.page.inputValue("#inv-jumlah")).replace(",", ".")); if (!volM3) { await ki.page.getByText("Per kg", { exact: true }).click(); volM3 = Number((await ki.page.inputValue("#inv-jumlah")).replace(",", ".")); } const totM3 = "Rp" + (Math.round(volM3 * 500000) + 50000).toLocaleString("id-ID"); await ki.page.fill("#inv-harga", "500000");
     await ki.page.getByRole("button", { name: "+ Ongkos jemput" }).click();
     await ki.page.fill("input[aria-label='Jumlah biaya 1 (Rp)']", "50000");
     ok("AI1 pratinjau total invoice per m³ + biaya lain dihitung langsung dari volume timbangan gudang", (await ki.page.locator("#invoice-form").innerText()).includes(totM3) && (await ki.page.locator("#inv-jumlah").getAttribute("readonly")) !== null);
