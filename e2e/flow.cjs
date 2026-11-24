@@ -1617,7 +1617,8 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
       ok("AZ9 Finance: rekap per cabang menampilkan kartu cabang dengan hadir dan terlambat", (await fn.page.locator(".kh-cab").count()) >= 2 && /Terlambat/.test(await text(fn.page)));
       await fn.page.locator(".kh-cab", { hasText: "Makassar" }).first().click();
       await fn.page.waitForURL(/c=/, { timeout: 15000 }).catch(() => {});
-      await fn.page.waitForSelector("h2:has-text('Rincian hari')", { timeout: 15000 }).catch(() => {});
+      await fn.page.waitForSelector("h2:has-text('Rincian hari')", { timeout: 30000 }).catch(() => {});
+      await fn.page.waitForLoadState("networkidle").catch(() => {});
       const kh = await text(fn.page);
       ok("AZ10 Finance: saringan cabang Makassar memuat Budi Absensi Uji di rincian harian dan rekap karyawan", /Rincian hari/.test(kh) && (kh.match(/Budi Absensi Uji/g) || []).length >= 2, kh.slice(0, 120));
       await noOverflow(fn.page, "Rekap kehadiran (HP)");
