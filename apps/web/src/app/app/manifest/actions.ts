@@ -26,6 +26,13 @@ export async function ubahManifest(fd: FormData) {
   const id = str(fd, "id");
   await hasil(id, "manifest_update", { p_id: id, p_container: str(fd, "kontainer") || null, p_carrier: str(fd, "pengangkut") || null, p_departure: waktu(fd, "berangkat"), p_eta: waktu(fd, "tiba"), p_note: str(fd, "catatan") || null }, "Data manifest disimpan.");
 }
+export async function hapusManifest(fd: FormData) {
+  const id = str(fd, "id");
+  const r = await staffRpc("manifest_cancel", { p_id: id });
+  revalidatePath("/app/manifest"); revalidatePath("/app");
+  if (r.error) back(id, "e", r.error);
+  redirect(`/app/manifest?ok=${encodeURIComponent("Manifest kosong dihapus.")}`);
+}
 export async function tambahResiForm(fd: FormData) {
   const id = str(fd, "id");
   await hasil(id, "manifest_add", { p_id: id, p_code: str(fd, "kode") }, "Resi ditambahkan ke manifest.");

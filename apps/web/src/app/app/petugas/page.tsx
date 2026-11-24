@@ -5,7 +5,7 @@ import SubmitButton from "@/components/SubmitButton";
 import { requireOwner } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
 import { tanggalWaktu } from "@/lib/brand";
-import { buatPetugas, resetSandi, ubahStatusPetugas } from "../admin-actions";
+import { buatPetugas, resetSandi, ubahPetugas, ubahStatusPetugas } from "../admin-actions";
 import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Daftar Petugas" };
@@ -45,6 +45,15 @@ export default async function Petugas({ searchParams }: { searchParams: Promise<
               <span className={`pill ${u.status === "ACTIVE" ? "done" : "late"}`}>{u.status === "ACTIVE" ? "Aktif" : "Nonaktif"}</span>
             </summary>
             <div className="admbody">
+              <form action={ubahPetugas} style={{ marginBottom: 14 }}>
+                <input type="hidden" name="id" value={u.id} />
+                <label className="f">Nama lengkap</label><input name="nama" defaultValue={u.name} required minLength={2} />
+                <label className="f">Peran</label>
+                <select name="peran" defaultValue={u.role}>{(PERAN_BARU as readonly string[]).includes(u.role) ? PERAN_BARU.map((k) => <option key={k} value={k}>{k === "SUPER_ADMIN" ? "Admin pusat (akses penuh)" : ROLE_LABEL[k]}</option>) : <option value={u.role}>{ROLE_LABEL[u.role] ?? u.role} (akun lama)</option>}</select>
+                <label className="f">Bekerja di</label>
+                <select name="cabang" defaultValue={branches.find((b) => b.name === u.branchName)?.id ?? ""}><option value="">Tidak terikat cabang</option>{branches.map((b) => <option key={b.id} value={b.id}>{b.name} ({b.city})</option>)}</select>
+                <SubmitButton className="btn green" style={{ marginTop: 10 }} steps={["Memeriksa data…", "Menyimpan perubahan…"]}>Simpan perubahan data</SubmitButton>
+              </form>
               <form action={resetSandi}><input type="hidden" name="id" value={u.id} /><label className="f">Ganti kata sandi petugas</label><input name="sandi" autoComplete="off" placeholder="Sandi baru, minimal 8, ada huruf dan angka" required />
                 <SubmitButton className="btn ghost" style={{ marginTop: 10 }} steps={["Memeriksa sandi…", "Menyimpan sandi baru…"]}>Simpan sandi baru</SubmitButton></form>
               {u.id !== me.userId && (

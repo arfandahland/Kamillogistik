@@ -74,6 +74,20 @@ export async function ubahStatusPetugas(fd: FormData) {
   if (error) go("/app/petugas", "e", error);
   go("/app/petugas", "ok", aktif ? "Petugas diaktifkan kembali." : "Petugas dinonaktifkan dan tidak bisa masuk lagi.");
 }
+export async function ubahPetugas(fd: FormData) {
+  const { error } = await staffRpc("owner_update_staff", { p_user: str(fd, "id"), p_name: str(fd, "nama"), p_role: str(fd, "peran"), p_branch: str(fd, "cabang") || null });
+  revalidatePath("/app/petugas");
+  if (error) go("/app/petugas", "e", error);
+  go("/app/petugas", "ok", "Data petugas diperbarui.");
+}
+/** Finance atau Super Admin membatalkan pembayaran yang salah catat (wajib alasan). */
+export async function batalkanBayar(fd: FormData) {
+  const id = str(fd, "id"), back = `/app/tagihan/${id}`;
+  const { error } = await staffRpc("payment_void", { p_payment: str(fd, "bayar"), p_reason: str(fd, "alasan") });
+  revalidatePath("/app", "layout");
+  if (error) go(back, "e", error);
+  go(back, "ok", "Pembayaran dibatalkan dan sisa tagihan dihitung ulang.");
+}
 export async function resetSandi(fd: FormData) {
   const { error } = await staffRpc("owner_set_password", { p_user: str(fd, "id"), p_password: str(fd, "sandi") });
   if (error) go("/app/petugas", "e", error);

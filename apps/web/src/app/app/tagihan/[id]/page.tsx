@@ -8,7 +8,7 @@ import { staffRpc } from "@/lib/supabase/server";
 import { waNumber } from "@/lib/publicRpc";
 import StatRow from "@/components/StatRow";
 import { rupiah, tanggal } from "@/lib/brand";
-import { aturTempo, catatBayar, hardcopyDiterima } from "../../admin-actions";
+import { aturTempo, batalkanBayar, catatBayar, hardcopyDiterima } from "../../admin-actions";
 import { requireRole } from "@/lib/auth";
 import { SKEMA_NAMA, teksJatuhTempo } from "@/lib/tagih";
 import BackLink from "@/components/BackLink";
@@ -46,6 +46,19 @@ export default async function TagihanDetail({ params, searchParams }: { params: 
       ]} />
       <div className="dcols">
         <div className="dkol">
+          {["FINANCE", "SUPER_ADMIN"].includes(me.role) && (inv.payments ?? []).length > 0 && (
+            <section className="card rbsek no-print" aria-label="Pembayaran tercatat">
+              <h2 className="cardh">Pembayaran tercatat</h2>
+              <p className="hint">Salah catat nominal atau cara bayar? Batalkan pembayarannya, lalu catat ulang yang benar. Setiap pembatalan tercatat.</p>
+              {(inv.payments ?? []).map((p, i) => (
+                <form key={(p as { id?: string }).id ?? i} action={batalkanBayar} className="rbf">
+                  <input type="hidden" name="id" value={inv.id} /><input type="hidden" name="bayar" value={(p as { id?: string }).id ?? ""} />
+                  <p style={{ margin: 0 }}><b>{rupiah(p.amount)}</b> · {p.method === "TRANSFER" ? "Transfer" : "Tunai"} · {tanggal(p.at)}{p.reference ? ` · ${p.reference}` : ""}</p>
+                  <div className="row"><input name="alasan" required minLength={5} maxLength={200} placeholder="Alasan membatalkan (wajib)" aria-label="Alasan membatalkan pembayaran" autoComplete="off" />
+                    <SubmitButton className="btn ghost" style={{ borderColor: "var(--danger)", color: "var(--danger)" }} steps={["Membatalkan pembayaran…"]}>Batalkan</SubmitButton></div>
+                </form>))}
+            </section>
+          )}
           {inv.billingRule && (
             <section className="card rbsek no-print" aria-label="Skema penagihan">
               <h2 className="cardh">Skema penagihan</h2>
