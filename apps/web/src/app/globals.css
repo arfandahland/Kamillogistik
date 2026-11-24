@@ -2031,3 +2031,13 @@ body:has(.appshell) .cards-m.stagger > *:nth-child(n+4), body:has(.appshell) .st
 @media (prefers-reduced-motion: reduce) { body:has(.appshell) .cards-m.stagger > *, body:has(.appshell) .gl-an, body:has(.appshell) .stat { animation: none; } }
 .kosong-kartu { display: grid; justify-items: center; gap: 2px; padding: 22px 16px; }
 .kosong-ik { width: 56px; height: 56px; border-radius: 18px; margin-bottom: 8px; display: grid; place-items: center; background: rgba(16, 185, 129, .16); color: #6ee7b7; box-shadow: 0 0 24px rgba(16, 185, 129, .25); }
+
+/* Kartu peringatan kosong diringkas jadi satu baris; lencana angka pada menu kelompok */
+body:has(.appshell) .hubcard.nol { display: flex; align-items: center; gap: 10px; padding: 10px 14px; min-height: 0; }
+body:has(.appshell) .hubcard.nol header { margin: 0; flex: none; gap: 10px; }
+body:has(.appshell) .hubcard.nol header .hi { width: 30px; height: 30px; }
+body:has(.appshell) .hubcard.nol h2 { font-size: 14.5px; }
+body:has(.appshell) .hubcard.nol .pill { display: none; }
+body:has(.appshell) .hubcard.nol > p { margin: 0; font-size: 13px; color: var(--muted); text-align: right; flex: 1; }
+.gl-bd { flex: none; min-width: 26px; height: 26px; padding: 0 8px; border-radius: 99px; display: inline-grid; place-items: center; font-weight: 800; font-size: 13px; background: #f2b25c; color: #2a1a00; box-shadow: 0 0 14px rgba(242, 178, 92, .45); }
+.gl-bento .gl-bd { position: absolute; top: 12px; right: 44px; }

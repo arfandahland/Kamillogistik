@@ -12,7 +12,7 @@ export type RingkasanHari = { tanggal: string; angka: { l: string; v: string }[]
  * dua menu pertama berdampingan (bento) bila ada tiga menu atau lebih, sisanya satu kontainer kaca berbaris dengan garis tipis.
  * Menu halaman biasa tetap tautan biasa ke halaman aslinya. Menu berfilter membuka laci kaca; Ringkasan harian membuka kartu kaca.
  */
-export default function MenuKaca({ items, ringkasan }: { items: PusatItem[]; ringkasan?: RingkasanHari | null }) {
+export default function MenuKaca({ items, ringkasan, lencana }: { items: PusatItem[]; ringkasan?: RingkasanHari | null; lencana?: Record<string, number> }) {
   const [buka, setBuka] = useState<PusatItem | null>(null);
   const tutup = useRef<HTMLButtonElement>(null);
   useEffect(() => {
@@ -30,6 +30,7 @@ export default function MenuKaca({ items, ringkasan }: { items: PusatItem[]; rin
   const isi = (i: PusatItem, kecil: boolean) => (<>
     <span className="gl-ik"><Icon name={i.icon} size={kecil ? 22 : 20} /></span>
     <span className="gl-tx"><b>{i.t}</b><small>{i.d}</small></span>
+    {(lencana?.[i.href] ?? 0) > 0 && <span className="gl-bd" aria-label={`${lencana![i.href]} perlu perhatian`}>{lencana![i.href]}</span>}
     <span className="gl-pn" aria-hidden><Icon name={i.mode ? "up" : "arrow"} size={18} /></span>
   </>);
   const butir = (i: PusatItem, kelas: string) => i.mode

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import Icon from "@/components/Icon";
 import MenuKaca, { type RingkasanHari } from "@/components/MenuKaca";
 import { requireRole } from "@/lib/auth";
@@ -51,6 +50,9 @@ export default async function Pusat({ searchParams }: { searchParams: Promise<{ 
   if (pend?.data) angka.push({ ikon: "swap", n: pend.data.length, l: "Menunggu diterima", href: "/app/serah", warm: pend.data.length > 0 });
   if (kn?.data != null) angka.push({ ikon: "alert", n: Number(kn.data), l: "Kendala terbuka", href: "/app/kendala", warm: Number(kn.data) > 0 });
 
+  const lencana: Record<string, number> = {};
+  for (const a of angka) lencana[a.href] = a.n;
+
   return (
     <main className="wrap stack gl-halaman" style={{ paddingTop: 8 }}>
       <p className="overline">{judul}</p>
@@ -63,16 +65,7 @@ export default async function Pusat({ searchParams }: { searchParams: Promise<{ 
           <button className="btn sm">Cari</button>
         </form>
       )}
-      {angka.length > 0 && (
-        <div className="gl-ang" role="list">
-          {angka.map((a) => (
-            <Link key={a.l} href={a.href} role="listitem" className={`gl-an gl-press${a.warm ? " warm" : ""}`}>
-              <span className="gl-ik"><Icon name={a.ikon} size={18} /></span><b>{a.n}</b><small>{a.l}</small>
-            </Link>
-          ))}
-        </div>
-      )}
-      <MenuKaca items={items} ringkasan={ringkasan} />
+      <MenuKaca items={items} ringkasan={ringkasan} lencana={lencana} />
     </main>
   );
 }

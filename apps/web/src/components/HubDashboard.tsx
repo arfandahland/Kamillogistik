@@ -56,7 +56,7 @@ export default function HubDashboard({ d, pesanOwner }: { d: HubData; pesanOwner
 
       <div className="hubgrid">
         {/* 3. Barang mengendap */}
-        <article className={`card hubcard span2 ${d.mengendap.length ? "flag" : ""}`}>
+        <article className={`card hubcard span2 ${d.mengendap.length ? "flag" : "nol"}`}>
           <header><span className="hi warm"><Icon name="clock" size={20} /></span><h2>Barang mengendap</h2><span className="pill">{d.mengendap.length}</span></header>
           {d.mengendap.length === 0 ? <p className="muted">Tidak ada barang diam lebih dari 24 jam.</p> : (
             <Potong tag="ul" kelas="rows" batas={4} satuan="resi" items={d.mengendap.map((m) => {
@@ -70,13 +70,13 @@ export default function HubDashboard({ d, pesanOwner }: { d: HubData; pesanOwner
         </article>
 
         {/* 5. Selisih manifest */}
-        <article className={`card hubcard ${d.selisih.length ? "flag" : ""}`}>
+        <article className={`card hubcard ${d.selisih.length ? "flag" : "nol"}`}>
           <header><span className="hi warm"><Icon name="shield" size={20} /></span><h2>Selisih manifest</h2><span className="pill">{d.selisih.length}</span></header>
           {d.selisih.length === 0 ? <p className="muted">Tidak ada selisih terbuka.</p> : <ul className="rows">{d.selisih.map((s) => <li key={s.id}><Link href={`/app/manifest/${s.manifestId}`}><b>{s.code}</b><small>seharusnya {s.expected}, ditemukan {s.found}</small></Link></li>)}</ul>}
         </article>
 
         {/* 6. Serah terima macet */}
-        <article className={`card hubcard ${d.serah.length ? "flag" : ""}`}>
+        <article className={`card hubcard ${d.serah.length ? "flag" : "nol"}`}>
           <header><span className="hi warm"><Icon name="swap" size={20} /></span><h2>Serah terima macet</h2><span className="pill">{d.serah.length}</span></header>
           {d.serah.length === 0 ? <p className="muted">Semua serah terima sudah diterima.</p> : <ul className="rows">{d.serah.map((s) => <li key={s.id}><Link href={`/app/resi/${s.shipmentId}`}><b>{s.resiNo}</b><small>{s.dari} → {s.ke}</small></Link><span className="age">{jam(s.jam)}</span></li>)}</ul>}
         </article>
