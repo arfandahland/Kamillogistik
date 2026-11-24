@@ -756,9 +756,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/StaffShell.tsx": {
-    "mtime": 1795499839.963169,
-    "seen": 1795499871.7487645,
-    "ast_hash": "e79c1eadacbf55944d7dcbdc765ca3a6",
+    "mtime": 1795500051.3015192,
+    "seen": 1795500075.1356387,
+    "ast_hash": "7a40d9899e454adbb2d5605b7d082e8d",
     "semantic_hash": ""
   },
   "apps/web/src/components/SubmitButton.tsx": {
@@ -900,9 +900,9 @@
     "semantic_hash": ""
   },
   "db/test/run.sh": {
-    "mtime": 1795499689.0885441,
-    "seen": 1795499871.7516844,
-    "ast_hash": "a8dd789548ad7ee3d07563d0ba4e31de",
+    "mtime": 1795499965.70624,
+    "seen": 1795500075.138658,
+    "ast_hash": "32736402aee3637160ad05ca9089845f",
     "semantic_hash": ""
   },
   "db/test/tariff-cases.json": {
@@ -954,9 +954,9 @@
     "semantic_hash": ""
   },
   "e2e/setup.sh": {
-    "mtime": 1795499689.0906355,
-    "seen": 1795499871.7519014,
-    "ast_hash": "791daaad4f5b5563fd33b02db4fce7c3",
+    "mtime": 1795499940.850165,
+    "seen": 1795500075.1388898,
+    "ast_hash": "ac7270ad8ac401617f021c41658271ee",
     "semantic_hash": ""
   },
   "e2e/skenario.cjs": {
@@ -1062,9 +1062,9 @@
     "semantic_hash": ""
   },
   "packages/core/src/service/staffText.ts": {
-    "mtime": 1795333255.136292,
-    "seen": 1795333664.188078,
-    "ast_hash": "1817ce4a3dd24db606b0012e35fddbc7",
+    "mtime": 1795500016.9672415,
+    "seen": 1795500075.1393044,
+    "ast_hash": "def02edf255115f1638140af8a893ec3",
     "semantic_hash": ""
   },
   "packages/core/src/service/supabaseRepo.ts": {
@@ -1488,9 +1488,9 @@
     "semantic_hash": ""
   },
   "db/test/korporat.sql": {
-    "mtime": 1795499196.6922212,
-    "seen": 1795499476.0326567,
-    "ast_hash": "",
+    "mtime": 1795499767.0928905,
+    "seen": 1795500075.1383746,
+    "ast_hash": "edc63a4bad6b4e4d5463d924f0e9c1f3",
     "semantic_hash": ""
   },
   "db/test/lamaran.sql": {
@@ -1958,7 +1958,7 @@
   "db/test/per_peran.sql": {
     "mtime": 1795188405.2011316,
     "seen": 1795188552.05053,
-    "ast_hash": "5b0e4a5bb1bd90a1aae95b37ae0ddf06",
+    "ast_hash": "",
     "semantic_hash": ""
   },
   "docs/FITUR-PER-PERAN.md": {
@@ -2022,15 +2022,15 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/pegawai/actions.ts": {
-    "mtime": 1795221377.6303236,
-    "seen": 1795222726.479395,
-    "ast_hash": "5107af45cd5543dff512676465a75a09",
+    "mtime": 1795500016.9678543,
+    "seen": 1795500075.1322937,
+    "ast_hash": "c29a60dd246a82a44e038219c621ac78",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/pegawai/page.tsx": {
-    "mtime": 1795485621.2445204,
-    "seen": 1795486047.6010458,
-    "ast_hash": "7dfb67006b886db5802aef4fa6ba8503",
+    "mtime": 1795500028.019278,
+    "seen": 1795500075.1322966,
+    "ast_hash": "667c81ffd4023c22bac3ede1de42008a",
     "semantic_hash": ""
   },
   "apps/web/src/components/AbsenKartu.tsx": {
@@ -9036,9 +9036,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/lib/pusat.ts": {
-    "mtime": 1795499839.9626968,
-    "seen": 1795499871.7496417,
-    "ast_hash": "eb73757e8949d362c291b27466e65211",
+    "mtime": 1795500051.3010037,
+    "seen": 1795500075.1363714,
+    "ast_hash": "3cb28435fea79ff3be3c76d8f538e20e",
     "semantic_hash": ""
   },
   "db/migrations/056_data_awal_lengkap.sql": {
@@ -9252,9 +9252,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/absen/[token]/aksi.ts": {
-    "mtime": 1795486998.0731347,
-    "seen": 1795489355.1781554,
-    "ast_hash": "3e7bf2fa0225138b55ff9b8a57efd374",
+    "mtime": 1795500001.5513394,
+    "seen": 1795500075.1301794,
+    "ast_hash": "8420e9480d91279fa10ca90206d81803",
     "semantic_hash": ""
   },
   "apps/web/src/app/absen/[token]/page.tsx": {
@@ -9318,9 +9318,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/AbsenForm.tsx": {
-    "mtime": 1795486998.0812714,
-    "seen": 1795489355.1817584,
-    "ast_hash": "176bba48d6c9e0ccb136eb37f3348326",
+    "mtime": 1795500004.9156713,
+    "seen": 1795500075.133514,
+    "ast_hash": "ce63addd66403e07d93264ea50c62172",
     "semantic_hash": ""
   },
   "apps/web/src/components/KaryawanBaru.tsx": {
@@ -9423,6 +9423,24 @@
     "mtime": 1795499499.972857,
     "seen": 1795499871.7511008,
     "ast_hash": "93acf3f9e2c2b80697b29e58cdd7d549",
+    "semantic_hash": ""
+  },
+  "apps/web/src/app/app/keuangan/input-absen/actions.ts": {
+    "mtime": 1795500051.2826095,
+    "seen": 1795500075.1310349,
+    "ast_hash": "32cd1d3d738fb4f316f4ac51d46df547",
+    "semantic_hash": ""
+  },
+  "apps/web/src/app/app/keuangan/input-absen/page.tsx": {
+    "mtime": 1795500051.2839975,
+    "seen": 1795500075.1310368,
+    "ast_hash": "a64c3b1279b71c991894fed622b3f3b5",
+    "semantic_hash": ""
+  },
+  "db/migrations/066_skema_penagihan.sql": {
+    "mtime": 1795499786.7657597,
+    "seen": 1795500075.138075,
+    "ast_hash": "7420c7e922e15471dd2e7aa8c9ab8bce",
     "semantic_hash": ""
   },
   "package-lock.json": {

@@ -166,7 +166,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await p.fill("#isi", "Barang uji"); await p.fill("#pengirim", "PT Maju Jaya"); await p.fill("#hp_pengirim", "081234567890");
     await p.fill("#penerima", "Budi Santoso"); await p.fill("#hp_penerima", "082233445566"); await p.fill("#alamat", "Jl. Pettarani No. 5, Makassar"); await p.fill("#alamat_jemput", "Jl. Sudirman No. 1, Jakarta");
     await p.fill("#jumlah", "2"); await p.fill("#nilai", "1500000");
-    await p.locator("label.kchip", { hasText: "Pakai asuransi" }).click(); await p.fill("#jadwal", new Date(Date.now() + 8 * 3600000 + 3 * 86400000).toISOString().slice(0, 10)); await p.locator("label.kchip", { hasText: "Siang" }).click(); await p.locator("label.kchip", { hasText: "Transfer" }).click(); await p.fill("#refpel", "PO-7788");
+    await p.locator("label.kchip", { hasText: "Pakai asuransi" }).click(); await p.fill("#jadwal", new Date(Date.now() + 8 * 3600000 + 3 * 86400000).toISOString().slice(0, 10)); await p.locator("label.kchip", { hasText: "Siang" }).click(); await p.locator("label.kchip", { hasText: "COD" }).click(); await p.fill("#refpel", "PO-7788");
     ok("AQ1 form kasir tidak lagi menanyakan berat", (await p.locator("#estimasi").count()) === 0);
     await isiWilayah(p);
     const r = await act(p, p.getByRole("button", { name: "Buat resi" }));
@@ -175,7 +175,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("nomor resi terbaca: KML-asal-tujuan-moda-tanggal-jam-urutan-huruf", /^KML-JKT-MKS-LJ-\d{6}-\d{4}-0001-[A-Z]{2}$/.test(resiNo), resiNo);
     ok("penjelasan arti kode tampil", (await p.locator(".kodebox").count()) === 1 && (await p.locator(".tag.moda").innerText()).includes("Laut"));
     ok("penanda tahap: Tahap 1 dari 10", /Tahap 1 dari 10/.test(await text(p)));
-    ok("AQ2 data awal lengkap tampil di detail resi: asuransi, jadwal jemput, rencana bayar, referensi", /Pakai asuransi/.test(await text(p)) && /Jadwal jemput/.test(await text(p)) && /siang/.test(await text(p)) && /Transfer/.test(await text(p)) && /PO-7788/.test(await text(p)));
+    ok("AQ2 data awal lengkap tampil di detail resi: asuransi, jadwal jemput, rencana bayar, referensi", /Pakai asuransi/.test(await text(p)) && /Jadwal jemput/.test(await text(p)) && /siang/.test(await text(p)) && /COD/.test(await text(p)) && /PO-7788/.test(await text(p)));
     { const pg2 = await kasir.ctx.newPage();
       await pg2.goto(`${BASE}/app/pusat?g=kontak`, { waitUntil: "networkidle" });
       const pt = await pg2.locator("main").innerText();
