@@ -12,7 +12,7 @@ type R = { id: string; resiNo: string; receiver: string; mode: string; province:
 /** Papan sortir: barang yang sudah dibongkar di gudang ini, dikelompokkan menurut kabupaten/kota tujuan akhir penerima. */
 export default async function Sortir() {
   const me = (await getMe()).data;
-  if (!me || !["HUB_MANAGER", "WAREHOUSE", "MITRA_POS"].includes(me.role)) redirect("/app");
+  if (!me || !["HUB_MANAGER", "WAREHOUSE"].includes(me.role)) redirect("/app");
   const r = await staffRpc<R[]>("hub_sort_board");
   const rows = r.data ?? [];
   const grup = new Map<string, R[]>();

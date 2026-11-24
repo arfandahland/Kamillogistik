@@ -25,6 +25,7 @@ const KLAIM: PusatItem = { href: "/app/klaim", icon: "shield", t: "Klaim dan kel
 const KENDALA: PusatItem = { href: "/app/kendala", icon: "alert", t: "Kendala pengiriman", d: "Salah sortir, barang rusak, gagal kirim, retur, dan barang ditahan." };
 const MANIFEST: PusatItem = { href: "/app/manifest", icon: "layers", t: "Manifest muatan", d: "Daftar muatan satu kontainer: siapkan, segel, serahkan, dan bongkar." };
 const TIMBANG: PusatItem = { href: "/app/timbang", icon: "scale", t: "Timbang barang", d: "Pindai barcode tiap barang, isi berat dan ukurannya." };
+const ARUS: PusatItem = { href: "/app/arus", icon: "ship", t: "Barang masuk dan keluar", d: "Pisahkan barang yang masuk, ada di sini, keluar, dan selesai di cabang Anda." };
 const SORTIR: PusatItem = { href: "/app/sortir", icon: "flip", t: "Sortir tujuan akhir", d: "Resi dikelompokkan per kabupaten atau kota tujuan akhir." };
 
 export const PERAN_PUSAT = ["MITRA_POS", "HUB_MANAGER", "WAREHOUSE", "DRIVER", "CONTAINER_DRIVER", "CS_SALES", "FINANCE", "HRD", "MV", "MV_MASTER", "SUPER_ADMIN", "OWNER"];
@@ -62,7 +63,7 @@ const KELOLA: Record<string, PusatItem> = Object.fromEntries([
 ].map((i) => [i.href, i]));
 const K = (...h: string[]) => h.map((x) => KELOLA[x]!).filter(Boolean);
 /** Halaman yang hanya boleh diubah Super Admin; Pemilik hanya memantau. */
-const HANYA_ADMIN = ["/app/mitra", "/app/petugas", "/app/tarif", "/app/pengaturan", "/app/korporat"];
+const HANYA_ADMIN = ["/app/mitra", "/app/petugas", "/app/tarif", "/app/pengaturan", "/app/korporat", "/app/calon-mitra", "/app/rekrutmen", "/app/lamaran", "/app/konten", "/app/jemput", "/app/klaim"];
 
 export function grupPusat(role: string): { judul: string; sapa: string; grup: PusatGrup[] } {
   switch (role) {
@@ -78,7 +79,7 @@ export function grupPusat(role: string): { judul: string; sapa: string; grup: Pu
     }
     case "MITRA_POS": return { judul: "Pusat Kasir", sapa: "Semua alat Kasir, dikelompokkan menurut pekerjaannya.", grup: [
       G("kontak", "Kontak", "Pelanggan", "Jaga hubungan dan jawab pertanyaan.", "users", [DIHUBUNGI, JEMPUT, CARI]),
-      G("muatan", "Muatan", "Muatan dan barang", "Serah terima dan sortir barang.", "layers", [SERAH, SORTIR]), AKUN] };
+      G("muatan", "Muatan", "Manifest dan arus barang", "Susun manifest dan pantau barang masuk dan keluar.", "layers", [MANIFEST, ARUS]), AKUN] };
     case "HUB_MANAGER": return { judul: "Pusat Gudang", sapa: "Muatan, masalah, dan pelanggan cabang Anda.", grup: [
       G("gudang", "Gudang", "Muatan dan barang", "Penimbangan, sortir, dan pencarian.", "layers", [TIMBANG, SORTIR, CARI]),
       G("masalah", "Masalah", "Masalah dan pelanggan", "Yang perlu ditindaklanjuti hari ini.", "alert", [KENDALA, DIHUBUNGI, JEMPUT]), AKUN] };

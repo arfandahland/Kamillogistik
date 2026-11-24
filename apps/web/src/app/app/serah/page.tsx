@@ -12,7 +12,7 @@ export const metadata: Metadata = { title: "Serah Terima" };
 
 export default async function Serah({ searchParams }: { searchParams: Promise<{ hal?: string }> }) {
   const sp = await searchParams;
-  await requireRole(["HUB_MANAGER","WAREHOUSE","DRIVER","CONTAINER_DRIVER","MITRA_POS"]);
+  await requireRole(["HUB_MANAGER","WAREHOUSE","DRIVER","CONTAINER_DRIVER"]);
   const p = await staffRpc<{ id: string; shipmentId: string; resiNo: string; fromName: string; createdAt: string }[]>("my_pending_handovers");
   const list = p.data ?? [];
   return (

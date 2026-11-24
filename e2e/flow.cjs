@@ -1470,9 +1470,10 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await kj.page.locator("a[href^='/app/baru?jemput=']").first().click(); await kj.page.waitForURL(/baru\?jemput=/, { timeout: 15000 }); await kj.page.waitForSelector("#pengirim", { timeout: 15000 });
     ok("AJ8 form resi dari pesanan jemput terisi data pengirim dan tanpa pilihan cara masuk", /Dari pesanan jemput/.test(await text(kj.page)) && (await kj.page.inputValue("#pengirim")).length > 1 && (await kj.page.getByText("Diantar sendiri").count()) === 0);
     ok("AK1 menu kasir memuat Pesanan jemput (untuk jemput opsi B)", (await kj.page.locator("a[href='/app/jemput']").count()) >= 1);
-    for (const u of ["/app/serah", "/app/pindai", "/app/pegawai"]) {
+    for (const u of ["/app/serah", "/app/sortir", "/app/pindai", "/app/pegawai"]) {
       await kj.page.goto(`${BASE}${u}`, { waitUntil: "networkidle" });
-      ok(`AK2 kasir ${u}: ${u === "/app/pegawai" ? "dialihkan ke beranda" : "boleh dibuka"}`, u === "/app/pegawai" ? !/\/app\/pegawai/.test(kj.page.url()) : /\/app\/(serah|pindai)/.test(kj.page.url()));
+      const tutup = ["/app/pegawai", "/app/serah", "/app/sortir"].includes(u);
+      ok(`AK2 kasir ${u}: ${tutup ? "dialihkan ke beranda (bukan tugas kasir)" : "boleh dibuka"}`, tutup ? !new RegExp(u.replace("/", "\\/")).test(kj.page.url()) : /\/app\/pindai/.test(kj.page.url()));
     }
     await kj.ctx.close();
     const sa2 = await login(browser, "owner@uji.id", "Pemilik2026x");
