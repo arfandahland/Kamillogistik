@@ -166,9 +166,10 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await p.fill("#isi", "Barang uji"); await p.fill("#pengirim", "PT Maju Jaya"); await p.fill("#hp_pengirim", "081234567890");
     await p.fill("#penerima", "Budi Santoso"); await p.fill("#hp_penerima", "082233445566"); await p.fill("#alamat", "Jl. Pettarani No. 5, Makassar"); await p.fill("#alamat_jemput", "Jl. Sudirman No. 1, Jakarta");
     await p.fill("#jumlah", "2"); await p.fill("#nilai", "1500000");
-    await p.locator("label.kchip", { hasText: "Pakai asuransi" }).click(); await p.fill("#jadwal", new Date(Date.now() + 8 * 3600000 + 3 * 86400000).toISOString().slice(0, 10)); await p.locator("label.kchip", { hasText: "Siang" }).click(); await p.locator("label.kchip", { hasText: "COD" }).click(); await p.fill("#refpel", "PO-7788");
+    await p.locator("label.kchip", { hasText: "Pakai asuransi" }).click(); await p.fill("#jadwal", new Date(Date.now() + 8 * 3600000 + 3 * 86400000).toISOString().slice(0, 10)); await p.locator("label.kchip", { hasText: "Siang" }).click(); await p.fill("#refpel", "PO-7788");
     ok("AQ1 form kasir tidak lagi menanyakan berat", (await p.locator("#estimasi").count()) === 0);
     await isiWilayah(p);
+    await p.locator("label.kchip", { hasText: "COD" }).click();
     const r = await act(p, p.getByRole("button", { name: "Buat resi" }));
     ok("resi dibuat dengan pesan sukses", r.ok && /Resi sudah dibuat/.test(r.ok), JSON.stringify(r));
     resiNo = (await p.locator("h1").first().innerText()).trim(); resiId = p.url().match(/resi\/([0-9a-f-]+)/)?.[1] || "";

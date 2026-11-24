@@ -924,9 +924,9 @@
     "semantic_hash": ""
   },
   "e2e/flow.cjs": {
-    "mtime": 1795499344.3629005,
-    "seen": 1795499420.862188,
-    "ast_hash": "f915a5ed3662cbd0e46381a3a4e75962",
+    "mtime": 1795500087.1370323,
+    "seen": 1795500179.5392818,
+    "ast_hash": "a642677bb4f8b4eaa2f1db1b5763c8d5",
     "semantic_hash": ""
   },
   "e2e/kamera.cjs": {
@@ -1956,9 +1956,9 @@
     "semantic_hash": ""
   },
   "db/test/per_peran.sql": {
-    "mtime": 1795188405.2011316,
-    "seen": 1795188552.05053,
-    "ast_hash": "",
+    "mtime": 1795499965.7020025,
+    "seen": 1795500179.5392556,
+    "ast_hash": "e1189f96f596f5629d03bbb1de3e10a0",
     "semantic_hash": ""
   },
   "docs/FITUR-PER-PERAN.md": {
@@ -9441,6 +9441,18 @@
     "mtime": 1795499786.7657597,
     "seen": 1795500075.138075,
     "ast_hash": "7420c7e922e15471dd2e7aa8c9ab8bce",
+    "semantic_hash": ""
+  },
+  "db/migrations/067_absensi_finance_cuti_portal.sql": {
+    "mtime": 1795499940.8449414,
+    "seen": 1795500179.5392244,
+    "ast_hash": "6ae1f62f39799f7e124336939fb6992f",
+    "semantic_hash": ""
+  },
+  "db/test/absen_finance_cuti.sql": {
+    "mtime": 1795499976.7559872,
+    "seen": 1795500179.5392308,
+    "ast_hash": "8b56d5aa8a8b4d2f5840b2cd44306a00",
     "semantic_hash": ""
   },
   "package-lock.json": {
