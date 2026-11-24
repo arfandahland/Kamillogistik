@@ -4,7 +4,7 @@ import { requireOwnerView } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
 import { rupiah } from "@/lib/brand";
 import Icon from "@/components/Icon";
-import Potong from "@/components/Potong";
+import Daftar from "@/components/Daftar";
 import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Ringkasan Harian" };
@@ -22,7 +22,7 @@ function Delta({ a, b }: { a: number; b: number }) {
   return <small className={up ? "up" : "down"}>{up ? "▲" : "▼"} {Math.abs(a - b).toLocaleString("id-ID")} dari kemarin</small>;
 }
 
-export default async function Ringkasan({ searchParams }: { searchParams: Promise<{ tgl?: string }> }) {
+export default async function Ringkasan({ searchParams }: { searchParams: Promise<{ hal?: string; tgl?: string }> }) {
   await requireOwnerView();
   const sp = await searchParams; const hari = nowWita();
   const tgl = /^\d{4}-\d{2}-\d{2}$/.test(sp.tgl ?? "") && sp.tgl! <= hari ? sp.tgl! : hari;
@@ -62,7 +62,7 @@ export default async function Ringkasan({ searchParams }: { searchParams: Promis
         </div>
       )}
       <h2 style={{ margin: "8px 2px 0" }}>Kinerja mitra dan gudang (30 hari)</h2>
-      <Potong kelas="stagger fstack" batas={4} satuan="mitra dan gudang" items={(p.data ?? []).map((x) => (
+      <Daftar p={sp.hal} path="/app/ringkasan" params={{ tgl: sp.tgl }} kelas="stagger fstack" satuan="mitra dan gudang" items={(p.data ?? []).map((x) => (
           <article key={x.id} className="card hist"><div className="insph"><b>{x.name}</b><small className="muted">{x.city}</small></div>
             <ul className="chg"><li><span>Resi dibuat</span><b>{x.resi}</b></li><li><span>Sudah diterima pelanggan</span><b>{x.delivered}</b></li><li><span>Rata-rata lama kirim</span><b>{x.avgDays == null ? "–" : `${x.avgDays} hari`}</b></li>
               <li><span>Barang bermasalah saat diperiksa</span><b className={x.problems ? "down" : ""}>{x.inspected ? `${x.problems} dari ${x.inspected}` : "–"}</b></li><li><span>Tertahan di sini sekarang</span><b className={x.stuck ? "down" : ""}>{x.stuck}</b></li></ul></article>

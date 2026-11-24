@@ -4,19 +4,21 @@ import { MANIFEST_STATUS_LABEL, OWNER_VIEW } from "@kamil/core";
 import Icon from "@/components/Icon";
 import { getMe, staffRpc } from "@/lib/supabase/server";
 import { requireRole } from "@/lib/auth";
-import Potong from "@/components/Potong";
+import Pager from "@/components/Pager";
+import { halamanDari } from "@/lib/halaman";
 import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Manifest" };
 type Row = { id: string; code: string; status: string; mode: string; origin: string; dest: string; carrier: string | null; container: string | null; eta: string | null; resi: number; items: number; pendingToMe: boolean; iAmHolder: boolean; openCase: boolean };
 const TABS = [{ k: "", t: "Semua" }, { k: "OPEN", t: "Sedang diisi" }, { k: "SEALED", t: "Siap berangkat" }, { k: "IN_TRANSIT", t: "Di perjalanan" }, { k: "ARRIVED", t: "Sudah tiba" }, { k: "UNLOADED", t: "Selesai" }];
 
-export default async function Manifest({ searchParams }: { searchParams: Promise<{ s?: string }> }) {
+export default async function Manifest({ searchParams }: { searchParams: Promise<{ s?: string; hal?: string }> }) {
   await requireRole(["SUPER_ADMIN","OWNER","MITRA_POS","HUB_MANAGER","WAREHOUSE","CONTAINER_DRIVER"]);
   const sp = await searchParams;
   const tab = TABS.find((t) => t.k === sp.s)?.k ?? "";
-  const [me, r] = await Promise.all([getMe(), staffRpc<Row[]>("manifest_list", { p_status: tab || null, p_limit: 60 })]);
+  const [me, r] = await Promise.all([getMe(), staffRpc<Row[]>("manifest_list", { p_status: tab || null, p_limit: 300 })]);
   const rows = r.data ?? [];
+  const pg = halamanDari(rows, sp.hal);
   const role = me.data?.role;
   const bisaBuat = role === "MITRA_POS"; // hanya Kasir yang menentukan isi manifest; gudang dan sopir menerima serta membongkar muatan
   const menunggu = rows.filter((x) => x.pendingToMe);
@@ -30,7 +32,7 @@ export default async function Manifest({ searchParams }: { searchParams: Promise
       {menunggu.length > 0 && <div className="banner"><b>{menunggu.length} manifest menunggu Anda menerima.</b> Buka manifestnya lalu tekan tombol terima.</div>}
       <nav className="chips" aria-label="Saring">{TABS.map((t) => <Link key={t.k} className={`chip ${tab === t.k ? "on" : ""}`} href={t.k ? `/app/manifest?s=${t.k}` : "/app/manifest"}>{t.t}</Link>)}</nav>
       {r.error && <div className="err">{r.error}</div>}
-      <Potong kelas="stagger mlist" batas={6} satuan="manifest" items={rows.map((m) => (
+      <div className="stagger mlist">{pg.tampil.map((m) => (
           <Link key={m.id} href={`/app/manifest/${m.id}`} className="card resi lift">
             <span className="ic"><Icon name={m.mode === "UDARA" ? "plane" : m.mode === "DARAT" ? "truck" : "ship"} size={24} /></span>
             <span className="meta">
@@ -39,7 +41,8 @@ export default async function Manifest({ searchParams }: { searchParams: Promise
               <small>{[m.carrier, m.container].filter(Boolean).join(" · ") || "Pengangkut belum diisi"}{m.pendingToMe ? " · menunggu Anda" : ""}{m.openCase ? " · ada selisih" : ""}</small>
             </span>
           </Link>
-        ))} />
+        ))}</div>
+      <Pager h={pg} path="/app/manifest" params={{ s: tab }} satuan="manifest" />
       <div>
         {!r.error && rows.length === 0 && <div className="card"><p className="muted" style={{ margin: 0 }}>{OWNER_VIEW.includes(role ?? "") ? "Belum ada manifest." : bisaBuat ? "Belum ada manifest. Tekan Buat manifest untuk mulai memuat." : "Belum ada manifest untuk Anda."}</p></div>}
       </div>

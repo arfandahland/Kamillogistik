@@ -1,3 +1,5 @@
+import Pager from "@/components/Pager";
+import { halamanDari } from "@/lib/halaman";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ROLE_LABEL } from "@kamil/core";
@@ -21,7 +23,7 @@ const tanggalWita = (iso: string) => new Date(iso.slice(0, 10) + "T00:00:00Z").t
 const wita = () => new Date(Date.now() + 8 * 3600_000).toISOString().slice(0, 10);
 const tambahHari = (iso: string, n: number) => new Date(new Date(iso + "T00:00:00Z").getTime() + n * 86400_000).toISOString().slice(0, 10);
 
-export default async function Pegawai({ searchParams }: { searchParams: Promise<{ t?: string; e?: string; ok?: string; dari?: string; sampai?: string }> }) {
+export default async function Pegawai({ searchParams }: { searchParams: Promise<{ hal?: string; t?: string; e?: string; ok?: string; dari?: string; sampai?: string }> }) {
   await requireRole(["SUPER_ADMIN","OWNER","HRD"]);
   const sp = await searchParams;
   const tab = TABS.find(([k]) => k === sp.t)?.[0] ?? "daftar";
@@ -37,6 +39,7 @@ export default async function Pegawai({ searchParams }: { searchParams: Promise<
     tab === "rekap" ? staffRpc<Rekap[]>("hr_recap", { p_from: dari, p_to: sampai }) : null,
   ]);
   const aktif = staf.filter((s) => s.aktif && s.peran !== "SUPER_ADMIN");
+  const pgStaf = halamanDari(staf, tab === "daftar" ? sp.hal : 1), pgDok = halamanDari(dok?.data ?? [], sp.hal), pgCuti = halamanDari(cuti?.data ?? [], sp.hal), pgRekap = halamanDari(rekap?.data ?? [], sp.hal);
   const err = daftar.error ?? dok?.error ?? papan?.error ?? cuti?.error ?? rekap?.error;
   return (
     <main className="wrap stack" style={{ paddingTop: 8 }}>
@@ -55,7 +58,7 @@ export default async function Pegawai({ searchParams }: { searchParams: Promise<
             <div className="stat warm"><b>{aktif.filter((s) => s.cutiHariIni).length}</b><span>Cuti atau izin hari ini</span></div>
             <div className="stat warm"><b>{aktif.filter((s) => s.dokumenHabis + s.dokumenHampir > 0).length}</b><span>Dokumen perlu perhatian</span></div>
           </div>
-          {staf.map((s) => (
+          {pgStaf.tampil.map((s) => (
             <div key={s.id} className="card resi">
               <span className="ic"><Icon name="user" size={24} /></span>
               <span className="meta"><span className="toprow"><b className="no">{s.nama}</b>{!s.aktif && <span className="pill">Nonaktif</span>}</span>
@@ -65,6 +68,7 @@ export default async function Pegawai({ searchParams }: { searchParams: Promise<
               </span>
             </div>
           ))}
+          <Pager h={pgStaf} path="/app/pegawai" params={{ t: tab }} satuan="pegawai" />
         </div>
       )}
 
@@ -82,7 +86,7 @@ export default async function Pegawai({ searchParams }: { searchParams: Promise<
             <SubmitButton steps={["Menyimpan dokumen…"]}>Simpan dokumen</SubmitButton>
           </form>
           <h2 style={{ margin: "6px 2px -4px" }}>Masa berlaku</h2>
-          {(dok?.data ?? []).map((d) => (
+          {pgDok.tampil.map((d) => (
             <div key={d.id} className={`card resi ${d.sisaHari != null && d.sisaHari <= 30 ? "flag" : ""}`}>
               <span className="meta"><span className="toprow"><b className="no">{d.nama}</b>
                 {d.sisaHari != null && <span className={`pill ${d.sisaHari < 0 ? "new" : ""}`}>{d.sisaHari < 0 ? `habis ${-d.sisaHari} hari lalu` : d.sisaHari === 0 ? "habis hari ini" : `${d.sisaHari} hari lagi`}</span>}</span>
@@ -90,6 +94,7 @@ export default async function Pegawai({ searchParams }: { searchParams: Promise<
               <form action={hapusDokumen}><input type="hidden" name="id" value={d.id} /><button className="btn ghost sm" aria-label={`Hapus dokumen ${d.kind} ${d.nama}`}>Hapus</button></form>
             </div>
           ))}
+          <Pager h={pgDok} path="/app/pegawai" params={{ t: tab }} satuan="dokumen" />
           {dok?.data?.length === 0 && <div className="card"><p className="muted" style={{ margin: 0 }}>Belum ada dokumen tercatat.</p></div>}
         </div>
       )}
@@ -116,7 +121,7 @@ export default async function Pegawai({ searchParams }: { searchParams: Promise<
 
       {tab === "cuti" && (
         <div className="stack stagger">
-          {(cuti?.data ?? []).map((c) => (
+          {pgCuti.tampil.map((c) => (
             <div key={c.id} className={`card stack ${c.status === "PENGAJUAN" ? "flag" : ""}`}>
               <p style={{ margin: 0 }}><b>{c.nama}</b> <span className={`pill ${c.status === "PENGAJUAN" ? "new" : c.status === "DISETUJUI" ? "done" : ""}`}>{c.status === "PENGAJUAN" ? "Menunggu keputusan" : c.status === "DISETUJUI" ? "Disetujui" : "Ditolak"}</span></p>
               <p className="muted" style={{ margin: 0 }}>{JENIS_CUTI[c.kind]} · {tanggalWita(c.dari)}{c.sampai !== c.dari ? ` sampai ${tanggalWita(c.sampai)}` : ""} ({c.hari} hari)<br />{c.alasan}{c.catatan ? <><br /><small>Catatan: {c.catatan}</small></> : null}</p>
@@ -132,6 +137,7 @@ export default async function Pegawai({ searchParams }: { searchParams: Promise<
               )}
             </div>
           ))}
+          <Pager h={pgCuti} path="/app/pegawai" params={{ t: tab }} satuan="pengajuan" />
           {cuti?.data?.length === 0 && <div className="card"><p className="muted" style={{ margin: 0 }}>Belum ada pengajuan cuti atau izin.</p></div>}
         </div>
       )}
@@ -150,8 +156,9 @@ export default async function Pegawai({ searchParams }: { searchParams: Promise<
           <p className="hint" style={{ margin: 0 }}>Langkah kerja dihitung dari catatan resmi sistem (resi yang dibatalkan tidak dihitung). Rekap ini bahan penggajian dan insentif, bukan nominal uang.</p>
           <div className="card" style={{ overflowX: "auto" }}>
             <table><thead><tr><th>Nama</th><th>Hadir</th><th>Cuti</th><th>Shift</th><th>Langkah</th><th>Jemput</th><th>Timbang</th><th>Antar</th></tr></thead>
-              <tbody>{(rekap?.data ?? []).map((r) => <tr key={r.id}><td><b>{r.nama}</b><br /><small className="muted">{ROLE_LABEL[r.peran] ?? r.peran}{r.tanpaPulang ? ` · ${r.tanpaPulang}× tanpa absen pulang` : ""}</small></td><td>{r.hadir}</td><td>{r.cutiHari}</td><td>{r.shiftTerjadwal}</td><td>{r.langkah}</td><td>{r.dijemput}</td><td>{r.ditimbang}</td><td>{r.diantar}</td></tr>)}</tbody></table>
+              <tbody>{pgRekap.tampil.map((r) => <tr key={r.id}><td><b>{r.nama}</b><br /><small className="muted">{ROLE_LABEL[r.peran] ?? r.peran}{r.tanpaPulang ? ` · ${r.tanpaPulang}× tanpa absen pulang` : ""}</small></td><td>{r.hadir}</td><td>{r.cutiHari}</td><td>{r.shiftTerjadwal}</td><td>{r.langkah}</td><td>{r.dijemput}</td><td>{r.ditimbang}</td><td>{r.diantar}</td></tr>)}</tbody></table>
           </div>
+          <Pager h={pgRekap} path="/app/pegawai" params={{ t: tab, dari, sampai }} satuan="pegawai" />
         </div>
       )}
     </main>

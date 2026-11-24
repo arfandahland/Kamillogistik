@@ -6,7 +6,7 @@ import { requireOwner } from "@/lib/auth";
 import { rupiah } from "@/lib/brand";
 import { staffRpc } from "@/lib/supabase/server";
 import { daftarKorporat } from "./actions";
-import Potong from "@/components/Potong";
+import Daftar from "@/components/Daftar";
 import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Pelanggan Korporat" };
@@ -35,7 +35,7 @@ export function KorporatFields({ c }: { c?: Cust }) {
   );
 }
 
-export default async function Korporat({ searchParams }: { searchParams: Promise<{ e?: string }> }) {
+export default async function Korporat({ searchParams }: { searchParams: Promise<{ hal?: string; e?: string }> }) {
   await requireOwner();
   const sp = await searchParams;
   const r = await staffRpc<Cust[]>("owner_list_customers");
@@ -49,7 +49,7 @@ export default async function Korporat({ searchParams }: { searchParams: Promise
       <details className="card admnew" open={!!sp.e}><summary><Icon name="plus" size={20} /> Daftarkan pelanggan korporat</summary>
         <form action={daftarKorporat} className="admbody"><KorporatFields /><SubmitButton style={{ marginTop: 14 }} steps={["Memeriksa data…", "Menyimpan pelanggan…"]}>Daftarkan</SubmitButton></form>
       </details>
-      <Potong kelas="stagger rlist" batas={6} satuan="pelanggan" items={rows.map((c) => (
+      <Daftar p={sp.hal} path="/app/korporat" params={{ e: sp.e }} kelas="stagger rlist" satuan="pelanggan" items={rows.map((c) => (
           <Link key={c.id} href={`/app/korporat/${c.id}`} className="card resi lift">
             <span className="ic"><Icon name="building" size={24} /></span>
             <span className="meta">

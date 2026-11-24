@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Icon from "@/components/Icon";
 import Ringkas from "@/components/Ringkas";
-import Potong from "@/components/Potong";
+import Daftar from "@/components/Daftar";
 import BackLink from "@/components/BackLink";
 import MvPesan from "@/components/MvPesan";
 import SubmitButton from "@/components/SubmitButton";
@@ -43,7 +43,7 @@ function FormVendor({ v, back }: { v?: Vendor; back: string }) {
   );
 }
 
-export default async function VendorMV({ searchParams }: { searchParams: Promise<{ s?: string; j?: string; ok?: string; e?: string }> }) {
+export default async function VendorMV({ searchParams }: { searchParams: Promise<{ hal?: string; s?: string; j?: string; ok?: string; e?: string }> }) {
   const me = await requireRole(MV_BACA); const sp = await searchParams;
   const s = pilih(sp.s, ["BELUM_VERIFIKASI", "AKTIF", "NONAKTIF", "DITOLAK"] as const), j = pilih(sp.j, ["DARAT", "LAUT", "UDARA", "MULTI"] as const);
   const [r, cabang, wilayah] = await Promise.all([staffRpc<Vendor[]>("mv_vendor_list", { p_status: s || null, p_kind: j || null }), daftarCabang(), daftarWilayah()]);
@@ -114,7 +114,7 @@ export default async function VendorMV({ searchParams }: { searchParams: Promise
       {tulis && <Ringkas judul={<><Icon name="plus" size={18} /> Catat vendor baru</>} ringkas="Langsung aktif. Vendor yang diketik di alokasi juga tercatat otomatis di sini." buka={!!sp.e}><FormVendor back={back} /></Ringkas>}
       {list.length === 0 && !r.error ? (
         <div className="card kosong"><span className="kic"><Icon name="truck" size={28} /></span><b>Belum ada vendor</b><p className="muted">Tidak ada vendor yang cocok dengan saringan ini.</p></div>
-      ) : <Potong batas={8} satuan="vendor" kelas="mvlist" items={list.map(kartu)} />}
+      ) : <Daftar p={sp.hal} path="/app/mv/vendor" params={{ s: sp.s, j: sp.j }} kelas="mvlist" satuan="vendor" items={list.map(kartu)} />}
     </main>
   );
 }

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Icon from "@/components/Icon";
 import Ringkas from "@/components/Ringkas";
-import Potong from "@/components/Potong";
+import Daftar from "@/components/Daftar";
 import BackLink from "@/components/BackLink";
 import MvPesan from "@/components/MvPesan";
 import SubmitButton from "@/components/SubmitButton";
@@ -23,7 +23,7 @@ const KIR: Record<string, string> = { FOTO_SERAH: "Foto serah terima", FOTO_PERJ
 const LANJUT: Record<string, [string, string]> = { BERANGKAT: ["TIBA", "Tandai tiba"], TIBA: ["SELESAI", "Tandai selesai"] };
 const MODA = [["", "Semua"], ["DARAT", "Darat"], ["LAUT", "Laut"], ["UDARA", "Udara"]] as const;
 
-export default async function Alokasi({ searchParams }: { searchParams: Promise<{ m?: string; st?: string; c?: string; w?: string; q?: string; r?: string; ok?: string; e?: string }> }) {
+export default async function Alokasi({ searchParams }: { searchParams: Promise<{ hal?: string; m?: string; st?: string; c?: string; w?: string; q?: string; r?: string; ok?: string; e?: string }> }) {
   const me = await requireRole(MV_BACA); const sp = await searchParams;
   const m = pilih(sp.m, ["DARAT", "LAUT", "UDARA"] as const), st = pilih(sp.st, ALOK_FILTER.map((x) => x[0]).filter(Boolean) as string[]);
   const c = uuidOk(sp.c) ? sp.c : "", w = (sp.w ?? "").replace(/[^A-Z-]/g, ""), q = (sp.q ?? "").trim().slice(0, 40), r = uuidOk(sp.r) ? sp.r : "";
@@ -182,7 +182,7 @@ export default async function Alokasi({ searchParams }: { searchParams: Promise<
       </form>
       {items.length === 0 && !list.error ? (
         <div className="card kosong"><span className="kic"><Icon name="truck" size={28} /></span><b>Tidak ada resi</b><p className="muted">Tidak ada resi yang cocok dengan saringan ini.</p></div>
-      ) : <Potong batas={10} satuan="resi" kelas="mvlist" items={items.map(kartu)} buka={!!r} />}
+      ) : <Daftar p={sp.hal} path="/app/mv/alokasi" params={{ m: sp.m, st: sp.st, c: sp.c, w: sp.w, q: sp.q }} kelas="mvlist" satuan="resi" items={items.map(kartu)} />}
     </main>
   );
 }

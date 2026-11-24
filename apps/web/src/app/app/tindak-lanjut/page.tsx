@@ -6,13 +6,13 @@ import FollowupCard from "@/components/FollowupCard";
 import { getMe, staffRpc } from "@/lib/supabase/server";
 import { SITE_URL } from "@/lib/site";
 import { requireRole } from "@/lib/auth";
-import Potong from "@/components/Potong";
+import Daftar from "@/components/Daftar";
 import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Perlu Dihubungi" };
 const KINDS = Object.keys(FOLLOWUP_LABEL) as FollowupKind[];
 
-export default async function TindakLanjut({ searchParams }: { searchParams: Promise<{ k?: string }> }) {
+export default async function TindakLanjut({ searchParams }: { searchParams: Promise<{ hal?: string; k?: string }> }) {
   await requireRole(["SUPER_ADMIN","OWNER","HUB_MANAGER","MITRA_POS","WAREHOUSE","CS_SALES"]);
   const sp = await searchParams;
   const [me, q] = await Promise.all([getMe(), staffRpc<{ count: number; items: FollowupItem[] }>("followup_queue")]);
@@ -35,7 +35,7 @@ export default async function TindakLanjut({ searchParams }: { searchParams: Pro
         ))}
       </div>
       <div className="stagger fstack">
-        <Potong batas={5} satuan="pelanggan" items={todo.map((i) => <FollowupCard key={i.shipmentId + i.kind} item={i} siteUrl={SITE_URL} canMark={canMark} />)} />
+        <Daftar p={sp.hal} path="/app/tindak-lanjut" params={{ k: sp.k }} satuan="pelanggan" items={todo.map((i) => <FollowupCard key={i.shipmentId + i.kind} item={i} siteUrl={SITE_URL} canMark={canMark} />)} />
         {todo.length === 0 && !q.error && (
           <div className="card" style={{ textAlign: "center" }}>
             <span style={{ width: 56, height: 56, borderRadius: 18, margin: "0 auto 10px", display: "grid", placeItems: "center", background: "var(--teal-soft)", color: "var(--teal)" }}><Icon name="check" size={28} /></span>

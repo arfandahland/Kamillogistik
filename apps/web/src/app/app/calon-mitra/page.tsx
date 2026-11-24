@@ -3,12 +3,12 @@ import Link from "next/link";
 import CalonMitraKartu, { STATUS_MITRA, type CalonMitra } from "@/components/CalonMitraKartu";
 import { requireOwner } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
-import Potong from "@/components/Potong";
+import Daftar from "@/components/Daftar";
 import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Calon Mitra" };
 
-export default async function CalonMitra({ searchParams }: { searchParams: Promise<{ s?: string }> }) {
+export default async function CalonMitra({ searchParams }: { searchParams: Promise<{ hal?: string; s?: string }> }) {
   await requireOwner(); const sp = await searchParams;
   const status = Object.keys(STATUS_MITRA).find((k) => k === sp.s);
   const q = await staffRpc<{ counts: Record<string, number>; items: CalonMitra[] }>("staff_partner_leads", { p_status: status ?? null });
@@ -25,7 +25,7 @@ export default async function CalonMitra({ searchParams }: { searchParams: Promi
         {Object.entries(STATUS_MITRA).map(([k, v]) => <Link key={k} href={`/app/calon-mitra?s=${k}`} className={`fchip ${status === k ? "on" : ""}`}>{v}{q.data?.counts?.[k] ? <b>{q.data.counts[k]}</b> : null}</Link>)}
       </div>
       <div className="stagger fstack">
-        <Potong batas={4} satuan="calon" items={(q.data?.items ?? []).map((a) => <CalonMitraKartu key={a.id} a={a} />)} />
+        <Daftar p={sp.hal} path="/app/calon-mitra" params={{ s: sp.s }} satuan="calon" items={(q.data?.items ?? []).map((a) => <CalonMitraKartu key={a.id} a={a} />)} />
         {(q.data?.items ?? []).length === 0 && !q.error && <div className="card" style={{ textAlign: "center" }}><b>Belum ada pendaftar</b><p className="muted" style={{ margin: "4px 0 0" }}>Bagikan tautan kamillogistik.com/mitra.</p></div>}
       </div>
     </main>

@@ -1,3 +1,5 @@
+import Pager from "@/components/Pager";
+import { halamanDari } from "@/lib/halaman";
 import type { Metadata } from "next";
 import Icon from "@/components/Icon";
 import SubmitButton from "@/components/SubmitButton";
@@ -43,7 +45,7 @@ function Form({ r, places }: { r?: R; places: P[] }) {
   );
 }
 
-export default async function Tarif({ searchParams }: { searchParams: Promise<{ ok?: string; e?: string }> }) {
+export default async function Tarif({ searchParams }: { searchParams: Promise<{ ok?: string; e?: string; hal?: string }> }) {
   await requireOwner(); const sp = await searchParams;
   const [rr, pp] = await Promise.all([staffRpc<R[]>("owner_list_routes"), staffRpc<P[]>("owner_list_partners")]);
   const places = (pp.data ?? []).filter((p) => p.status === "ACTIVE");
@@ -55,7 +57,7 @@ export default async function Tarif({ searchParams }: { searchParams: Promise<{ 
       {sp.ok && <div className="ok" role="status">{sp.ok}</div>}{sp.e && <div className="err" role="alert">{sp.e}</div>}{rr.error && <div className="err">{rr.error}</div>}
       <details className="card admnew" open={!!sp.e}><summary><Icon name="plus" size={20} /> Tambah rute baru</summary><Form places={places} /></details>
       <div className="stagger">
-        {(rr.data ?? []).map((r) => (
+        {halamanDari(rr.data ?? [], sp.hal).tampil.map((r) => (
           <details key={r.id} className="card admitem">
             <summary>
               <span className="ic"><Icon name="tag" size={22} /></span>
@@ -66,6 +68,7 @@ export default async function Tarif({ searchParams }: { searchParams: Promise<{ 
           </details>
         ))}
       </div>
+      <Pager h={halamanDari(rr.data ?? [], sp.hal)} path="/app/tarif" params={{}} satuan="rute" />
     </main>
   );
 }

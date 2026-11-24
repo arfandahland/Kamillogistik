@@ -1,3 +1,5 @@
+import Pager from "@/components/Pager";
+import { halamanDari } from "@/lib/halaman";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Icon from "@/components/Icon";
@@ -15,10 +17,12 @@ function Ubah({ label, a, b, fmt = String }: { label: string; a: unknown; b: unk
   return <li><span>{label}</span><b><s>{f(a)}</s> <Icon name="arrow" size={14} /> {f(b)}</b></li>;
 }
 
-export default async function Riwayat() {
+export default async function Riwayat({ searchParams }: { searchParams: Promise<{ hal?: string }> }) {
+  const sp = await searchParams;
   await requireOwner();
   const r = await staffRpc<H[]>("owner_price_history", { p_limit: 150 });
   const list = r.data ?? [];
+  const pg = halamanDari(list, sp.hal);
   return (
     <main className="wrap narrow stack" style={{ paddingTop: 8 }}>
       <BackLink href="/app/tarif" ke="tarif" />
@@ -27,7 +31,7 @@ export default async function Riwayat() {
       <p className="muted" style={{ marginTop: -6 }}>Setiap perubahan harga, minimal berat, estimasi, dan status tayang tercatat otomatis dan tidak bisa dihapus.</p>
       {r.error && <div className="err">{r.error}</div>}
       <div className="stagger fstack">
-        {list.map((h) => (
+        {pg.tampil.map((h) => (
           <article key={h.id} className="card hist">
             <div className="insph"><b>{h.route}</b><span className={`pill ${h.kind === "BARU" ? "done" : ""}`}>{h.kind === "BARU" ? "Rute baru" : "Diubah"}</span></div>
             <ul className="chg">
@@ -43,6 +47,7 @@ export default async function Riwayat() {
         ))}
         {list.length === 0 && !r.error && <div className="card" style={{ textAlign: "center" }}><b>Belum ada perubahan</b><p className="muted" style={{ margin: "4px 0 0" }}>Perubahan harga berikutnya akan muncul di sini.</p></div>}
       </div>
+      <Pager h={pg} path="/app/tarif/riwayat" params={{}} satuan="perubahan" />
     </main>
   );
 }

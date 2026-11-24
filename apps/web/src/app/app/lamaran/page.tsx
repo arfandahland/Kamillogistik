@@ -4,12 +4,12 @@ import { LABEL_STATUS_LAMARAN, POSISI, STATUS_LAMARAN, posisiDari, pesanKePelama
 import LamaranKartu, { type Lamaran } from "@/components/LamaranKartu";
 import { requireRole } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
-import Potong from "@/components/Potong";
+import Daftar from "@/components/Daftar";
 import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Lamaran Kerja" };
 
-export default async function Lamaran({ searchParams }: { searchParams: Promise<{ s?: string; p?: string }> }) {
+export default async function Lamaran({ searchParams }: { searchParams: Promise<{ hal?: string; s?: string; p?: string }> }) {
   await requireRole(["SUPER_ADMIN", "HRD"]);
   const sp = await searchParams;
   const status = STATUS_LAMARAN.find((x) => x === sp.s), posisi = POSISI.find((x) => x.slug === sp.p)?.slug;
@@ -36,7 +36,7 @@ export default async function Lamaran({ searchParams }: { searchParams: Promise<
         <button className="btn ghost" style={{ width: "auto", flex: "none", paddingInline: 18 }}>Tampilkan</button>
       </form>
       <div className="stagger fstack">
-        <Potong batas={4} satuan="lamaran" items={(q.data?.items ?? []).map((a) => <LamaranKartu key={a.id} a={a} posisi={posisiDari(a.position)?.judul ?? a.position} pesan={pesanKePelamar(a.name, posisiDari(a.position)?.judul ?? a.position, a.code)} />)} />
+        <Daftar p={sp.hal} path="/app/lamaran" params={{ s: status, p: posisi }} satuan="lamaran" items={(q.data?.items ?? []).map((a) => <LamaranKartu key={a.id} a={a} posisi={posisiDari(a.position)?.judul ?? a.position} pesan={pesanKePelamar(a.name, posisiDari(a.position)?.judul ?? a.position, a.code)} />)} />
         {(q.data?.items ?? []).length === 0 && !q.error && <div className="card" style={{ textAlign: "center" }}><b>Belum ada lamaran</b><p className="muted" style={{ margin: "4px 0 0" }}>Bagikan tautan karir dari tombol di bawah.</p></div>}
       </div>
       <p className="hint">Tautan lowongan untuk dibagikan: <b>/karir</b></p>

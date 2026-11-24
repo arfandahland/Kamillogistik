@@ -3,12 +3,12 @@ import Link from "next/link";
 import KlaimKartu, { STATUS_KLAIM, type Klaim } from "@/components/KlaimKartu";
 import { requireRole } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
-import Potong from "@/components/Potong";
+import Daftar from "@/components/Daftar";
 import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Klaim dan Keluhan" };
 
-export default async function KlaimAntrean({ searchParams }: { searchParams: Promise<{ s?: string }> }) {
+export default async function KlaimAntrean({ searchParams }: { searchParams: Promise<{ hal?: string; s?: string }> }) {
   const me = await requireRole(["SUPER_ADMIN", "CS_SALES"]); const sp = await searchParams;
   const status = Object.keys(STATUS_KLAIM).find((k) => k === sp.s);
   const q = await staffRpc<{ counts: Record<string, number>; items: Klaim[] }>("staff_claims", { p_status: status ?? null });
@@ -25,7 +25,7 @@ export default async function KlaimAntrean({ searchParams }: { searchParams: Pro
         {Object.entries(STATUS_KLAIM).map(([k, v]) => <Link key={k} href={`/app/klaim?s=${k}`} className={`fchip ${status === k ? "on" : ""}`}>{v}{q.data?.counts?.[k] ? <b>{q.data.counts[k]}</b> : null}</Link>)}
       </div>
       <div className="stagger fstack">
-        <Potong batas={4} satuan="klaim" items={(q.data?.items ?? []).map((a) => <KlaimKartu key={a.id} a={a} cs={me.role === "CS_SALES"} />)} />
+        <Daftar p={sp.hal} path="/app/klaim" params={{ s: status }} satuan="klaim" items={(q.data?.items ?? []).map((a) => <KlaimKartu key={a.id} a={a} cs={me.role === "CS_SALES"} />)} />
         {(q.data?.items ?? []).length === 0 && !q.error && <div className="card" style={{ textAlign: "center" }}><b>Belum ada laporan</b><p className="muted" style={{ margin: "4px 0 0" }}>Kabar baik: belum ada keluhan masuk.</p></div>}
       </div>
     </main>

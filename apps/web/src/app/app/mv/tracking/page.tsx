@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { STATUS_LABEL, type AnyStatus } from "@kamil/core";
 import Icon from "@/components/Icon";
-import Potong from "@/components/Potong";
+import Daftar from "@/components/Daftar";
 import BackLink from "@/components/BackLink";
 import MvPesan from "@/components/MvPesan";
 import { requireRole } from "@/lib/auth";
@@ -15,7 +15,7 @@ export const metadata: Metadata = { title: "Pemantauan Resi" };
 type Item = { shipmentId: string; resiNo: string; status: string; origin: string; dest: string; destProvince: string | null; destRegency: string | null; region: string; regionCode: string; createdAt: string; lokasi: string | null; lokasiAt: string | null; vendor: string | null };
 type Trk = { regions: { code: string; label: string; jumlah: number }[]; items: Item[] };
 
-export default async function Tracking({ searchParams }: { searchParams: Promise<{ m?: string; w?: string; c?: string; q?: string; e?: string; ok?: string }> }) {
+export default async function Tracking({ searchParams }: { searchParams: Promise<{ hal?: string; m?: string; w?: string; c?: string; q?: string; e?: string; ok?: string }> }) {
   const me = await requireRole(MV_BACA); const sp = await searchParams;
   const m = pilih(sp.m, ["DARAT", "UDARA", "LAUT"] as const) || "DARAT";
   const w = (sp.w ?? "").replace(/[^A-Z-]/g, ""), c = uuidOk(sp.c) ? sp.c : "", q = (sp.q ?? "").trim().slice(0, 40);
@@ -55,7 +55,7 @@ export default async function Tracking({ searchParams }: { searchParams: Promise
       {items.length === 0 && !r.error ? (
         <div className="card kosong"><span className="kic"><Icon name="pin" size={28} /></span><b>Tidak ada resi</b><p className="muted">Belum ada resi {nama} untuk wilayah dan saringan ini.</p></div>
       ) : (
-        <Potong batas={10} satuan="resi" kelas="mvlist" items={items.map((x) => (
+        <Daftar p={sp.hal} path="/app/mv/tracking" params={{ m: sp.m, w: sp.w, c: sp.c, q: sp.q }} kelas="mvlist" satuan="resi" items={items.map((x) => (
           <div key={x.shipmentId} className="card mvtrk">
             <div className="mvtrk-a"><Link href={`/app/resi/${x.shipmentId}`} className="mvno" aria-label={`Buka resi ${x.resiNo}`}><b>{x.resiNo}</b></Link><span className="pill">{STATUS_LABEL[x.status as AnyStatus] ?? x.status}</span></div>
             <small className="muted">{x.origin} → {x.dest}</small>

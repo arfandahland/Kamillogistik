@@ -1,4 +1,4 @@
-import Potong from "./Potong";
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { STATUS_LABEL, type AnyStatus } from "@kamil/core";
 import Icon from "./Icon";
@@ -24,7 +24,8 @@ function Stat({ icon, n, label, warm, dx }: { icon: string; n: number; label: st
   );
 }
 
-export default function StaffHome({ rows, stats, pending, tab, q, canCreate, error, hideStats, basePath = "/app", title = "Tugas hari ini", more, followup, hubMode, hideList, arah }: {
+export default function StaffHome({ rows, stats, pending, tab, q, canCreate, error, hideStats, basePath = "/app", title = "Tugas hari ini", more, followup, hubMode, hideList, arah, pager }: {
+  pager?: ReactNode;
   arah?: { semua: Row[]; sel: string; href: (k: string) => string };
   rows: Row[]; stats: Stats; pending: Pending[]; tab: string; q: string; canCreate: boolean; error?: string | null; hideStats?: boolean; basePath?: string; title?: string; more?: string | null; followup?: number | null; hubMode?: boolean; hideList?: boolean;
 }) {
@@ -83,7 +84,7 @@ export default function StaffHome({ rows, stats, pending, tab, q, canCreate, err
 
           {error && <div className="err">{error}</div>}
 
-          <Potong hpSaja kelas="cards-m stagger" batas={6} satuan="resi" items={rows.map((r) => {
+          <div className="cards-m stagger">{rows.map((r) => {
               const m = statusMeta(r.status);
               return (
                 <Link key={r.id} href={`/app/resi/${r.id}`} className={`card resi lift st-${m.pill || "jalan"}`}>
@@ -97,7 +98,7 @@ export default function StaffHome({ rows, stats, pending, tab, q, canCreate, err
                   </span>
                 </Link>
               );
-            })} />
+            })}</div>
 
           {rows.length > 0 && (
             <div className="dtable card">
@@ -127,7 +128,7 @@ export default function StaffHome({ rows, stats, pending, tab, q, canCreate, err
               {q ? "Tidak ada resi yang cocok dengan pencarian." : tab === "aktif" ? "Belum ada tugas untuk Anda saat ini." : "Belum ada data."}
             </p></div>
           )}
-          {more && <Link href={more} className="btn ghost" scroll={false}>Tampilkan lebih banyak</Link>}
+          {pager}
         </section>}
       </div>
     </main>

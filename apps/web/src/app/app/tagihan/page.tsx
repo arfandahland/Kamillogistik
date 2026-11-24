@@ -5,7 +5,8 @@ import { staffRpc } from "@/lib/supabase/server";
 import { rupiah, tanggal } from "@/lib/brand";
 import StatRow from "@/components/StatRow";
 import { requireRole } from "@/lib/auth";
-import Potong from "@/components/Potong";
+import Pager from "@/components/Pager";
+import { halamanDari } from "@/lib/halaman";
 import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Daftar Tagihan" };
@@ -18,14 +19,14 @@ const LABEL: Record<string, { t: string; cls: string }> = {
   UNPAID: { t: "Belum dibayar", cls: "new" }, PARTIAL: { t: "Dibayar sebagian", cls: "part" }, OVERDUE: { t: "Lewat tempo", cls: "late" }, PAID: { t: "Lunas", cls: "done" },
 };
 
-export default async function Tagihan({ searchParams }: { searchParams: Promise<{ s?: string; q?: string; n?: string }> }) {
+export default async function Tagihan({ searchParams }: { searchParams: Promise<{ s?: string; q?: string; hal?: string }> }) {
   await requireRole(["SUPER_ADMIN","OWNER","MITRA_POS","FINANCE"]);
   const sp = await searchParams;
   const tab = TABS.find((t) => t.k === sp.s)?.k ?? "belum", q = (sp.q ?? "").trim();
-  const n = Math.min(200, Math.max(30, Number(sp.n) || 30));
   const r = await staffRpc<Row[]>("staff_list_invoices", { p_q: q || null, p_limit: 200 });
   const all = r.data ?? [];
   const rows = all.filter((x) => tab === "semua" ? true : tab === "lunas" ? x.status === "PAID" : tab === "telat" ? x.status === "OVERDUE" : x.status !== "PAID");
+  const pg = halamanDari(rows, sp.hal);
   const open = rows.reduce((x, r2) => x + r2.outstanding, 0);
   const telat = all.filter((x) => x.status === "OVERDUE").length;
   const belumN = all.filter((x) => x.status !== "PAID").length;
@@ -47,7 +48,7 @@ export default async function Tagihan({ searchParams }: { searchParams: Promise<
       </div>
       {tab !== "lunas" && rows.length > 0 && <p className="hint" style={{ margin: 0 }}>Menampilkan {rows.length} tagihan, sisa {rupiah(open)}.</p>}
       {r.error && <div className="err">{r.error}</div>}
-      <Potong kelas="rlist stagger" batas={6} satuan="tagihan" items={rows.slice(0, n).map((x) => {
+      <div className="rlist stagger">{pg.tampil.map((x) => {
           const l = LABEL[x.status] ?? LABEL.UNPAID!;
           return (
             <Link key={x.id} href={`/app/tagihan/${x.id}`} className="card resi lift">
@@ -60,9 +61,9 @@ export default async function Tagihan({ searchParams }: { searchParams: Promise<
               </span>
             </Link>
           );
-        })} />
+        })}</div>
+      <Pager h={pg} path="/app/tagihan" params={{ s: tab, q }} satuan="tagihan" />
       <div>
-        {rows.length > n && <Link className="btn ghost" scroll={false} href={`/app/tagihan?${new URLSearchParams({ s: tab, ...(q ? { q } : {}), n: String(n + 30) })}`}>Tampilkan lebih banyak</Link>}
         {!r.error && rows.length === 0 && <div className="card kosong"><span className="kic"><Icon name="check" size={28} /></span><b>{q ? "Tidak ada tagihan yang cocok." : tab === "lunas" ? "Belum ada tagihan lunas." : "Tidak ada tagihan di sini."}</b></div>}
       </div>
     </main>

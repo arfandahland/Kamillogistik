@@ -1545,6 +1545,9 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
       await ar.page.goto(`${BASE}/app/arus?a=keluar&q=zzzzzz-tidak-ada`, { waitUntil: "networkidle" });
       ok("AY8 saringan pintar: kata kunci tanpa hasil menampilkan pesan dan tombol hapus saringan", /Tidak ada resi yang cocok/.test(await ar.page.locator("main").innerText()));
       await noOverflow(ar.page, "Arus barang (HP)");
+      await ar.page.goto(`${BASE}/app/arus?a=keluar&hal=99`, { waitUntil: "networkidle" });
+      const infoP = await ar.page.locator(".pager-info").count();
+      ok("AY9 pagination: nomor halaman kebesaran dialihkan ke halaman terakhir dan maksimal 15 data per halaman", (await ar.page.locator("main h1").count()) === 1 && (await ar.page.locator(".arus-kartu").count()) <= 15 && (infoP === 0 || /Menampilkan\s+\d+–\d+\s+dari/.test(await ar.page.locator(".pager-info").innerText())), `pager=${infoP}`);
       await ar.ctx.close();
     }
 

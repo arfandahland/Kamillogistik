@@ -4,7 +4,7 @@ import StatRow from "@/components/StatRow";
 import { requireRole } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
 import { rupiah } from "@/lib/brand";
-import Potong from "@/components/Potong";
+import Daftar from "@/components/Daftar";
 import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Margin Manifest dan Rute" };
@@ -14,7 +14,7 @@ type Lap = { total: { pendapatan: number; biaya: number; margin: number; manifes
 const wita = () => new Date(Date.now() + 8 * 3600_000).toISOString().slice(0, 10);
 const tglOk = (v?: string) => (/^\d{4}-\d{2}-\d{2}$/.test(v ?? "") ? v! : null);
 
-export default async function Margin({ searchParams }: { searchParams: Promise<{ dari?: string; sampai?: string }> }) {
+export default async function Margin({ searchParams }: { searchParams: Promise<{ hal?: string; dari?: string; sampai?: string }> }) {
   await requireRole(["SUPER_ADMIN", "OWNER", "FINANCE"]);
   const sp = await searchParams, hariIni = wita();
   const dari = tglOk(sp.dari) ?? hariIni.slice(0, 8) + "01", sampai = tglOk(sp.sampai) ?? hariIni;
@@ -48,7 +48,7 @@ export default async function Margin({ searchParams }: { searchParams: Promise<{
                 {d.rute.length === 0 && <tr><td colSpan={5} className="muted">Belum ada manifest pada periode ini.</td></tr>}</tbody></table>
           </div>
           <h2 style={{ margin: "6px 2px -4px" }}>Per manifest</h2>
-          <Potong kelas="stagger rlist" batas={6} satuan="manifest" items={d.manifest.map((m) => (
+          <Daftar p={sp.hal} path="/app/margin" params={{ dari: sp.dari, sampai: sp.sampai }} kelas="stagger rlist" satuan="manifest" items={d.manifest.map((m) => (
               <Link key={m.id} href={`/app/margin/${m.id}`} className="card resi lift">
                 <span className="meta"><span className="toprow"><b className="no">{m.code}</b><span className={`pill ${m.adaBiaya ? "" : "new"}`}>{m.adaBiaya ? "Ada biaya" : "Belum ada biaya"}</span></span>
                   <small>{m.asal} → {m.tujuan} · {m.resi} resi</small>

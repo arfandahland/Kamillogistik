@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Icon from "@/components/Icon";
-import Potong from "@/components/Potong";
+import Daftar from "@/components/Daftar";
 import BackLink from "@/components/BackLink";
 import MvPesan from "@/components/MvPesan";
 import { requireRole } from "@/lib/auth";
@@ -39,7 +39,7 @@ function Isi({ b }: { b: Cab }) {
   );
 }
 
-export default async function Penjualan({ searchParams }: { searchParams: Promise<{ p?: string; m?: string; w?: string; c?: string; b?: string; k1?: string; k2?: string; k3?: string; ok?: string; e?: string }> }) {
+export default async function Penjualan({ searchParams }: { searchParams: Promise<{ hal?: string; p?: string; m?: string; w?: string; c?: string; b?: string; k1?: string; k2?: string; k3?: string; ok?: string; e?: string }> }) {
   await requireRole(MV_BACA); const sp = await searchParams;
   const p = pilih(sp.p, ["7", "30", "bulan"] as const) || "30", m = pilih(sp.m, ["DARAT", "LAUT", "UDARA"] as const);
   const w = (sp.w ?? "").replace(/[^A-Z-]/g, ""), c = uuidOk(sp.c) ? sp.c : "", banding = sp.b === "1";
@@ -65,7 +65,7 @@ export default async function Penjualan({ searchParams }: { searchParams: Promis
         <div id={`c-${b.id}`}>
           {rincian?.error && <div className="err">{rincian.error}</div>}
           {(rincian?.data ?? []).length === 0 && !rincian?.error ? <p className="muted">Tidak ada resi pada periode ini.</p> : (
-            <Potong batas={8} satuan="resi" tag="ul" kelas="mvrute" items={(rincian?.data ?? []).map((x) => (
+            <Daftar p={sp.hal} path="/app/mv/penjualan" params={{ p: sp.p, m: sp.m, w: sp.w, c: sp.c, b: sp.b, k1: sp.k1, k2: sp.k2, k3: sp.k3, ok: sp.ok, e: sp.e }} kelas="mvrute" satuan="resi" tag="ul" items={(rincian?.data ?? []).map((x) => (
               <li key={x.resiNo}><span><b className="mvno">{x.resiNo}</b><small>{tanggal(x.at)} · {MODA_NAMA[x.mode] ?? x.mode} · {x.total != null ? rp(x.total) : "belum ada tagihan"}{x.invoiceStatus ? ` · ${BAYAR[x.invoiceStatus] ?? x.invoiceStatus}` : ""}</small></span></li>
             ))} />
           )}

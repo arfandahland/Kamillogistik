@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { STATUS_LABEL, stagesFor, arahArus, faseDari, fasePerArah, giliran, hitungArus, type ArahArus, type AnyStatus } from "@kamil/core";
 import Icon from "@/components/Icon";
+import Pager from "@/components/Pager";
+import { halamanDari } from "@/lib/halaman";
 import { requireRole } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
 import { tanggalWaktu } from "@/lib/brand";
@@ -24,11 +26,11 @@ const IKON_FASE: Record<string, string> = { siap: "box", muat: "layers", jalan: 
 const MODA_KEY = ["LAUT", "UDARA", "DARAT"] as const;
 type Param = { f?: string; g?: string; m?: string; k?: string; u?: string; q?: string };
 
-export default async function Arus({ searchParams }: { searchParams: Promise<Param & { a?: string }> }) {
+export default async function Arus({ searchParams }: { searchParams: Promise<Param & { a?: string; hal?: string }> }) {
   const me = await requireRole(PERAN_ARUS);
   const sp = await searchParams;
   const a: ArahArus = sp.a === "masuk" ? "MASUK" : "KELUAR";
-  const r = await staffRpc<Row[]>("staff_list_shipments", { p_q: null, p_limit: 200 });
+  const r = await staffRpc<Row[]>("staff_list_shipments", { p_q: null, p_limit: 300 });
   const semua = r.data ?? [];
   const keluar = hitungArus(semua, "KELUAR"), masuk = hitungArus(semua, "MASUK");
   const ringkas = a === "KELUAR" ? keluar : masuk;
@@ -93,7 +95,9 @@ export default async function Arus({ searchParams }: { searchParams: Promise<Par
     );
   };
 
-  const isiFase = (k: string) => tampil.filter((m) => faseKey(m.x.status) === k);
+  const urut = faseList.flatMap((x) => tampil.filter((m) => faseKey(m.x.status) === x.k));
+  const pg = halamanDari(urut, sp.hal);
+  const isiFase = (k: string) => pg.tampil.filter((m) => faseKey(m.x.status) === k);
 
   return (
     <main className="wrap stack arus">
@@ -168,6 +172,7 @@ export default async function Arus({ searchParams }: { searchParams: Promise<Par
           );
         })
       )}
+      <Pager h={pg} path="/app/arus" params={{ a: a.toLowerCase(), f: F.f, g: F.g, m: F.m, k: F.k, u: F.u, q: F.q }} satuan="resi" />
     </main>
   );
 }
