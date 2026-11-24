@@ -25,6 +25,13 @@ export async function ubahKorporat(fd: FormData) {
   revalidatePath("/app/korporat"); revalidatePath(`/app/korporat/${id}`);
   redirect(`/app/korporat/${id}?${r.error ? "e" : "ok"}=${encodeURIComponent(r.error ?? "Data pelanggan disimpan.")}`);
 }
+export async function ubahBasisTagih(fd: FormData) {
+  await requireOwner();
+  const id = str(fd, "id");
+  const r = await staffRpc("owner_set_customer_basis", { p_company: id, p_basis: str(fd, "basis") });
+  revalidatePath(`/app/korporat/${id}`);
+  redirect(`/app/korporat/${id}?${r.error ? "e" : "ok"}=${encodeURIComponent(r.error ?? "Basis tagih disimpan.")}`);
+}
 export async function simpanTarifKhusus(fd: FormData) {
   await requireOwner();
   const id = str(fd, "id");

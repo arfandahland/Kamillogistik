@@ -8,11 +8,12 @@ const rp = (n: number) => "Rp" + Math.round(n).toLocaleString("id-ID");
 const SARAN = ["Ongkos jemput", "Ongkir antar ke alamat", "Packing", "Asuransi", "Biaya lain"];
 
 /** Kasir menerbitkan invoice: harga satuan diisi manual (per kg, per m3, atau borongan) + baris biaya bebas. Tanpa tarif otomatis. */
-export default function InvoiceForm({ id, aktualKg, volumeKg, volumeM3, ada, judul }: { id: string; aktualKg: number; volumeKg: number; volumeM3: number; ada: boolean; judul: string }) {
+export default function InvoiceForm({ id, aktualKg, volumeKg, volumeM3, ada, judul, basisKunci = null, udara = false }: { id: string; aktualKg: number; volumeKg: number; volumeM3: number; ada: boolean; judul: string; basisKunci?: "KG" | "M3" | null; udara?: boolean }) {
   const MIN_KG = 30; // berat tagih minimal 30 kg, berapa pun ukuran dan timbangannya
   const kgSaran = Math.max(aktualKg, volumeKg, MIN_KG);
-  const [satuan, setSatuan] = useState<"KG" | "M3" | "BORONGAN">("KG");
-  const [jumlah, setJumlah] = useState(String(Math.ceil(kgSaran)));
+  const awal: "KG" | "M3" = udara ? "KG" : basisKunci ?? "KG";
+  const [satuan, setSatuan] = useState<"KG" | "M3" | "BORONGAN">(awal);
+  const [jumlah, setJumlah] = useState(awal === "M3" ? String(volumeM3 ? Math.max(0.01, volumeM3) : "") : String(Math.ceil(kgSaran)));
   const [harga, setHarga] = useState("");
   const [baris, setBaris] = useState<Baris[]>([]);
   const ganti = (s: "KG" | "M3" | "BORONGAN") => { setSatuan(s); setJumlah(s === "KG" ? String(Math.ceil(kgSaran)) : s === "M3" ? String(volumeM3 ? Math.max(0.01, volumeM3) : "") : "1"); };
@@ -26,10 +27,11 @@ export default function InvoiceForm({ id, aktualKg, volumeKg, volumeM3, ada, jud
       <input type="hidden" name="id" value={id} /><input type="hidden" name="satuan" value={satuan} /><input type="hidden" name="baris" value={kirim} />
       <fieldset className="kchips" aria-label="Satuan harga">
         <legend className="f">Satuan harga</legend>
-        {([["KG", "Per kg"], ["M3", "Per m³"], ["BORONGAN", "Borongan"]] as const).map(([k, v]) => (
+        {([["KG", "Per kg"], ["M3", "Per m³"], ["BORONGAN", "Borongan"]] as const).filter(([k]) => k === "BORONGAN" || (udara ? k === "KG" : !basisKunci || k === basisKunci)).map(([k, v]) => (
           <label key={k} className={`kchip ${satuan === k ? "on" : ""}`}><input type="radio" name="satuan_pilih" checked={satuan === k} onChange={() => ganti(k)} /> {v}</label>
         ))}
       </fieldset>
+      {(basisKunci || udara) && <p className="hint" style={{ margin: 0 }}>{udara ? "Pengiriman udara ditagih per kg (standar IATA)." : `Pelanggan ini ditagih per ${basisKunci === "KG" ? "kg" : "m³"} sesuai kontraknya.`}</p>}
       {satuan !== "BORONGAN" && <><label className="f" htmlFor="inv-jumlah">Jumlah dari timbangan gudang ({satuan === "KG" ? "kg" : "m³"})</label>
         <input id="inv-jumlah" name="jumlah" inputMode="decimal" value={jumlah} readOnly aria-readonly="true" className="terkunci" /><p className="hint" style={{ margin: 0 }}>{!Number(jumlah.replace(",", ".")) ? "Gudang belum mencatat ukuran barang untuk satuan ini. Pilih satuan lain atau tunggu gudang." : (satuan === "KG" ? "Angka ini dari timbangan petugas gudang dan tidak bisa diubah Kasir. Berat yang ditagih minimal 50 kg, berapa pun ukuran barangnya." : "Angka ini dari ukuran yang dicatat petugas gudang dan tidak bisa diubah Kasir.")}</p></>}
       {satuan === "BORONGAN" && <input type="hidden" name="jumlah" value="1" />}

@@ -7,7 +7,7 @@ import SubmitButton from "@/components/SubmitButton";
 import { requireOwner } from "@/lib/auth";
 import { rupiah, tanggal } from "@/lib/brand";
 import { staffRpc } from "@/lib/supabase/server";
-import { hapusTarifKhusus, portalAksi, simpanTarifKhusus, ubahKorporat } from "../actions";
+import { hapusTarifKhusus, portalAksi, simpanTarifKhusus, ubahBasisTagih, ubahKorporat } from "../actions";
 import { SITE_URL } from "@/lib/site";
 import { chatLink, normalizePhone } from "@kamil/core";
 import { KorporatFields, type Cust } from "../page";
@@ -80,6 +80,16 @@ export default async function KorporatDetail({ params, searchParams }: { params:
       </section>
 
       <details className="card admnew noprint"><summary><Icon name="sliders" size={20} /> Ubah data pelanggan</summary>
+        <form action={ubahBasisTagih} className="admbody card rbsek" aria-label="Basis tagih">
+          <input type="hidden" name="id" value={c.id} />
+          <h2 className="cardh">Basis tagih</h2>
+          <p className="hint">Pilih satu: ditagih per kilogram atau per kubikasi (m³). Kasir hanya melihat satuan yang dipilih saat menerbitkan invoice pelanggan ini.</p>
+          <div className="kchips" role="radiogroup" aria-label="Basis tagih">
+            <label className="kchip"><input type="radio" name="basis" value="KG" defaultChecked={(c as { billingBasis?: string }).billingBasis !== "M3"} /> Per kilogram</label>
+            <label className="kchip"><input type="radio" name="basis" value="M3" defaultChecked={(c as { billingBasis?: string }).billingBasis === "M3"} /> Per kubikasi (m³)</label>
+          </div>
+          <SubmitButton className="btn ghost" steps={["Menyimpan basis tagih…"]}>Simpan basis tagih</SubmitButton>
+        </form>
         <form action={ubahKorporat} className="admbody"><input type="hidden" name="id" value={c.id} /><KorporatFields c={c} />
           <SubmitButton style={{ marginTop: 14 }} steps={["Memeriksa data…", "Menyimpan…"]}>Simpan perubahan</SubmitButton></form>
       </details>

@@ -21,7 +21,7 @@ import BackLink from "@/components/BackLink";
 
 type Detail = {
   id: string; resiNo: string; status: AnyStatus; next: string | null;
-  inspections: Inspection[]; pickupType: "PICKUP" | "DROPOFF"; pickupAddress: string | null; mode: "LAUT" | "DARAT" | "UDARA"; segment: string; company: string | null; manifest: { id: string; code: string; status: string } | null;
+  inspections: Inspection[]; pickupType: "PICKUP" | "DROPOFF"; pickupAddress: string | null; mode: "LAUT" | "DARAT" | "UDARA"; segment: string; companyBasis?: "KG" | "M3" | null; company: string | null; manifest: { id: string; code: string; status: string } | null;
   origin: { code: string; city: string; name: string }; dest: { code: string; city: string; name: string };
   senderName: string; senderPhone: string | null; receiverName: string; receiverPhone: string | null; receiverAddress: string | null; area?: { province: string; regency: string; district: string; village: string; code: string } | null; vehicle?: Record<string, string> | null;
   holder: { id: string; name: string } | null; iAmHolder: boolean;
@@ -150,7 +150,7 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
         {((role === "MITRA_POS" && isOrigin) || (role as string) === "FINANCE") && !["CREATED", "PICKED_UP", "AT_ORIGIN_HUB", "CANCELLED", "EXCEPTION"].includes(s.status) && (!s.invoice || s.invoice.status !== "PAID") && (() => {
           const aktual = s.items.reduce((a, x) => a + Number(x.weightKg ?? 0), 0), cm3 = s.items.reduce((a, x) => a + Number(x.lCm ?? 0) * Number(x.wCm ?? 0) * Number(x.hCm ?? 0), 0);
           const div = s.mode === "UDARA" ? 6000 : 4000;
-          return <InvoiceForm id={s.id} aktualKg={aktual} volumeKg={Math.round((cm3 / div) * 100) / 100} volumeM3={Math.round((cm3 / 1e6) * 10000) / 10000} ada={!!s.invoice} judul={s.invoice ? "Ubah invoice" : "Buat invoice"} />;
+          return <InvoiceForm id={s.id} aktualKg={aktual} volumeKg={Math.round((cm3 / div) * 100) / 100} volumeM3={Math.round((cm3 / 1e6) * 10000) / 10000} ada={!!s.invoice} judul={s.invoice ? "Ubah invoice" : "Buat invoice"} basisKunci={s.companyBasis ?? null} udara={s.mode === "UDARA"} />;
         })()}
 
         {s.manifest && (
