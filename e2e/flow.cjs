@@ -1787,6 +1787,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     for (const [em, nama, pw] of akunMenu) {
       const s = await login(browser, em, pw || PASS);
       if (!s.loggedIn) { ok(`AK5 ${nama}: bisa masuk`, false, em); await s.ctx.close(); continue; }
+      try {
       const links = new Set();
       for (const start of ["/app", "/app/pusat"]) {
         await s.page.goto(`${BASE}${start}`, { waitUntil: "domcontentloaded" }); await s.page.waitForTimeout(400);
@@ -1801,7 +1802,8 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
         if (path !== want || /izin/i.test(izin)) buruk.push(`${h} → ${path}${izin ? " (" + izin.slice(0, 40) + ")" : ""}`);
       }
       ok(`AK5 ${nama}: ${target.length} tautan menu semuanya terbuka`, buruk.length === 0, buruk.join("; "));
-      await s.ctx.close();
+      } catch (e) { ok(`AK5 ${nama}: pemeriksaan menu berjalan sampai selesai`, false, String(e.message || e).slice(0, 160)); }
+      await s.ctx.close().catch(() => {});
     }
   }
 
