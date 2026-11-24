@@ -28,7 +28,7 @@ const TIMBANG: PusatItem = { href: "/app/timbang", icon: "scale", t: "Timbang ba
 const ARUS: PusatItem = { href: "/app/arus", icon: "ship", t: "Barang masuk dan keluar", d: "Pisahkan barang yang masuk, ada di sini, keluar, dan selesai di cabang Anda." };
 const SORTIR: PusatItem = { href: "/app/sortir", icon: "flip", t: "Sortir tujuan akhir", d: "Resi dikelompokkan per kabupaten atau kota tujuan akhir." };
 
-export const PERAN_PUSAT = ["MITRA_POS", "HUB_MANAGER", "WAREHOUSE", "DRIVER", "CONTAINER_DRIVER", "CS_SALES", "FINANCE", "HRD", "MV", "MV_MASTER", "SUPER_ADMIN", "OWNER"];
+export const PERAN_PUSAT = ["MITRA_POS", "DEPO", "HUB_MANAGER", "WAREHOUSE", "DRIVER", "CONTAINER_DRIVER", "CS_SALES", "FINANCE", "HRD", "MV", "MV_MASTER", "SUPER_ADMIN", "OWNER"];
 
 /** Daftar halaman Pemilik dan Super Admin. */
 const KELOLA: Record<string, PusatItem> = Object.fromEntries([
@@ -80,6 +80,8 @@ export function grupPusat(role: string): { judul: string; sapa: string; grup: Pu
     case "MITRA_POS": return { judul: "Pusat Kasir", sapa: "Semua alat Kasir, dikelompokkan menurut pekerjaannya.", grup: [
       G("kontak", "Kontak", "Pelanggan", "Jaga hubungan dan jawab pertanyaan.", "users", [DIHUBUNGI, JEMPUT, CARI]),
       G("muatan", "Muatan", "Manifest dan arus barang", "Susun manifest dan pantau barang masuk dan keluar.", "layers", [MANIFEST, ARUS]), AKUN] };
+    case "DEPO": return { judul: "Pusat Depo", sapa: "Terima barang, buat resi cepat, dan susun manifest di depo Anda.", grup: [
+      G("muatan", "Muatan", "Manifest dan arus barang", "Susun manifest dan pantau barang masuk dan keluar.", "layers", [MANIFEST, ARUS, CARI]), AKUN] };
     case "HUB_MANAGER": return { judul: "Pusat Gudang", sapa: "Muatan, masalah, dan pelanggan cabang Anda.", grup: [
       G("gudang", "Gudang", "Muatan dan barang", "Penimbangan, sortir, dan pencarian.", "layers", [TIMBANG, SORTIR, CARI]),
       G("masalah", "Masalah", "Masalah dan pelanggan", "Yang perlu ditindaklanjuti hari ini.", "alert", [KENDALA, DIHUBUNGI, JEMPUT]), AKUN] };

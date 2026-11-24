@@ -22,12 +22,12 @@ export type AnyStatus = ShipmentStatus | TerminalStatus;
 
 export type Actor =
   | "RETAIL" | "B2B" | "PARTNER_API"
-  | "SUPER_ADMIN" | "HUB_MANAGER" | "MITRA_POS"
+  | "SUPER_ADMIN" | "HUB_MANAGER" | "MITRA_POS" | "DEPO"
   | "DRIVER" | "WAREHOUSE" | "CONTAINER_DRIVER" | "SYSTEM";
 
 /** Peran yang boleh memicu perpindahan ke status tertentu (RBAC alur). */
 const ALLOWED_ACTORS: Record<ShipmentStatus, Actor[]> = {
-  CREATED: ["RETAIL", "B2B", "PARTNER_API", "SUPER_ADMIN", "HUB_MANAGER", "MITRA_POS", "SYSTEM"],
+  CREATED: ["RETAIL", "B2B", "PARTNER_API", "SUPER_ADMIN", "HUB_MANAGER", "MITRA_POS", "DEPO", "SYSTEM"],
   PICKED_UP: ["DRIVER", "HUB_MANAGER", "SUPER_ADMIN"],
   AT_ORIGIN_HUB: ["WAREHOUSE", "HUB_MANAGER", "SUPER_ADMIN"],
   SORTED_INVOICED: ["WAREHOUSE", "HUB_MANAGER", "SUPER_ADMIN"],

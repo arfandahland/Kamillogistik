@@ -10,6 +10,7 @@ export const ROLE_LABEL: Record<string, string> = {
   KONTEN: "Admin konten website",
   HUB_MANAGER: "Kepala gudang",
   MITRA_POS: "Kasir mitra",
+  DEPO: "Admin depo",
   DRIVER: "Kurir",
   WAREHOUSE: "Petugas gudang",
   CONTAINER_DRIVER: "Sopir kontainer",
@@ -84,9 +85,9 @@ export const STATUS_GROUPS = {
 } as const;
 
 /** Pembuatan resi hanya oleh Kasir (satu pintu per gudang). */
-export const CAN_CREATE_ORDER = ["MITRA_POS"];
+export const CAN_CREATE_ORDER = ["MITRA_POS", "DEPO"];
 /** Satu pintu: resi dibuat dan label dicetak hanya oleh Kasir di tiap gudang atau gerai. */
-export const CAN_PRINT_LABEL = ["MITRA_POS"];
+export const CAN_PRINT_LABEL = ["MITRA_POS", "DEPO"];
 export const OWNER_ROLE = "SUPER_ADMIN";
 /** Tampilan pantauan pemilik: Super Admin (kendali penuh) dan Owner (hanya memantau). */
 export const OWNER_VIEW: readonly string[] = ["SUPER_ADMIN", "OWNER"];
@@ -94,9 +95,10 @@ export const SEES_MONEY = ["SUPER_ADMIN", "OWNER", "HUB_MANAGER", "MITRA_POS", "
 
 /** Peran yang bisa dipilih saat Pemilik membuat akun baru. Tiga yang terakhir tidak terikat cabang. */
 /** Peran untuk akun baru. Sopir (CONTAINER_DRIVER) tidak dibuat lagi: nama sopir dan vendor dicatat sebagai teks pada manifest. */
-export const PERAN_BARU = ["DRIVER", "WAREHOUSE", "MITRA_POS", "HUB_MANAGER", "HRD", "KONTEN", "FINANCE", "CS_SALES", "MV", "MV_MASTER", "OWNER", "SUPER_ADMIN"] as const;
+export const PERAN_BARU = ["DRIVER", "WAREHOUSE", "MITRA_POS", "DEPO", "HUB_MANAGER", "HRD", "KONTEN", "FINANCE", "CS_SALES", "MV", "MV_MASTER", "OWNER", "SUPER_ADMIN"] as const;
 export const PERAN_TANPA_CABANG = ["HRD", "KONTEN", "FINANCE", "MV_MASTER", "OWNER", "SUPER_ADMIN"] as const;
 export const PERAN_KETERANGAN: Record<string, string> = {
+  DEPO: "Menerima barang di depo, membuat resi cepat, dan menyusun manifest cabangnya. Tidak melihat tagihan, pembayaran, maupun data keuangan.",
   HRD: "Kepegawaian (dokumen, shift, absensi, cuti, rekap) dan Lamaran kerja. Tidak melihat resi maupun keuangan.",
   FINANCE: "Tagihan, pembayaran, komisi, dan laporan keuangan seluruh cabang. Tidak menjalankan langkah resi.",
   CS_SALES: "Memantau resi cabang, tindak lanjut, pesanan jemput, dan mengusulkan ganti rugi klaim. Tidak membuat resi dan tidak melihat uang.",

@@ -34,7 +34,7 @@ export default async function ManifestDetail({ params, searchParams }: { params:
   const m = r.data, role = me.data.role, bn = me.data.branchName;
   const wh = role === "WAREHOUSE" || role === "HUB_MANAGER";
   const kepala = role === "HUB_MANAGER"; // serah ke sopir dan serah terima di tujuan adalah tugas Kepala gudang
-  const kasirAsal = role === "MITRA_POS" && bn === m.origin.name; // isi, data pengangkutan, dan segel manifest ditentukan Kasir cabang asal
+  const kasirAsal = (role === "MITRA_POS" || (role as string) === "DEPO") && bn === m.origin.name; // isi, data pengangkutan, dan segel manifest ditentukan Kasir cabang asal
   const atOrigin = wh && bn === m.origin.name, atDest = wh && bn === m.dest.name;
   const sopir = role === "CONTAINER_DRIVER" || role === "HUB_MANAGER";
   const cur = STEPS.indexOf(m.status);

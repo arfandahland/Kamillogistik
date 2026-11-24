@@ -9,13 +9,14 @@ import { staffRpc } from "@/lib/supabase/server";
 import { tanggalWaktu } from "@/lib/brand";
 
 export const metadata: Metadata = { title: "Arus barang" };
-const PERAN_ARUS = ["MITRA_POS", "HUB_MANAGER", "WAREHOUSE", "DRIVER"];
+const PERAN_ARUS = ["MITRA_POS", "DEPO", "HUB_MANAGER", "WAREHOUSE", "DRIVER"];
 
 type Row = { id: string; resiNo: string; status: AnyStatus; origin: string; dest: string; receiverName: string; senderName: string; createdAt: string; mine: boolean; arah?: string | null; lawan?: string | null; mode?: string | null; pickupType?: string | null };
 const MODA: Record<string, string> = { LAUT: "Laut", UDARA: "Udara", DARAT: "Darat" };
 
 /** Tugas tiap peran pada masing-masing arah (teks bantu di bawah judul). */
 const TUGAS: Record<string, Record<ArahArus, string>> = {
+  DEPO: { KELUAR: "Terima barang di depo, buat resi, lalu susun manifest. Sesudah berangkat, Anda cukup memantau.", MASUK: "Barang yang tujuannya depo Anda. Anda memantau kedatangannya." },
   MITRA_POS: { KELUAR: "Tugas Kasir: buat resi, tagih, dan susun manifest. Sesudah barang berangkat, Anda cukup memantau.", MASUK: "Barang yang tujuannya cabang Anda. Anda memantau dan memberi kabar ke penerima bila perlu." },
   HUB_MANAGER: { KELUAR: "Terima, timbang, muat, dan serahkan manifest bersegel ke sopir. Sesudah berangkat, pantau sampai diterima.", MASUK: "Terima manifest, bongkar, simpan di gudang, lalu atur pengantaran ke penerima." },
   WAREHOUSE: { KELUAR: "Terima dan timbang barang, lalu muat ke manifest.", MASUK: "Bongkar muatan yang tiba, periksa, dan simpan di gudang." },

@@ -7,7 +7,7 @@ import BackLink from "@/components/BackLink";
 export const metadata: Metadata = { title: "Pindai Barang" };
 
 export default async function Pindai() {
-  await requireRole(["HUB_MANAGER","WAREHOUSE","DRIVER","CONTAINER_DRIVER","MITRA_POS"]);
+  await requireRole(["HUB_MANAGER","WAREHOUSE","DRIVER","CONTAINER_DRIVER","MITRA_POS","DEPO"]);
   return (
     <main className="wrap narrow section stack">
       <BackLink />

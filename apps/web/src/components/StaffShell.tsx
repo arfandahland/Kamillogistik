@@ -34,10 +34,10 @@ export default function StaffShell({ me, pending, children, forceFull }: { me: M
     ? [{ href: "/app/konten", label: "Konten", icon: "grid" }, { href: "/app/akun", label: "Akun", icon: "user" }]
     : [
         { href: "/app", label: "Beranda", icon: "home" },
-        ...(me.role === "MITRA_POS" ? [{ href: "/app/baru", label: "Resi baru", icon: "plus" }] : []),
+        ...(["MITRA_POS", "DEPO"].includes(me.role) ? [{ href: "/app/baru", label: "Resi baru", icon: "plus" }] : []),
         ...(me.role === "WAREHOUSE" ? [{ href: "/app/timbang", label: "Timbang", icon: "scale" }] : []),
-        ...(["MITRA_POS", "HUB_MANAGER", "WAREHOUSE", "DRIVER"].includes(me.role) ? [{ href: "/app/arus", label: "Arus", icon: "ship" }] : []),
-        ...(["MITRA_POS", "HUB_MANAGER", "WAREHOUSE", "CONTAINER_DRIVER"].includes(me.role) ? [{ href: "/app/manifest", label: "Manifest", icon: "layers" }] : []),
+        ...(["MITRA_POS", "DEPO", "HUB_MANAGER", "WAREHOUSE", "DRIVER"].includes(me.role) ? [{ href: "/app/arus", label: "Arus", icon: "ship" }] : []),
+        ...(["MITRA_POS", "DEPO", "HUB_MANAGER", "WAREHOUSE", "CONTAINER_DRIVER"].includes(me.role) ? [{ href: "/app/manifest", label: "Manifest", icon: "layers" }] : []),
         { href: "/app/pindai", label: "Pindai", icon: "scan", featured: true },
         ...(me.role === "MITRA_POS" ? [{ href: "/app/tagihan", label: "Tagihan", icon: "file" }] : [{ href: "/app/serah", label: me.role === "WAREHOUSE" ? "Serah" : "Serah terima", icon: "swap", badge: pending }]),
       ];

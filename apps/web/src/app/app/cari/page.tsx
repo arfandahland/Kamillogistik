@@ -13,7 +13,7 @@ type Hit = { id: string; resiNo: string; status: AnyStatus; origin: string; dest
 type Man = { id: string; code: string; status: string; origin: string; dest: string };
 
 export default async function Cari({ searchParams }: { searchParams: Promise<{ q?: string; hal?: string }> }) {
-  await requireRole(["SUPER_ADMIN", "OWNER", "HUB_MANAGER", "MITRA_POS", "WAREHOUSE", "DRIVER", "CONTAINER_DRIVER", "FINANCE", "CS_SALES"]);
+  await requireRole(["SUPER_ADMIN", "OWNER", "HUB_MANAGER", "MITRA_POS", "DEPO", "WAREHOUSE", "DRIVER", "CONTAINER_DRIVER", "FINANCE", "CS_SALES"]);
   const sp = await searchParams;
   const q = (sp.q ?? "").trim().slice(0, 60);
   const r = q.length >= 2 ? await staffRpc<{ shipments: Hit[]; manifests: Man[] }>("staff_search", { p_q: q, p_limit: 100 }) : null;

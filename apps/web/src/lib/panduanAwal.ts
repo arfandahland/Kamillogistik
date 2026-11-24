@@ -8,6 +8,11 @@ const AKUN: LangkahTur = { judul: "Akun dan absen", teks: "Di menu Akun Anda men
 const PINDAI: LangkahTur = { judul: "Pindai label barang", teks: "Arahkan kamera ke barcode atau QR di label. Resi langsung terbuka dan Anda tinggal melanjutkan langkahnya. Bisa juga ketik kode manual.", sasaran: ["a[href='/app/pindai']"], tuju: { href: "/app/pindai", label: "Coba pindai" } };
 
 export const TUR: Record<string, LangkahTur[]> = {
+  DEPO: [
+    { judul: "Selamat datang, Admin depo", teks: "Anda menerima barang di depo, membuat resi, dan menyusun manifest. Tagihan dan pembayaran diurus Kasir dan Finance." },
+    { judul: "Resi cepat", teks: "Pilih Resi baru, isi pengirim, penerima, tujuan, dan isi barang, lalu cetak label." },
+    { judul: "Susun manifest", teks: "Buka Manifest, buat manifest ke kota tujuan, tambahkan resi, lalu segel agar bisa diserahkan." },
+  ],
   MITRA_POS: [
     { judul: "Selamat datang, Kasir", teks: "Anda satu-satunya yang membuat resi dan mencetak label. Ikuti langkah singkat ini, hanya beberapa detik." },
     { judul: "Buat resi baru", teks: "Isi pengirim, penerima, alamat tujuan sampai kelurahan, isi barang, lalu pilih cara barang masuk. Setelah jadi, cetak label barcode dan tempel di barang.", sasaran: ["a[href='/app/baru']"], tuju: { href: "/app/baru", label: "Buat resi" } },
