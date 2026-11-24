@@ -37,6 +37,14 @@ export async function aturTempo(fd: FormData) {
 }
 
 /* ---------- Mitra dan cabang ---------- */
+export async function aturHubTransit(fd: FormData) {
+  const id = str(fd, "id");
+  const { error } = await staffRpc("owner_set_transit_hub", { p_branch: id, p_hub: str(fd, "hub") || null });
+  if (error) go("/app/mitra", "e", error);
+  revalidatePath("/app/mitra");
+  go("/app/mitra", "ok", "Hub transit disimpan. Kiriman baru dari cabang ini akan singgah di hub tersebut.");
+}
+
 export async function simpanMitra(fd: FormData) {
   const id = str(fd, "id") || null, base = "/app/mitra";
   const type = str(fd, "jenis");

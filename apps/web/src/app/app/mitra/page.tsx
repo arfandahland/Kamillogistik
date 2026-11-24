@@ -3,11 +3,11 @@ import Icon from "@/components/Icon";
 import SubmitButton from "@/components/SubmitButton";
 import { requireOwner } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
-import { simpanMitra } from "../admin-actions";
+import { simpanMitra, aturHubTransit } from "../admin-actions";
 import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Mitra dan Cabang" };
-type P = { id: string; type: string; code: string; name: string; city: string; phone: string | null; address: string | null; contactName: string | null; commissionPct: number; status: string; notes: string | null; staffCount: number; shipmentCount: number };
+type P = { id: string; type: string; code: string; name: string; city: string; phone: string | null; address: string | null; contactName: string | null; commissionPct: number; status: string; notes: string | null; staffCount: number; shipmentCount: number; transitHubId?: string | null };
 const JENIS: Record<string, string> = { HUB: "Gudang / cabang", MITRA: "Gerai mitra", REKANAN: "Rekanan ekspedisi", PELABUHAN: "Pelabuhan" };
 
 function Form({ p, ok }: { p?: P; ok?: boolean }) {
@@ -55,7 +55,16 @@ export default async function Mitra({ searchParams }: { searchParams: Promise<{ 
               <span className="meta"><b>{p.name}</b><small>{JENIS[p.type]} · {p.city} · kode {p.code}</small><small>{p.staffCount} petugas · {p.shipmentCount} resi · komisi {p.commissionPct}%</small></span>
               <span className={`pill ${p.status === "ACTIVE" ? "done" : ""}`}>{p.status === "ACTIVE" ? "Aktif" : "Nonaktif"}</span>
             </summary>
-            <div className="admbody"><Form p={p} ok /></div>
+            <div className="admbody"><Form p={p} ok />
+              {p.type !== "HUB" && p.type !== "PELABUHAN" && (
+                <form action={aturHubTransit} className="card rbsek" style={{ marginTop: 12 }}>
+                  <h2 className="cardh">Hub transit</h2><input type="hidden" name="id" value={p.id} />
+                  <p className="hint" style={{ margin: 0 }}>Kiriman dari cabang ini ke tujuan lain singgah dulu di hub ini. Kosongkan bila langsung.</p>
+                  <div className="rbf"><label className="f" htmlFor={`hub-${p.id}`}>Singgah di hub</label>
+                    <select id={`hub-${p.id}`} name="hub" defaultValue={p.transitHubId ?? ""}><option value="">Langsung, tanpa singgah</option>{list.filter((h) => h.type === "HUB" && h.status === "ACTIVE" && h.id !== p.id).map((h) => <option key={h.id} value={h.id}>{h.name} ({h.city})</option>)}</select></div>
+                  <button className="btn ghost">Simpan hub transit</button>
+                </form>
+              )}</div>
           </details>
         ))}
       </div>
