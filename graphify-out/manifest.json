@@ -300,15 +300,15 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/manifest/[id]/page.tsx": {
-    "mtime": 1795555304.7533379,
-    "seen": 1795555400.1976848,
-    "ast_hash": "ae8d1529bbeeb38e9d1dfc4618f4dc56",
+    "mtime": 1795558926.8450422,
+    "seen": 1795559103.1121547,
+    "ast_hash": "00877970fd02885718e283dc463b24c0",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/manifest/actions.ts": {
-    "mtime": 1795511517.0556052,
-    "seen": 1795511673.205686,
-    "ast_hash": "2a16ea816e96abd96f90f405283df4f0",
+    "mtime": 1795558926.8446178,
+    "seen": 1795559103.1122375,
+    "ast_hash": "ea4528727e36bf5cfd92343e3f963cf2",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/manifest/baru/page.tsx": {
@@ -900,9 +900,9 @@
     "semantic_hash": ""
   },
   "db/test/run.sh": {
-    "mtime": 1795530169.0553315,
-    "seen": 1795555400.2075176,
-    "ast_hash": "aa7b5e117dff2101930e4ad9a7230e1e",
+    "mtime": 1795558911.264099,
+    "seen": 1795559103.1204007,
+    "ast_hash": "d2d5efa6f4b57bea3ffec630647984d1",
     "semantic_hash": ""
   },
   "db/test/tariff-cases.json": {
@@ -954,9 +954,9 @@
     "semantic_hash": ""
   },
   "e2e/setup.sh": {
-    "mtime": 1795530160.584883,
-    "seen": 1795555400.2078936,
-    "ast_hash": "c36b77fd5866d7c207a3cf07f37087df",
+    "mtime": 1795558911.264099,
+    "seen": 1795559103.1207027,
+    "ast_hash": "ef9ae8b6d8817e6791e3124a7f4c0ffa",
     "semantic_hash": ""
   },
   "e2e/skenario.cjs": {
@@ -9513,6 +9513,18 @@
     "mtime": 1795529459.7840745,
     "seen": 1795555400.2075212,
     "ast_hash": "c85a412c84cbbca4f52ecee3b636a30a",
+    "semantic_hash": ""
+  },
+  "db/migrations/073_peran_admin_depo.sql": {
+    "mtime": 1795530205.1101022,
+    "seen": 1795559103.1196856,
+    "ast_hash": "2883f63cb4f291669e305dc9a32f5562",
+    "semantic_hash": ""
+  },
+  "db/test/depo.sql": {
+    "mtime": 1795530245.0237136,
+    "seen": 1795559103.1199255,
+    "ast_hash": "a2e68d73ef9ab3396b64811aebe0283a",
     "semantic_hash": ""
   },
   "package-lock.json": {

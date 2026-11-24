@@ -37,6 +37,7 @@ export default async function Track({ params }: P) {
 
   const t = r.body as PublicTrack;
   const nilai = t.status === "DELIVERED" ? await publicRpc<{ canRate: boolean; rated: boolean; stars: number | null }>("public_rating_state", { p_resi: t.resi }) : null;
+  const extra = await publicRpc<{ podPhoto: string | null; via: { hub: string; tujuanAkhir: string } | null; vendorEvents: { label: string; at: string }[] }>("public_track_extra", { p_resi: t.resi });
   const items = [
     ...t.history.map((h, i) => ({ ...h, kind: i === t.history.length - 1 ? "now" : "done" })),
     ...t.upcoming.map((u) => ({ ...u, detail: "", at: "", location: null as string | null, kind: "todo" })),
@@ -67,7 +68,20 @@ export default async function Track({ params }: P) {
           <p style={{ marginTop: 12 }}><Icon name="check" size={18} /> Diterima oleh <b>{t.pod.receiverName}</b> pada {tanggalWaktu(t.pod.signedAt)}.
             {" "}Foto dan tanda tangan penerima tersimpan sebagai bukti.</p>
         )}
+        {t.pod && extra?.podPhoto && extra.podPhoto.startsWith("data:image/") && (
+          <figure style={{ marginTop: 12 }}><img src={extra.podPhoto} alt={`Foto barang diterima oleh ${t.pod.receiverName}`} style={{ maxWidth: "100%", borderRadius: 12 }} /><figcaption className="muted">Foto bukti terima</figcaption></figure>
+        )}
+        {extra?.via && <p style={{ marginTop: 12 }}><Icon name="ship" size={18} /> Barang singgah di hub <b>{extra.via.hub}</b>, lalu diteruskan ke <b>{extra.via.tujuanAkhir}</b>.</p>}
       </div>
+
+      {extra && extra.vendorEvents.length > 0 && (
+        <div className="card">
+          <h2>Kabar dari armada</h2>
+          <ul className="stack" style={{ listStyle: "none", padding: 0, margin: 0 }}>
+            {extra.vendorEvents.map((e, i) => (<li key={i}><b>{e.label}</b><br /><small className="muted">{tanggalWaktu(e.at)}</small></li>))}
+          </ul>
+        </div>
+      )}
 
       <div className="card">
         <h2>Perjalanan barang</h2>
