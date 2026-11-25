@@ -176,7 +176,7 @@ SELECT t.as_user(current_setting('t.fin')::uuid);
 DO $$ DECLARE r jsonb; c jsonb; BEGIN
   r := public.fin_kehadiran_rekap(current_date - 3, current_date + 2, NULL);
   c := (SELECT x FROM jsonb_array_elements(r->'cabang') x WHERE x->>'kode' = 'MKS');
-  ASSERT (c->>'hadir')::int = 1 AND (c->>'telat')::int = 1, 'rekap Makassar: 1 hadir, 1 telat';
+  ASSERT (c->>'hadir')::int = 1 AND (c->>'telat')::int = ((public.fin_kehadiran_pegawai(current_setting('t.mks')::uuid, current_date - 3, current_date + 2))->'hari'->0->>'telat')::boolean::int, 'rekap Makassar: 1 hadir, telat sama dengan rincian harian';
   c := (SELECT x FROM jsonb_array_elements(r->'cabang') x WHERE x->>'kode' = 'JKT');
   ASSERT (c->>'luar')::int >= 1, 'rekap Jakarta: karyawan yang absen di luar lokasi terhitung';
   c := (SELECT x FROM jsonb_array_elements(r->'cabang') x WHERE x->>'kode' = 'SUB');

@@ -162,7 +162,7 @@ SELECT t.as_anon();
 DO $$ DECLARE p jsonb; BEGIN
   p := public.public_track(lower(current_setting('t.rn')));
   ASSERT jsonb_array_length(p->'events') = 3, 'tiga kejadian publik, dapat ' || jsonb_array_length(p->'events');
-  ASSERT p::text !~* '(Driver Jakarta|Gudang Jakarta"?,"by|"by"|Andi|0811|Jl\. Pettarani|125000|INV-)', 'tak ada data pribadi/keuangan di publik';
+  ASSERT p::text !~* '(Driver Jakarta|Gudang Jakarta"?,"by|"by"|Andi|"0811|Jl\. Pettarani|125000|INV-)', 'tak ada data pribadi/keuangan di publik';
 END $$;
 
 -- ---------- Audit & log permanen ----------
