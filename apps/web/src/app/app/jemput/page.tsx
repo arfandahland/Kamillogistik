@@ -20,7 +20,7 @@ export default async function JemputAntrean({ searchParams }: { searchParams: Pr
     <main className="wrap narrow stack" style={{ paddingTop: 8 }}>
       <BackLink />
       <h1>Pesanan jemput</h1>
-      <p className="muted" style={{ marginTop: -6 }}>Pesanan dari halaman <Link href="/jemput">/jemput</Link>. Ketuk Chat untuk konfirmasi, pesan sudah terisi.</p>
+      <p className="muted" style={{ marginTop: -6 }}>Pesanan jemput barang dari pelanggan lewat <Link href="/jemput">formulir di situs</Link>. Ketuk Chat untuk menghubungi pelanggan, pesannya sudah terisi.</p>
       {sp.ok && <div className="ok" role="status">{sp.ok}</div>}{(sp.e || q.error) && <div className="err" role="alert">{sp.e ?? q.error}</div>}
       <details className="card admnew" open={!!sp.e}>
         <summary><Icon name="plus" size={20} /> Catat pesanan baru (dari telepon atau WhatsApp)</summary>

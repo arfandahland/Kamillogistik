@@ -19,7 +19,7 @@ export default function ResiForm({ initial = "", autoFocus = false }: { initial?
       }}
     >
       <label className="f" htmlFor="resi">Nomor resi</label>
-      <input id="resi" value={v} onChange={(e) => setV(e.target.value)} placeholder="Contoh: KML-JKT-MKS-LJ-261112-0830-0001-NW"
+      <input id="resi" value={v} onChange={(e) => setV(e.target.value)} placeholder="Tempel nomor resi, mulai dari KML-"
         autoCapitalize="characters" autoComplete="off" autoFocus={autoFocus} enterKeyHint="search" />
       <p className="hint">Nomor resi ada di struk atau pesan WhatsApp dari kami.</p>
       <button className="btn" disabled={busy || !v.trim()} style={{ marginTop: 12 }}>

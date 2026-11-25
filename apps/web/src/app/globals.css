@@ -2166,3 +2166,12 @@ body:has(.appshell) .cp-chips button.on, body:has(.appshell) .cp-chips button[ar
 .pwabar.off { top: calc(env(safe-area-inset-top) + 8px); bottom: auto; background: var(--danger-bg); color: var(--danger); border-color: var(--danger); font-weight: 700; }
 body:not(:has(.tabbar)) .pwabar { bottom: calc(16px + env(safe-area-inset-bottom)); }
 @media print { .pwabar { display: none; } }
+
+/* ===== AUDIT HP: target sentuh minimal 44px dan teks tidak lebih kecil dari 12,5px (berlaku di semua akun) ===== */
+body .hdrsearch, body .hdract > a, body .hdract > button, body .burger { min-width: 44px; min-height: 44px; }
+body .backlink, body .fchip, body .chip, body .cp-chip, body .pager-nav, body .dashhead button.chip, body .navact .nav, body .brand { min-height: 44px; }
+body .fchip, body .chip, body .dashhead button.chip, body .backlink { display: inline-flex; align-items: center; }
+body main button, body main a.btn, body main .btn, body main summary { min-height: 44px; }
+body main button.mini, body main a.mini { min-width: 44px; }
+body .rolechip, body dt, body small, body .hint { font-size: 13px; }
+body .pill, body .delta, body .bs-live { font-size: 12.5px; }

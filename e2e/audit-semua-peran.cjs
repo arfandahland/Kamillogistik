@@ -17,7 +17,7 @@ const slug = (s) => s.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").slice(0
       if (!/\/app/.test(p.url())) { hasil.push({ nama, url: "(masuk)", masalah: ["TIDAK BISA MASUK"] }); await ctx.close(); continue; }
       const set = new Set(["/app"]);
       for (const start of ["/app", "/app/pusat"]) { await p.goto(BASE + start, { waitUntil: "domcontentloaded" }); await p.waitForTimeout(500); (await p.$$eval("a[href^='/app']", (as) => as.map((a) => a.getAttribute("href")))).forEach((h) => set.add(h.split("#")[0])); }
-      daftar = [...set].filter((h) => !/\/ekspor|\/unduh|\/keluar|\/cetak|\/foto\b/.test(h)).slice(0, 45);
+      daftar = [...set].filter((h) => !/\/ekspor|\/unduh|\/keluar|\/cetak|\/foto\b/.test(h)).slice(0, +(process.env.MAXP || 45));
     }
     for (const u of daftar) {
       await p.goto(BASE + u, { waitUntil: "networkidle" }).catch(() => {}); await p.waitForTimeout(450);

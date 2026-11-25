@@ -27,7 +27,7 @@ export default async function QrAbsen({ searchParams }: { searchParams: Promise<
       {r.data && (
         <>
           <section className="docprint abs-qr" aria-label="Poster QR absensi">
-            <h1 style={{ textAlign: "center", margin: "0 0 4px" }}>ABSEN KARYAWAN</h1>
+            <h2 style={{ textAlign: "center", margin: "0 0 4px" }}>ABSEN KARYAWAN</h2>
             <p style={{ textAlign: "center", margin: "0 0 14px", fontSize: 15 }}>Kamil Logistik Express</p>
             <div className="abs-qr-kotak" dangerouslySetInnerHTML={{ __html: qrSvg(url) }} />
             <ol className="abs-langkah">
