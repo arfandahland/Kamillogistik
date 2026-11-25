@@ -9,7 +9,7 @@ const slug = (s) => s.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").slice(0
 (async () => {
   fs.mkdirSync(OUT, { recursive: true }); const b = await chromium.launch(); const hasil = [];
   for (const [email, nama] of AKUN) {
-    const ctx = await b.newContext({ ...devices["Pixel 5"], viewport: { width: 390, height: 844 }, deviceScaleFactor: 2 }); const p = await ctx.newPage();
+    const ctx = await b.newContext({ ...devices["Pixel 5"], viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, reducedMotion: "reduce" }); const p = await ctx.newPage();
     let daftar = PUBLIK;
     if (email) {
       await p.goto(`${BASE}/masuk`); await p.fill("#email", email); await p.fill("#password", PASS); await p.click("button.shine");
@@ -34,7 +34,7 @@ const slug = (s) => s.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").slice(0
         const seen = new Set();
         for (const e of document.querySelectorAll("p, li, span, small, b, td, th, dd, dt, label")) {
           if (!vis(e) || ![...e.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim())) continue;
-          const fs = parseFloat(getComputedStyle(e).fontSize); if (fs < 12.5) { const k = e.tagName + e.className; if (!seen.has(k)) { seen.add(k); m.kecil.push(`${e.tagName.toLowerCase()}.${String(e.className).split(" ")[0]} ${fs}px "${e.innerText.trim().slice(0, 20)}"`); } }
+          const fs = parseFloat(getComputedStyle(e).fontSize) * (parseFloat(getComputedStyle(document.documentElement).zoom) || 1); if (fs < 12.5) { const k = e.tagName + e.className; if (!seen.has(k)) { seen.add(k); m.kecil.push(`${e.tagName.toLowerCase()}.${String(e.className).split(" ")[0]} ${fs}px "${e.innerText.trim().slice(0, 20)}"`); } }
         }
         m.tanpaAlt = [...document.querySelectorAll("img")].filter((i) => vis(i) && !i.hasAttribute("alt")).length;
         m.geser = document.documentElement.scrollWidth - innerWidth;
