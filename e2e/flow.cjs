@@ -1375,6 +1375,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     // Harga manual kasir: satuan per m3 + baris biaya bebas, terbit ulang selagi belum dibayar
     const ridI = sqlq(`SELECT s.id FROM shipments s JOIN invoices i ON i.shipment_id = s.id AND i.status = 'UNPAID' WHERE s.origin_id = (SELECT id FROM branches_partners WHERE code='JKT') AND s.mode <> 'UDARA' AND s.status NOT IN ('CANCELLED','DELIVERED') AND NOT EXISTS (SELECT 1 FROM payment_allocations pa WHERE pa.invoice_id = i.id) ORDER BY s.created_at DESC LIMIT 1;`);
     sqlq(`UPDATE companies SET billing_basis = 'M3' WHERE id = (SELECT company_id FROM shipments WHERE id = '${ridI}')`); // akun korporat ditagih per m3 agar pilihan Per m³ tersedia
+    sqlq(`UPDATE shipment_items SET l_cm = 100, w_cm = 100, h_cm = 100 WHERE shipment_id = '${ridI}' AND l_cm IS NULL`); // akun m3 butuh ukuran; resi korporat uji hanya punya berat
     const ki = await login(browser, "finance.awal@uji.id", PASS, { width: 390, height: 844 });
     await ki.page.goto(`${BASE}/app/resi/${ridI}`, { waitUntil: "networkidle" });
     await ki.page.getByText("Per m³", { exact: true }).click(); let volM3 = Number((await ki.page.inputValue("#inv-jumlah")).replace(",", ".")); if (!volM3) { await ki.page.getByText("Per kg", { exact: true }).click(); volM3 = Number((await ki.page.inputValue("#inv-jumlah")).replace(",", ".")); } const totM3 = "Rp" + (Math.round(volM3 * 500000) + 50000).toLocaleString("id-ID"); await ki.page.fill("#inv-harga", "500000");
