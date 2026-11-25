@@ -334,8 +334,17 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("sopir melihat banner manifest menunggu diterima", /menyerahkan manifest ini kepada Anda/.test(await text(p)));
     let r = await act(p, p.getByRole("button", { name: "Ya, manifest sudah saya terima" }));
     ok("sopir menerima manifest (semua barang sekaligus)", r.ok && /sudah Anda terima/.test(r.ok), JSON.stringify(r));
-    r = await act(p, p.getByRole("button", { name: "Kapal sudah berangkat" }));
-    ok("kapal berangkat: resi tercatat Dalam pelayaran", r.ok && /sudah berangkat/i.test(r.ok), JSON.stringify(r));
+    ok("AQ1 sopir tidak punya tombol Berangkat (hanya Kepala gudang atau MV)", (await p.getByRole("button", { name: "Kapal sudah berangkat" }).count()) === 0);
+    {
+      const kg = await login(browser, "manajer@uji.id"); const q = kg.page;
+      await q.goto(`${BASE}/app/manifest/${manifestId}`, { waitUntil: "networkidle" });
+      ok("AQ2 Kepala gudang melihat peringatan sebelum berangkat (biaya belum diisi)", /Periksa dulu sebelum berangkat/.test(await text(q)));
+      await q.locator("input[name=lanjut]").check();
+      r = await act(q, q.getByRole("button", { name: "Kapal sudah berangkat" }));
+      ok("kapal berangkat: resi tercatat Dalam pelayaran", r.ok && /sudah berangkat/i.test(r.ok), JSON.stringify(r));
+      await kg.ctx.close();
+    }
+    await p.goto(`${BASE}/app/manifest/${manifestId}`, { waitUntil: "networkidle" });
     r = await act(p, p.getByRole("button", { name: /Kapal sudah sandar di Makassar/ }));
     ok("kapal sandar di pelabuhan tujuan", r.ok && /sudah tiba/.test(r.ok), JSON.stringify(r));
     await selectByText(p, "select[name=ke]", "Kepala Gudang Makassar");
@@ -564,8 +573,16 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await g.fill("#berat", "10");
     r = await act(g, g.getByRole("button", { name: "Simpan dan timbang berikutnya" }));
     ok("data timbang pelanggan korporat tersimpan", r.ok && /Semua 1 barang/.test(r.ok) && /10 kg/.test(r.ok), JSON.stringify(r));
-    r = await invoiceKasir(browser, "kasir@uji.id", korId, 10, 2000);
-    ok("harga manual kasir: 10 kg ditagih minimal 30 kg x Rp2.000 = Rp60.000", r.ok && /Rp60\.000/.test(r.ok), JSON.stringify(r));
+    { const db = require("fs").readFileSync(__dirname + "/.dbname", "utf8").trim();
+      const q0 = (x) => require("child_process").spawnSync("su", ["postgres", "-c", `psql -q -X -d ${db}`], { input: x, encoding: "utf8" });
+      q0(`INSERT INTO staff_invites(email, full_name, role, branch_id) VALUES ('finance.awal@uji.id','Finance Awal','FINANCE',NULL);
+        INSERT INTO auth.users(id,email,encrypted_password,email_confirmed_at,aud,role,raw_app_meta_data,raw_user_meta_data) SELECT gen_random_uuid(), email, extensions.crypt('Test1234', extensions.gen_salt('bf')), now(),'authenticated','authenticated','{}','{}' FROM staff_invites WHERE email = 'finance.awal@uji.id';`); }
+    { const kx = await login(browser, "kasir@uji.id", PASS, { width: 390, height: 844 });
+      await kx.page.goto(`${BASE}/app/resi/${korId}`, { waitUntil: "networkidle" });
+      ok("AQ0 Kasir tidak melihat form invoice untuk pelanggan korporat (hanya Finance)", (await kx.page.locator("#inv-harga").count()) === 0);
+      await kx.ctx.close(); }
+    r = await invoiceKasir(browser, "finance.awal@uji.id", korId, 10, 2000);
+    ok("harga manual Finance (korporat): 10 kg ditagih minimal 30 kg x Rp2.000 = Rp60.000", r.ok && /Rp60\.000/.test(r.ok), JSON.stringify(r));
     await k.goto(`${BASE}/app/baru`, { waitUntil: "networkidle" });
     await pilihTujuan(k);
     await k.getByText("Perusahaan langganan").click(); await k.selectOption("#company", { label: "PT Sinar Jaya (tempo 14 hari)" });
@@ -1358,7 +1375,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     // Harga manual kasir: satuan per m3 + baris biaya bebas, terbit ulang selagi belum dibayar
     const ridI = sqlq(`SELECT s.id FROM shipments s JOIN invoices i ON i.shipment_id = s.id AND i.status = 'UNPAID' WHERE s.origin_id = (SELECT id FROM branches_partners WHERE code='JKT') AND s.mode <> 'UDARA' AND s.status NOT IN ('CANCELLED','DELIVERED') AND NOT EXISTS (SELECT 1 FROM payment_allocations pa WHERE pa.invoice_id = i.id) ORDER BY s.created_at DESC LIMIT 1;`);
     sqlq(`UPDATE companies SET billing_basis = 'M3' WHERE id = (SELECT company_id FROM shipments WHERE id = '${ridI}')`); // akun korporat ditagih per m3 agar pilihan Per m³ tersedia
-    const ki = await login(browser, "kasir@uji.id", PASS, { width: 390, height: 844 });
+    const ki = await login(browser, "finance.awal@uji.id", PASS, { width: 390, height: 844 });
     await ki.page.goto(`${BASE}/app/resi/${ridI}`, { waitUntil: "networkidle" });
     await ki.page.getByText("Per m³", { exact: true }).click(); let volM3 = Number((await ki.page.inputValue("#inv-jumlah")).replace(",", ".")); if (!volM3) { await ki.page.getByText("Per kg", { exact: true }).click(); volM3 = Number((await ki.page.inputValue("#inv-jumlah")).replace(",", ".")); } const totM3 = "Rp" + (Math.round(volM3 * 500000) + 50000).toLocaleString("id-ID"); await ki.page.fill("#inv-harga", "500000");
     await ki.page.getByRole("button", { name: "+ Ongkos jemput" }).click();
@@ -1827,6 +1844,8 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
       }
       await d.page.goto(`${BASE}/app/pusat`, { waitUntil: "networkidle" });
       ok("AQ5 Pusat Admin depo tampil", /Pusat Depo/.test(await d.page.locator("body").innerText()));
+      await d.page.goto(`${BASE}/app/timbang`, { waitUntil: "networkidle" });
+      ok("AQ5b Admin depo boleh membuka layar Timbang", /\/app\/timbang/.test(d.page.url()) && /Timbang barang/.test(await d.page.locator("body").innerText()), d.page.url());
     }
     await d.ctx.close();
 
@@ -1852,6 +1871,13 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     const sj = await ko.page.locator("body").innerText();
     ok("AQ9 surat jalan udara berjudul SMU dan memuat nomor SMU", /SMU \/ AIRWAY BILL/.test(sj) && /126-12345675/.test(sj));
     await ko.ctx.close();
+    // Udara: tombol Berangkat dijaga SMU dan X-Ray lolos
+    dbq(`UPDATE manifests SET moda_detail = jsonb_set(moda_detail, '{xray}', '"BELUM"') WHERE id = '${idModa}';`);
+    const kgu = await login(browser, "manajer@uji.id", PASS, { width: 1100, height: 900 });
+    await kgu.page.goto(`${BASE}/app/manifest/${idModa}`, { waitUntil: "networkidle" });
+    ok("AQ9b manifest udara dengan X-Ray belum lolos: Kepala gudang melihat 'Belum bisa berangkat'", /Belum bisa berangkat/.test(await kgu.page.locator("body").innerText()));
+    await kgu.ctx.close();
+    dbq(`UPDATE manifests SET moda_detail = jsonb_set(moda_detail, '{xray}', '"LOLOS"') WHERE id = '${idModa}';`);
 
     // Laba rugi: Finance dan Pemilik melihat; Kasir ditolak
     const fi = await login(browser, "finance@uji.id", PASS, { width: 1100, height: 900 });
@@ -1868,6 +1894,8 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     const ow = await login(browser, "owner@uji.id", "Pemilik2026x", { width: 1100, height: 900 });
     await ow.page.goto(`${BASE}/app/mitra`, { waitUntil: "networkidle" });
     ok("AQ12 halaman Mitra punya pilihan Singgah di hub", (await ow.page.getByText("Singgah di hub").count()) > 0);
+    await ow.page.goto(`${BASE}/app/rute-hub`, { waitUntil: "networkidle" });
+    ok("AQ13 halaman Hub transit terbuka untuk Pemilik", /Hub transit/.test(await ow.page.locator("body").innerText()) && (await ow.page.getByText("Singgah di hub").count()) > 0);
     await ow.ctx.close();
   } catch (e) { ok("AQ pemeriksaan berjalan sampai selesai", false, String(e.message || e).slice(0, 200)); }
 
