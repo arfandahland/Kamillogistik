@@ -19,6 +19,7 @@ const G = (slug: string, tab: string, judul: string, ket: string, icon: string, 
 const AKUN = G("akun", "", "Akun saya", "Data diri, kata sandi, dan bantuan.", "user", [{ href: "/app/akun", icon: "user", t: "Akun dan panduan", d: "Profil, ganti kata sandi, panduan penggunaan, dan keluar." }]);
 const CARI: PusatItem = { href: "/app/cari", icon: "search", t: "Cari resi", d: "Ketik nomor resi atau nama pengirim dan penerima." };
 const SERAH: PusatItem = { href: "/app/serah", icon: "swap", t: "Serah terima", d: "Terima atau serahkan barang ke petugas lain dengan tombol konfirmasi." };
+const CODM: PusatItem = { href: "/app/cod", icon: "cash", t: "Setoran COD", d: "Uang COD yang dicatat kurir. Finance mencocokkan uangnya sebelum tagihan lunas." };
 const DIHUBUNGI: PusatItem = { href: "/app/tindak-lanjut", icon: "chat", t: "Perlu dihubungi", d: "Pelanggan yang menunggu kabar: belum dijemput, belum diantar, atau tagihan jatuh tempo." };
 const JEMPUT: PusatItem = { href: "/app/jemput", icon: "box", t: "Pesanan jemput", d: "Pesanan penjemputan dari website: hubungi pelanggan dan atur jadwalnya." };
 const KLAIM: PusatItem = { href: "/app/klaim", icon: "shield", t: "Klaim dan keluhan", d: "Laporan barang rusak, hilang, atau keluhan layanan beserta usulan penyelesaiannya." };
@@ -39,6 +40,7 @@ const KELOLA: Record<string, PusatItem> = Object.fromEntries([
   DIHUBUNGI, KENDALA, JEMPUT, KLAIM,
   { href: "/app/keuangan", icon: "cash", t: "Keuangan", d: "Uang masuk, piutang, umur piutang, dan riwayat pembayaran." },
   { href: "/app/keuangan/belum-ditagih", icon: "file", t: "Resi belum ditagih", d: "Resi dari Kasir yang belum punya invoice. Buat invoice, retail bayar sebelum diantar, rekanan tempo setelah hard copy." },
+  CODM,
   { href: "/app/tagihan", icon: "file", t: "Semua tagihan", d: "Cari invoice, catat pembayaran, cetak, dan kirim ke pelanggan." },
   { href: "/app/laba-rugi", icon: "chart", t: "Laba rugi per resi", d: "Tagihan dikurangi HPP vendor semua leg dan biaya manifest, per resi, rute, moda, dan kapal." },
   { href: "/app/margin", icon: "tag", t: "Margin manifest dan rute", d: "Pendapatan dikurangi biaya kapal, armada, dan pelabuhan per manifest dan per rute." },
@@ -86,18 +88,18 @@ export function grupPusat(role: string): { judul: string; sapa: string; grup: Pu
       G("muatan", "Muatan", "Manifest dan arus barang", "Susun manifest dan pantau barang masuk dan keluar.", "layers", [TIMBANG, MANIFEST, ARUS, CARI]), AKUN] };
     case "HUB_MANAGER": return { judul: "Pusat Gudang", sapa: "Muatan, masalah, dan pelanggan cabang Anda.", grup: [
       G("gudang", "Gudang", "Muatan dan barang", "Penimbangan, sortir, dan pencarian.", "layers", [TIMBANG, SORTIR, CARI]),
-      G("masalah", "Masalah", "Masalah dan pelanggan", "Yang perlu ditindaklanjuti hari ini.", "alert", [KENDALA, DIHUBUNGI, JEMPUT]), AKUN] };
+      G("masalah", "Masalah", "Masalah dan pelanggan", "Yang perlu ditindaklanjuti hari ini.", "alert", [KENDALA, DIHUBUNGI, JEMPUT, CODM]), AKUN] };
     case "WAREHOUSE": return { judul: "Pusat Gudang", sapa: "Kerja harian petugas gudang.", grup: [
       G("gudang", "Gudang", "Kerja gudang", "Sortir dan pencarian barang.", "box", [SORTIR, CARI]),
       G("masalah", "Masalah", "Masalah dan pelanggan", "Laporkan dan pantau.", "alert", [KENDALA, DIHUBUNGI]), AKUN] };
     case "DRIVER": return { judul: "Pusat Kurir", sapa: "Tugas jemput dan antar Anda.", grup: [
-      G("lain", "Lainnya", "Alat bantu", "Cari resi dan akun.", "grid", [CARI]), AKUN] };
+      G("lain", "Lainnya", "Alat bantu", "Cari resi dan akun.", "grid", [CARI, CODM]), AKUN] };
     case "CONTAINER_DRIVER": return { judul: "Pusat Sopir", sapa: "Muatan yang Anda bawa.", grup: [
       G("lain", "Lainnya", "Alat bantu", "Cari resi dan akun.", "grid", [CARI]), AKUN] };
     case "CS_SALES": return { judul: "Pusat Layanan Pelanggan", sapa: "Pelanggan, pesanan, dan keluhan.", grup: [
       G("layanan", "Layanan", "Pelanggan", "Hubungi dan cari resi.", "users", [DIHUBUNGI, CARI]), AKUN] };
     case "FINANCE": return { judul: "Pusat Keuangan", sapa: "Uang masuk, tagihan, biaya, dan laporan.", grup: [
-      G("dokumen", "Dokumen", "Komisi dan dokumen", "Komisi mitra dan surat jalan balik dari MV.", "file", [{ href: "/app/keuangan/belum-ditagih", icon: "file", t: "Resi belum ditagih", d: "Buat invoice dari resi Kasir. Retail bayar sebelum diantar, rekanan tempo setelah hard copy." }, { href: "/app/keuangan/input-absen", icon: "clock", t: "Input absensi", d: "Masukkan jam masuk dan pulang karyawan yang lupa absen, per cabang dan tanggal." }, { href: "/app/keuangan/komisi", icon: "bank", t: "Komisi mitra", d: "Ongkir dan komisi tiap mitra pada periode yang dipilih." }, { href: "/app/keuangan/sj", icon: "file", t: "SJ balik dari MV", d: "Surat jalan yang sudah diserahkan MV beserta tanda terimanya." }, { href: "/app/absen/qr", icon: "qr", t: "QR absensi", d: "Cetak QR resmi untuk semua cabang. Karyawan scan lalu isi kode dan PIN." }, { href: "/app/karyawan", icon: "user", t: "Data karyawan", d: "Daftar karyawan per cabang dan kode pegawai (dikelola HRD)." }, CARI]), AKUN] };
+      G("dokumen", "Dokumen", "Komisi dan dokumen", "Komisi mitra dan surat jalan balik dari MV.", "file", [CODM, { href: "/app/keuangan/belum-ditagih", icon: "file", t: "Resi belum ditagih", d: "Buat invoice dari resi Kasir. Retail bayar sebelum diantar, rekanan tempo setelah hard copy." }, { href: "/app/keuangan/input-absen", icon: "clock", t: "Input absensi", d: "Masukkan jam masuk dan pulang karyawan yang lupa absen, per cabang dan tanggal." }, { href: "/app/keuangan/komisi", icon: "bank", t: "Komisi mitra", d: "Ongkir dan komisi tiap mitra pada periode yang dipilih." }, { href: "/app/keuangan/sj", icon: "file", t: "SJ balik dari MV", d: "Surat jalan yang sudah diserahkan MV beserta tanda terimanya." }, { href: "/app/absen/qr", icon: "qr", t: "QR absensi", d: "Cetak QR resmi untuk semua cabang. Karyawan scan lalu isi kode dan PIN." }, { href: "/app/karyawan", icon: "user", t: "Data karyawan", d: "Daftar karyawan per cabang dan kode pegawai (dikelola HRD)." }, CARI]), AKUN] };
     case "HRD": return { judul: "Pusat HRD", sapa: "Rekrutmen dan kepegawaian.", grup: [
       G("pegawai", "Atur", "Kepegawaian", "Data dan jadwal pegawai.", "user", [{ href: "/app/karyawan", icon: "users", t: "Karyawan dan absensi", d: "Tambah karyawan per cabang, buat kode dan PIN absen, koreksi absen." }, { href: "/app/absen/qr", icon: "qr", t: "QR absensi", d: "Cetak QR resmi untuk semua cabang." }, { href: "/app/karyawan/cabang", icon: "sliders", t: "Pengaturan absen cabang", d: "Jam masuk, toleransi, radius lokasi, dan kewajiban selfie." }, { href: "/app/keuangan/kehadiran", icon: "chart", t: "Rekap kehadiran", d: "Kehadiran per cabang yang juga terbaca Finance." }, { href: "/app/pegawai?t=daftar", icon: "user", t: "Daftar pegawai", d: "Pegawai aktif dan status absen hari ini." }, { href: "/app/pegawai?t=dokumen", icon: "file", t: "Dokumen pegawai", d: "SIM, KTP, dan kontrak beserta masa berlakunya." }, { href: "/app/pegawai?t=shift", icon: "clock", t: "Shift", d: "Atur shift pagi, siang, malam, atau libur." }, { href: "/app/pegawai?t=cuti", icon: "shield", t: "Cuti dan izin", d: "Setujui atau tolak pengajuan." }, { href: "/app/pegawai?t=rekap", icon: "chart", t: "Rekap kerja", d: "Rekap per tanggal untuk penggajian, unduh CSV." }]), AKUN] };
     case "MV": case "MV_MASTER": return { judul: "Pusat MV", sapa: "Vendor, penjualan, dan pencarian.", grup: [

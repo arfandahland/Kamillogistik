@@ -26,3 +26,14 @@ SELECT t.fails($$select public.owner_create_staff('x.hrd@uji.id','X','HRD',NULL,
 DO $$ BEGIN
   PERFORM public.shipment_cancel(current_setting('t.rd')::uuid, 'Salah input saat uji');
 END $$;
+
+-- 087: beranda Admin Depo
+SELECT t.as_user(current_setting('t.depo', true)::uuid);
+DO $$ DECLARE d jsonb; BEGIN
+  d := public.depo_dashboard();
+  ASSERT d ? 'menungguTerima' AND d ? 'menungguUkur' AND d ? 'manifestTerbuka' AND d ? 'tren', 'bentuk beranda depo lengkap';
+  ASSERT jsonb_array_length(d->'tren') = 7, 'tren tujuh hari';
+END $$;
+SELECT t.as_user('00000000-0000-0000-0000-000000000002');
+SELECT t.fails($$select public.depo_dashboard()$$, 'izin');
+RESET ROLE;

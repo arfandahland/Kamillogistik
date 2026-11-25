@@ -17,6 +17,7 @@ import RevisiPanel from "@/components/RevisiPanel";
 import TutupResiPanel from "@/components/TutupResiPanel";
 import TeruskanPanel from "@/components/TeruskanPanel";
 import { catatTerima, lanjut, periksa, serahkan, terima, timbang } from "../../actions";
+import { catatCod } from "../../cod/actions";
 import BackLink from "@/components/BackLink";
 
 type Detail = {
@@ -211,6 +212,19 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
               {s.details.declaredValue != null && SEES_MONEY.includes(role) && (<><dt>Nilai barang</dt><dd>{rupiah(s.details.declaredValue)}</dd></>)}
             </dl>
           </div>
+        )}
+
+        {s.details?.extra?.caraBayar === "COD" && ["DRIVER", "WAREHOUSE", "HUB_MANAGER"].includes(role) && s.status !== "CANCELLED" && (
+          <form action={catatCod} className="card stack">
+            <h2>Uang COD</h2>
+            <p className="muted small">Catat uang yang Anda terima dari penerima. Ini hanya catatan: tagihan baru lunas setelah Finance mengonfirmasi uangnya. Serahkan uang ke Finance.</p>
+            <input type="hidden" name="id" value={s.id} />
+            <div className="rbrow dua">
+              <div className="rbf"><label className="f" htmlFor="cod-jumlah">Uang diterima (Rp)</label><input id="cod-jumlah" name="jumlah" inputMode="numeric" required /></div>
+              <div className="rbf"><label className="f" htmlFor="cod-cat">Catatan</label><input id="cod-cat" name="catatan" maxLength={200} /></div>
+            </div>
+            <SubmitButton className="btn">Catat COD diterima</SubmitButton>
+          </form>
         )}
 
         {(() => {

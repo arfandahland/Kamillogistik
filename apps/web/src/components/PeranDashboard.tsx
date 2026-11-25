@@ -184,6 +184,40 @@ export function GudangDash({ d }: { d: GudangData }) {
   );
 }
 
+
+/* ================= ADMIN DEPO ================= */
+export type DepoData = {
+  cabang: string; menungguTerima: { id: string; resiNo: string; pengirim: string; jam: number }[]; menungguUkur: { id: string; resiNo: string; pengirim: string; jam: number }[];
+  siapMuat: number; diDepo: number; manifestTerbuka: { id: string; code: string; status: string; kota: string }[];
+  hariIni: { langkah: number; diterima: number; diukur: number }; tren: { d: string; n: number }[];
+};
+export function DepoDash({ d }: { d: DepoData }) {
+  return (
+    <section className="hub stack wrap" aria-label="Dashboard admin depo">
+      <h1 className="sr-only">Dashboard admin depo {d.cabang}</h1>
+      <StatRow items={[
+        { ikon: "layers", n: d.diDepo, label: "Di depo" },
+        { ikon: "down", n: d.menungguTerima.length, label: "Menunggu diterima", warm: d.menungguTerima.length > 0 },
+        { ikon: "scale", n: d.menungguUkur.length, label: "Menunggu diukur", href: "/app/timbang", warm: d.menungguUkur.length > 0 },
+        { ikon: "box", n: d.siapMuat, label: "Siap dimuat" },
+      ]} />
+      <div className="hubgrid">
+        <Kartu ikon="down" judul="Barang menunggu diterima" flag={d.menungguTerima.length > 0} aksi={<span className="pill">{d.menungguTerima.length}</span>}>
+          {d.menungguTerima.length === 0 ? <Kosong t="Tidak ada barang yang menunggu diterima." /> : <Potong tag="ul" kelas="rows" batas={5} items={d.menungguTerima.map((r) => <li key={r.id}><Link href={`/app/resi/${r.id}`}><b>{r.resiNo}</b><small>{r.pengirim} · {r.jam} jam lalu</small></Link></li>)} />}
+        </Kartu>
+        <Kartu ikon="scale" judul="Barang menunggu diukur" flag={d.menungguUkur.length > 0} aksi={<span className="pill">{d.menungguUkur.length}</span>}>
+          {d.menungguUkur.length === 0 ? <Kosong t="Semua barang yang diterima sudah diukur." /> : <Potong tag="ul" kelas="rows" batas={5} items={d.menungguUkur.map((r) => <li key={r.id}><Link href={`/app/resi/${r.id}`}><b>{r.resiNo}</b><small>{r.pengirim} · {r.jam} jam lalu</small></Link></li>)} />}
+        </Kartu>
+        <Kartu ikon="ship" judul="Manifest sedang disiapkan" lipat>{d.manifestTerbuka.length === 0 ? <Kosong t="Belum ada manifest yang disiapkan." /> : <Potong tag="ul" kelas="rows" batas={5} items={d.manifestTerbuka.map((m) => <li key={m.id}><Link href={`/app/manifest/${m.id}`}><b>{m.code}</b><small>ke {m.kota} · {m.status === "SEALED" ? "Segel terpasang" : "Terbuka"}</small></Link></li>)} />}</Kartu>
+        <Kartu ikon="chart" judul="Hasil kerja saya hari ini" lipat>
+          <dl className="infogrid tiga"><div><dt>Langkah</dt><dd>{d.hariIni.langkah}</dd></div><div><dt>Diterima</dt><dd>{d.hariIni.diterima}</dd></div><div><dt>Diukur</dt><dd>{d.hariIni.diukur}</dd></div></dl>
+          <div className="sparkbox"><Spark values={d.tren.map((t) => t.n)} color="var(--teal)" /></div>
+        </Kartu>
+      </div>
+    </section>
+  );
+}
+
 /* ================= SOPIR KONTAINER ================= */
 export type SopirData = {
   aktif: { id: string; code: string; status: string; mode: string; asal: string; tujuan: string; kontainer: string | null; segel: string | null; berangkat: string | null; eta: string | null; resi: number; menunggu: boolean }[];

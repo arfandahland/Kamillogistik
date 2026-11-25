@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { CAN_CREATE_ORDER, OWNER_VIEW, STATUS_GROUPS, type OwnerDashboard as OwnerData } from "@kamil/core";
 import OwnerDashboard from "@/components/OwnerDashboard";
-import { OwnerInsights, KasirDash, KurirDash, GudangDash, SopirDash, type OwnerInsight, type KasirData, type KurirData, type GudangData, type SopirData } from "@/components/PeranDashboard";
+import { OwnerInsights, KasirDash, KurirDash, GudangDash, SopirDash, DepoDash, type DepoData, type OwnerInsight, type KasirData, type KurirData, type GudangData, type SopirData } from "@/components/PeranDashboard";
 import HubDashboard, { type HubData } from "@/components/HubDashboard";
 import Link from "next/link";
 import Icon from "@/components/Icon";
@@ -32,7 +32,7 @@ export default async function Beranda({ searchParams }: { searchParams: Promise<
   const q = (sp.q ?? "").trim();
   const hasQueue = peran !== undefined && ["HUB_MANAGER", "MITRA_POS", "WAREHOUSE", "CS_SALES"].includes(peran);
   // Semua panggilan database dijalankan bersamaan (satu putaran), bukan berurutan.
-  const [me, list, pend, fq, hub, kas, kur, gud, sop, kn] = await Promise.all([
+  const [me, list, pend, fq, hub, kas, kur, gud, sop, kn, dep] = await Promise.all([
     getMe(),
     staffRpc<Row[]>("staff_list_shipments", { p_q: q || null, p_limit: 300 }),
     getPending() as Promise<{ data: Pending[] | null; error: string | null }>,
@@ -43,8 +43,9 @@ export default async function Beranda({ searchParams }: { searchParams: Promise<
     peran === "WAREHOUSE" ? staffRpc<GudangData>("gudang_dashboard") : Promise.resolve(null),
     peran === "CONTAINER_DRIVER" ? staffRpc<SopirData>("sopir_dashboard") : Promise.resolve(null),
     peran === "HUB_MANAGER" || peran === "WAREHOUSE" ? staffRpc<number>("issue_count") : Promise.resolve(null),
+    peran === "DEPO" ? staffRpc<DepoData>("depo_dashboard") : Promise.resolve(null),
   ]);
-  const punyaDash = !!(hub?.data || kas?.data || kur?.data || gud?.data || sop?.data);
+  const punyaDash = !!(hub?.data || kas?.data || kur?.data || gud?.data || sop?.data || dep?.data);
   const all = list.data ?? [];
   const aktif = (STATUS_GROUPS.aktif as readonly string[]);
   const rows = all.filter((r) => (tab === "semua" ? true : (STATUS_GROUPS[tab] as readonly string[]).includes(r.status)) && (!arahSel || r.posisi === arahSel));
@@ -54,7 +55,7 @@ export default async function Beranda({ searchParams }: { searchParams: Promise<
     <>
     <KendalaBadge n={Number(kn?.data ?? 0)} />
     {hub?.data && <div className="wrap hubwrap"><HubDashboard d={hub.data} /></div>}
-    {kas?.data && <KasirDash d={kas.data} />}{kur?.data && <KurirDash d={kur.data} />}{gud?.data && <GudangDash d={gud.data} />}{sop?.data && <SopirDash d={sop.data} />}
+    {kas?.data && <KasirDash d={kas.data} />}{kur?.data && <KurirDash d={kur.data} />}{gud?.data && <GudangDash d={gud.data} />}{sop?.data && <SopirDash d={sop.data} />}{dep?.data && <DepoDash d={dep.data} />}
     {hub?.error && <div className="wrap"><div className="err">{hub.error}</div></div>}
     <StaffHome rows={pg.tampil} pager={<Pager h={pg} path="/app" params={{ s: tab !== "aktif" ? tab : "", q, a: arahSel }} satuan="resi" />} pending={pend.data ?? []}
       stats={{ aktif: all.filter((r) => aktif.includes(r.status)).length, menunggu: (pend.data ?? []).length,
