@@ -22,3 +22,7 @@ END $$;
 -- Admin depo tidak boleh menyentuh keuangan
 SELECT t.fails($$select public.invoice_issue(current_setting('t.rd')::uuid, 'KG', 30, 2000, '[]'::jsonb, 7, NULL)$$, 'izin');
 SELECT t.fails($$select public.owner_create_staff('x.hrd@uji.id','X','HRD',NULL,'Sandi1234')$$, 'izin');
+-- 078: Admin depo boleh membatalkan resi buatannya sendiri
+DO $$ BEGIN
+  PERFORM public.shipment_cancel(current_setting('t.rd')::uuid, 'Salah input saat uji');
+END $$;

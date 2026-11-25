@@ -39,7 +39,7 @@ export default function StaffShell({ me, pending, children, forceFull }: { me: M
         ...(["MITRA_POS", "DEPO", "HUB_MANAGER", "WAREHOUSE", "DRIVER"].includes(me.role) ? [{ href: "/app/arus", label: "Arus", icon: "ship" }] : []),
         ...(["MITRA_POS", "DEPO", "HUB_MANAGER", "WAREHOUSE", "CONTAINER_DRIVER"].includes(me.role) ? [{ href: "/app/manifest", label: "Manifest", icon: "layers" }] : []),
         { href: "/app/pindai", label: "Pindai", icon: "scan", featured: true },
-        ...(me.role === "MITRA_POS" ? [{ href: "/app/tagihan", label: "Tagihan", icon: "file" }] : [{ href: "/app/serah", label: me.role === "WAREHOUSE" ? "Serah" : "Serah terima", icon: "swap", badge: pending }]),
+        ...(me.role === "MITRA_POS" ? [{ href: "/app/tagihan", label: "Tagihan", icon: "file" }] : me.role === "DEPO" ? [] : [{ href: "/app/serah", label: me.role === "WAREHOUSE" ? "Serah" : "Serah terima", icon: "swap", badge: pending }]),
       ];
   const klaim = lurus.flatMap((t) => [t.href, ...(t.also ?? [])]);
   const tabsBawah: Tab[] = [...lurus, ...(PERAN_PUSAT.includes(me.role) ? tabsGrup(me.role, klaim) : [])];

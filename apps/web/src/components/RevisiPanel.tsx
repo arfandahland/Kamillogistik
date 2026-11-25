@@ -13,7 +13,7 @@ type D = { id: string; status: string; pickupType: "PICKUP" | "DROPOFF"; pickupA
 export default async function RevisiPanel({ s, role }: { s: D; role: string }) {
   const r = await staffRpc<Rev[]>("shipment_revisions_list", { p_id: s.id });
   const riwayat = r.data ?? [];
-  const kasir = role === "MITRA_POS";
+  const kasir = role === "MITRA_POS" || (role as string) === "DEPO";
   const bisaUbah = kasir && !["OUT_FOR_DELIVERY", "DELIVERED", "CANCELLED", "EXCEPTION"].includes(s.status);
   const bisaBatal = kasir && ["CREATED", "PICKED_UP", "AT_ORIGIN_HUB", "SORTED_INVOICED"].includes(s.status) && !s.manifest;
   if (!bisaUbah && riwayat.length === 0) return null;
