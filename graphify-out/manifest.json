@@ -1550,7 +1550,7 @@
   "db/test/staff_flow.sql": {
     "mtime": 1795241080.807166,
     "seen": 1795243923.3515863,
-    "ast_hash": "05ddf3bcc3bfef63fe13afe3623b5481",
+    "ast_hash": "",
     "semantic_hash": ""
   },
   "db/test/tindak_lanjut.sql": {
@@ -9368,7 +9368,7 @@
   "db/test/absensi.sql": {
     "mtime": 1795559927.1551201,
     "seen": 1795560272.9006073,
-    "ast_hash": "9fb0318a13315bea06d160edab154566",
+    "ast_hash": "",
     "semantic_hash": ""
   },
   "db/test/bongkar_langsung.sql": {
