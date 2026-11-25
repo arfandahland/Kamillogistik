@@ -89,7 +89,10 @@ DO $$ BEGIN
 END $$;
 SELECT t.fails($$select public.manifest_handover_start(current_setting('t.m')::uuid, '00000000-0000-0000-0000-000000000005')$$, 'menunggu konfirmasi');
 SELECT t.as_user('00000000-0000-0000-0000-000000000005');
-SELECT t.fails($$select public.manifest_depart(current_setting('t.m')::uuid)$$, 'menunggu konfirmasi');
+SELECT t.fails($$select public.manifest_depart(current_setting('t.m')::uuid)$$, 'izin');   -- sopir tidak boleh menekan Berangkat
+SELECT t.as_user('00000000-0000-0000-0000-00000000000f');
+SELECT t.fails($$select public.manifest_depart(current_setting('t.m')::uuid, NULL, NULL, NULL, true)$$, 'menunggu konfirmasi');
+SELECT t.fails($$select public.manifest_depart(current_setting('t.m')::uuid)$$, 'PERINGATAN');   -- belum ada biaya atau tagihan tanpa konfirmasi
 SELECT t.as_user('00000000-0000-0000-0000-000000000009');
 SELECT t.fails($$select public.manifest_handover_accept(current_setting('t.m')::uuid)$$, 'belum terdaftar');
 SELECT t.as_user('00000000-0000-0000-0000-000000000005');
@@ -104,8 +107,9 @@ DO $$ BEGIN ASSERT (SELECT count(*) FROM shipments WHERE manifest_id = current_s
 -- ---------- Berangkat dan tiba ----------
 SELECT t.as_user('00000000-0000-0000-0000-000000000005');
 SELECT t.fails($$select public.manifest_arrive(current_setting('t.m')::uuid)$$, 'belum berangkat');
+SELECT t.as_user('00000000-0000-0000-0000-00000000000f');   -- Kepala gudang asal memberangkatkan
 DO $$ DECLARE r jsonb; BEGIN
-  r := public.manifest_depart(current_setting('t.m')::uuid, 'KM Sinar Laut', now(), now() + interval '5 days');
+  r := public.manifest_depart(current_setting('t.m')::uuid, 'KM Sinar Laut', now(), now() + interval '5 days', true);
   ASSERT r->>'status' = 'IN_TRANSIT', 'berangkat';
 END $$;
 SELECT t.as_anon();

@@ -52,11 +52,19 @@ DO $$ DECLARE m1 jsonb; m2 jsonb; BEGIN
   PERFORM public.measure_shipment(current_setting('t.rb2b')::uuid, '[{"weightKg":10}]'::jsonb);
   PERFORM public.measure_shipment(current_setting('t.rret')::uuid, '[{"weightKg":10}]'::jsonb);
 END $$;
-SELECT t.as_user('00000000-0000-0000-0000-000000000002');   -- kasir mengisi harga manual masing-masing
-DO $$ DECLARE m1 jsonb; m2 jsonb; BEGIN
+RESET ROLE;
+SELECT t.as_user('00000000-0000-0000-0000-000000000001');
+DO $$ BEGIN PERFORM set_config('t.fin0', (public.owner_create_staff('fin.awal@uji.id','Finance Awal','FINANCE',NULL,'Sandi1234'))->>'userId', false); END $$;
+SELECT t.as_user('00000000-0000-0000-0000-000000000002');   -- Kasir tidak boleh menerbitkan invoice korporat
+SELECT t.fails($$select public.invoice_issue(current_setting('t.rb2b')::uuid, 'KG', 10, 2000)$$, 'Finance');
+SELECT t.as_user(current_setting('t.fin0')::uuid);   -- Finance menerbitkan invoice korporat
+DO $$ DECLARE m1 jsonb; BEGIN
   m1 := public.invoice_issue(current_setting('t.rb2b')::uuid, 'KG', 10, 2000);
-  m2 := public.invoice_issue(current_setting('t.rret')::uuid, 'KG', 10, 2500);
   ASSERT (m1->>'total')::bigint = 60000, 'B2B: 10 kg ditagih minimal 30 kg x Rp2.000 = Rp60.000, dapat ' || (m1->>'total');
+END $$;
+SELECT t.as_user('00000000-0000-0000-0000-000000000002');   -- Kasir menagih retail di loket
+DO $$ DECLARE m2 jsonb; BEGIN
+  m2 := public.invoice_issue(current_setting('t.rret')::uuid, 'KG', 10, 2500);
   ASSERT (m2->>'total')::bigint = 75000, 'ritel: harga manual kasir, minimal 30 kg';
 END $$;
 RESET ROLE;
@@ -105,8 +113,10 @@ END $$;
 RESET ROLE;
 UPDATE shipments SET status = 'SORTED_INVOICED' WHERE id IN (current_setting('t.rb2b2')::uuid, current_setting('t.rret2')::uuid);
 UPDATE shipment_items SET weight_kg = 40 WHERE shipment_id IN (current_setting('t.rb2b2')::uuid, current_setting('t.rret2')::uuid);
+SELECT t.as_user(current_setting('t.fin0')::uuid);
+SELECT public.invoice_issue(current_setting('t.rb2b2')::uuid, 'KG', 40, 2000);
 SELECT t.as_user('00000000-0000-0000-0000-000000000002');
-SELECT public.invoice_issue(current_setting('t.rb2b2')::uuid, 'KG', 40, 2000), public.invoice_issue(current_setting('t.rret2')::uuid, 'KG', 40, 2500);
+SELECT public.invoice_issue(current_setting('t.rret2')::uuid, 'KG', 40, 2500);
 RESET ROLE;
 SELECT set_config('t.ib', (SELECT id::text FROM public.invoices WHERE shipment_id = current_setting('t.rb2b2')::uuid), false), set_config('t.ir', (SELECT id::text FROM public.invoices WHERE shipment_id = current_setting('t.rret2')::uuid), false);
 SELECT t.as_user(current_setting('t.finp')::uuid);

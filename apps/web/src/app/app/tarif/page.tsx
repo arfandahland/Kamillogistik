@@ -3,7 +3,7 @@ import { halamanDari } from "@/lib/halaman";
 import type { Metadata } from "next";
 import Icon from "@/components/Icon";
 import SubmitButton from "@/components/SubmitButton";
-import { requireOwner } from "@/lib/auth";
+import { requireRole } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
 import { rupiah } from "@/lib/brand";
 import { simpanRute } from "../admin-actions";
@@ -46,7 +46,7 @@ function Form({ r, places }: { r?: R; places: P[] }) {
 }
 
 export default async function Tarif({ searchParams }: { searchParams: Promise<{ ok?: string; e?: string; hal?: string }> }) {
-  await requireOwner(); const sp = await searchParams;
+  await requireRole(["SUPER_ADMIN", "OWNER"]); const sp = await searchParams;
   const [rr, pp] = await Promise.all([staffRpc<R[]>("owner_list_routes"), staffRpc<P[]>("owner_list_partners")]);
   const places = (pp.data ?? []).filter((p) => p.status === "ACTIVE");
   return (

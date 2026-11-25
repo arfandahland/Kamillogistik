@@ -55,6 +55,7 @@ const KELOLA: Record<string, PusatItem> = Object.fromEntries([
   { href: "/app/calon-mitra", icon: "send", t: "Calon mitra", d: "Pendaftar mitra dari website: hubungi, survei, dan catat statusnya." },
   { href: "/app/rekrutmen", icon: "eye", t: "Dashboard rekrutmen", d: "Pelamar masuk, alur seleksi, waktu respon, dan buka tutup lowongan per posisi." },
   { href: "/app/lamaran", icon: "copy", t: "Lamaran kerja", d: "Pelamar dari halaman karir: baca CV, hubungi lewat WhatsApp, dan catat statusnya." },
+  { href: "/app/rute-hub", icon: "ship", t: "Hub transit", d: "Atur cabang mana yang wajib singgah di hub (misalnya Makassar) dan mana yang langsung." },
   { href: "/app/tarif", icon: "calc", t: "Tarif dan rute", d: "Ubah harga, minimal berat, dan jadwal. Website langsung memakai harga baru." },
   { href: "/app/tarif/riwayat", icon: "clock", t: "Riwayat harga", d: "Siapa mengubah harga, kapan, dari berapa ke berapa." },
   { href: "/app/konten", icon: "image", t: "Konten website", d: "Unggah dan atur foto dokumentasi dan testimoni yang tampil di beranda." },
@@ -64,7 +65,7 @@ const KELOLA: Record<string, PusatItem> = Object.fromEntries([
 ].map((i) => [i.href, i]));
 const K = (...h: string[]) => h.map((x) => KELOLA[x]!).filter(Boolean);
 /** Halaman yang hanya boleh diubah Super Admin; Pemilik hanya memantau. */
-const HANYA_ADMIN = ["/app/mitra", "/app/petugas", "/app/tarif", "/app/pengaturan", "/app/korporat", "/app/calon-mitra", "/app/rekrutmen", "/app/lamaran", "/app/konten", "/app/jemput", "/app/klaim"];
+const HANYA_ADMIN = ["/app/mitra", "/app/petugas", "/app/pengaturan", "/app/korporat", "/app/calon-mitra", "/app/rekrutmen", "/app/lamaran", "/app/konten", "/app/jemput", "/app/klaim"];
 
 export function grupPusat(role: string): { judul: string; sapa: string; grup: PusatGrup[] } {
   switch (role) {
@@ -73,7 +74,7 @@ export function grupPusat(role: string): { judul: string; sapa: string; grup: Pu
         G("operasional", "Operasi", "Operasional harian", "Pantau muatan, pelanggan, dan masalah.", "truck", K("/app/ringkasan", "/app/peta", "/app/manifest", "/app/mv", "/app/tindak-lanjut", "/app/kendala", "/app/jemput", "/app/klaim", "/app/cari")),
         G("uang", "Uang", "Uang dan laporan", "Pemasukan, piutang, margin, dan komisi.", "cash", K("/app/keuangan", "/app/keuangan/belum-ditagih", "/app/tagihan", "/app/margin", "/app/laba-rugi", "/app/keuangan/komisi", "/app/keuangan/input-absen", "/app/keuangan/kehadiran", "/app/laporan")),
         G("orang", "Orang", "Orang dan mitra", "Petugas, pegawai, mitra, pelanggan, dan rekrutmen.", "users", K("/app/petugas", "/app/karyawan", "/app/pegawai", "/app/absen/qr", "/app/mitra", "/app/korporat", "/app/calon-mitra", "/app/rekrutmen", "/app/lamaran")),
-        G("sistem", "Sistem", "Harga, website, dan sistem", "Tarif, konten, pengaturan, dan catatan aktivitas.", "sliders", K("/app/tarif", "/app/tarif/riwayat", "/app/konten", "/app/pengaturan", "/app/catatan")),
+        G("sistem", "Sistem", "Harga, website, dan sistem", "Tarif, konten, pengaturan, dan catatan aktivitas.", "sliders", K("/app/tarif", "/app/rute-hub", "/app/tarif/riwayat", "/app/konten", "/app/pengaturan", "/app/catatan")),
         AKUN,
       ].map((g) => (role === "OWNER" ? { ...g, items: g.items.filter((i) => !HANYA_ADMIN.includes(i.href)) } : g)).filter((g) => g.items.length > 0);
       return { judul: "Kelola bisnis", sapa: "Semua pengaturan dikelompokkan menurut pekerjaannya. Setiap perubahan tercatat permanen.", grup };
@@ -82,7 +83,7 @@ export function grupPusat(role: string): { judul: string; sapa: string; grup: Pu
       G("kontak", "Kontak", "Pelanggan", "Jaga hubungan dan jawab pertanyaan.", "users", [DIHUBUNGI, JEMPUT, CARI]),
       G("muatan", "Muatan", "Manifest dan arus barang", "Susun manifest dan pantau barang masuk dan keluar.", "layers", [MANIFEST, ARUS]), AKUN] };
     case "DEPO": return { judul: "Pusat Depo", sapa: "Terima barang, buat resi cepat, dan susun manifest di depo Anda.", grup: [
-      G("muatan", "Muatan", "Manifest dan arus barang", "Susun manifest dan pantau barang masuk dan keluar.", "layers", [MANIFEST, ARUS, CARI]), AKUN] };
+      G("muatan", "Muatan", "Manifest dan arus barang", "Susun manifest dan pantau barang masuk dan keluar.", "layers", [TIMBANG, MANIFEST, ARUS, CARI]), AKUN] };
     case "HUB_MANAGER": return { judul: "Pusat Gudang", sapa: "Muatan, masalah, dan pelanggan cabang Anda.", grup: [
       G("gudang", "Gudang", "Muatan dan barang", "Penimbangan, sortir, dan pencarian.", "layers", [TIMBANG, SORTIR, CARI]),
       G("masalah", "Masalah", "Masalah dan pelanggan", "Yang perlu ditindaklanjuti hari ini.", "alert", [KENDALA, DIHUBUNGI, JEMPUT]), AKUN] };
@@ -100,7 +101,7 @@ export function grupPusat(role: string): { judul: string; sapa: string; grup: Pu
     case "HRD": return { judul: "Pusat HRD", sapa: "Rekrutmen dan kepegawaian.", grup: [
       G("pegawai", "Atur", "Kepegawaian", "Data dan jadwal pegawai.", "user", [{ href: "/app/karyawan", icon: "users", t: "Karyawan dan absensi", d: "Tambah karyawan per cabang, buat kode dan PIN absen, koreksi absen." }, { href: "/app/absen/qr", icon: "qr", t: "QR absensi", d: "Cetak QR resmi untuk semua cabang." }, { href: "/app/karyawan/cabang", icon: "sliders", t: "Pengaturan absen cabang", d: "Jam masuk, toleransi, radius lokasi, dan kewajiban selfie." }, { href: "/app/keuangan/kehadiran", icon: "chart", t: "Rekap kehadiran", d: "Kehadiran per cabang yang juga terbaca Finance." }, { href: "/app/pegawai?t=daftar", icon: "user", t: "Daftar pegawai", d: "Pegawai aktif dan status absen hari ini." }, { href: "/app/pegawai?t=dokumen", icon: "file", t: "Dokumen pegawai", d: "SIM, KTP, dan kontrak beserta masa berlakunya." }, { href: "/app/pegawai?t=shift", icon: "clock", t: "Shift", d: "Atur shift pagi, siang, malam, atau libur." }, { href: "/app/pegawai?t=cuti", icon: "shield", t: "Cuti dan izin", d: "Setujui atau tolak pengajuan." }, { href: "/app/pegawai?t=rekap", icon: "chart", t: "Rekap kerja", d: "Rekap per tanggal untuk penggajian, unduh CSV." }]), AKUN] };
     case "MV": case "MV_MASTER": return { judul: "Pusat MV", sapa: "Vendor, penjualan, dan pencarian.", grup: [
-      G("lain", "Lainnya", "Vendor dan penjualan", "Catatan vendor, manifest udara, dan angka penjualan.", "chart", [{ href: "/app/mv/kiriman", icon: "image", t: "Kiriman vendor", d: "Foto dan laporan dari vendor lewat link khusus, tanpa akun." }, { href: "/app/mv/vendor", icon: "users", t: "Vendor", d: "Catat vendor dan rutenya. Vendor yang sudah dicatat tersimpan otomatis." }, { href: "/app/mv/udara", icon: "plane", t: "Manifest udara", d: "Unggah dan periksa manifest udara." }, { href: "/app/mv/penjualan", icon: "chart", t: "Penjualan per cabang", d: "Dikelompokkan per cabang dan moda, dengan saring cepat." }, CARI]), AKUN] };
+      G("lain", "Lainnya", "Vendor dan penjualan", "Catatan vendor, manifest udara, dan angka penjualan.", "chart", [MANIFEST, { href: "/app/mv/kiriman", icon: "image", t: "Kiriman vendor", d: "Foto dan laporan dari vendor lewat link khusus, tanpa akun." }, { href: "/app/mv/vendor", icon: "users", t: "Vendor", d: "Catat vendor dan rutenya. Vendor yang sudah dicatat tersimpan otomatis." }, { href: "/app/mv/udara", icon: "plane", t: "Manifest udara", d: "Unggah dan periksa manifest udara." }, { href: "/app/mv/penjualan", icon: "chart", t: "Penjualan per cabang", d: "Dikelompokkan per cabang dan moda, dengan saring cepat." }, CARI]), AKUN] };
     default: return { judul: "Pusat", sapa: "", grup: [AKUN] };
   }
 }

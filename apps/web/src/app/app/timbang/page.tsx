@@ -16,7 +16,7 @@ type Info = { resiId: string; resiNo: string; status: string; barcode: string; i
 
 /** Timbang cepat: pindai barcode satu barang, isi berat dan ukurannya, simpan, lalu pindai berikutnya. Resi otomatis "Sudah ditimbang" bila semua barang tercatat. */
 export default async function Timbang({ searchParams }: { searchParams: Promise<{ kode?: string; ok?: string; e?: string }> }) {
-  await requireRole(["WAREHOUSE", "HUB_MANAGER"]);
+  await requireRole(["WAREHOUSE", "HUB_MANAGER", "DEPO"]);
   const sp = await searchParams;
   const kode = (sp.kode ?? "").trim().slice(0, 80);
   const r = kode ? await staffRpc<Info>("item_for_weighing", { p_code: kode }) : null;

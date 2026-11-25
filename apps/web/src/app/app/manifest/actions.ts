@@ -59,7 +59,7 @@ export async function terimaManifest(fd: FormData) {
 }
 export async function berangkatManifest(fd: FormData) {
   const id = str(fd, "id");
-  await hasil(id, "manifest_depart", { p_id: id, p_carrier: str(fd, "pengangkut") || null, p_departure: waktu(fd, "berangkat"), p_eta: waktu(fd, "tiba") }, "Tercatat: manifest sudah berangkat. Pelanggan melihat perkiraan tibanya.");
+  await hasil(id, "manifest_depart", { p_id: id, p_carrier: str(fd, "pengangkut") || null, p_departure: waktu(fd, "berangkat"), p_eta: waktu(fd, "tiba"), p_confirm: fd.get("lanjut") === "on" }, "Tercatat: manifest sudah berangkat. Pelanggan melihat perkiraan tibanya.");
 }
 export async function tibaManifest(fd: FormData) {
   const id = str(fd, "id");

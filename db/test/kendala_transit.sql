@@ -108,10 +108,10 @@ DO $$ BEGIN
   PERFORM public.manifest_handover_start(current_setting('t.mk')::uuid, '00000000-0000-0000-0000-000000000005');
 END $$;
 SELECT t.as_user('00000000-0000-0000-0000-000000000005');
-DO $$ BEGIN
-  PERFORM public.manifest_handover_accept(current_setting('t.mk')::uuid);
-  PERFORM public.manifest_depart(current_setting('t.mk')::uuid, 'KM Uji', now(), now() + interval '5 days');
-END $$;
+DO $$ BEGIN PERFORM public.manifest_handover_accept(current_setting('t.mk')::uuid); END $$;
+SELECT t.as_user('00000000-0000-0000-0000-00000000000c');
+DO $$ BEGIN PERFORM public.manifest_depart(current_setting('t.mk')::uuid, 'KM Uji', now(), now() + interval '5 days', true); END $$;
+SELECT t.as_user('00000000-0000-0000-0000-000000000005');
 SELECT t.fails($$select public.manifest_revise_eta(current_setting('t.mk')::uuid, now() - interval '30 days', 'cuaca buruk')$$, 'sebelum waktu berangkat');
 DO $$ BEGIN
   PERFORM set_config('t.eta', (now() + interval '8 days')::text, false);
@@ -143,11 +143,11 @@ DO $$ BEGIN
   PERFORM public.manifest_handover_start(current_setting('t.m1')::uuid, '00000000-0000-0000-0000-000000000005');
 END $$;
 SELECT t.as_user('00000000-0000-0000-0000-000000000005');
-DO $$ BEGIN
-  PERFORM public.manifest_handover_accept(current_setting('t.m1')::uuid);
-  PERFORM public.manifest_depart(current_setting('t.m1')::uuid);
-  PERFORM public.manifest_arrive(current_setting('t.m1')::uuid);
-END $$;
+DO $$ BEGIN PERFORM public.manifest_handover_accept(current_setting('t.m1')::uuid); END $$;
+SELECT t.as_user('00000000-0000-0000-0000-00000000000c');
+DO $$ BEGIN PERFORM public.manifest_depart(current_setting('t.m1')::uuid, NULL, NULL, NULL, true); END $$;
+SELECT t.as_user('00000000-0000-0000-0000-000000000005');
+DO $$ BEGIN PERFORM public.manifest_arrive(current_setting('t.m1')::uuid); END $$;
 SELECT t.fails($$select public.manifest_handover_start(current_setting('t.m1')::uuid, '00000000-0000-0000-0000-00000000000a')$$, 'Kepala gudang');
 DO $$ BEGIN PERFORM public.manifest_handover_start(current_setting('t.m1')::uuid, '00000000-0000-0000-0000-00000000000b'); END $$;
 SELECT t.as_user('00000000-0000-0000-0000-00000000000b');   -- Kepala gudang Makassar

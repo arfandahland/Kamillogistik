@@ -37,8 +37,11 @@ export default async function ManifestDetail({ params, searchParams }: { params:
   const kasirAsal = (role === "MITRA_POS" || (role as string) === "DEPO") && bn === m.origin.name; // isi, data pengangkutan, dan segel manifest ditentukan Kasir cabang asal
   const atOrigin = wh && bn === m.origin.name, atDest = wh && bn === m.dest.name;
   const sopir = role === "CONTAINER_DRIVER" || role === "HUB_MANAGER";
+  const mvRole = (role as string) === "MV" || (role as string) === "MV_MASTER"; // pengendali jadwal pengangkutan, boleh menekan Berangkat
   const cur = STEPS.indexOf(m.status);
   const modaIcon = m.mode === "UDARA" ? "plane" : m.mode === "DARAT" ? "truck" : "ship";
+  type Risk = { berisiko: boolean; belumLunas: number; tanpaInvoice: number; tanpaBiaya: boolean };
+  const risk = m.status === "SEALED" && !m.pendingTo && ((kepala && atOrigin) || mvRole) ? (await staffRpc<Risk>("manifest_depart_check", { p_id: id })).data : null;
   const [cands, dir] = await Promise.all([
     m.status === "OPEN" && kasirAsal ? staffRpc<Cand[]>("manifest_candidates", { p_id: id }).then((x) => x.data ?? []) : Promise.resolve([] as Cand[]),
     (m.status === "SEALED" && atOrigin && kepala && (m.iAmHolder || !m.holder) && !m.pendingTo) || (m.status === "ARRIVED" && sopir && m.iAmHolder && !m.pendingTo) ? staffRpc<Dir>("staff_directory").then((x) => x.data ?? []) : Promise.resolve([] as Dir),
@@ -143,9 +146,11 @@ export default async function ManifestDetail({ params, searchParams }: { params:
           </form>
         )}
 
-        {m.status === "SEALED" && !m.pendingTo && ((role === "CONTAINER_DRIVER" && m.iAmHolder) || (kepala && atOrigin)) && (
+        {m.status === "SEALED" && !m.pendingTo && ((kepala && atOrigin) || mvRole) && (
           <form action={berangkatManifest} className="card rbsek"><input type="hidden" name="id" value={m.id} />
             <h2 className="cardh">Berangkat</h2>
+            {risk?.berisiko && (<div className="err" role="alert"><b>Periksa dulu sebelum berangkat.</b><ul style={{ margin: "6px 0 0 18px" }}>{risk.belumLunas > 0 && <li>{risk.belumLunas} resi belum lunas.</li>}{risk.tanpaInvoice > 0 && <li>{risk.tanpaInvoice} resi belum ditagih.</li>}{risk.tanpaBiaya && <li>Biaya manifest belum diisi, jadi laba rugi belum bermakna.</li>}</ul>
+              <label style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 8 }}><input type="checkbox" name="lanjut" required /> Saya mengerti dan tetap memberangkatkan manifest ini.</label></div>)}
             <div className="rbf"><label className="f" htmlFor="pengangkut">{m.mode === "UDARA" ? "Nomor penerbangan" : m.mode === "DARAT" ? "Plat truk" : "Nama kapal"}</label><input id="pengangkut" name="pengangkut" defaultValue={m.carrier ?? ""} autoComplete="off" /></div>
             <div className="rbrow"><div className="rbf"><label className="f" htmlFor="berangkat">Berangkat</label><input id="berangkat" name="berangkat" type="datetime-local" defaultValue={dtl(m.departureAt)} /></div>
               <div className="rbf"><label className="f" htmlFor="tiba">Perkiraan tiba</label><input id="tiba" name="tiba" type="datetime-local" defaultValue={dtl(m.eta)} /></div></div>
@@ -169,7 +174,7 @@ export default async function ManifestDetail({ params, searchParams }: { params:
           </form>
         )}
 
-        {role === "HUB_MANAGER" && atOrigin && <BiayaManifest manifestId={m.id} kembali={`/app/manifest/${m.id}`} />}
+        {((role === "HUB_MANAGER" && atOrigin) || kasirAsal || mvRole) && <BiayaManifest manifestId={m.id} kembali={`/app/manifest/${m.id}`} peran={role as string} />}
 
         {((kasirAsal && (m.status === "OPEN" || m.status === "SEALED")) || (role === "CONTAINER_DRIVER" && m.iAmHolder && (m.status === "SEALED" || m.status === "IN_TRANSIT"))) && (
           <form action={isiVoyage} className="card rbsek">

@@ -5,8 +5,8 @@ SELECT set_config('t.m', (SELECT m.id::text FROM manifests m JOIN branches_partn
        set_config('t.fin', (SELECT id::text FROM users WHERE email = 'finance@uji.id'), false);
 DO $$ BEGIN ASSERT current_setting('t.m') <> '' AND current_setting('t.fin') <> '', 'data uji siap'; END $$;
 SELECT t.as_user('00000000-0000-0000-0000-000000000002');   -- kasir
-SELECT t.fails($$select public.manifest_cost_add(current_setting('t.m')::uuid, 'KAPAL', 1000000, 'Pelni', NULL)$$, 'izin');
-SELECT t.fails($$select public.manifest_costs_get(current_setting('t.m')::uuid)$$, 'izin');
+SELECT t.fails($$select public.manifest_cost_add(current_setting('t.m')::uuid, 'KAPAL', 1000000, 'Pelni', NULL)$$, 'Divisi MV');   -- Kasir hanya biaya armada internal
+DO $$ BEGIN ASSERT public.manifest_costs_get(current_setting('t.m')::uuid) IS NOT NULL, 'Kasir asal boleh melihat biaya manifest cabangnya'; END $$;
 SELECT t.fails($$select public.margin_report(current_date - 30, current_date)$$, 'izin');
 SELECT t.fails($$select public.manifest_revenue(current_setting('t.m')::uuid)$$, 'permission denied');
 SELECT t.as_user('00000000-0000-0000-0000-00000000000b');   -- kepala gudang Makassar (bukan asal)

@@ -20,7 +20,9 @@ END $$;
 RESET ROLE;
 UPDATE shipments SET status = 'SORTED_INVOICED' WHERE id IN (current_setting('t.bs1')::uuid, current_setting('t.bs2')::uuid);
 UPDATE shipment_items SET weight_kg = 40, l_cm = 100, w_cm = 100, h_cm = 100 WHERE shipment_id IN (current_setting('t.bs1')::uuid, current_setting('t.bs2')::uuid);
-SELECT t.as_user('00000000-0000-0000-0000-000000000002');
+SELECT t.as_user('00000000-0000-0000-0000-000000000001');
+DO $$ BEGIN PERFORM set_config('t.fin1', (public.owner_create_staff('fin.basis@uji.id','Finance Basis','FINANCE',NULL,'Sandi1234'))->>'userId', false); END $$;
+SELECT t.as_user(current_setting('t.fin1')::uuid);
 SELECT t.fails($$select public.invoice_issue(current_setting('t.bs1')::uuid, 'KG', 40, 2000)$$, 'ditagih per m3');
 DO $$ DECLARE r jsonb; BEGIN
   r := public.invoice_issue(current_setting('t.bs1')::uuid, 'M3', 1, 900000);

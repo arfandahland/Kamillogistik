@@ -40,9 +40,10 @@ export async function aturTempo(fd: FormData) {
 export async function aturHubTransit(fd: FormData) {
   const id = str(fd, "id");
   const { error } = await staffRpc("owner_set_transit_hub", { p_branch: id, p_hub: str(fd, "hub") || null });
-  if (error) go("/app/mitra", "e", error);
-  revalidatePath("/app/mitra");
-  go("/app/mitra", "ok", "Hub transit disimpan. Kiriman baru dari cabang ini akan singgah di hub tersebut.");
+  const back = str(fd, "kembali").startsWith("/app/") ? str(fd, "kembali") : "/app/mitra";
+  if (error) go(back, "e", error);
+  revalidatePath(back);
+  go(back, "ok", "Hub transit disimpan. Kiriman baru dari cabang ini akan singgah di hub tersebut.");
 }
 
 export async function simpanMitra(fd: FormData) {

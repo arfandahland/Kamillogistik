@@ -13,7 +13,7 @@ type Row = { id: string; code: string; status: string; mode: string; origin: str
 const TABS = [{ k: "", t: "Semua" }, { k: "OPEN", t: "Sedang diisi" }, { k: "SEALED", t: "Siap berangkat" }, { k: "IN_TRANSIT", t: "Di perjalanan" }, { k: "ARRIVED", t: "Sudah tiba" }, { k: "UNLOADED", t: "Selesai" }];
 
 export default async function Manifest({ searchParams }: { searchParams: Promise<{ s?: string; hal?: string }> }) {
-  await requireRole(["SUPER_ADMIN","OWNER","MITRA_POS","DEPO","HUB_MANAGER","WAREHOUSE","CONTAINER_DRIVER"]);
+  await requireRole(["SUPER_ADMIN","OWNER","MITRA_POS","DEPO","HUB_MANAGER","WAREHOUSE","CONTAINER_DRIVER","MV","MV_MASTER"]);
   const sp = await searchParams;
   const tab = TABS.find((t) => t.k === sp.s)?.k ?? "";
   const [me, r] = await Promise.all([getMe(), staffRpc<Row[]>("manifest_list", { p_status: tab || null, p_limit: 300 })]);

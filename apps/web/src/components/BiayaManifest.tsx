@@ -8,7 +8,9 @@ export type Biaya = { code: string; status: string; asal: string; tujuan: string
 export const JENIS_BIAYA: Record<string, string> = { KAPAL: "Kapal atau pengangkut", ARMADA: "Armada darat", PELABUHAN: "Pelabuhan", BONGKAR_MUAT: "Bongkar muat", LAINNYA: "Lainnya" };
 
 /** Biaya operasional dan margin satu manifest. Dipakai di halaman manifest (Kepala gudang) dan halaman Margin (Finance dan Pemilik). */
-export default async function BiayaManifest({ manifestId, kembali }: { manifestId: string; kembali: string }) {
+export default async function BiayaManifest({ manifestId, kembali, peran }: { manifestId: string; kembali: string; peran?: string }) {
+  // Kasir dan Admin depo mencatat biaya armada internal; biaya kapal dan pelabuhan diisi Divisi MV
+  const jenis = Object.entries(JENIS_BIAYA).filter(([k]) => !(["MITRA_POS", "DEPO"].includes(peran ?? "") && ["KAPAL", "PELABUHAN"].includes(k)));
   const r = await staffRpc<Biaya>("manifest_costs_get", { p_id: manifestId });
   if (!r.data) return r.error ? <div className="err">{r.error}</div> : null;
   const b = r.data;
@@ -32,7 +34,7 @@ export default async function BiayaManifest({ manifestId, kembali }: { manifestI
           <div className="tbjudul"><span className="tbno">+</span> Catat biaya baru</div>
           <div className="rbrow">
             <div className="rbf"><label className="f" htmlFor="bm-jenis">Jenis biaya</label>
-            <select id="bm-jenis" name="jenis" defaultValue="KAPAL">{Object.entries(JENIS_BIAYA).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select></div>
+            <select id="bm-jenis" name="jenis" defaultValue={jenis[0]?.[0] ?? "ARMADA"}>{jenis.map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select></div>
             <div className="rbf"><label className="f" htmlFor="bm-jumlah">Jumlah (Rp)</label><input id="bm-jumlah" name="jumlah" inputMode="numeric" required placeholder="Contoh: 1500000" autoComplete="off" /></div>
           </div>
           <div className="rbrow">

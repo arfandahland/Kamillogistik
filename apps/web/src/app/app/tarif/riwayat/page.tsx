@@ -3,7 +3,7 @@ import { halamanDari } from "@/lib/halaman";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Icon from "@/components/Icon";
-import { requireOwner } from "@/lib/auth";
+import { requireRole } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
 import { rupiah, tanggalWaktu } from "@/lib/brand";
 import BackLink from "@/components/BackLink";
@@ -19,7 +19,7 @@ function Ubah({ label, a, b, fmt = String }: { label: string; a: unknown; b: unk
 
 export default async function Riwayat({ searchParams }: { searchParams: Promise<{ hal?: string }> }) {
   const sp = await searchParams;
-  await requireOwner();
+  await requireRole(["SUPER_ADMIN", "OWNER"]);
   const r = await staffRpc<H[]>("owner_price_history", { p_limit: 150 });
   const list = r.data ?? [];
   const pg = halamanDari(list, sp.hal);

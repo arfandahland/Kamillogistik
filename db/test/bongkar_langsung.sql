@@ -18,7 +18,7 @@ DO $$ DECLARE r jsonb; BEGIN
 END $$;
 -- Kepala gudang Jakarta memberangkatkan tanpa menyerahkan ke akun sopir
 SELECT t.as_user('00000000-0000-0000-0000-00000000000f');
-DO $$ BEGIN ASSERT public.manifest_depart(current_setting('t.dm')::uuid, 'KM Tanpa Sopir', now(), now() + interval '5 days')->>'status' = 'IN_TRANSIT', 'Kepala gudang asal berangkat tanpa sopir'; END $$;
+DO $$ BEGIN ASSERT public.manifest_depart(current_setting('t.dm')::uuid, 'KM Tanpa Sopir', now(), now() + interval '5 days', true)->>'status' = 'IN_TRANSIT', 'Kepala gudang asal berangkat tanpa sopir'; END $$;
 -- Kepala gudang Makassar menandai tiba
 SELECT t.as_user('00000000-0000-0000-0000-00000000000b');
 DO $$ BEGIN ASSERT public.manifest_arrive(current_setting('t.dm')::uuid)->>'status' = 'ARRIVED', 'Kepala gudang tujuan menandai tiba'; END $$;
@@ -52,7 +52,7 @@ DO $$ DECLARE r jsonb; BEGIN
   PERFORM public.manifest_seal(current_setting('t.dm2')::uuid, 'SEG-LANGSUNG-2');
 END $$;
 SELECT t.as_user('00000000-0000-0000-0000-00000000000f');
-DO $$ BEGIN PERFORM public.manifest_depart(current_setting('t.dm2')::uuid, 'KM Tahan', now(), now() + interval '5 days'); END $$;
+DO $$ BEGIN PERFORM public.manifest_depart(current_setting('t.dm2')::uuid, 'KM Tahan', now(), now() + interval '5 days', true); END $$;
 SELECT t.as_user('00000000-0000-0000-0000-00000000000b');
 DO $$ BEGIN PERFORM public.manifest_arrive(current_setting('t.dm2')::uuid); END $$;
 RESET ROLE;
