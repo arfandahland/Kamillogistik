@@ -300,9 +300,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/manifest/[id]/page.tsx": {
-    "mtime": 1795593354.9007323,
-    "seen": 1795593454.995132,
-    "ast_hash": "430653628a4689d97c4415f9f79c4195",
+    "mtime": 1795598844.092325,
+    "seen": 1795600629.2497303,
+    "ast_hash": "48174618fa24940677eb5ecd689f3e59",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/manifest/actions.ts": {
@@ -348,9 +348,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/petugas/page.tsx": {
-    "mtime": 1795510040.7317488,
-    "seen": 1795510310.4585297,
-    "ast_hash": "e2ddc491313f9baa5c78cd12ffa884e1",
+    "mtime": 1795598859.3834684,
+    "seen": 1795600629.2502868,
+    "ast_hash": "6c49a033976d0384c227ca48bef51847",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/pindai/actions.ts": {
@@ -900,9 +900,9 @@
     "semantic_hash": ""
   },
   "db/test/run.sh": {
-    "mtime": 1795597203.1248326,
-    "seen": 1795597367.2734847,
-    "ast_hash": "b69d6e7f018e3be5abe66beac51fbddd",
+    "mtime": 1795598698.8293786,
+    "seen": 1795600629.2557967,
+    "ast_hash": "1351cda04956e96987caba9ebdefe084",
     "semantic_hash": ""
   },
   "db/test/tariff-cases.json": {
@@ -954,9 +954,9 @@
     "semantic_hash": ""
   },
   "e2e/setup.sh": {
-    "mtime": 1795597203.1223574,
-    "seen": 1795597367.273778,
-    "ast_hash": "f38176eee721b3fb7af71571ac76a78c",
+    "mtime": 1795598698.8329368,
+    "seen": 1795600629.2560632,
+    "ast_hash": "9bf77879a24b04bb53aef3b962165c58",
     "semantic_hash": ""
   },
   "e2e/skenario.cjs": {
@@ -8838,9 +8838,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/mv/alokasi/page.tsx": {
-    "mtime": 1795597297.5451522,
-    "seen": 1795597367.2676532,
-    "ast_hash": "85b40c39d44001648eadcef10062df44",
+    "mtime": 1795598844.0925872,
+    "seen": 1795600629.2499495,
+    "ast_hash": "f025d9aedf40c22f01a49da2cefefb82",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/mv/dokumen/[id]/route.ts": {
@@ -8850,9 +8850,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/mv/page.tsx": {
-    "mtime": 1795597320.7108595,
-    "seen": 1795597367.267703,
-    "ast_hash": "84ade025760e35a934c4cc97c535f6e8",
+    "mtime": 1795598859.3614075,
+    "seen": 1795600629.2499983,
+    "ast_hash": "a645249ad29bdefd7cafba00504c7bd9",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/mv/penjualan/page.tsx": {
@@ -8898,15 +8898,15 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/mv/vendor/page.tsx": {
-    "mtime": 1795499579.6284695,
-    "seen": 1795499620.403243,
-    "ast_hash": "b8c07ce8c4ff32814784e108612223ee",
+    "mtime": 1795598844.0928423,
+    "seen": 1795600629.2501855,
+    "ast_hash": "3234423eb24fedc9f20aa782a05f2df5",
     "semantic_hash": ""
   },
   "apps/web/src/components/FormDokumen.tsx": {
-    "mtime": 1795333452.6081686,
-    "seen": 1795333664.1846642,
-    "ast_hash": "fd89a4182a56539a0e40c77e69f378d7",
+    "mtime": 1795598859.3641484,
+    "seen": 1795600629.2515163,
+    "ast_hash": "a916ace9a88c4b50adc074c72a4b9541",
     "semantic_hash": ""
   },
   "apps/web/src/components/FotoDokumen.tsx": {
@@ -8934,9 +8934,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/lib/mv.ts": {
-    "mtime": 1795499551.4961667,
-    "seen": 1795499620.4081047,
-    "ast_hash": "026f53cf66fe161ca5ccb75dc16779c3",
+    "mtime": 1795598844.091173,
+    "seen": 1795600629.2533388,
+    "ast_hash": "fa49d61b71e085fae8223edbd931449e",
     "semantic_hash": ""
   },
   "apps/web/src/lib/mvdata.ts": {
@@ -9000,9 +9000,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/lib/panduanAwal.ts": {
-    "mtime": 1795597327.1374142,
-    "seen": 1795597367.271213,
-    "ast_hash": "dbda52e5d7e82dbe939362fbc3e387c0",
+    "mtime": 1795598849.5768187,
+    "seen": 1795600629.2534301,
+    "ast_hash": "113a8c9d76006b6d44ebd807a387e9e4",
     "semantic_hash": ""
   },
   "docs/panduan-penggunaan.html": {
@@ -9693,6 +9693,18 @@
     "mtime": 1795595137.2618444,
     "seen": 1795597367.2730649,
     "ast_hash": "ddd8f14fad64de210955fac63fd58a14",
+    "semantic_hash": ""
+  },
+  "db/migrations/088_mv_wilayah_hpp_penjualan.sql": {
+    "mtime": 1795597203.1137297,
+    "seen": 1795600629.2551486,
+    "ast_hash": "a55d06c8db9ccf5803b44aaee84dec9c",
+    "semantic_hash": ""
+  },
+  "db/test/mv_wilayah_hpp.sql": {
+    "mtime": 1795597273.8209877,
+    "seen": 1795600629.2556083,
+    "ast_hash": "12f5a660d05ee43072d98b42ffb936c7",
     "semantic_hash": ""
   },
   "package-lock.json": {
