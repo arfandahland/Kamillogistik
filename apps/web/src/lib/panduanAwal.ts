@@ -99,11 +99,9 @@ export const TUR: Record<string, LangkahTur[]> = {
     AKUN,
   ],
   MV_MASTER: [
-    { judul: "Selamat datang, MV Master", teks: "Anda mengelola vendor dan alokasi semua cabang. Ikuti langkah singkat ini." },
-    { judul: "Verifikasi vendor", teks: "Vendor yang dicatat MV langsung bisa dipakai. Anda menandainya Terverifikasi, melengkapi rutenya, atau menonaktifkannya.", sasaran: ["a[href='/app/mv/vendor']"], tuju: { href: "/app/mv/vendor", label: "Buka Vendor" } },
+    { judul: "Selamat datang, MV Master", teks: "Anda memantau semua cabang. Akun ini hanya untuk melihat; alokasi, HPP, dan vendor dikerjakan MV tiap kota." },
     { judul: "Semua cabang", teks: "Alokasi, HPP, pemantauan wilayah, dan SJ tampil untuk semua cabang. Saring per cabang bila perlu.", sasaran: ["a[href='/app/mv/alokasi']"] },
-    { judul: "Penjualan per cabang", teks: "Penjualan Jakarta, Makassar, dan Surabaya terpisah. Gunakan Bandingkan cabang untuk melihat berdampingan.", sasaran: ["a[href='/app/mv/penjualan']"] },
-    { judul: "Pengecualian", teks: "Hanya Anda yang bisa membuka kunci HPP dan menyetujui unggah foto tanpa kamera, dengan alasan yang tercatat." },
+    { judul: "Bandingkan antar kota", teks: "Penjualan, modal (HPP), dan margin Jakarta, Makassar, dan Surabaya berdampingan.", sasaran: ["a[href='/app/mv/penjualan?b=1']"] },
     AKUN,
   ],
 };

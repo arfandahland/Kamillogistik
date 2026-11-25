@@ -11,7 +11,7 @@ export const metadata: Metadata = { title: "Divisi MV" };
 
 export default async function BerandaMV({ searchParams }: { searchParams: Promise<{ ok?: string; e?: string }> }) {
   const me = await requireRole(MV_BACA); const sp = await searchParams;
-  const finance = me.role === "FINANCE", master = me.role === "SUPER_ADMIN" || me.role === "MV_MASTER";
+  const finance = me.role === "FINANCE", master = me.role === "MV_MASTER";
   const [aktif, usulan, belum, sj, kir_] = await Promise.all([
     staffRpc<Vendor[]>("mv_vendor_list", { p_status: "AKTIF" }),
     staffRpc<Vendor[]>("mv_vendor_list", { p_status: "BELUM_VERIFIKASI" }),
@@ -35,16 +35,15 @@ export default async function BerandaMV({ searchParams }: { searchParams: Promis
     { href: "/app/mv/kiriman", icon: "image", t: "Kiriman vendor", d: kir2 },
     { href: "/app/mv/sj", icon: "file", t: "SJ balik", d: "Pantau surat jalan yang harus kembali, terima, dan serahkan ke Finance." },
     { href: "/app/mv/udara", icon: "layers", t: "Manifest udara", d: "Unggah daftar manifest udara (CSV atau PDF) dan cek kecocokan nomor resinya." },
-    { href: "/app/mv/vendor", icon: "users", t: "Vendor", d: "Daftar vendor dan rutenya. Vendor baru yang Anda catat diverifikasi MV Master." },
+    { href: "/app/mv/vendor", icon: "users", t: "Vendor", d: "Daftar vendor dan rutenya. Vendor yang Anda catat langsung aktif dan terverifikasi oleh Anda sendiri." },
   ];
-  // MV Master: pengawas pusat, bukan pekerjaan harian kota
+  // MV Master: pemantau lintas cabang, hanya melihat
   const menuMaster = [
-    { href: "/app/mv/vendor?s=DIUSULKAN", icon: "shield", t: "Verifikasi vendor", d: "Vendor yang dicatat MV tiap kota menunggu Anda tandai Terverifikasi, lengkapi rutenya, atau nonaktifkan." },
-    { href: "/app/mv/vendor", icon: "users", t: "Master vendor dan pembayaran", d: "Semua vendor semua kota, tagihan vendor, dan pembayaran HPP ke vendor." },
     { href: "/app/mv/penjualan?b=1", icon: "chart", t: "Bandingkan antar kota", d: "Penjualan, modal (HPP), dan margin Jakarta, Makassar, dan Surabaya berdampingan." },
-    { href: "/app/mv/alokasi", icon: "truck", t: "Alokasi semua kota", d: "Pantau alokasi dan HPP semua kota. Hanya Anda yang bisa membuka kunci HPP yang sudah dicocokkan Finance." },
-    { href: "/app/mv/tracking?m=DARAT", icon: "pin", t: "Kiriman semua kota", d: "Darat, laut, dan udara per wilayah, bisa disaring per kota." },
-    { href: "/app/mv/sj", icon: "file", t: "SJ balik semua kota", d: "Surat jalan balik yang terlambat di kota mana pun." },
+    { href: "/app/mv/tracking?m=DARAT", icon: "pin", t: "Kiriman semua kota", d: "Darat, laut, dan udara per wilayah, bisa disaring per kota. Hanya lihat." },
+    { href: "/app/mv/alokasi", icon: "truck", t: "Alokasi dan HPP semua kota", d: "Melihat vendor dan HPP yang diisi MV tiap kota. Hanya lihat." },
+    { href: "/app/mv/vendor", icon: "users", t: "Daftar vendor semua kota", d: "Vendor dan rutenya yang dicatat MV tiap kota. Hanya lihat." },
+    { href: "/app/mv/sj", icon: "file", t: "SJ balik semua kota", d: "Surat jalan balik yang terlambat di kota mana pun. Hanya lihat." },
   ];
   const menuFinance = [
     { href: "/app/mv/vendor", icon: "users", t: "Vendor dan tagihan vendor", d: "Daftar vendor dan pembayaran HPP." },
@@ -53,8 +52,8 @@ export default async function BerandaMV({ searchParams }: { searchParams: Promis
     { href: "/app/keuangan/sj", icon: "file", t: "SJ dari MV", d: "Surat jalan balik yang sudah diserahkan MV ke Finance." },
   ];
   const menu = finance ? menuFinance : master ? menuMaster : menuMV;
-  const judul = master ? "MV Master (pusat)" : finance ? "Divisi MV" : `Divisi MV ${kota}`.trim();
-  const sub = master ? "Mengawasi semua kota: verifikasi vendor, pembayaran vendor, dan perbandingan margin. Pekerjaan harian dikerjakan MV tiap kota."
+  const judul = master ? "MV Master (pemantau)" : finance ? "Divisi MV" : `Divisi MV ${kota}`.trim();
+  const sub = master ? "Memantau semua kota dan membandingkan margin. Hanya melihat: alokasi, HPP, dan vendor dikerjakan MV tiap kota."
     : finance ? "Vendor, HPP, dan penjualan untuk pencocokan keuangan."
     : `Kiriman keluar dari ${kota || "cabang Anda"}: pilih vendor, isi HPP, dan pantau penjualan serta margin.`;
   return (
@@ -63,7 +62,7 @@ export default async function BerandaMV({ searchParams }: { searchParams: Promis
       <MvPesan ok={sp.ok} e={sp.e} galat={[galat]} />
       <StatRow items={[
         { ikon: "truck", n: aktif.data ? aktif.data.length : "-", label: "Vendor aktif", href: "/app/mv/vendor?s=AKTIF" },
-        { ikon: "clock", n: usulan.data ? usulan.data.length : "-", label: "Vendor belum diverifikasi", sub: master ? "Perlu Anda verifikasi" : "Diverifikasi MV Master", warm: true, href: "/app/mv/vendor?s=DIUSULKAN" },
+        { ikon: "clock", n: usulan.data ? usulan.data.length : "-", label: "Vendor belum diverifikasi", sub: master ? "Dipantau saja" : "Anda verifikasi sendiri", warm: true, href: "/app/mv/vendor?s=DIUSULKAN" },
         { ikon: "alert", n: belum.data ? (nBelum >= 200 ? "200+" : nBelum) : "-", label: "Resi belum diberi vendor", warm: true, href: "/app/mv/alokasi?st=BELUM" },
         { ikon: "file", n: finance ? "-" : sj.data ? sj.data.terlambat : "-", label: "SJ terlambat", warm: true, href: finance ? "/app/keuangan/sj" : "/app/mv/sj?st=TERLAMBAT" },
       ]} />

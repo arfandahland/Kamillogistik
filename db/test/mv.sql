@@ -15,28 +15,31 @@ DO $$ BEGIN
   ASSERT (SELECT branch_id IS NULL FROM public.employee_profiles WHERE user_id = current_setting('t.mvs')::uuid), 'MV Master tanpa cabang';
 END $$;
 
--- vendor: MV mengusulkan, hanya MV Master memverifikasi
+-- vendor: MV cabang mencatat dan langsung terverifikasi sendiri; MV Master hanya melihat
 SELECT t.as_user(current_setting('t.mvj')::uuid);
 DO $$ DECLARE v jsonb; BEGIN
   v := public.mv_vendor_save(NULL, 'PT Armada Nusantara', 'DARAT', 'Pak Budi', '0812-1111-2222', NULL, 'Jl. Raya 1', 'BCA', '123', NULL);
   PERFORM set_config('t.v1', v->>'id', false);
-  ASSERT (SELECT x->>'status' FROM jsonb_array_elements(public.mv_vendor_list()) x WHERE x->>'id' = current_setting('t.v1')) = 'AKTIF' AND NOT (SELECT (x->>'verified')::boolean FROM jsonb_array_elements(public.mv_vendor_list()) x WHERE x->>'id' = current_setting('t.v1')), 'vendor MV langsung aktif tetapi belum diverifikasi';
-  ASSERT jsonb_array_length(public.mv_vendor_list(NULL, 'BELUM_VERIFIKASI')) >= 1, 'saring belum diverifikasi';
+  ASSERT (SELECT x->>'status' FROM jsonb_array_elements(public.mv_vendor_list()) x WHERE x->>'id' = current_setting('t.v1')) = 'AKTIF' AND (SELECT (x->>'verified')::boolean FROM jsonb_array_elements(public.mv_vendor_list()) x WHERE x->>'id' = current_setting('t.v1')), 'vendor MV langsung aktif dan terverifikasi sendiri';
   ASSERT (SELECT x->>'phone' FROM jsonb_array_elements(public.mv_vendor_list()) x WHERE x->>'id' = current_setting('t.v1')) = '6281211112222', 'nomor dinormalkan';
   PERFORM public.mv_vendor_route_save(current_setting('t.v1')::uuid, 'DARAT', NULL, 'DARAT-JAWA', 'Fuso');
 END $$;
-SELECT t.fails($$select public.mv_vendor_set_status(current_setting('t.v1')::uuid, 'AKTIF')$$, 'izin');
 SELECT t.fails($$select public.mv_vendor_save(NULL, 'X', 'DARAT', NULL, NULL, NULL, NULL, NULL, NULL, NULL)$$, 'Nama vendor');
 SELECT t.fails($$select public.mv_vendor_route_save(current_setting('t.v1')::uuid, 'UDARA', NULL, NULL, NULL)$$, 'tidak bisa diberi rute');
 SELECT t.fails($$select public.mv_vendor_route_save(current_setting('t.v1')::uuid, 'DARAT', NULL, 'UDARA-KALIMANTAN', NULL)$$, 'Wilayah tidak sesuai');
 SELECT t.as_user(current_setting('t.mvm')::uuid);            -- MV cabang lain tidak boleh mengubah usulan orang lain
-SELECT t.fails($$select public.mv_vendor_save(current_setting('t.v1')::uuid, 'Ganti Nama', 'DARAT', NULL, NULL, NULL, NULL, NULL, NULL, NULL)$$, 'vendor miliknya');
-SELECT t.as_user(current_setting('t.mvs')::uuid);
+SELECT t.fails($$select public.mv_vendor_save(current_setting('t.v1')::uuid, 'Ganti Nama', 'DARAT', NULL, NULL, NULL, NULL, NULL, NULL, NULL)$$, 'cabangnya sendiri');
+SELECT t.fails($$select public.mv_vendor_set_status(current_setting('t.v1')::uuid, 'AKTIF')$$, 'cabang lain');
+SELECT t.as_user(current_setting('t.mvs')::uuid);   -- MV Master hanya memantau
+SELECT t.fails($$select public.mv_vendor_set_status(current_setting('t.v1')::uuid, 'AKTIF')$$, 'izin');
+SELECT t.fails($$select public.mv_vendor_save(NULL, 'Vendor Master', 'DARAT', NULL, NULL, NULL, NULL, NULL, NULL, NULL)$$, 'izin');
+SELECT t.as_user(current_setting('t.mvj')::uuid);
 DO $$ BEGIN
+  PERFORM public.mv_vendor_set_status(current_setting('t.v1')::uuid, 'NONAKTIF');
   PERFORM public.mv_vendor_set_status(current_setting('t.v1')::uuid, 'AKTIF');
-  ASSERT (SELECT (x->>'verified')::boolean FROM jsonb_array_elements(public.mv_vendor_list()) x WHERE x->>'id' = current_setting('t.v1')), 'MV Master memverifikasi';
-  ASSERT (SELECT count(*) FROM jsonb_array_elements(public.mv_regions()) x WHERE x->>'mode' = 'DARAT') = 6, 'enam wilayah darat';
-  ASSERT (SELECT count(*) FROM jsonb_array_elements(public.mv_regions()) x WHERE x->>'mode' = 'UDARA') = 6, 'enam wilayah udara';
+  ASSERT (SELECT (x->>'verified')::boolean FROM jsonb_array_elements(public.mv_vendor_list()) x WHERE x->>'id' = current_setting('t.v1')), 'MV cabang memverifikasi sendiri';
+  ASSERT (SELECT count(*) FROM jsonb_array_elements(public.mv_regions()) x WHERE x->>'mode' = 'DARAT') = 4, 'empat wilayah darat aktif';
+  ASSERT (SELECT count(*) FROM jsonb_array_elements(public.mv_regions()) x WHERE x->>'mode' = 'UDARA') = 4, 'empat wilayah udara aktif';
   ASSERT (SELECT count(*) FROM jsonb_array_elements(public.mv_regions()) x WHERE x->>'mode' = 'LAUT') = 6, 'enam wilayah laut';
 END $$;
 SELECT t.fails($$select public.mv_vendor_set_status(current_setting('t.v1')::uuid, 'DITOLAK')$$, 'alasan');
@@ -80,7 +83,7 @@ END $$;
 -- vendor belum aktif tidak boleh dipakai; vendor aktif dengan rute Jatim boleh
 SELECT t.as_user(current_setting('t.mvj')::uuid);
 DO $$ BEGIN PERFORM set_config('t.v2', (public.mv_vendor_save(NULL, 'CV Belum Aktif', 'DARAT', NULL, NULL, NULL, NULL, NULL, NULL, NULL))->>'id', false); END $$;
-SELECT t.as_user(current_setting('t.mvs')::uuid);
+SELECT t.as_user(current_setting('t.mvj')::uuid);
 DO $$ BEGIN PERFORM public.mv_vendor_set_status(current_setting('t.v2')::uuid, 'NONAKTIF'); END $$;
 SELECT t.as_user(current_setting('t.mvj')::uuid);
 SELECT t.fails($$select public.mv_alloc_save(current_setting('t.ra')::uuid, current_setting('t.v2')::uuid, false, NULL, NULL, NULL)$$, 'dinonaktifkan');
@@ -127,10 +130,13 @@ END $$;
 -- Finance mengunci HPP
 SELECT t.as_user(current_setting('t.fin')::uuid);
 DO $$ BEGIN PERFORM public.hpp_match(current_setting('t.al')::uuid, true); END $$;
-SELECT t.fails($$select public.hpp_match(current_setting('t.al')::uuid, false, 'mau buka kunci')$$, 'Hanya MV Master');
+SELECT t.fails($$select public.hpp_match(current_setting('t.al')::uuid, false, 'mau buka kunci')$$, 'Super Admin');
 SELECT t.as_user(current_setting('t.mvj')::uuid);
 SELECT t.fails($$select public.mv_alloc_set_hpp(current_setting('t.al')::uuid, 810000, 'ubah setelah dikunci')$$, 'terkunci');
 SELECT t.as_user(current_setting('t.mvs')::uuid);
+SELECT t.fails($$select public.hpp_match(current_setting('t.al')::uuid, false, 'mau buka')$$, 'izin');
+SELECT t.fails($$select public.mv_alloc_set_hpp(current_setting('t.al')::uuid, 1, 'master tidak boleh')$$, 'izin');
+SELECT t.as_user('00000000-0000-0000-0000-000000000001');
 SELECT t.fails($$select public.hpp_match(current_setting('t.al')::uuid, false)$$, 'alasan');
 DO $$ BEGIN PERFORM public.hpp_match(current_setting('t.al')::uuid, false, 'Salah kunci, koreksi tagihan'); PERFORM public.mv_alloc_set_hpp(current_setting('t.al')::uuid, 810000, 'Koreksi setelah dibuka'); END $$;
 
@@ -189,7 +195,7 @@ DO $$ DECLARE d jsonb; ph text := 'data:image/jpeg;base64,' || encode(convert_to
   ASSERT (SELECT bool_or(x->>'source' = 'UNGGAH') FROM jsonb_array_elements(public.mv_doc_list(current_setting('t.ra')::uuid)) x), 'dokumen unggah ditandai';
 END $$;
 SELECT t.fails($$select public.mv_doc_add(current_setting('t.ra')::uuid, 'KONDISI_TIBA', 'KAMERA', current_setting('t.foto'), now())$$, 'sudah pernah dipakai');
-SELECT t.as_user(current_setting('t.mvs')::uuid);   -- MV Master boleh pengecualian unggah dengan alasan
+SELECT t.as_user('00000000-0000-0000-0000-000000000001');   -- Super Admin boleh pengecualian unggah dengan alasan
 DO $$ BEGIN PERFORM public.mv_doc_add(current_setting('t.ra')::uuid, 'KONDISI_TIBA', 'UNGGAH', 'data:image/jpeg;base64,' || encode(convert_to(random()::text, 'UTF8'), 'base64'), NULL, NULL, NULL, 'Pelabuhan tanpa sinyal kamera'); END $$;
 SELECT t.as_user(current_setting('t.mvm')::uuid);
 SELECT t.fails($$select public.mv_doc_list(current_setting('t.ra')::uuid)$$, 'tidak ditemukan');
@@ -222,7 +228,7 @@ DO $$ DECLARE tr jsonb; s jsonb; BEGIN
   tr := public.mv_tracking('UDARA', 'UDARA-KALIMANTAN');
   ASSERT EXISTS (SELECT 1 FROM jsonb_array_elements(tr->'items') x WHERE x->>'shipmentId' = current_setting('t.rc')), 'tracking udara Kalimantan memuat resi Pontianak';
   tr := public.mv_tracking('DARAT');
-  ASSERT (SELECT count(*) FROM jsonb_array_elements(tr->'regions')) = 6, 'enam wilayah darat';
+  ASSERT (SELECT count(*) FROM jsonb_array_elements(tr->'regions')) = 4, 'empat wilayah darat aktif';
   ASSERT (SELECT (x->>'jumlah')::int FROM jsonb_array_elements(tr->'regions') x WHERE x->>'code' = 'DARAT-JAWA') >= 1, 'ada resi Jawa';
   ASSERT NOT EXISTS (SELECT 1 FROM jsonb_array_elements(tr->'items') x WHERE x->>'regionCode' = 'DARAT-BALI'), 'resi Bali (asal Makassar) tidak terlihat MV Jakarta';
   s := public.mv_sales();

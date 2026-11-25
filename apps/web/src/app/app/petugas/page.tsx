@@ -29,7 +29,7 @@ export default async function Petugas({ searchParams }: { searchParams: Promise<
           <label className="f">Peran</label>
           <select name="peran" defaultValue="DRIVER">{PERAN_BARU.map((k) => <option key={k} value={k}>{k === "SUPER_ADMIN" ? "Admin pusat (akses penuh)" : ROLE_LABEL[k]}</option>)}</select>
           <p className="hint">{PERAN_TANPA_CABANG.map((k) => `${k === "SUPER_ADMIN" ? "Admin pusat" : ROLE_LABEL[k]}: ${PERAN_KETERANGAN[k]}`).join(" ")}</p>
-          <label className="f">Bekerja di (kosongkan untuk Admin pusat, HRD, dan Konten)</label>
+          <label className="f">Bekerja di (wajib untuk MV, Kasir, Admin depo, gudang, dan kurir; kosongkan hanya untuk Admin pusat, Pemilik, Finance, HRD, Konten, dan MV Master)</label>
           <select name="cabang" defaultValue=""><option value="">Tidak terikat cabang</option>{branches.map((b) => <option key={b.id} value={b.id}>{b.name} ({b.city})</option>)}</select>
           <label className="f">Sandi sementara</label><input name="sandi" autoComplete="off" placeholder="Minimal 8, ada huruf dan angka" required />
           <p className="hint">Beri tahu sandi ini kepada petugas, lalu minta mereka menggantinya lewat menu Akun.</p>

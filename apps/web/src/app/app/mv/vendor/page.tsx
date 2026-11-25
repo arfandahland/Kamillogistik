@@ -50,13 +50,13 @@ export default async function VendorMV({ searchParams }: { searchParams: Promise
   const [r, cabang, wilayah, tg] = await Promise.all([staffRpc<Vendor[]>("mv_vendor_list", { p_status: s || null, p_kind: j || null }), daftarCabang(), daftarWilayah(), staffRpc<TagihanVendor[]>("mv_vendor_payables", {})]);
   const tagihan = new Map((tg.data ?? []).map((x) => [x.vendorId, x]));
   const totalBelum = (tg.data ?? []).reduce((a, x) => a + Number(x.belumLunas), 0), totalLunas = (tg.data ?? []).reduce((a, x) => a + Number(x.lunas), 0);
-  const bisaBayar = ["FINANCE", "SUPER_ADMIN", "MV_MASTER"].includes(me.role);
-  const tulis = MV_TULIS.includes(me.role), master = me.role === "SUPER_ADMIN" || me.role === "MV_MASTER";
+  const bisaBayar = ["FINANCE", "SUPER_ADMIN"].includes(me.role);
+  const tulis = MV_TULIS.includes(me.role), master = me.role === "SUPER_ADMIN";
   const back = href("/app/mv/vendor", { s, j });
   const list = r.data ?? [];
   const kartu = (v: Vendor) => {
     const st = VENDOR_STATUS[v.status] ?? { label: v.status, kelas: "" };
-    const bisaUbah = tulis && (master || (v.mine === true && !v.verified));
+    const bisaUbah = tulis && (master || v.mine === true);
     return (
       <Ringkas key={v.id} judul={v.name}
         ringkas={<span className="mvsum"><span className={`pill ${st.kelas}`}>{st.label}</span>{v.status === "AKTIF" && <span className={`pill ${v.verified ? "done" : "warn"}`}>{v.verified ? "Terverifikasi" : "Belum diverifikasi"}</span>}<span>{VENDOR_JENIS[v.kind] ?? v.kind}{v.contact ? ` · ${v.contact}` : ""}</span>
@@ -110,9 +110,9 @@ export default async function VendorMV({ searchParams }: { searchParams: Promise
           </form>
         )}
         {bisaUbah && <Ringkas judul="Ubah data vendor" className="mvdalam"><FormVendor v={v} back={back} /></Ringkas>}
-        {tulis && !master && !bisaUbah && <p className="hint">MV hanya bisa mengubah vendor yang Anda catat sendiri dan belum diverifikasi MV Master.</p>}
+        {tulis && !master && !bisaUbah && <p className="hint">Vendor ini dicatat MV lain. Anda hanya bisa mengubah vendor cabang Anda sendiri.</p>}
         {(v.used ?? 0) > 0 && <p className="hint">Sudah dipakai {v.used} kali di alokasi.</p>}
-        {master && (
+        {bisaUbah && (
           <div className="mvact">
             {(v.status !== "AKTIF" || !v.verified) && <form action={ubahStatusVendor}><input type="hidden" name="back" value={back} /><input type="hidden" name="id" value={v.id} /><input type="hidden" name="status" value="AKTIF" /><SubmitButton className="btn green" steps={["Memverifikasi…"]}>{v.status === "AKTIF" ? "Verifikasi" : "Aktifkan"}</SubmitButton></form>}
             {v.status === "AKTIF" && <form action={ubahStatusVendor}><input type="hidden" name="back" value={back} /><input type="hidden" name="id" value={v.id} /><input type="hidden" name="status" value="NONAKTIF" /><SubmitButton className="btn ghost" steps={["Menonaktifkan…"]}>Nonaktifkan</SubmitButton></form>}
@@ -129,7 +129,7 @@ export default async function VendorMV({ searchParams }: { searchParams: Promise
   return (
     <main className="wrap stack" style={{ paddingTop: 8 }}>
       <BackLink href="/app/mv" ke="beranda MV" />
-      <div className="pghead"><div><h1>Vendor</h1><p className="muted">Mitra pengangkut darat, laut, dan udara. Usulan baru aktif setelah diverifikasi MV Master.</p></div></div>
+      <div className="pghead"><div><h1>Vendor</h1><p className="muted">Mitra pengangkut darat, laut, dan udara. Vendor yang dicatat MV langsung aktif dan terverifikasi oleh MV cabangnya. MV Master hanya memantau.</p></div></div>
       <MvPesan ok={sp.ok} e={sp.e} galat={[r.error, tg.error]} />
       <section className="card" aria-label="Ringkasan tagihan vendor"><dl className="infogrid"><div><dt>Belum dibayar ke vendor</dt><dd>{rp(totalBelum)}</dd></div><div><dt>Sudah dibayar</dt><dd>{rp(totalLunas)}</dd></div></dl></section>
       <div className="fchips" role="tablist" aria-label="Status">{STATUS.map(([k, t]) => <Link key={k} href={href("/app/mv/vendor", { s: k, j })} className={`fchip ${s === k ? "on" : ""}`}>{t}</Link>)}</div>

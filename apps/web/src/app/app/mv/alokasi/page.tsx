@@ -28,7 +28,7 @@ export default async function Alokasi({ searchParams }: { searchParams: Promise<
   const me = await requireRole(MV_BACA); const sp = await searchParams;
   const m = pilih(sp.m, ["DARAT", "LAUT", "UDARA"] as const), st = pilih(sp.st, ALOK_FILTER.map((x) => x[0]).filter(Boolean) as string[]);
   const c = uuidOk(sp.c) ? sp.c : "", w = (sp.w ?? "").replace(/[^A-Z-]/g, ""), q = (sp.q ?? "").trim().slice(0, 40), r = uuidOk(sp.r) ? sp.r : "";
-  const banyakCabang = MV_SEMUA_CABANG.includes(me.role), tulis = MV_TULIS.includes(me.role), master = me.role === "SUPER_ADMIN" || me.role === "MV_MASTER";
+  const banyakCabang = MV_SEMUA_CABANG.includes(me.role), tulis = MV_TULIS.includes(me.role), master = me.role === "SUPER_ADMIN";
   const listP = staffRpc<ResiAlokasi[]>("mv_alloc_list", { p_branch: c || null, p_mode: m || null, p_status: st || null, p_region: w || null, p_q: q || null, p_limit: 80 });
   type Legs = { legs: { id: string; leg: number; vendor: string; hpp: number | null; status: string }[]; totalHpp: number };
   const [list, vend, cabang, wilayah, rwy, dok, lv, legsR] = await Promise.all([
@@ -118,7 +118,7 @@ export default async function Alokasi({ searchParams }: { searchParams: Promise<
           <div className="mvkotak" aria-label="Pembayaran ke vendor">
             <b>Pembayaran ke vendor</b>
             <p style={{ margin: 0 }}><span className={`pill ${a.paidAt ? "done" : "warn"}`}>{a.paidAt ? `Lunas · ${tanggalWaktu(a.paidAt)}` : "Belum lunas"}</span> {rp(a.hpp)}{a.paidRef ? <small> · Ref {a.paidRef}</small> : null}</p>
-            {["FINANCE", "SUPER_ADMIN", "MV_MASTER"].includes(me.role) && (
+            {["FINANCE", "SUPER_ADMIN"].includes(me.role) && (
               <form action={tandaiLunasVendor} className="mvform">
                 <input type="hidden" name="back" value={backR} /><input type="hidden" name="alloc" value={a.id} /><input type="hidden" name="lunas" value={a.paidAt ? "0" : "1"} />
                 {!a.paidAt && <div className="rbf"><label className="f">Nomor referensi transfer (boleh kosong)</label><input name="ref" maxLength={120} /></div>}
@@ -143,7 +143,7 @@ export default async function Alokasi({ searchParams }: { searchParams: Promise<
           {tulis && a && lanjut && (
             <form action={ubahStatusAlokasi}><input type="hidden" name="back" value={back} /><input type="hidden" name="alloc" value={a.id} /><input type="hidden" name="status" value={lanjut[0]} /><SubmitButton className="btn" steps={["Menyimpan status…"]}>{lanjut[1]}</SubmitButton></form>
           )}
-          {a && x.mode === "DARAT" && a.hpp != null && !a.locked && ["FINANCE", "SUPER_ADMIN", "MV_MASTER"].includes(me.role) && (
+          {a && x.mode === "DARAT" && a.hpp != null && !a.locked && ["FINANCE", "SUPER_ADMIN"].includes(me.role) && (
             <form action={kunciHpp}><input type="hidden" name="back" value={back} /><input type="hidden" name="alloc" value={a.id} /><input type="hidden" name="kunci" value="1" /><SubmitButton className="btn green" steps={["Mengunci HPP…"]}><Icon name="lock" size={18} /> Sudah dicocokkan (kunci HPP)</SubmitButton></form>
           )}
         </div>

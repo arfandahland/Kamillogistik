@@ -4,7 +4,7 @@ export const MV_ROLES = ["MV", "MV_MASTER"] as const;
 /** Peran yang boleh membuka halaman MV (membaca). */
 export const MV_BACA = ["SUPER_ADMIN", "OWNER", "MV", "MV_MASTER", "FINANCE"];
 /** Peran yang boleh mengubah data MV. */
-export const MV_TULIS = ["SUPER_ADMIN", "MV", "MV_MASTER"];
+export const MV_TULIS = ["SUPER_ADMIN", "MV"]; // MV Master hanya memantau
 /** Peran yang melihat semua cabang (boleh memilih cabang di filter). */
 export const MV_SEMUA_CABANG = ["SUPER_ADMIN", "OWNER", "MV_MASTER", "FINANCE"];
 

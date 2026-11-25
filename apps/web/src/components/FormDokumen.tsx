@@ -5,7 +5,7 @@ import SubmitButton from "./SubmitButton";
 import { tambahDokumen } from "@/app/app/mv/actions";
 import { DOK_JENIS } from "@/lib/mv";
 
-/** Tambah foto dokumen pengiriman. Serah terima dan kondisi tiba wajib kamera, kecuali MV Master dan Super Admin (unggah dengan alasan). */
+/** Tambah foto dokumen pengiriman. Serah terima dan kondisi tiba wajib kamera, kecuali Super Admin (unggah dengan alasan). */
 export default function FormDokumen({ shipment, back, master }: { shipment: string; back: string; master: boolean }) {
   const [jenis, setJenis] = useState("SERAH_BARANG");
   const bolehUnggah = master || jenis === "SJ_BALIK" || jenis === "LAINNYA";

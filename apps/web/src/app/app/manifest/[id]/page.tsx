@@ -37,7 +37,7 @@ export default async function ManifestDetail({ params, searchParams }: { params:
   const kasirAsal = (role === "MITRA_POS" || (role as string) === "DEPO") && bn === m.origin.name; // isi, data pengangkutan, dan segel manifest ditentukan Kasir cabang asal
   const atOrigin = wh && bn === m.origin.name, atDest = wh && bn === m.dest.name;
   const sopir = role === "CONTAINER_DRIVER" || role === "HUB_MANAGER";
-  const mvRole = (role as string) === "MV" || (role as string) === "MV_MASTER"; // pengendali jadwal pengangkutan, boleh menekan Berangkat
+  const mvRole = (role as string) === "MV"; // pengendali jadwal pengangkutan, boleh menekan Berangkat
   const cur = STEPS.indexOf(m.status);
   const modaIcon = m.mode === "UDARA" ? "plane" : m.mode === "DARAT" ? "truck" : "ship";
   type Risk = { berisiko: boolean; belumLunas: number; tanpaInvoice: number; tanpaBiaya: boolean };
