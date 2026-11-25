@@ -93,7 +93,7 @@ export const TUR: Record<string, LangkahTur[]> = {
   MV: [
     { judul: "Selamat datang, MV", teks: "Anda mengelola vendor dan biaya angkut cabang Anda. Ikuti langkah singkat ini." },
     { judul: "Alokasi dan HPP", teks: "Untuk tiap resi, ketik nama vendor atau pilih armada internal. Vendor baru otomatis tercatat dan riwayat pemakaiannya tersimpan. Isi HPP untuk pengiriman darat.", sasaran: ["a[href='/app/mv/alokasi']"], tuju: { href: "/app/mv/alokasi", label: "Buka Alokasi" } },
-    { judul: "Pantau per wilayah", teks: "Pantau resi darat, udara, dan laut menurut wilayah tujuan. Sentuh nomor resi untuk melihat detailnya.", sasaran: ["a[href='/app/mv/tracking']"] },
+    { judul: "Pantau per wilayah", teks: "Lihat kiriman darat, laut, dan udara per wilayah tujuan, lengkap dengan penjualan, modal (HPP), dan margin tiap resi.", sasaran: ["a[href='/app/mv/tracking']"] },
     { judul: "Surat jalan balik", teks: "Catat SJ yang kembali, terbitkan tanda terima, lalu serahkan ke Finance. SJ yang terlambat ditandai merah.", sasaran: ["a[href='/app/mv/sj']"] },
     { judul: "Foto dokumen", teks: "Foto serah terima dan kondisi barang wajib diambil dengan kamera di aplikasi, bukan dari galeri. Foto lama ditolak.", tuju: { href: "/app/mv/alokasi", label: "Lihat alokasi" } },
     AKUN,

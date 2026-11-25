@@ -27,7 +27,7 @@ export default function StaffShell({ me, pending, children, forceFull }: { me: M
     : me.role === "CS_SALES"
     ? [{ href: "/app", label: "Beranda", icon: "home" }, { href: "/app/jemput", label: "Jemput", icon: "truck" }, { href: "/app/klaim", label: "Klaim", icon: "shield" }]
     : me.role === "MV" || me.role === "MV_MASTER"
-    ? [{ href: "/app/mv", label: "Beranda", icon: "home" }, { href: "/app/mv/alokasi", label: "Alokasi", icon: "truck", also: ["/app/mv/vendor"] }, { href: "/app/mv/tracking", label: "Pantau", icon: "pin" }, { href: "/app/mv/sj", label: "SJ", icon: "file", also: ["/app/mv/tanda-terima"] }]
+    ? [{ href: "/app/mv", label: "Beranda", icon: "home" }, { href: "/app/mv/alokasi", label: "Alokasi", icon: "truck", also: ["/app/mv/vendor"] }, { href: "/app/mv/tracking", label: "Kiriman", icon: "pin" }, { href: "/app/mv/sj", label: "SJ", icon: "file", also: ["/app/mv/tanda-terima"] }]
     : owner
     ? [{ href: "/app", label: "Pantauan", icon: "chart" }, { href: "/app/semua", label: "Resi", icon: "list" }]
     : me.role === "KONTEN"

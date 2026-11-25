@@ -54,7 +54,8 @@ export default async function Alokasi({ searchParams }: { searchParams: Promise<
   const wil = wilayah.filter((x) => !m || x.mode === m);
   const kartu = (x: ResiAlokasi) => {
     const a = x.alloc, buka = x.shipmentId === r;
-    const margin = x.mode === "DARAT" && x.tagihan && a?.hpp ? x.tagihan - a.hpp : null;
+    const totalHpp = (x as unknown as { totalHpp?: number | null }).totalHpp ?? a?.hpp ?? null;
+    const margin = x.tagihan && totalHpp ? x.tagihan - totalHpp : null;
     const statusTeks = ALOK_STATUS[a?.status ?? "DRAFT"] ?? a?.status;
     const vendorTeks = !a ? "Belum diatur" : a.internal ? "Armada internal" : a.vendor ?? "Belum dipilih";
     const lanjut = a ? (a.status === "HPP_DIISI" || (a.status === "VENDOR_DIPILIH" && x.mode !== "DARAT") ? ["BERANGKAT", "Tandai berangkat"] : LANJUT[a.status]) : undefined;

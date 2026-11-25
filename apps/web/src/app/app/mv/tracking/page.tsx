@@ -9,11 +9,12 @@ import { requireRole } from "@/lib/auth";
 import { staffRpc } from "@/lib/supabase/server";
 import { tanggalWaktu } from "@/lib/brand";
 import { daftarCabang } from "@/lib/mvdata";
-import { MODA_IKON, MODA_NAMA, MV_BACA, MV_SEMUA_CABANG, href, pilih, uuidOk } from "@/lib/mv";
+import { MODA_IKON, MODA_NAMA, MV_BACA, MV_SEMUA_CABANG, href, pilih, rp, uuidOk } from "@/lib/mv";
 
 export const metadata: Metadata = { title: "Pemantauan Resi" };
-type Item = { shipmentId: string; resiNo: string; status: string; origin: string; dest: string; destProvince: string | null; destRegency: string | null; region: string; regionCode: string; createdAt: string; lokasi: string | null; lokasiAt: string | null; vendor: string | null };
-type Trk = { regions: { code: string; label: string; jumlah: number }[]; items: Item[] };
+type Item = { shipmentId: string; resiNo: string; status: string; origin: string; dest: string; destProvince: string | null; destRegency: string | null; region: string; regionCode: string; createdAt: string; lokasi: string | null; tagihan?: number | null; hpp?: number | null; lokasiAt: string | null; vendor: string | null };
+type Rgk = { resi: number; tagihan: number; hpp: number; tanpaHpp: number };
+type Trk = { ringkasan?: Rgk; regions: { code: string; label: string; jumlah: number }[]; items: Item[] };
 
 export default async function Tracking({ searchParams }: { searchParams: Promise<{ hal?: string; m?: string; w?: string; c?: string; q?: string; e?: string; ok?: string }> }) {
   const me = await requireRole(MV_BACA); const sp = await searchParams;
@@ -32,7 +33,7 @@ export default async function Tracking({ searchParams }: { searchParams: Promise
   return (
     <main className="wrap stack" style={{ paddingTop: 8 }}>
       <BackLink href="/app/mv" ke="beranda MV" />
-      <div className="pghead"><div><h1>Pemantauan {nama}</h1><p className="muted">Resi {nama} yang masih berjalan, menuju {cakupan || "wilayah pemantauan"}.{detailLaut ? ` Untuk Sulawesi Utara: ${detailLaut}.` : ""}</p></div></div>
+      <div className="pghead"><div><h1>Kiriman {nama} per wilayah</h1><p className="muted">Resi {nama} yang masih berjalan, menuju {cakupan || "wilayah pemantauan"}.{detailLaut ? ` Untuk Sulawesi Utara: ${detailLaut}.` : ""}</p></div></div>
       <MvPesan ok={sp.ok} e={sp.e} galat={[r.error]} />
       <div className="fchips" role="tablist" aria-label="Moda">
         {(["DARAT", "UDARA", "LAUT"] as const).map((k) => <Link key={k} href={href("/app/mv/tracking", { m: k, c, q })} className={`fchip ${m === k ? "on" : ""}`}><Icon name={MODA_IKON[k] ?? "truck"} size={18} /> {MODA_NAMA[k]}</Link>)}
@@ -44,6 +45,17 @@ export default async function Tracking({ searchParams }: { searchParams: Promise
               <b>{x.jumlah}</b><span>{x.label.replace(/ \(.*\)$/, "")}</span>{w === x.code && <small>Disaring. Sentuh lagi untuk melepas.</small>}
             </Link>
           ))}
+        </div>
+      )}
+      {r.data?.ringkasan && (
+        <div className="card">
+          <dl className="infogrid">
+            <div><dt>Resi</dt><dd>{r.data.ringkasan.resi.toLocaleString("id-ID")}</dd></div>
+            <div><dt>Penjualan (tagihan)</dt><dd>{rp(r.data.ringkasan.tagihan)}</dd></div>
+            <div><dt>Modal (HPP)</dt><dd>{rp(r.data.ringkasan.hpp)}</dd></div>
+            <div><dt>Margin kasar</dt><dd>{rp(r.data.ringkasan.tagihan - r.data.ringkasan.hpp)}</dd></div>
+          </dl>
+          {r.data.ringkasan.tanpaHpp > 0 && <p className="hint" style={{ margin: 0 }}>{r.data.ringkasan.tanpaHpp} resi belum diisi HPP, jadi margin masih terlalu tinggi. <Link href="/app/mv/alokasi?st=BELUM">Isi HPP</Link></p>}
         </div>
       )}
       <form method="get" action="/app/mv/tracking" className="card mvfilter">
@@ -62,6 +74,11 @@ export default async function Tracking({ searchParams }: { searchParams: Promise
             <small className="muted">Wilayah {x.region}{x.destProvince ? ` · ${x.destRegency ? x.destRegency + ", " : ""}${x.destProvince}` : ""}</small>
             <small>Lokasi terakhir: <b>{x.lokasi ?? "belum tercatat"}</b>{x.lokasiAt ? ` · ${tanggalWaktu(x.lokasiAt)}` : ""}</small>
             <small>Vendor: <b>{x.vendor ?? "belum dipilih"}</b></small>
+            <dl className="infogrid tiga" style={{ margin: 0 }}>
+              <div><dt>Penjualan</dt><dd>{x.tagihan != null ? rp(x.tagihan) : "belum ditagih"}</dd></div>
+              <div><dt>Modal (HPP)</dt><dd>{x.hpp != null ? rp(x.hpp) : <Link href={`/app/mv/alokasi?q=${encodeURIComponent(x.resiNo)}`}>Isi HPP</Link>}</dd></div>
+              <div><dt>Margin</dt><dd>{x.tagihan != null && x.hpp != null ? rp(x.tagihan - x.hpp) : "-"}</dd></div>
+            </dl>
           </div>
         ))} />
       )}

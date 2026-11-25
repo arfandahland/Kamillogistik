@@ -330,9 +330,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/page.tsx": {
-    "mtime": 1795485549.2812047,
-    "seen": 1795486047.6010401,
-    "ast_hash": "3eca3ac37980a8b4aca7b29bcafe0290",
+    "mtime": 1795595453.6020687,
+    "seen": 1795595652.3084884,
+    "ast_hash": "325b9afa3e2d800e3c64a2e237450996",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/pengaturan/page.tsx": {
@@ -378,9 +378,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/resi/[id]/page.tsx": {
-    "mtime": 1795591501.5750835,
-    "seen": 1795591578.4221368,
-    "ast_hash": "21f95ac457071ccf820d60b8df85b407",
+    "mtime": 1795595303.58477,
+    "seen": 1795595652.3087368,
+    "ast_hash": "d6b434ebef54f4b89b43002157ff7add",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/ringkasan/page.tsx": {
@@ -900,9 +900,9 @@
     "semantic_hash": ""
   },
   "db/test/run.sh": {
-    "mtime": 1795593322.7319493,
-    "seen": 1795593455.0009353,
-    "ast_hash": "8fd64adde403d61856347f44dfd5af9d",
+    "mtime": 1795595450.6544518,
+    "seen": 1795595652.3141322,
+    "ast_hash": "6777cdd114e3690b55a2c0f781cde080",
     "semantic_hash": ""
   },
   "db/test/tariff-cases.json": {
@@ -954,9 +954,9 @@
     "semantic_hash": ""
   },
   "e2e/setup.sh": {
-    "mtime": 1795593322.7319493,
-    "seen": 1795593455.0012314,
-    "ast_hash": "c17729a0e619ef20959c622ce1fc3b99",
+    "mtime": 1795595450.6575422,
+    "seen": 1795595652.314376,
+    "ast_hash": "abae0be618406791d8a7bf06cbd57c15",
     "semantic_hash": ""
   },
   "e2e/skenario.cjs": {
@@ -1542,8 +1542,8 @@
     "semantic_hash": ""
   },
   "db/test/security.sql": {
-    "mtime": 1795499180.763463,
-    "seen": 1795499476.032917,
+    "mtime": 1795595080.607618,
+    "seen": 1795595652.3141496,
     "ast_hash": "0c14639d91579e271cb190cceb215bf3",
     "semantic_hash": ""
   },
@@ -1926,9 +1926,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/PeranDashboard.tsx": {
-    "mtime": 1795416650.163106,
-    "seen": 1795416671.6474164,
-    "ast_hash": "1981eaacc6d933fff16f74a0f0fb8c43",
+    "mtime": 1795595450.6741729,
+    "seen": 1795595652.310845,
+    "ast_hash": "f9897e7d4b954f77b6f4d7a23009dfb8",
     "semantic_hash": ""
   },
   "apps/web/src/components/TargetForm.tsx": {
@@ -9036,9 +9036,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/lib/pusat.ts": {
-    "mtime": 1795572341.24297,
-    "seen": 1795572649.8582866,
-    "ast_hash": "764c01661dfb70e5f0345d4bbde6bb05",
+    "mtime": 1795595308.4985995,
+    "seen": 1795595652.3118758,
+    "ast_hash": "ba8b0a48c5f23c1c56e9417677c2e5d2",
     "semantic_hash": ""
   },
   "db/migrations/056_data_awal_lengkap.sql": {
@@ -9524,7 +9524,7 @@
   "db/test/depo.sql": {
     "mtime": 1795566309.9693713,
     "seen": 1795572649.860094,
-    "ast_hash": "06945974308f5f8d11a504da24d7ea3b",
+    "ast_hash": "",
     "semantic_hash": ""
   },
   "db/migrations/074_manifest_detail_moda.sql": {
@@ -9645,6 +9645,36 @@
     "mtime": 1795591475.9898407,
     "seen": 1795592336.9040108,
     "ast_hash": "1c26241d63698e821fc9bc1c5b948a19",
+    "semantic_hash": ""
+  },
+  "apps/web/src/app/app/cod/actions.ts": {
+    "mtime": 1795595295.0886083,
+    "seen": 1795595652.3070536,
+    "ast_hash": "58109719f774e36d0aa6c83bf05c2016",
+    "semantic_hash": ""
+  },
+  "apps/web/src/app/app/cod/page.tsx": {
+    "mtime": 1795595313.6163824,
+    "seen": 1795595652.3070562,
+    "ast_hash": "65cfa02181b642616041688d1dd02278",
+    "semantic_hash": ""
+  },
+  "db/migrations/084_manifest_basis_resi.sql": {
+    "mtime": 1795593274.0997553,
+    "seen": 1795595652.313499,
+    "ast_hash": "9969f8ffc684010d2ef80ac7a8b9b425",
+    "semantic_hash": ""
+  },
+  "db/migrations/085_serah_kurir_massal.sql": {
+    "mtime": 1795593322.7268367,
+    "seen": 1795595652.3135011,
+    "ast_hash": "6bbb3580df3d882d7b480579718b86c7",
+    "semantic_hash": ""
+  },
+  "db/test/serah_massal.sql": {
+    "mtime": 1795593322.7282376,
+    "seen": 1795595652.3141513,
+    "ast_hash": "844cb268e53dd7b7347536b6d2dfd909",
     "semantic_hash": ""
   },
   "package-lock.json": {

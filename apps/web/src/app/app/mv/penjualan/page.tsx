@@ -11,9 +11,9 @@ import { daftarWilayah } from "@/lib/mvdata";
 import { MODA_NAMA, MV_BACA, href, pilih, rp, uuidOk } from "@/lib/mv";
 
 export const metadata: Metadata = { title: "Penjualan per Cabang" };
-type Cab = { id: string; city: string; resi: number; total: number; lunas: number; belumLunas: number; modes: Record<string, { resi: number; total: number }> };
+type Cab = { id: string; city: string; resi: number; total: number; hpp?: number | null; lunas: number; belumLunas: number; modes: Record<string, { resi: number; total: number }> };
 type Jual = { mine: string | null; from: string; to: string; branches: Cab[] };
-type Baris = { resiNo: string; at: string; mode: string; status: string; total: number | null; invoiceStatus: string | null };
+type Baris = { hpp?: number | null; resiNo: string; at: string; mode: string; status: string; total: number | null; invoiceStatus: string | null };
 const PERIODE = [["7", "7 hari"], ["30", "30 hari"], ["bulan", "Bulan ini"]] as const;
 const BAYAR: Record<string, string> = { PAID: "Lunas", UNPAID: "Belum lunas", PARTIAL: "Dibayar sebagian" };
 
@@ -30,7 +30,9 @@ function Isi({ b }: { b: Cab }) {
     <>
       <dl className="infogrid">
         <div><dt>Jumlah resi</dt><dd>{b.resi.toLocaleString("id-ID")}</dd></div>
-        <div><dt>Total tagihan</dt><dd>{rp(b.total)}</dd></div>
+        <div><dt>Penjualan (tagihan)</dt><dd>{rp(b.total)}</dd></div>
+        <div><dt>Modal (HPP)</dt><dd>{b.hpp != null ? rp(b.hpp) : "hanya cabang sendiri"}</dd></div>
+        <div><dt>Margin kasar</dt><dd>{b.hpp != null ? rp(b.total - b.hpp) : "-"}</dd></div>
         <div><dt>Lunas</dt><dd>{rp(b.lunas)}</dd></div>
         <div><dt>Belum lunas</dt><dd>{rp(b.belumLunas)}</dd></div>
       </dl>
@@ -66,7 +68,7 @@ export default async function Penjualan({ searchParams }: { searchParams: Promis
           {rincian?.error && <div className="err">{rincian.error}</div>}
           {(rincian?.data ?? []).length === 0 && !rincian?.error ? <p className="muted">Tidak ada resi pada periode ini.</p> : (
             <Daftar p={sp.hal} path="/app/mv/penjualan" params={{ p: sp.p, m: sp.m, w: sp.w, c: sp.c, b: sp.b, k1: sp.k1, k2: sp.k2, k3: sp.k3, ok: sp.ok, e: sp.e }} kelas="mvrute" satuan="resi" tag="ul" items={(rincian?.data ?? []).map((x) => (
-              <li key={x.resiNo}><span><b className="mvno">{x.resiNo}</b><small>{tanggal(x.at)} · {MODA_NAMA[x.mode] ?? x.mode} · {x.total != null ? rp(x.total) : "belum ada tagihan"}{x.invoiceStatus ? ` · ${BAYAR[x.invoiceStatus] ?? x.invoiceStatus}` : ""}</small></span></li>
+              <li key={x.resiNo}><span><b className="mvno">{x.resiNo}</b><small>{tanggal(x.at)} · {MODA_NAMA[x.mode] ?? x.mode} · {x.total != null ? rp(x.total) : "belum ada tagihan"}{x.hpp != null ? ` · HPP ${rp(x.hpp)}${x.total != null ? ` · margin ${rp(x.total - x.hpp)}` : ""}` : ""}{x.invoiceStatus ? ` · ${BAYAR[x.invoiceStatus] ?? x.invoiceStatus}` : ""}</small></span></li>
             ))} />
           )}
         </div>

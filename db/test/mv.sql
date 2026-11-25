@@ -23,7 +23,7 @@ DO $$ DECLARE v jsonb; BEGIN
   ASSERT (SELECT x->>'status' FROM jsonb_array_elements(public.mv_vendor_list()) x WHERE x->>'id' = current_setting('t.v1')) = 'AKTIF' AND NOT (SELECT (x->>'verified')::boolean FROM jsonb_array_elements(public.mv_vendor_list()) x WHERE x->>'id' = current_setting('t.v1')), 'vendor MV langsung aktif tetapi belum diverifikasi';
   ASSERT jsonb_array_length(public.mv_vendor_list(NULL, 'BELUM_VERIFIKASI')) >= 1, 'saring belum diverifikasi';
   ASSERT (SELECT x->>'phone' FROM jsonb_array_elements(public.mv_vendor_list()) x WHERE x->>'id' = current_setting('t.v1')) = '6281211112222', 'nomor dinormalkan';
-  PERFORM public.mv_vendor_route_save(current_setting('t.v1')::uuid, 'DARAT', NULL, 'DARAT-JATIM', 'Fuso');
+  PERFORM public.mv_vendor_route_save(current_setting('t.v1')::uuid, 'DARAT', NULL, 'DARAT-JAWA', 'Fuso');
 END $$;
 SELECT t.fails($$select public.mv_vendor_set_status(current_setting('t.v1')::uuid, 'AKTIF')$$, 'izin');
 SELECT t.fails($$select public.mv_vendor_save(NULL, 'X', 'DARAT', NULL, NULL, NULL, NULL, NULL, NULL, NULL)$$, 'Nama vendor');
@@ -36,8 +36,8 @@ DO $$ BEGIN
   PERFORM public.mv_vendor_set_status(current_setting('t.v1')::uuid, 'AKTIF');
   ASSERT (SELECT (x->>'verified')::boolean FROM jsonb_array_elements(public.mv_vendor_list()) x WHERE x->>'id' = current_setting('t.v1')), 'MV Master memverifikasi';
   ASSERT (SELECT count(*) FROM jsonb_array_elements(public.mv_regions()) x WHERE x->>'mode' = 'DARAT') = 6, 'enam wilayah darat';
-  ASSERT (SELECT count(*) FROM jsonb_array_elements(public.mv_regions()) x WHERE x->>'mode' = 'UDARA') = 1, 'satu wilayah udara';
-  ASSERT (SELECT count(*) FROM jsonb_array_elements(public.mv_regions()) x WHERE x->>'mode' = 'LAUT') = 2, 'dua wilayah laut';
+  ASSERT (SELECT count(*) FROM jsonb_array_elements(public.mv_regions()) x WHERE x->>'mode' = 'UDARA') = 6, 'enam wilayah udara';
+  ASSERT (SELECT count(*) FROM jsonb_array_elements(public.mv_regions()) x WHERE x->>'mode' = 'LAUT') = 6, 'enam wilayah laut';
 END $$;
 SELECT t.fails($$select public.mv_vendor_set_status(current_setting('t.v1')::uuid, 'DITOLAK')$$, 'alasan');
 -- peran lain tidak punya akses
@@ -74,7 +74,7 @@ DO $$ DECLARE l jsonb; BEGIN
   ASSERT EXISTS (SELECT 1 FROM jsonb_array_elements(l) x WHERE x->>'shipmentId' = current_setting('t.ra')), 'MV Jakarta melihat resinya';
   ASSERT NOT EXISTS (SELECT 1 FROM jsonb_array_elements(l) x WHERE x->>'shipmentId' = current_setting('t.rb')), 'MV Jakarta tidak melihat resi asal Makassar';
   ASSERT (SELECT count(*) FROM jsonb_array_elements(public.mv_alloc_list(NULL,'DARAT')) ) >= 1, 'filter moda';
-  ASSERT EXISTS (SELECT 1 FROM jsonb_array_elements(public.mv_alloc_list(NULL,NULL,NULL,'DARAT-JATIM')) x WHERE x->>'shipmentId' = current_setting('t.ra')), 'filter wilayah Jatim memuat resi A';
+  ASSERT EXISTS (SELECT 1 FROM jsonb_array_elements(public.mv_alloc_list(NULL,NULL,NULL,'DARAT-JAWA')) x WHERE x->>'shipmentId' = current_setting('t.ra')), 'filter wilayah Jawa memuat resi A';
   ASSERT NOT EXISTS (SELECT 1 FROM jsonb_array_elements(public.mv_alloc_list(NULL,NULL,NULL,'DARAT-BALI')) x WHERE x->>'shipmentId' = current_setting('t.ra')), 'filter wilayah Bali tidak memuat resi A';
 END $$;
 -- vendor belum aktif tidak boleh dipakai; vendor aktif dengan rute Jatim boleh
@@ -223,7 +223,7 @@ DO $$ DECLARE tr jsonb; s jsonb; BEGIN
   ASSERT EXISTS (SELECT 1 FROM jsonb_array_elements(tr->'items') x WHERE x->>'shipmentId' = current_setting('t.rc')), 'tracking udara Kalimantan memuat resi Pontianak';
   tr := public.mv_tracking('DARAT');
   ASSERT (SELECT count(*) FROM jsonb_array_elements(tr->'regions')) = 6, 'enam wilayah darat';
-  ASSERT (SELECT (x->>'jumlah')::int FROM jsonb_array_elements(tr->'regions') x WHERE x->>'code' = 'DARAT-JATIM') >= 1, 'ada resi Jatim';
+  ASSERT (SELECT (x->>'jumlah')::int FROM jsonb_array_elements(tr->'regions') x WHERE x->>'code' = 'DARAT-JAWA') >= 1, 'ada resi Jawa';
   ASSERT NOT EXISTS (SELECT 1 FROM jsonb_array_elements(tr->'items') x WHERE x->>'regionCode' = 'DARAT-BALI'), 'resi Bali (asal Makassar) tidak terlihat MV Jakarta';
   s := public.mv_sales();
   ASSERT jsonb_array_length(s->'branches') >= 2, 'semua cabang tampil untuk MV';
