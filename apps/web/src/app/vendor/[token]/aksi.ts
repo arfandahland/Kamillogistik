@@ -9,9 +9,12 @@ export async function kirimVendor(fd: FormData) {
   const s = (k: string) => String(fd.get(k) ?? "").trim();
   const alasan = s("alasan");
   const catatan = [s("catatan"), s("sumber") === "UNGGAH" && alasan ? `(Diunggah dari galeri: ${alasan})` : ""].filter(Boolean).join(" ");
-  const { error } = await publicRpcResult("vendor_link_submit", {
-    p_token: token, p_kind: s("jenis"), p_note: catatan || null, p_photo: s("foto") || null, p_name: s("nama"), p_phone: s("telepon") || null,
-  }, /link|foto|laporan|nama|telepon|batas|jenis|berlaku|huruf/i);
+  const tampil = /link|foto|laporan|nama|telepon|batas|jenis|berlaku|huruf|terima|lunas|berangkat|tujuan|selesai|penerima|terkunci/i;
+  const { error } = s("jenis") === "BUKTI_TERIMA"
+    ? await publicRpcResult("vendor_link_deliver", { p_token: token, p_receiver: s("penerima"), p_photo: s("foto") || null, p_note: catatan || null, p_name: s("nama"), p_phone: s("telepon") || null }, tampil)
+    : await publicRpcResult("vendor_link_submit", {
+      p_token: token, p_kind: s("jenis"), p_note: catatan || null, p_photo: s("foto") || null, p_name: s("nama"), p_phone: s("telepon") || null,
+    }, tampil);
   if (error) redirect(`/vendor/${token}?e=${encodeURIComponent(error)}`);
   redirect(`/vendor/${token}?ok=1`);
 }

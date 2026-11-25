@@ -35,7 +35,7 @@ type Detail = {
   invoice: { invoiceNo: string; total: number; status: string; dueDate: string | null; billingRule?: string | null; tempoDays?: number | null; hardcopyAt?: string | null; calc: any } | null;
 };
 
-type Pod = { receiverName: string; photo: string; signature: string; signedAt: string; lat: number | null; lng: number | null; by: string | null };
+type Pod = { source?: string; receiverName: string; photo: string; signature: string; signedAt: string; lat: number | null; lng: number | null; by: string | null };
 
 export default async function ResiDetail({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ e?: string; ok?: string }> }) {
   const { id } = await params;
@@ -268,7 +268,7 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
             </dl>
             <div className="podgrid">
               <figure><img src={pod.photo} alt={`Foto barang diterima ${pod.receiverName}`} /><figcaption>Foto barang</figcaption></figure>
-              <figure><img className="sigimg" src={pod.signature} alt={`Tanda tangan ${pod.receiverName}`} /><figcaption>Tanda tangan</figcaption></figure>
+              {pod.source === "VENDOR" ? <p className="hint">Dikonfirmasi pengangkut lewat link khusus, tanpa tanda tangan.</p> : <figure><img className="sigimg" src={pod.signature} alt={`Tanda tangan ${pod.receiverName}`} /><figcaption>Tanda tangan</figcaption></figure>}
             </div>
           </Ringkas>
         )}
