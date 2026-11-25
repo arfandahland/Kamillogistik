@@ -216,12 +216,14 @@ export default async function ResiDetail({ params, searchParams }: { params: Pro
         {(() => {
           const sudah = s.items.filter((x) => x.weightKg != null).length;
           const kg = s.items.reduce((a, x) => a + Number(x.weightKg ?? 0), 0);
-          const ringkasan = `${s.items.length} barang · total ${kg.toLocaleString("id-ID")} kg · ${sudah} sudah ditimbang`;
+          const kubik = s.companyBasis === "M3"; // akun kubikasi: tanpa kolom kilogram
+          const m3 = s.items.reduce((a, x) => a + (Number(x.lCm ?? 0) * Number(x.wCm ?? 0) * Number(x.hCm ?? 0)) / 1e6, 0);
+          const ringkasan = kubik ? `${s.items.length} barang · total ${m3.toLocaleString("id-ID", { maximumFractionDigits: 4 })} m³ · ${sudah} sudah diukur` : `${s.items.length} barang · total ${kg.toLocaleString("id-ID")} kg · ${sudah} sudah ditimbang`;
           const baris = s.items.map((it, i) => (
             <div className="brs" key={it.barcode}>
               <span className="tbn">{i + 1}</span>
               <span className="bk"><b>…{it.barcode.slice(-6)}</b><small>{it.barcode}{it.note ? ` · ${it.note}` : ""}</small></span>
-              <span className={`bst ${it.weightKg != null ? "sudah" : "tunda"}`}>{it.weightKg != null ? `${Number(it.weightKg).toLocaleString("id-ID")} kg` : "belum ditimbang"}</span>
+              <span className={`bst ${it.weightKg != null ? "sudah" : "tunda"}`}>{it.weightKg != null ? (s.companyBasis === "M3" ? `${((Number(it.lCm ?? 0) * Number(it.wCm ?? 0) * Number(it.hCm ?? 0)) / 1e6).toLocaleString("id-ID", { maximumFractionDigits: 4 })} m³` : `${Number(it.weightKg).toLocaleString("id-ID")} kg`) : "belum ditimbang"}</span>
             </div>
           ));
           return s.items.length > 3

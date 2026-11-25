@@ -246,7 +246,7 @@ DO $$ DECLARE s record; a uuid; BEGIN
   SELECT id, mode, origin_id INTO s FROM public.shipments WHERE mode IN ('LAUT','UDARA') AND status NOT IN ('DELIVERED','CANCELLED') LIMIT 1;
   ASSERT s.id IS NOT NULL, 'ada resi laut atau udara untuk uji sinkron';
   INSERT INTO public.shipment_allocations(shipment_id, mode, branch_id, internal_fleet, status) VALUES (s.id, s.mode, s.origin_id, true, 'VENDOR_DIPILIH')
-    ON CONFLICT (shipment_id, mode) DO UPDATE SET status = 'VENDOR_DIPILIH' RETURNING id INTO a;
+    ON CONFLICT (shipment_id, mode, leg_no) DO UPDATE SET status = 'VENDOR_DIPILIH' RETURNING id INTO a;
   UPDATE public.shipments SET status = 'IN_TRANSIT_SEA' WHERE id = s.id;
   ASSERT (SELECT status FROM public.shipment_allocations WHERE id = a) = 'BERANGKAT', 'alokasi ikut berangkat saat manifest berangkat';
   UPDATE public.shipments SET status = 'DELIVERED' WHERE id = s.id;

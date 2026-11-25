@@ -12,7 +12,7 @@ import BackLink from "@/components/BackLink";
 export const metadata: Metadata = { title: "Timbang Barang" };
 export const dynamic = "force-dynamic";
 type Info = { resiId: string; resiNo: string; status: string; barcode: string; index: number; total: number; weighed: number; weightKg: number | null; lCm: number | null; wCm: number | null; hCm: number | null;
-  mode: string; items: { barcode: string; weightKg: number | null }[]; receiver: string; destCity: string; pieces: number; contents: string | null; estWeightKg: number | null; packaging: string | null; fragile: boolean; declaredValue: number | null; note: string | null; bisa: boolean };
+  mode: string; basis?: string | null; items: { barcode: string; weightKg: number | null; cbm?: number | null }[]; receiver: string; destCity: string; pieces: number; contents: string | null; estWeightKg: number | null; packaging: string | null; fragile: boolean; declaredValue: number | null; note: string | null; bisa: boolean };
 
 /** Timbang cepat: pindai barcode satu barang, isi berat dan ukurannya, simpan, lalu pindai berikutnya. Resi otomatis "Sudah ditimbang" bila semua barang tercatat. */
 export default async function Timbang({ searchParams }: { searchParams: Promise<{ kode?: string; ok?: string; e?: string }> }) {
@@ -26,7 +26,7 @@ export default async function Timbang({ searchParams }: { searchParams: Promise<
     <main className="wrap narrow section stack tbpage">
       <BackLink />
       <header className="pghead">
-        <div><h1>Timbang barang</h1><p className="muted">Pindai barcode satu barang, isi berat dan ukurannya, simpan. Ulangi sampai semua barang resi tertimbang.</p></div>
+        <div><h1>Timbang barang</h1><p className="muted">Pindai barcode satu barang, isi berat dan ukurannya (akun kubikasi: ukuran saja), simpan. Ulangi sampai semua barang resi terukur.</p></div>
       </header>
       {sp.ok && <div className="ok" role="status">{sp.ok}</div>}
       {(sp.e || r?.error) && <div className="err" role="alert">{sp.e ?? r?.error}</div>}
@@ -61,8 +61,8 @@ export default async function Timbang({ searchParams }: { searchParams: Promise<
               <div className="banner">Barang ini tidak bisa ditimbang sekarang (sudah masuk manifest atau sudah punya invoice, atau belum tiba di gudang ini).</div>
             ) : (
               <>
-                {d.weightKg != null && <p className="hint" style={{ marginTop: 0 }}>Sudah tercatat {Number(d.weightKg).toLocaleString("id-ID")} kg. Simpan lagi untuk memperbaiki.</p>}
-                <TimbangForm key={d.barcode} kode={d.barcode} mode={d.mode} sisa={Math.max(0, d.total - d.weighed)} awal={{ berat: d.weightKg, l: d.lCm, w: d.wCm, h: d.hCm }} />
+                {d.weightKg != null && <p className="hint" style={{ marginTop: 0 }}>Sudah tercatat {d.basis === "M3" ? `${(((d.lCm ?? 0) * (d.wCm ?? 0) * (d.hCm ?? 0)) / 1e6).toLocaleString("id-ID", { maximumFractionDigits: 4 })} m³` : `${Number(d.weightKg).toLocaleString("id-ID")} kg`}. Simpan lagi untuk memperbaiki.</p>}
+                <TimbangForm key={d.barcode} kode={d.barcode} mode={d.mode} basis={d.basis ?? null} sisa={Math.max(0, d.total - d.weighed)} awal={{ berat: d.weightKg, l: d.lCm, w: d.wCm, h: d.hCm }} />
               </>
             )}
           </section>
@@ -75,7 +75,7 @@ export default async function Timbang({ searchParams }: { searchParams: Promise<
                   <Link href={`/app/timbang?kode=${encodeURIComponent(x.barcode)}`}>
                     <span className="tbn">{i + 1}</span>
                     <span className="tbc"><b>Barang {i + 1}</b><small>{x.barcode}</small></span>
-                    <span className={`tbs ${x.weightKg != null ? "ok" : ""}`}>{x.weightKg != null ? `${Number(x.weightKg).toLocaleString("id-ID")} kg` : "Belum"}</span>
+                    <span className={`tbs ${x.weightKg != null ? "ok" : ""}`}>{x.weightKg != null ? (d.basis === "M3" ? `${Number(x.cbm ?? 0).toLocaleString("id-ID", { maximumFractionDigits: 4 })} m³` : `${Number(x.weightKg).toLocaleString("id-ID")} kg`) : "Belum"}</span>
                   </Link>
                 </li>
               ))}

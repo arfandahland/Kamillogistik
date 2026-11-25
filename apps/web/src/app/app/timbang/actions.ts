@@ -28,7 +28,10 @@ export async function timbangBarang(fd: FormData) {
   revalidatePath("/app");
   if (r.error || !r.data) redirect(`/app/timbang?kode=${encodeURIComponent(kode)}&e=${encodeURIComponent(r.error ?? "Gagal menyimpan")}`);
   const d = r.data!;
-  const pesan = d.selesai
+  const m3 = Number(d.totalKg ?? 0) === 0; // akun kubikasi tidak mencatat berat
+  const pesan = d.selesai && m3
+    ? `Semua ${d.total} barang resi ${d.resiNo} sudah diukur. Data masuk ke Kasir untuk dibuatkan invoice per m³.`
+    : d.selesai
     ? `Semua ${d.total} barang resi ${d.resiNo} sudah ditimbang (${Number(d.totalKg).toLocaleString("id-ID")} kg). Data masuk ke Kasir untuk dibuatkan invoice.`
     : jumlah > 1
       ? `${jumlah} barang sekaligus tersimpan (total ${Number(d.batchKg ?? 0).toLocaleString("id-ID")} kg${d.batchCbm ? `, ${Number(d.batchCbm).toLocaleString("id-ID", { maximumFractionDigits: 4 })} m³` : ""}). Tinggal ${d.remaining} barang lagi untuk resi ${d.resiNo}.`
