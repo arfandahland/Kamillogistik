@@ -2169,10 +2169,10 @@ body:not(:has(.tabbar)) .pwabar { bottom: calc(16px + env(safe-area-inset-bottom
 
 /* ===== AUDIT HP: layar HP diperkecil lewat zoom (--z), jadi ukuran dikoreksi agar target sentuh tetap >= 44px dan teks >= 13px di layar ===== */
 :root { --tap: calc(44px / var(--z, 1)); --tx: calc(13px / var(--z, 1)); }
-body .hdrsearch, body .hdract > a, body .hdract > button, body .burger { min-width: var(--tap); min-height: var(--tap); }
-body .backlink, body .fchip, body .chip, body .cp-chip, body .pager-nav, body .dashhead button.chip, body .navact .nav, body .brand { min-height: var(--tap); }
-body .fchip, body .chip, body .dashhead button.chip, body .backlink { display: inline-flex; align-items: center; }
-body main button, body main a.btn, body main .btn, body main summary { min-height: var(--tap); }
-body main button.mini, body main a.mini { min-width: var(--tap); }
-body .rolechip, body dt, body small, body .hint, body .pill, body .delta, body .bs-live { font-size: max(var(--tx), 1em * .85); }
+.hdrsearch, .hdract > a, .hdract > button, .burger { min-width: var(--tap) !important; min-height: var(--tap) !important; }
+.backlink, .fchip, .chip, .cp-chip, .pager-nav, .dashhead button.chip, .navact .nav, .brand, .rbnav a, .jenisnav a, .foot a, .mfoot a { min-height: var(--tap) !important; }
+.fchip, .chip, .dashhead button.chip, .backlink, .rbnav a, .pager-nav { display: inline-flex; align-items: center; }
+main button, main a.btn, main .btn, main summary, main select, main input:not([type=hidden]):not([type=checkbox]):not([type=radio]):not([type=file]):not([type=range]) { min-height: var(--tap) !important; }
+main button.mini, main a.mini, .burger { min-width: var(--tap) !important; }
+.rolechip, dt, small, .hint, .pill, .delta, .bs-live, .live, .muted, .sl, .ssub, .overline, .at, .tbno { font-size: max(var(--tx), 1em * .85) !important; }
 @media print { :root { --tap: 44px; --tx: 13px; } }

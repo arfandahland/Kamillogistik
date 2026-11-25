@@ -3,14 +3,15 @@ const { chromium, devices } = require("playwright");
 const fs = require("fs");
 const BASE = process.env.BASE || "http://localhost:3100", OUT = process.env.OUT || "/tmp/audit-peran", PASS = "Test1234";
 const AKUN = [["owner@uji.id", "Super Admin"], ["pemilik@uji.id", "Pemilik"], ["manajer@uji.id", "Kepala gudang"], ["kasir@uji.id", "Kasir"], ["depo@uji.id", "Admin depo"], ["gudang@uji.id", "Staf gudang"], ["kurir@uji.id", "Kurir"],
-  ["finance@uji.id", "Finance"], ["cs@uji.id", "CS dan Sales"], ["hrd@uji.id", "HRD"], ["konten@uji.id", "Konten"], ["mv@uji.id", "MV cabang"], ["mvmaster@uji.id", "MV Master"], ["", "Pelanggan (publik)"]];
+  ["finance@uji.id", "Finance"], ["cs@uji.id", "CS dan Sales"], ["hrd@uji.id", "HRD"], ["konten@uji.id", "Konten"], ["mv@uji.id", "MV cabang"], ["mvmaster@uji.id", "MV Master"], ["sopir@uji.id", "Sopir"], ["", "Pelanggan (publik)"], ["", "Tanpa akun (tautan khusus)"]];
+const TAUTAN = (process.env.TAUTAN || "").split(",").filter(Boolean);
 const PUBLIK = ["/", "/lacak", "/ongkir", "/ekspedisi", "/panduan", "/masuk", "/tentang", "/mitra", "/karir", "/jemput", "/offline"];
 const slug = (s) => s.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").slice(0, 60) || "root";
 (async () => {
   fs.mkdirSync(OUT, { recursive: true }); const b = await chromium.launch(); const hasil = [];
   for (const [email, nama] of AKUN) {
     const ctx = await b.newContext({ ...devices["Pixel 5"], viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, reducedMotion: "reduce" }); const p = await ctx.newPage();
-    let daftar = PUBLIK;
+    let daftar = nama.startsWith("Tanpa akun") ? TAUTAN : PUBLIK;
     if (email) {
       await p.goto(`${BASE}/masuk`); await p.fill("#email", email); await p.fill("#password", PASS); await p.click("button.shine");
       await p.waitForURL(/\/app/, { timeout: 20000 }).catch(() => {});
