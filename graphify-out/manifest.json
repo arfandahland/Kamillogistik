@@ -378,9 +378,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/app/resi/[id]/page.tsx": {
-    "mtime": 1795574366.3278532,
-    "seen": 1795591023.9395885,
-    "ast_hash": "aac48ba8fe794f4ccae6aa141b3cb8cd",
+    "mtime": 1795591501.5750835,
+    "seen": 1795591578.4221368,
+    "ast_hash": "21f95ac457071ccf820d60b8df85b407",
     "semantic_hash": ""
   },
   "apps/web/src/app/app/ringkasan/page.tsx": {
@@ -900,9 +900,9 @@
     "semantic_hash": ""
   },
   "db/test/run.sh": {
-    "mtime": 1795591297.946881,
-    "seen": 1795591396.8029144,
-    "ast_hash": "4781c5479adfb7ee03b3db5fe8334c42",
+    "mtime": 1795591475.9933593,
+    "seen": 1795591578.4274616,
+    "ast_hash": "d62c9483be212f6042ff513ba7717973",
     "semantic_hash": ""
   },
   "db/test/tariff-cases.json": {
@@ -954,9 +954,9 @@
     "semantic_hash": ""
   },
   "e2e/setup.sh": {
-    "mtime": 1795591297.946881,
-    "seen": 1795591396.8031168,
-    "ast_hash": "a3b42c7afe81caaf01c5236f0b3eaaa1",
+    "mtime": 1795591475.9933593,
+    "seen": 1795591578.4277148,
+    "ast_hash": "fd87b736d843708d8e2585aa5777f4a1",
     "semantic_hash": ""
   },
   "e2e/skenario.cjs": {
@@ -9144,9 +9144,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/app/vendor/[token]/aksi.ts": {
-    "mtime": 1795430477.5050085,
-    "seen": 1795430740.336355,
-    "ast_hash": "5f9bc4596e3f9e49d27ba37f8fdd51ad",
+    "mtime": 1795591495.099703,
+    "seen": 1795591578.4228654,
+    "ast_hash": "914d2c28288f57608840f29c9beb65c4",
     "semantic_hash": ""
   },
   "apps/web/src/app/vendor/[token]/page.tsx": {
@@ -9156,9 +9156,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/VendorForm.tsx": {
-    "mtime": 1795430477.5057538,
-    "seen": 1795430740.3389132,
-    "ast_hash": "f9b71bcd54ed071fec8cca09b4cc593b",
+    "mtime": 1795591495.099447,
+    "seen": 1795591578.42488,
+    "ast_hash": "2b3e2394271d37edd83b79fc670ddff7",
     "semantic_hash": ""
   },
   "db/migrations/058_vendor_link.sql": {
@@ -9621,6 +9621,18 @@
     "mtime": 1795574324.043704,
     "seen": 1795591396.8026237,
     "ast_hash": "aac87fa650b6594392053330150d06c5",
+    "semantic_hash": ""
+  },
+  "db/migrations/082_syarat_udara.sql": {
+    "mtime": 1795591297.492949,
+    "seen": 1795591578.4268527,
+    "ast_hash": "6fb07e64b8a55df51436aaf7556ff86e",
+    "semantic_hash": ""
+  },
+  "db/test/syarat_udara.sql": {
+    "mtime": 1795591312.1381695,
+    "seen": 1795591578.4275112,
+    "ast_hash": "29475006319b0c6221599ec5f99ee860",
     "semantic_hash": ""
   },
   "package-lock.json": {
