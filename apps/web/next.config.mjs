@@ -12,9 +12,11 @@ export default {
     const GOOGLE_CONNECT = "https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.g.doubleclick.net https://www.google.com";
     const csp = [
       "default-src 'self'", `script-src 'self' 'unsafe-inline' ${GOOGLE_SCRIPT}`, "style-src 'self' 'unsafe-inline'", `img-src 'self' data: blob: ${GOOGLE_IMG}`,
-      "font-src 'self'", `connect-src 'self' ${GOOGLE_CONNECT}`, "frame-src https://www.googletagmanager.com", "frame-ancestors 'none'", "base-uri 'self'", "form-action 'self'", "object-src 'none'", "manifest-src 'self'",
+      "font-src 'self'", `connect-src 'self' ${GOOGLE_CONNECT}`, "frame-src https://www.googletagmanager.com", "frame-ancestors 'none'", "base-uri 'self'", "form-action 'self'", "object-src 'none'", "manifest-src 'self'", "worker-src 'self'",
     ].join("; ");
-    return [{
+    return [
+    { source: "/sw.js", headers: [{ key: "Cache-Control", value: "no-cache, no-store, must-revalidate" }, { key: "Service-Worker-Allowed", value: "/" }, { key: "Content-Type", value: "application/javascript; charset=utf-8" }] },
+    {
       source: "/(.*)",
       headers: [
         { key: "Content-Security-Policy", value: csp },

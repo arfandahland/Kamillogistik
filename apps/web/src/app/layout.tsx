@@ -4,6 +4,7 @@ import { SITE_URL } from "@/lib/site";
 import NavProgress from "@/components/NavProgress";
 import CariPilih from "@/components/CariPilih";
 import ValidasiTampak from "@/components/ValidasiTampak";
+import PwaRegister from "@/components/PwaRegister";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -19,13 +20,15 @@ export const metadata: Metadata = {
   applicationName: "Kamil Logistik",
   manifest: "/manifest.webmanifest",
   appleWebApp: { capable: true, title: "Kamil Logistik", statusBarStyle: "black-translucent" },
+  formatDetection: { telephone: false },
+  other: { "mobile-web-app-capable": "yes" },
 };
-export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#072f29", viewportFit: "cover" };
+export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: [{ media: "(prefers-color-scheme: light)", color: "#072f29" }, { media: "(prefers-color-scheme: dark)", color: "#05201b" }], viewportFit: "cover", colorScheme: "light dark" };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="id">
-      <body><NavProgress /><CariPilih /><ValidasiTampak />{children}</body>
+      <body><NavProgress /><CariPilih /><ValidasiTampak /><PwaRegister />{children}</body>
     </html>
   );
 }

@@ -2158,3 +2158,11 @@ body:has(.appshell) .cp-chips button.on, body:has(.appshell) .cp-chips button[ar
 /* Desktop: menu samping bisa digulir supaya Keluar tidak terdorong keluar layar, dan ada tombol Keluar di bilah atas */
 .sidebar { overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
 .sidebar .who { position: sticky; bottom: 0; background: inherit; padding-bottom: 6px; }
+
+/* ===== PWA: ajakan pasang, versi baru, dan status offline ===== */
+.pwabar { position: fixed; z-index: 130; left: 12px; right: 12px; bottom: calc(96px + env(safe-area-inset-bottom)); max-width: 560px; margin: 0 auto; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 12px 14px; border-radius: 18px; background: var(--card); color: var(--ink); border: 1px solid var(--line); box-shadow: var(--shadow-lg); font-size: 14.5px; line-height: 1.4; }
+.pwabar > span { flex: 1 1 200px; }
+.pwabar .btn { min-height: 44px; padding: 0 16px; }
+.pwabar.off { top: calc(env(safe-area-inset-top) + 8px); bottom: auto; background: var(--danger-bg); color: var(--danger); border-color: var(--danger); font-weight: 700; }
+body:not(:has(.tabbar)) .pwabar { bottom: calc(16px + env(safe-area-inset-bottom)); }
+@media print { .pwabar { display: none; } }
