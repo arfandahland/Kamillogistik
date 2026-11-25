@@ -77,6 +77,22 @@ export async function simpanAlokasi(fd: FormData) {
   }
   go(back, "ok", "Pilihan vendor tersimpan.");
 }
+/** Resi yang lewat hub transit: tambah leg berikutnya dengan vendor dan HPP sendiri. */
+export async function tambahLeg(fd: FormData) {
+  const back = balik(fd, "/app/mv/alokasi"), internal = flag(fd, "internal");
+  const shipment = uuid(str(fd, "shipment")), vendor = uuid(str(fd, "vendor"));
+  const { data, error } = await staffRpc<{ id: string; leg: number }>("mv_alloc_add_leg", { p_shipment: shipment, p_vendor: internal ? null : vendor, p_internal: internal, p_note: str(fd, "catatan") || null });
+  segar();
+  if (error || !data) go(back, "e", error ?? "Leg gagal ditambahkan.");
+  const hpp = angka(fd, "hpp");
+  if (hpp != null) {
+    if (!Number.isInteger(hpp) || hpp <= 0) go(back, "e", `Leg ${data!.leg} tersimpan, tetapi HPP harus berupa angka rupiah lebih dari nol, tanpa koma.`);
+    const h = await staffRpc("mv_alloc_set_hpp", { p_alloc: data!.id, p_hpp: hpp, p_reason: "HPP leg " + data!.leg });
+    segar();
+    if (h.error) go(back, "e", `Leg ${data!.leg} tersimpan, tetapi HPP belum tersimpan: ${h.error}`);
+  }
+  go(back, "ok", `Leg ${data!.leg} tersimpan${hpp != null ? " beserta HPP-nya" : ""}.`);
+}
 export async function tandaiLunasVendor(fd: FormData) {
   const back = balik(fd, "/app/mv/vendor"), lunas = str(fd, "lunas") !== "0";
   const { error } = await staffRpc("mv_vendor_pay", { p_alloc: uuid(str(fd, "alloc")), p_paid: lunas, p_ref: str(fd, "ref") || null });

@@ -13,7 +13,7 @@ import { staffRpc } from "@/lib/supabase/server";
 import { tanggalWaktu } from "@/lib/brand";
 import { daftarCabang, daftarWilayah } from "@/lib/mvdata";
 import { ALOK_FILTER, ALOK_STATUS, DOK_JENIS, MODA_NAMA, MV_BACA, MV_SEMUA_CABANG, MV_TULIS, href, pilih, rp, uuidOk, type ResiAlokasi, type Vendor } from "@/lib/mv";
-import { buatLinkVendor, cabutLinkVendor, kunciHpp, simpanAlokasi, simpanHpp, tandaiLunasVendor, ubahStatusAlokasi } from "../actions";
+import { buatLinkVendor, cabutLinkVendor, kunciHpp, simpanAlokasi, simpanHpp, tambahLeg, tandaiLunasVendor, ubahStatusAlokasi } from "../actions";
 import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = { title: "Alokasi dan HPP" };
@@ -30,7 +30,8 @@ export default async function Alokasi({ searchParams }: { searchParams: Promise<
   const c = uuidOk(sp.c) ? sp.c : "", w = (sp.w ?? "").replace(/[^A-Z-]/g, ""), q = (sp.q ?? "").trim().slice(0, 40), r = uuidOk(sp.r) ? sp.r : "";
   const banyakCabang = MV_SEMUA_CABANG.includes(me.role), tulis = MV_TULIS.includes(me.role), master = me.role === "SUPER_ADMIN" || me.role === "MV_MASTER";
   const listP = staffRpc<ResiAlokasi[]>("mv_alloc_list", { p_branch: c || null, p_mode: m || null, p_status: st || null, p_region: w || null, p_q: q || null, p_limit: 80 });
-  const [list, vend, cabang, wilayah, rwy, dok, lv] = await Promise.all([
+  type Legs = { legs: { id: string; leg: number; vendor: string; hpp: number | null; status: string }[]; totalHpp: number };
+  const [list, vend, cabang, wilayah, rwy, dok, lv, legsR] = await Promise.all([
     listP,
     tulis ? staffRpc<Vendor[]>("mv_vendor_list", { p_status: "AKTIF" }) : Promise.resolve({ data: [] as Vendor[], error: null }),
     banyakCabang ? daftarCabang() : Promise.resolve([]),
@@ -46,6 +47,7 @@ export default async function Alokasi({ searchParams }: { searchParams: Promise<
       const a = (await listP).data?.find((x) => x.shipmentId === r)?.alloc;
       return a ? staffRpc<LinkV>("mv_vendor_link_get", { p_alloc: a.id }) : { data: null as LinkV | null, error: null };
     })(),
+    r ? staffRpc<Legs>("mv_alloc_legs", { p_shipment: r }) : Promise.resolve({ data: null as Legs | null, error: null }),
   ]);
   const base = { m, st, c, w, q };
   const back = href("/app/mv/alokasi", base);
@@ -86,6 +88,28 @@ export default async function Alokasi({ searchParams }: { searchParams: Promise<
         )}
         {a && (a.driver || a.plate) && !tulis && <p className="muted">Sopir {a.driver ?? "-"} · Nomor polisi {a.plate ?? "-"}</p>}
         {x.mode !== "DARAT" && <p className="hint">HPP laut dan udara dicatat lewat Biaya manifest.</p>}
+        {buka && legsR.data && legsR.data.legs.length > 0 && (
+          <div className="mvkotak" aria-label="Leg dan HPP">
+            <b>Leg dan HPP resi ini</b>
+            <ul className="rows">{legsR.data.legs.map((l) => <li key={l.id}><span><b>Leg {l.leg} · {l.vendor}</b><small>{ALOK_STATUS[l.status] ?? l.status}</small></span><span>{l.hpp != null ? rp(l.hpp) : "HPP belum diisi"}</span></li>)}</ul>
+            <p className="hint" style={{ margin: 0 }}>Total HPP semua leg: <b>{rp(legsR.data.totalHpp)}</b>. Laba rugi menjumlahkan semuanya.</p>
+          </div>
+        )}
+        {buka && tulis && !["DELIVERED", "CANCELLED"].includes(x.shipStatus) && (
+          <details className="mvkotak">
+            <summary><b>Tambah leg (resi lewat hub transit)</b></summary>
+            <form action={tambahLeg} className="mvform">
+              <input type="hidden" name="back" value={backR} /><input type="hidden" name="shipment" value={x.shipmentId} />
+              <p className="hint">Dipakai bila resi singgah di hub, misalnya Timur ke Makassar lalu Makassar ke Jakarta. Tiap leg punya vendor dan HPP sendiri. Resi satu leg akan ditolak.</p>
+              <div className="rbf"><label className="f" htmlFor={`lv-${x.shipmentId}`}>Vendor leg berikutnya</label>
+                <select id={`lv-${x.shipmentId}`} name="vendor" defaultValue=""><option value="">Pilih vendor</option>{(vend.data ?? []).filter((v) => v.kind === "MULTI" || v.kind === x.mode).map((v) => <option key={v.id} value={v.id}>{v.name}</option>)}</select></div>
+              <label className="rbcek"><input type="checkbox" name="internal" /> Armada internal (tanpa vendor)</label>
+              <div className="rbf"><label className="f" htmlFor={`lh-${x.shipmentId}`}>HPP leg ini (Rp, boleh dikosongkan)</label><input id={`lh-${x.shipmentId}`} name="hpp" inputMode="numeric" autoComplete="off" /></div>
+              <div className="rbf"><label className="f">Catatan</label><input name="catatan" maxLength={300} /></div>
+              <SubmitButton className="btn green" steps={["Memeriksa…", "Menyimpan leg…"]}>Simpan leg</SubmitButton>
+            </form>
+          </details>
+        )}
         {x.mode === "DARAT" && a && (
           <dl className="infogrid"><div><dt>HPP</dt><dd>{rp(a.hpp)}{a.locked && <small>Sudah dicocokkan Finance, terkunci</small>}</dd></div><div><dt>Margin kasar</dt><dd>{margin != null ? rp(margin) : "-"}{margin != null && x.tagihan ? <small>{Math.round((margin / x.tagihan) * 100)}% dari tagihan</small> : null}</dd></div></dl>
         )}

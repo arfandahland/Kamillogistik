@@ -7,7 +7,7 @@ import SubmitButton from "@/components/SubmitButton";
 import ManifestPindai from "@/components/ManifestPindai";
 import { BRAND, tanggalWaktu, waLink } from "@/lib/brand";
 import { getMe, staffRpc } from "@/lib/supabase/server";
-import { isiModa, bukaSegel, hapusManifest, bongkarSemuaLengkap, terimaSemuaManifest, berangkatManifest, isiVoyage, keluarkanResi, segelManifest, selesaiBongkar, selesaikanSelisih, revisiEta, serahkanManifest, tambahResiForm, terimaManifest, tibaManifest, ubahManifest } from "../actions";
+import { isiModa, serahkanKurirSemua, bukaSegel, hapusManifest, bongkarSemuaLengkap, terimaSemuaManifest, berangkatManifest, isiVoyage, keluarkanResi, segelManifest, selesaiBongkar, selesaikanSelisih, revisiEta, serahkanManifest, tambahResiForm, terimaManifest, tibaManifest, ubahManifest } from "../actions";
 import Potong from "@/components/Potong";
 import BackLink from "@/components/BackLink";
 
@@ -16,7 +16,7 @@ type Place = { code: string; city: string; name: string };
 type M = {
   id: string; code: string; status: "OPEN" | "SEALED" | "IN_TRANSIT" | "ARRIVED" | "UNLOADED"; mode: "LAUT" | "DARAT" | "UDARA"; seal: string | null; container: string | null; carrier: string | null; voyage?: string | null; modaDetail?: Record<string, string>; portLoad?: string | null; portUnload?: string | null;
   departureAt: string | null; eta: string | null; note: string | null; createdAt: string; origin: Place; dest: Place; holder: string | null; iAmHolder: boolean; pendingTo: string | null; pendingToMe: boolean;
-  shipments: { id: string; resiNo: string; status: string; receiver: string; items: { barcode: string; kg: number | null; cbm?: number; scanned: boolean }[] }[];
+  shipments: { id: string; resiNo: string; status: string; receiver: string; basis?: string | null; items: { barcode: string; kg: number | null; cbm?: number; scanned: boolean }[] }[];
   totals: { resi: number; items: number; scanned: number; kg: number; cbm?: number };
   cases: { id: string; expected: number; found: number; status: string; note: string | null }[];
 };
@@ -44,7 +44,7 @@ export default async function ManifestDetail({ params, searchParams }: { params:
   const risk = m.status === "SEALED" && !m.pendingTo && ((kepala && atOrigin) || mvRole) ? (await staffRpc<Risk>("manifest_depart_check", { p_id: id })).data : null;
   const [cands, dir] = await Promise.all([
     m.status === "OPEN" && kasirAsal ? staffRpc<Cand[]>("manifest_candidates", { p_id: id }).then((x) => x.data ?? []) : Promise.resolve([] as Cand[]),
-    (m.status === "SEALED" && atOrigin && kepala && (m.iAmHolder || !m.holder) && !m.pendingTo) || (m.status === "ARRIVED" && sopir && m.iAmHolder && !m.pendingTo) ? staffRpc<Dir>("staff_directory").then((x) => x.data ?? []) : Promise.resolve([] as Dir),
+    (m.status === "SEALED" && atOrigin && kepala && (m.iAmHolder || !m.holder) && !m.pendingTo) || (m.status === "ARRIVED" && sopir && m.iAmHolder && !m.pendingTo) || (m.status === "UNLOADED" && atDest) ? staffRpc<Dir>("staff_directory").then((x) => x.data ?? []) : Promise.resolve([] as Dir),
   ]);
   const sopirList = dir.filter((u) => u.role === "CONTAINER_DRIVER");
   const gudangTujuan = dir.filter((u) => u.role === "HUB_MANAGER" && u.branchName === m.dest.name);
@@ -64,7 +64,7 @@ export default async function ManifestDetail({ params, searchParams }: { params:
           <span className="muted">Kode manifest</span>
           <h1 className="resicode">{m.code}</h1>
           <p><span className={`pill ${m.status === "UNLOADED" ? "done" : ""}`}>{MANIFEST_STATUS_LABEL[m.status]}</span> <span className="muted">{m.origin.city} → {m.dest.city}</span></p>
-          <p className="chipsrow"><span className="tag moda"><Icon name={modaIcon} size={14} /> {MODA_LABEL[m.mode]}</span><span className="tag"><Icon name="box" size={14} /> {m.totals.resi} resi · {m.totals.items} barang · {Number(m.totals.kg).toLocaleString("id-ID")} kg</span><span className="tag"><Icon name="box" size={14} /> {Number(m.totals.cbm ?? 0).toLocaleString("id-ID", { maximumFractionDigits: 3 })} m³</span></p>
+          <p className="chipsrow"><span className="tag moda"><Icon name={modaIcon} size={14} /> {MODA_LABEL[m.mode]}</span><span className="tag"><Icon name="box" size={14} /> {m.totals.resi} resi · {m.totals.items} barang{Number(m.totals.kg) > 0 ? ` · ${Number(m.totals.kg).toLocaleString("id-ID")} kg` : ""}</span><span className="tag"><Icon name="box" size={14} /> {Number(m.totals.cbm ?? 0).toLocaleString("id-ID", { maximumFractionDigits: 3 })} m³</span></p>
           <ol className="mstep" aria-label="Tahap manifest">
             {STEPS.map((s, i) => <li key={s} className={i < cur ? "done" : i === cur ? "now" : ""}><span className="mn"><Icon name={i < cur ? "check" : i === 0 ? "layers" : i === 1 ? "lock" : i === 2 ? modaIcon : i === 3 ? "pin" : "box"} size={16} /></span>{SHORT[s]}</li>)}
           </ol>
@@ -245,6 +245,15 @@ export default async function ManifestDetail({ params, searchParams }: { params:
           </div>
         )}
 
+        {m.status === "UNLOADED" && atDest && dir.filter((u) => u.role === "DRIVER" && u.branchName === m.dest.name).length > 0 && (
+          <form action={serahkanKurirSemua} className="card rbsek"><input type="hidden" name="id" value={m.id} />
+            <h2 className="cardh">Serahkan semua ke kurir</h2>
+            <p className="muted" style={{ marginTop: 0 }}>Semua resi manifest ini yang masih di gudang tujuan diserahkan ke satu kurir sekaligus. Kurir menerimanya dengan satu ketukan di menu Serah terima.</p>
+            <div className="rbf"><label className="f" htmlFor="kurir">Kurir</label>
+              <select id="kurir" name="kurir" required defaultValue="">{[<option key="" value="">Pilih kurir</option>, ...dir.filter((u) => u.role === "DRIVER" && u.branchName === m.dest.name).map((u) => <option key={u.id} value={u.id}>{u.name}</option>)]}</select></div>
+            <SubmitButton steps={["Memeriksa resi…", "Menyerahkan semua resi…"]}>Serahkan semua ke kurir</SubmitButton>
+          </form>
+        )}
         {m.status === "UNLOADED" && (role === "HUB_MANAGER" || role === "WAREHOUSE" || OWNER_VIEW.includes(role) || role === "FINANCE") && (
           <Link href={`/app/manifest/${m.id}/berita-acara`} className="btn ghost">Berita Acara Bongkar (cetak)</Link>
         )}
@@ -271,7 +280,7 @@ export default async function ManifestDetail({ params, searchParams }: { params:
               <li key={s.id}>
                 <div className="sh1"><span><Link href={`/app/resi/${s.id}`}><code>{s.resiNo}</code></Link><br /><small className="muted">{s.receiver}</small></span>
                   {m.status === "OPEN" && kasirAsal && <form action={keluarkanResi}><input type="hidden" name="id" value={m.id} /><input type="hidden" name="resi" value={s.id} /><button className="btn ghost sm" aria-label={`Keluarkan ${s.resiNo}`}>Keluarkan</button></form>}</div>
-                <div className="itemchips">{s.items.map((it) => <span key={it.barcode} className={`itemchip ${m.status === "ARRIVED" || m.status === "UNLOADED" ? (it.scanned ? "ok" : "miss") : ""}`}>{it.barcode.split("-").pop()} · {it.kg != null ? `${Number(it.kg).toLocaleString("id-ID")} kg` : "?"}{m.status === "ARRIVED" || m.status === "UNLOADED" ? (it.scanned ? " ✓" : " ✗") : ""}</span>)}</div>
+                <div className="itemchips">{s.items.map((it) => <span key={it.barcode} className={`itemchip ${m.status === "ARRIVED" || m.status === "UNLOADED" ? (it.scanned ? "ok" : "miss") : ""}`}>{it.barcode.split("-").pop()} · {s.basis === "M3" ? `${Number(it.cbm ?? 0).toLocaleString("id-ID", { maximumFractionDigits: 4 })} m³` : it.kg != null ? `${Number(it.kg).toLocaleString("id-ID")} kg` : "?"}{m.status === "ARRIVED" || m.status === "UNLOADED" ? (it.scanned ? " ✓" : " ✗") : ""}</span>)}</div>
               </li>))} />
           )}
         </div>

@@ -118,6 +118,12 @@ export async function serahkan(fd: FormData) {
   back(id, "ok", "Barang diserahkan. Menunggu penerima menekan tombol terima.");
 }
 
+export async function terimaSemuaSerah() {
+  const { data, error } = await staffRpc<{ diterima: number }>("accept_handover_all");
+  revalidatePath("/app");
+  redirect(error ? `/app/serah?e=${encodeURIComponent(error)}` : `/app/serah?ok=${encodeURIComponent(`${data?.diterima ?? ""} barang sudah Anda terima. Sekarang semuanya tanggung jawab Anda.`)}`);
+}
+
 export async function terima(fd: FormData) {
   const id = String(fd.get("id"));
   const { error } = await staffRpc("accept_handover", { p_handover: String(fd.get("hid")) });

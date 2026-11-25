@@ -61,6 +61,13 @@ export async function berangkatManifest(fd: FormData) {
   const id = str(fd, "id");
   await hasil(id, "manifest_depart", { p_id: id, p_carrier: str(fd, "pengangkut") || null, p_departure: waktu(fd, "berangkat"), p_eta: waktu(fd, "tiba"), p_confirm: fd.get("lanjut") === "on" }, "Tercatat: manifest sudah berangkat. Pelanggan melihat perkiraan tibanya.");
 }
+export async function serahkanKurirSemua(fd: FormData) {
+  const id = str(fd, "id");
+  const r = await staffRpc<{ diserahkan: number }>("handover_bulk", { p_manifest: id, p_to_user: str(fd, "kurir") });
+  revalidatePath(`/app/manifest/${id}`);
+  if (r.error) back(id, "e", r.error);
+  back(id, "ok", `${r.data?.diserahkan ?? ""} resi diserahkan ke kurir. Kurir tinggal menerima semuanya di menu Serah terima.`);
+}
 export async function tibaManifest(fd: FormData) {
   const id = str(fd, "id");
   await hasil(id, "manifest_arrive", { p_id: id }, "Tercatat: manifest sudah tiba di kota tujuan.");

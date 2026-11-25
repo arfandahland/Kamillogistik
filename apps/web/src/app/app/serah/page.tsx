@@ -6,11 +6,13 @@ import { tanggalWaktu } from "@/lib/brand";
 import StatRow from "@/components/StatRow";
 import { requireRole } from "@/lib/auth";
 import Daftar from "@/components/Daftar";
+import SubmitButton from "@/components/SubmitButton";
+import { terimaSemuaSerah } from "../actions";
 import BackLink from "@/components/BackLink";
 
 export const metadata: Metadata = { title: "Serah Terima" };
 
-export default async function Serah({ searchParams }: { searchParams: Promise<{ hal?: string }> }) {
+export default async function Serah({ searchParams }: { searchParams: Promise<{ hal?: string; ok?: string; e?: string }> }) {
   const sp = await searchParams;
   await requireRole(["HUB_MANAGER","WAREHOUSE","DRIVER","CONTAINER_DRIVER"]);
   const p = await staffRpc<{ id: string; shipmentId: string; resiNo: string; fromName: string; createdAt: string }[]>("my_pending_handovers");
@@ -20,7 +22,9 @@ export default async function Serah({ searchParams }: { searchParams: Promise<{ 
       <BackLink />
       <div className="pghead"><div><h1>Serah terima</h1><p className="muted">Barang yang diserahkan kepada Anda. Periksa barangnya, lalu terima.</p></div></div>
       <StatRow items={[{ ikon: "swap", n: list.length, label: "Menunggu diterima", sub: list.length ? "Ketuk untuk memeriksa" : "Semua sudah diterima", warm: list.length > 0 }]} />
+      {sp.ok && <div className="ok" role="status">{sp.ok}</div>}{sp.e && <div className="err" role="alert">{sp.e}</div>}
       {p.error && <div className="err">{p.error}</div>}
+      {list.length > 1 && <form action={terimaSemuaSerah}><SubmitButton className="btn green" steps={["Menerima semua…"]}>Terima semua ({list.length} barang)</SubmitButton></form>}
       <Daftar p={sp.hal} path="/app/serah" params={{  }} kelas="rlist stagger" satuan="barang" items={list.map((h) => (
           <Link key={h.id} href={`/app/resi/${h.shipmentId}`} className="card resi lift">
             <span className="ic warm"><Icon name="swap" size={24} /></span>
