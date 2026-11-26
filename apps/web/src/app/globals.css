@@ -2200,3 +2200,10 @@ footer a, footer nav a, .foot a, .mfoot a { min-height: var(--tap) !important; d
 .dp-info { margin: 0; color: var(--muted); font-size: 14px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .dp-reset { border: 0; background: transparent; color: var(--teal-dark); font: inherit; font-weight: 800; text-decoration: underline; cursor: pointer; min-height: 40px; padding: 0 4px; }
 .dp-kosong { text-align: center; }
+
+/* ===== MENU BAWAH MUAT TANPA DIGESER (sampai 7 tombol) =====
+   Teks menu dikecilkan secukupnya dan dipotong rapi bila terlalu panjang, jadi semua tombol terlihat sekaligus di HP. */
+.tabbar:not(.scroll) { grid-auto-columns: minmax(0, 1fr) !important; overflow: hidden; padding-left: 4px; padding-right: 4px; }
+.tabbar:not(.scroll) .tab { min-width: 0 !important; max-width: 100%; font-size: calc(11px / var(--z, 1)) !important; letter-spacing: -.2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-left: 1px; padding-right: 1px; }
+.tabbar:not(.scroll) .tab.featured { overflow: visible; }
+.tabbar:not(.scroll).many .tab { font-size: calc(10.5px / var(--z, 1)) !important; }
