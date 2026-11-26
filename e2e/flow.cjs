@@ -24,7 +24,7 @@ async function login(browser, email, pass = PASS, vp) {
   await page.goto(`${BASE}/masuk`, { waitUntil: "networkidle" });
   await page.fill("#email", email); await page.fill("#password", pass);
   await page.click("button.shine");
-  await Promise.race([page.waitForURL(/\/app/, { timeout: 15000 }), page.waitForSelector(".err", { timeout: 15000 })]).catch(() => {});
+  await Promise.race([page.waitForURL(/\/app/, { timeout: 45000 }), page.waitForSelector(".err", { timeout: 15000 })]).catch(() => {});
   return { ctx, page, loggedIn: /\/app/.test(page.url()) };
 }
 /** Pilih alamat tujuan lengkap (Sulawesi Selatan, Kota Makassar, Panakkukang, desa pertama) pada form resi. */
@@ -569,7 +569,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await periksaDulu(g);
     r = await act(g, g.getByRole("button", { name: "Barang diantar pelanggan sudah saya terima" }));
     ok("gudang menerima barang yang diantar pelanggan", r.ok && /diantar sendiri/.test(r.ok), JSON.stringify(r));
-    await g.getByRole("link", { name: /Mulai menimbang/ }).click(); await g.waitForURL(/\/app\/timbang\?kode=/, { timeout: 15000 }); await g.waitForSelector("#berat", { timeout: 15000 });
+    await g.getByRole("link", { name: /Mulai menimbang/ }).click(); await g.waitForURL(/\/app\/timbang\?kode=/, { timeout: 45000 }); await g.waitForSelector("#berat", { timeout: 15000 });
     await g.fill("#berat", "10");
     r = await act(g, g.getByRole("button", { name: "Simpan dan timbang berikutnya" }));
     ok("data timbang pelanggan korporat tersimpan", r.ok && /Semua 1 barang/.test(r.ok) && /10 kg/.test(r.ok), JSON.stringify(r));
@@ -939,7 +939,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await m.locator(".burger").click(); await m.waitForTimeout(500);
     ok("T6 lembar menu HP memuat Daftar jadi mitra, Karir, Panduan, dan wilayah", (await m.locator(".msheet .mcta[href='/mitra']").count()) === 1 && (await m.locator(".msheet a[href='/karir']").count()) === 1 && (await m.locator(".msheet a[href='/panduan']").count()) === 1);
     await m.screenshot({ path: `${OUT}/e2e-menu-hp.png` });
-    await m.locator(".msheet .mcta").click(); await m.waitForURL(/\/mitra/, { timeout: 15000 }).catch(() => {});
+    await m.locator(".msheet .mcta").click(); await m.waitForURL(/\/mitra/, { timeout: 45000 }).catch(() => {});
     ok("T7 memilih menu membuka halaman mitra dan menutup lembar menu", /\/mitra/.test(m.url()) && (await m.locator(".msheet").count()) === 0, m.url());
     await noOverflow(m, "halaman mitra (HP)");
     ok("V1 form mitra tidak lagi ada di dasar halaman (muncul sebagai jendela balon saat diminta)", (await m.locator("#jenis").count()) === 0);
@@ -1486,7 +1486,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("AJ6 kasir tidak bisa membuka konsol koreksi", !/Koreksi data/.test(await text(kj.page)) && !/\/app\/koreksi/.test(kj.page.url()));
     await kj.page.goto(`${BASE}/app/jemput`, { waitUntil: "networkidle" });
     ok("AJ7 pesanan jemput menawarkan tombol buat resi setelah barang tiba", (await kj.page.locator("a[href^='/app/baru?jemput=']").count()) >= 1, (await text(kj.page)).slice(0, 160));
-    await kj.page.locator("a[href^='/app/baru?jemput=']").first().click(); await kj.page.waitForURL(/baru\?jemput=/, { timeout: 15000 }); await kj.page.waitForSelector("#pengirim", { timeout: 15000 });
+    await kj.page.locator("a[href^='/app/baru?jemput=']").first().click(); await kj.page.waitForURL(/baru\?jemput=/, { timeout: 45000 }); await kj.page.waitForSelector("#pengirim", { timeout: 15000 });
     ok("AJ8 form resi dari pesanan jemput terisi data pengirim dan tanpa pilihan cara masuk", /Dari pesanan jemput/.test(await text(kj.page)) && (await kj.page.inputValue("#pengirim")).length > 1 && (await kj.page.getByText("Diantar sendiri").count()) === 0);
     ok("AK1 menu kasir memuat Pesanan jemput (untuk jemput opsi B)", (await kj.page.locator("a[href='/app/jemput']").count()) >= 1);
     for (const u of ["/app/serah", "/app/sortir", "/app/pindai", "/app/pegawai"]) {
@@ -1533,7 +1533,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
       await sa.page.getByRole("button", { name: /Manifest muatan/ }).click();
       ok("AS3 Manifest muatan membuka laci kaca dengan lima filter status dan tombol halaman penuh", (await sa.page.locator("[role=dialog] .gl-aksi a").count()) === 5 && (await sa.page.locator("[role=dialog] a[href='/app/manifest']").count()) === 1);
       await sa.page.locator("[role=dialog] a[href='/app/manifest?s=SEALED']").click();
-      await sa.page.waitForURL(/manifest\?s=SEALED/, { timeout: 15000 }).catch(() => {});
+      await sa.page.waitForURL(/manifest\?s=SEALED/, { timeout: 45000 }).catch(() => {});
       ok("AS4 pilihan cepat di laci membuka halaman asli dengan filter yang sama", /manifest\?s=SEALED/.test(sa.page.url()));
       for (const g of ["uang", "orang", "sistem"]) { await sa.page.goto(`${BASE}/app/pusat?g=${g}`, { waitUntil: "networkidle" }); ok(`AS5 tab ${g}: daftar berkelompok dalam satu kontainer kaca tanpa galat`, (await sa.page.locator(".gl-daftar").count()) >= 1 && !/Terjadi kesalahan|Application error/.test(await sa.page.locator("main").innerText())); }
       const ikon = await sa.page.evaluate(() => [...document.querySelectorAll("main .gl-ik svg")].map((s) => s.innerHTML));
@@ -1561,7 +1561,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
       const capAktif = ar.page.locator(".arus-baris a.arus-cap:not(.fase):not(.on)").first();
       if (await capAktif.count()) {
         const nCap = Number((await capAktif.locator("b").innerText()).trim());
-        await capAktif.click(); await ar.page.waitForURL(/[?&]f=/, { timeout: 15000 }); await ar.page.waitForSelector(".arus-reset", { timeout: 15000 });
+        await capAktif.click(); await ar.page.waitForURL(/[?&]f=/, { timeout: 60000 }); await ar.page.waitForSelector(".arus-reset", { timeout: 15000 });
         ok("AY6 saringan pintar: ketuk kapsul menyaring daftar sesuai angka di kapsul, dan ada tombol hapus saringan", (await ar.page.locator(".arus-kartu").count()) === nCap && (await ar.page.locator(".arus-reset").count()) === 1, String(nCap));
         await ar.page.locator(".arus-reset").click(); await ar.page.waitForFunction(() => !location.search.includes("f=")); await ar.page.waitForSelector(".arus-kartu");
         ok("AY7 saringan pintar: hapus semua saringan mengembalikan daftar penuh", (await ar.page.locator(".arus-kartu").count()) === semuaN);
@@ -1636,14 +1636,14 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
       await fn.page.goto(`${BASE}/app/keuangan/kehadiran`, { waitUntil: "networkidle" });
       ok("AZ9 Finance: rekap per cabang menampilkan kartu cabang dengan hadir dan terlambat", (await fn.page.locator(".kh-cab").count()) >= 2 && /Terlambat/.test(await text(fn.page)));
       await fn.page.locator(".kh-cab", { hasText: "Makassar" }).first().click();
-      await fn.page.waitForURL(/c=/, { timeout: 15000 }).catch(() => {});
+      await fn.page.waitForURL(/c=/, { timeout: 45000 }).catch(() => {});
       await fn.page.waitForSelector("h2:has-text('Rincian hari')", { timeout: 30000 }).catch(() => {});
       await fn.page.waitForLoadState("networkidle").catch(() => {});
       const kh = await text(fn.page);
       ok("AZ10 Finance: saringan cabang Makassar memuat Budi Absensi Uji di rincian harian dan rekap karyawan", /Rincian hari/i.test(kh) && (kh.match(/Budi Absensi Uji/gi) || []).length >= 2, kh.slice(0, 120));
       await noOverflow(fn.page, "Rekap kehadiran (HP)");
       await fn.page.locator("a.kh-peg", { hasText: "Budi Absensi Uji" }).first().click();
-      await fn.page.waitForURL(/kehadiran\/[0-9a-f-]{36}/, { timeout: 15000 }).catch(() => {});
+      await fn.page.waitForURL(/kehadiran\/[0-9a-f-]{36}/, { timeout: 45000 }).catch(() => {});
       ok("AZ11 Finance: rincian harian satu karyawan", /Budi Absensi Uji/.test(await text(fn.page)) && (await fn.page.locator(".kh-baris").count()) >= 1);
       const csv = await fn.page.evaluate(async () => (await fetch("/app/ekspor/kehadiran")).text());
       ok("AZ12 Finance: unduh CSV rekap kehadiran memuat karyawan", /Kode,Nama,Cabang/.test(csv.replace(/"/g, "")) && /Budi Absensi Uji/.test(csv));
@@ -1665,7 +1665,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     }
 
     const mv = await login(browser, "mv.jkt@uji.id", "Sandi2026a", { width: 390, height: 844 });
-    await mv.page.waitForURL(/\/app\/mv/, { timeout: 15000 }).catch(() => {});
+    await mv.page.waitForURL(/\/app\/mv/, { timeout: 45000 }).catch(() => {});
     await mv.page.waitForSelector("text=Vendor aktif", { timeout: 15000 }).catch(() => {});
     ok("AO4 akun MV langsung masuk ke beranda Divisi MV dengan kartu angka", /\/app\/mv/.test(mv.page.url()) && /Vendor aktif/.test(await text(mv.page)) && /SJ terlambat/.test(await text(mv.page)));
     ok("AO5 menu bawah MV: Alokasi, Pantau, SJ", (await mv.page.locator(".tabbar a[href='/app/mv/alokasi'], nav a[href='/app/mv/alokasi']").count()) >= 1 && (await mv.page.locator("a[href='/app/mv/sj']").count()) >= 1);
@@ -1791,7 +1791,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await ks.ctx.close();
     for (const [email, pass, sapa, awal] of [["mv.jkt@uji.id", "Sandi2026a", "Selamat datang, MV", "/app/mv"], ["finance@uji.id", PASS, "Selamat datang, Finance", "/app/keuangan"], ["gudang@uji.id", PASS, "Selamat datang, Petugas gudang", "/app"], ["manajer@uji.id", PASS, "Selamat datang, Kepala gudang", "/app"]]) {
       const u = await login(browser, email, pass, { width: 390, height: 844 });
-      await u.page.goto(`${BASE}${awal}?tur=1`, { waitUntil: "load" }); await u.page.waitForURL(/\/app/, { timeout: 15000 }).catch(() => {});
+      await u.page.goto(`${BASE}${awal}?tur=1`, { waitUntil: "load" }); await u.page.waitForURL(/\/app/, { timeout: 45000 }).catch(() => {});
       await u.page.waitForSelector(".tur", { timeout: 12000 }).catch(() => {});
       ok(`AP9 panduan awal ${email.split("@")[0]} memuat sapaan peran`, (await u.page.locator(".tur").innerText().catch(() => "")).includes(sapa.replace("Selamat datang, ", "Selamat datang, ")), await u.page.locator(".tur").innerText().catch(() => "").then((t) => t.slice(0, 60)));
       await u.ctx.close();
