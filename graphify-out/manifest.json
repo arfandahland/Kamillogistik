@@ -768,9 +768,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/TabBar.tsx": {
-    "mtime": 1795430242.1232946,
-    "seen": 1795430740.33866,
-    "ast_hash": "d1b4c06d81575d24bcef88b775fe9208",
+    "mtime": 1795651358.2769623,
+    "seen": 1795651394.8523757,
+    "ast_hash": "3bf4bd6f987d87ac291199e4cddfe38c",
     "semantic_hash": ""
   },
   "apps/web/src/components/TestimoniSlider.tsx": {

@@ -1900,6 +1900,44 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await ow.ctx.close();
   } catch (e) { ok("AQ pemeriksaan berjalan sampai selesai", false, String(e.message || e).slice(0, 200)); }
 
+  console.log("\n[AR] MV cabang otonom, MV Master hanya baca, tab Finance, setoran COD, PWA, target sentuh HP");
+  try {
+    const mm = await login(browser, "mv.master@uji.id", PASS, { width: 390, height: 844 });
+    await mm.page.goto(`${BASE}/app/mv`, { waitUntil: "networkidle" });
+    const tm = await mm.page.locator("body").innerText();
+    ok("AR1 MV Master melihat beranda pemantau, bukan kerja harian", /MV Master \(pemantau\)/.test(tm) && /Bandingkan antar kota/.test(tm) && !/Verifikasi vendor/.test(tm), tm.slice(0, 160));
+    await mm.page.goto(`${BASE}/app/mv/alokasi`, { waitUntil: "networkidle" });
+    ok("AR2 MV Master tidak punya tombol Simpan alokasi atau isi HPP", (await mm.page.getByRole("button", { name: /Simpan HPP|Simpan alokasi|Isi HPP|Pilih vendor/i }).count()) === 0);
+    await mm.ctx.close();
+    const mv = await login(browser, "mv.jkt@uji.id", PASS, { width: 390, height: 844 });
+    await mv.page.goto(`${BASE}/app/mv`, { waitUntil: "networkidle" });
+    const tv = await mv.page.locator("body").innerText();
+    ok("AR3 MV cabang melihat menu kerja harian dan kiriman per moda", /Divisi MV/.test(tv) && /Kiriman darat/.test(tv) && /Alokasi dan HPP/.test(tv) && /Penjualan dan margin/.test(tv), tv.slice(0, 160));
+    await mv.page.goto(`${BASE}/app/mv/tracking?m=DARAT`, { waitUntil: "networkidle" });
+    ok("AR4 Pemantauan menampilkan penjualan, modal (HPP), dan margin", /Modal \(HPP\)/.test(await mv.page.locator("body").innerText()));
+    await mv.ctx.close();
+    const fn = await login(browser, "finance@uji.id", PASS, { width: 390, height: 844 });
+    await fn.page.goto(`${BASE}/app/cod`, { waitUntil: "networkidle" });
+    ok("AR5 Finance membuka halaman Setoran COD", /Setoran COD/.test(await fn.page.locator("body").innerText()));
+    await fn.page.goto(`${BASE}/app/keuangan`, { waitUntil: "networkidle" });
+    const lebar = await fn.page.evaluate(() => { const t = document.querySelector(".tabbar .tab"); return { scroll: !!document.querySelector(".tabbar.scroll"), w: t ? t.getBoundingClientRect().width : 0 }; });
+    ok("AR6 Tab bawah Finance digeser mendatar dan tiap tombol cukup lebar", lebar.scroll && lebar.w >= 60, JSON.stringify(lebar));
+    await fn.ctx.close();
+    const kr = await login(browser, "kasir@uji.id", PASS, { width: 390, height: 844 });
+    await kr.page.goto(`${BASE}/app`, { waitUntil: "networkidle" });
+    const tap = await kr.page.evaluate(() => { const e = document.querySelector(".hdrsearch"); const r = e.getBoundingClientRect(); return [r.width, r.height]; });
+    ok("AR7 Tombol cari di HP minimal 44px", tap[0] >= 43.5 && tap[1] >= 43.5, JSON.stringify(tap));
+    await kr.ctx.close();
+    const ctxp = await browser.newContext(); const pg = await ctxp.newPage();
+    const sw = await pg.request.get(`${BASE}/sw.js`); const mf = await pg.request.get(`${BASE}/manifest.webmanifest`); const of = await pg.request.get(`${BASE}/offline`);
+    const mj = await mf.json().catch(() => ({}));
+    ok("AR8 PWA: service worker, manifest berisi pintasan dan tangkapan layar, halaman offline tersedia", sw.ok() && /javascript/.test(sw.headers()["content-type"] || "") && (mj.shortcuts || []).length >= 4 && (mj.screenshots || []).length >= 3 && of.ok(), `${sw.status()} ${mf.status()} ${of.status()}`);
+    await pg.goto(`${BASE}/lacak`, { waitUntil: "networkidle" });
+    const reg = await pg.evaluate(async () => { try { const r = await navigator.serviceWorker.ready; return !!r.active; } catch { return false; } });
+    ok("AR9 PWA: service worker aktif di halaman publik", reg);
+    await ctxp.close();
+  } catch (e) { ok("AR pemeriksaan berjalan sampai selesai", false, String(e.message || e).slice(0, 200)); }
+
   await browser.close();
   const fail = results.filter((r) => !r.ok);
   console.log(`\n==== HASIL: ${results.length - fail.length}/${results.length} lolos ====`);

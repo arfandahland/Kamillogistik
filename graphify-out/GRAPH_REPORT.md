@@ -1,7 +1,7 @@
-# Graph Report - Kamillogistik  (2026-11-25)
+# Graph Report - Kamillogistik  (2026-11-26)
 
 ## Corpus Check
-- 1601 files · ~516,999 words
+- 1601 files · ~517,038 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 41 file(s) not represented in the graph (top: .csv 35, (none) 3, .example 1)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `b2ab4396`
+- Built from commit: `19152dcd`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -652,16 +652,16 @@ Nodes (4): LoginHelp(), Opsi, OPSI, waLinkBantuanLogin()
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `next` connect `rupiah` to `berita-acara/page.tsx`, `FollowupCard.tsx`, `alokasi/page.tsx`, `ResiForm.tsx`, `mv/actions.ts`, `(publik)/[slug]/page.tsx`, `admin-actions.ts`, `PeranDashboard.tsx`, `konten/actions.ts`, `breadcrumbLd`, `manifest/[id]/page.tsx`, `laporan/page.tsx`, `[resi]/page.tsx`, `kehadiran/page.tsx`, `layanan/[slug]/page.tsx`, `lib/seo.ts`, `masuk/page.tsx`, `publicView.ts`, `Calculator.tsx`, `input-absen/page.tsx`, `server.ts`, `OwnerDashboard.tsx`, `rekrutmen/page.tsx`, `StaffHome.tsx`, `brand.ts`, `(publik)/page.tsx`, `cari/page.tsx`, `resi/[id]/page.tsx`, `getRoutePairs`, `StaffShell.tsx`, `Icon`, `panduan-lanjutan.tsx`, `web/package.json`, `AbsenForm.tsx`, `ManifestPindai.tsx`, `pegawai/page.tsx`, `karyawan/actions.ts`, `resi/[id]/cetak/page.tsx`, `arus/page.tsx`, `timbang/page.tsx`, `KlaimKartu.tsx`, `Icon`, `PanduanAwal.tsx`, `ringkasan/page.tsx`, `TabBar.tsx`, `surat-jalan/page.tsx`, `korporat/[id]/page.tsx`, `pusat/page.tsx`, `vendor/[token]/page.tsx`, `publicRpc.ts`, `BiayaManifest.tsx`, `publicRpcResult`, `RevisiPanel.tsx`, `src/app/layout.tsx`, `KendalaPanel.tsx`, `cod/actions.ts`, `app/app/layout.tsx`, `lib/repo.ts`, `requireRole`?**
-  _High betweenness centrality (0.140) - this node is a cross-community bridge._
+  _High betweenness centrality (0.139) - this node is a cross-community bridge._
 - **What connects `../../tsconfig.base.json`, `NODE_PATH`, `SITE_URL` to the rest of the system?**
   _9 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `alokasi/page.tsx` be split into smaller, more focused modules?**
   _Cohesion score 0.049103808812546675 - nodes in this community are weakly interconnected._
 - **Why does `staffRpc()` connect `admin-actions.ts` to `berita-acara/page.tsx`, `FollowupCard.tsx`, `alokasi/page.tsx`, `mv/actions.ts`, `PeranDashboard.tsx`, `konten/actions.ts`, `manifest/[id]/page.tsx`, `laporan/page.tsx`, `kehadiran/page.tsx`, `masuk/page.tsx`, `input-absen/page.tsx`, `server.ts`, `OwnerDashboard.tsx`, `rekrutmen/page.tsx`, `StaffHome.tsx`, `cari/page.tsx`, `resi/[id]/page.tsx`, `rupiah`, `Icon`, `pegawai/page.tsx`, `karyawan/actions.ts`, `resi/[id]/cetak/page.tsx`, `arus/page.tsx`, `timbang/page.tsx`, `KlaimKartu.tsx`, `Icon`, `ringkasan/page.tsx`, `surat-jalan/page.tsx`, `unduh/route.ts`, `korporat/[id]/page.tsx`, `pusat/page.tsx`, `publicRpc.ts`, `BiayaManifest.tsx`, `RevisiPanel.tsx`, `KendalaPanel.tsx`, `kehadiran/route.ts`, `cod/actions.ts`, `app/app/layout.tsx`, `requireRole`?**
-  _High betweenness centrality (0.088) - this node is a cross-community bridge._
+  _High betweenness centrality (0.074) - this node is a cross-community bridge._
 - **Should `pusat.ts` be split into smaller, more focused modules?**
   _Cohesion score 0.1038961038961039 - nodes in this community are weakly interconnected._
-- **Why does `react` connect `src/app/layout.tsx` to `FollowupCard.tsx`, `alokasi/page.tsx`, `LoginHelp.tsx`, `ResiForm.tsx`, `PeranDashboard.tsx`, `konten/actions.ts`, `[resi]/page.tsx`, `lib/seo.ts`, `publicView.ts`, `Calculator.tsx`, `server.ts`, `OwnerDashboard.tsx`, `rekrutmen/page.tsx`, `StaffHome.tsx`, `brand.ts`, `testimoni.ts`, `(publik)/page.tsx`, `resi/[id]/page.tsx`, `rupiah`, `Toast.tsx`, `getRoutePairs`, `StaffShell.tsx`, `Icon`, `web/package.json`, `AbsenForm.tsx`, `ManifestPindai.tsx`, `karyawan/actions.ts`, `resi/[id]/cetak/page.tsx`, `timbang/page.tsx`, `KlaimKartu.tsx`, `Icon`, `Pemindai`, `PanduanAwal.tsx`, `CariPilih`, `TabBar.tsx`, `klaim/aksi.ts`, `pusat/page.tsx`, `publicRpc.ts`, `HitungVolume.tsx`, `publicRpcResult`, `KondisiForm.tsx`, `Scene3D.tsx`, `RevisiPanel.tsx`, `KendalaPanel.tsx`, `jemput/aksi.ts`?**
-  _High betweenness centrality (0.048) - this node is a cross-community bridge._
+- **Why does `Icon()` connect `Icon` to `FollowupCard.tsx`, `alokasi/page.tsx`, `LoginHelp.tsx`, `ResiForm.tsx`, `(publik)/[slug]/page.tsx`, `PeranDashboard.tsx`, `breadcrumbLd`, `kehadiran/page.tsx`, `layanan/[slug]/page.tsx`, `lib/seo.ts`, `masuk/page.tsx`, `publicView.ts`, `Calculator.tsx`, `input-absen/page.tsx`, `server.ts`, `OwnerDashboard.tsx`, `StaffHome.tsx`, `brand.ts`, `testimoni.ts`, `(publik)/page.tsx`, `rupiah`, `getRoutePairs`, `StaffShell.tsx`, `AbsenForm.tsx`, `ManifestPindai.tsx`, `pegawai/page.tsx`, `karyawan/actions.ts`, `resi/[id]/cetak/page.tsx`, `Icon`, `Pemindai`, `PanduanAwal.tsx`, `ringkasan/page.tsx`, `TabBar.tsx`, `korporat/[id]/page.tsx`, `vendor/[token]/page.tsx`, `publicRpc.ts`, `KondisiForm.tsx`, `requireRole`?**
+  _High betweenness centrality (0.043) - this node is a cross-community bridge._
 - **Should `(publik)/[slug]/page.tsx` be split into smaller, more focused modules?**
   _Cohesion score 0.10904255319148937 - nodes in this community are weakly interconnected._
