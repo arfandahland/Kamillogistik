@@ -1640,7 +1640,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
       await fn.page.waitForSelector("h2:has-text('Rincian hari')", { timeout: 30000 }).catch(() => {});
       await fn.page.waitForLoadState("networkidle").catch(() => {});
       const kh = await text(fn.page);
-      ok("AZ10 Finance: saringan cabang Makassar memuat Budi Absensi Uji di rincian harian dan rekap karyawan", /Rincian hari/.test(kh) && (kh.match(/Budi Absensi Uji/g) || []).length >= 2, kh.slice(0, 120));
+      ok("AZ10 Finance: saringan cabang Makassar memuat Budi Absensi Uji di rincian harian dan rekap karyawan", /Rincian hari/i.test(kh) && (kh.match(/Budi Absensi Uji/gi) || []).length >= 2, kh.slice(0, 120));
       await noOverflow(fn.page, "Rekap kehadiran (HP)");
       await fn.page.locator("a.kh-peg", { hasText: "Budi Absensi Uji" }).first().click();
       await fn.page.waitForURL(/kehadiran\/[0-9a-f-]{36}/, { timeout: 15000 }).catch(() => {});
@@ -1801,7 +1801,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
   console.log("\n[AK5] Setiap tautan menu tiap peran dapat dibuka (tidak ditolak, tidak dialihkan)");
   {
     const akunMenu = [["owner@uji.id", "Pemilik", "Pemilik2026x"], ["manajer@uji.id", "Kepala gudang"], ["kasir@uji.id", "Kasir"], ["gudang@uji.id", "Staf gudang"], ["kurir@uji.id", "Kurir"], ["sopir@uji.id", "Sopir"],
-      ["finance@uji.id", "Finance"], ["hrd.uji@uji.id", "HRD"], ["cs@uji.id", "CS"], ["mv.jkt@uji.id", "MV"], ["mv.master@uji.id", "MV Master"], ["konten.uji@uji.id", "Konten"]];
+      ["finance@uji.id", "Finance"], ["hrd.uji@uji.id", "HRD", "Sandi2026a"], ["cs@uji.id", "CS"], ["mv.jkt@uji.id", "MV", "Sandi2026a"], ["mv.master@uji.id", "MV Master", "Sandi2026a"], ["konten.uji@uji.id", "Konten", "Sandi2026a"]];
     for (const [em, nama, pw] of akunMenu) {
       const s = await login(browser, em, pw || PASS);
       if (!s.loggedIn) { ok(`AK5 ${nama}: bisa masuk`, false, em); await s.ctx.close(); continue; }
@@ -1843,7 +1843,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
         ok(`AQ4 Admin depo ditolak masuk ${jalan}`, !d.page.url().includes(jalan), d.page.url());
       }
       await d.page.goto(`${BASE}/app/pusat`, { waitUntil: "networkidle" });
-      ok("AQ5 Pusat Admin depo tampil", /Pusat Depo/.test(await d.page.locator("body").innerText()));
+      ok("AQ5 Pusat Admin depo tampil", /Pusat Depo/i.test(await d.page.locator("body").innerText()));
       await d.page.goto(`${BASE}/app/timbang`, { waitUntil: "networkidle" });
       ok("AQ5b Admin depo boleh membuka layar Timbang", /\/app\/timbang/.test(d.page.url()) && /Timbang barang/.test(await d.page.locator("body").innerText()), d.page.url());
     }
@@ -1913,7 +1913,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     const tv = await mv.page.locator("body").innerText();
     ok("AR3 MV cabang melihat menu kerja harian dan kiriman per moda", /Divisi MV/.test(tv) && /Kiriman darat/.test(tv) && /Alokasi dan HPP/.test(tv) && /Penjualan dan margin/.test(tv), tv.slice(0, 160));
     await mv.page.goto(`${BASE}/app/mv/tracking?m=DARAT`, { waitUntil: "networkidle" });
-    ok("AR4 Pemantauan menampilkan penjualan, modal (HPP), dan margin", /Modal \(HPP\)/.test(await mv.page.locator("body").innerText()));
+    ok("AR4 Pemantauan menampilkan penjualan, modal (HPP), dan margin", /Modal \(HPP\)/i.test(await mv.page.locator("body").innerText()));
     await mv.ctx.close();
     const fn = await login(browser, "finance@uji.id", PASS, { width: 390, height: 844 });
     await fn.page.goto(`${BASE}/app/cod`, { waitUntil: "networkidle" });
