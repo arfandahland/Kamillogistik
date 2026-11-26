@@ -4,6 +4,7 @@ import { CAN_CREATE_ORDER } from "@kamil/core";
 import { staffRpc, getMe, type Staff } from "@/lib/supabase/server";
 import SubmitButton from "@/components/SubmitButton";
 import CaraMasukField from "@/components/CaraMasukField";
+import ModaField from "@/components/ModaField";
 import PelangganField from "@/components/PelangganField";
 import WilayahField from "@/components/WilayahField";
 import DataKendaraan from "@/components/DataKendaraan";
@@ -50,11 +51,7 @@ export default async function Baru({ searchParams }: { searchParams: Promise<{ e
                 </div>
                 <div className="rbf">
                   <label className="f" htmlFor="moda">Lewat apa?</label>
-                  <select id="moda" name="moda" defaultValue="LAUT">
-                    <option value="LAUT">Laut (kapal)</option>
-                    <option value="UDARA">Udara (pesawat)</option>
-                    <option value="DARAT">Darat (truk)</option>
-                  </select>
+                  <ModaField />
                 </div>
               </div>
               {!pj && <CaraMasukField kotaAsal={me.branchName?.replace(/^Gudang /, "") ?? undefined} />}

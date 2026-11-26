@@ -1927,6 +1927,16 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     const tap = await kr.page.evaluate(() => { const e = document.querySelector(".hdrsearch"); const r = e.getBoundingClientRect(); return [r.width, r.height]; });
     ok("AR7 Tombol cari di HP minimal 44px", tap[0] >= 43.5 && tap[1] >= 43.5, JSON.stringify(tap));
     await kr.ctx.close();
+    const kb = await login(browser, "kasir@uji.id", PASS, { width: 390, height: 844 });
+    await kb.page.goto(`${BASE}/app/baru`, { waitUntil: "networkidle" });
+    const optMks = await kb.page.locator("#tujuan option", { hasText: "Makassar" }).first().getAttribute("value");
+    if (optMks) await kb.page.selectOption("#tujuan", optMks);
+    await kb.page.waitForFunction(() => /Tersedia untuk rute ini|Belum ada tarif resmi/.test(document.getElementById("moda-info")?.textContent || ""), null, { timeout: 30000 }).catch(() => {});
+    const infoModa = await kb.page.locator("#moda-info").innerText().catch(() => "");
+    ok("AR10 Form resi baru menampilkan moda yang tersedia untuk rute yang dipilih", /Tersedia untuk rute ini|Belum ada tarif resmi/.test(infoModa), infoModa);
+    const nonaktif = await kb.page.locator("#moda option[disabled]").count();
+    ok("AR11 Moda tanpa tarif pada rute itu dinonaktifkan (bila ada tarif resmi)", /Belum ada tarif resmi/.test(infoModa) ? nonaktif === 0 : nonaktif >= 1, `${nonaktif} | ${infoModa}`);
+    await kb.ctx.close();
     const ctxp = await browser.newContext(); const pg = await ctxp.newPage();
     const sw = await pg.request.get(`${BASE}/sw.js`); const mf = await pg.request.get(`${BASE}/manifest.webmanifest`); const of = await pg.request.get(`${BASE}/offline`);
     const mj = await mf.json().catch(() => ({}));

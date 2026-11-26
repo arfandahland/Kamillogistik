@@ -11,7 +11,7 @@ export default {
     const GOOGLE_IMG = "https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://*.g.doubleclick.net https://www.google.com";
     const GOOGLE_CONNECT = "https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.g.doubleclick.net https://www.google.com";
     const csp = [
-      "default-src 'self'", `script-src 'self' 'unsafe-inline' ${GOOGLE_SCRIPT}`, "style-src 'self' 'unsafe-inline'", `img-src 'self' data: blob: ${GOOGLE_IMG}`,
+      "default-src 'self'", `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "production" ? "" : " 'unsafe-eval'"} ${GOOGLE_SCRIPT}`, "style-src 'self' 'unsafe-inline'", `img-src 'self' data: blob: ${GOOGLE_IMG}`,
       "font-src 'self'", `connect-src 'self' ${GOOGLE_CONNECT}`, "frame-src https://www.googletagmanager.com", "frame-ancestors 'none'", "base-uri 'self'", "form-action 'self'", "object-src 'none'", "manifest-src 'self'", "worker-src 'self'",
     ].join("; ");
     return [

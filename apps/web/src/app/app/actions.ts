@@ -170,3 +170,10 @@ export async function teruskanResi(fd: FormData) {
   if (error) back(id, "e", error);
   back(id, "ok", "Resi diteruskan ke gudang berikutnya. Nomor resi tetap sama dan siap dimuat ke manifest.");
 }
+
+/** Moda yang punya tarif resmi dari cabang saya ke tujuan itu. Kosong berarti belum ada tarif: semua moda tetap boleh dengan harga manual. */
+export async function modaTersedia(dest: string): Promise<string[]> {
+  if (!/^[0-9a-f-]{36}$/i.test(dest)) return [];
+  const r = await staffRpc<string[]>("route_modes", { p_dest: dest });
+  return Array.isArray(r.data) ? r.data : [];
+}
