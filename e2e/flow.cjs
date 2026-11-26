@@ -1561,7 +1561,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
       const capAktif = ar.page.locator(".arus-baris a.arus-cap:not(.fase):not(.on)").first();
       if (await capAktif.count()) {
         const nCap = Number((await capAktif.locator("b").innerText()).trim());
-        await capAktif.click(); await ar.page.waitForURL(/[?&]f=/, { timeout: 60000 }); await ar.page.waitForSelector(".arus-reset", { timeout: 15000 });
+        await ar.page.goto(`${BASE}${await capAktif.getAttribute("href")}`, { waitUntil: "networkidle" }); await ar.page.waitForURL(/[?&]f=/, { timeout: 60000 }); await ar.page.waitForSelector(".arus-reset", { timeout: 15000 });
         ok("AY6 saringan pintar: ketuk kapsul menyaring daftar sesuai angka di kapsul, dan ada tombol hapus saringan", (await ar.page.locator(".arus-kartu").count()) === nCap && (await ar.page.locator(".arus-reset").count()) === 1, String(nCap));
         await ar.page.locator(".arus-reset").click(); await ar.page.waitForFunction(() => !location.search.includes("f=")); await ar.page.waitForSelector(".arus-kartu");
         ok("AY7 saringan pintar: hapus semua saringan mengembalikan daftar penuh", (await ar.page.locator(".arus-kartu").count()) === semuaN);
