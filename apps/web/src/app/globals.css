@@ -2177,4 +2177,9 @@ main button.mini, main a.mini, .burger { min-width: var(--tap) !important; }
 .rolechip, dt, small, .hint, .pill, .delta, .bs-live, .live, .muted, .sl, .ssub, .overline, .at, .tbno, .arahchip, .more, .stat > span, .stat > small, .arus-cap span, .arus-cap b, .arus-tugas, .arus-tag, .arus-hasil span, .arus-hasil b, .arus-now b, .arus-next span, .camnote b, .chip b, .fchip b { font-size: max(var(--tx), 1em * .85) !important; }
 .arus-cap, .more, .hubcard .btn.sm, .btn.sm, .rows li > a, .arahchip { min-height: var(--tap) !important; }
 .arahchip, .more, .arus-cap { display: inline-flex; align-items: center; }
+/* Tab bawah dengan lebih dari 7 tombol (mis. Finance): digeser mendatar, tiap tombol cukup lebar dan terbaca */
+.tabbar.scroll { overflow-x: auto; overflow-y: hidden; grid-auto-columns: minmax(calc(76px / var(--z, 1)), 1fr) !important; justify-content: start; scrollbar-width: none; scroll-snap-type: x proximity; overscroll-behavior-x: contain; }
+.tabbar.scroll::-webkit-scrollbar { display: none; }
+.tabbar.scroll .tab { min-width: calc(76px / var(--z, 1)) !important; font-size: max(var(--tx), 1em) !important; scroll-snap-align: center; }
+footer a, footer nav a, .foot a, .mfoot a { min-height: var(--tap) !important; display: inline-flex; align-items: center; }
 @media print { :root { --tap: 44px; --tx: 13px; } }

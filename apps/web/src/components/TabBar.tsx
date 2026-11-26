@@ -1,5 +1,5 @@
 "use client";
-import { Suspense } from "react";
+import { Suspense, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import Icon from "./Icon";
@@ -10,8 +10,11 @@ type Tab = { href: string; label: string; icon: string; badge?: number; featured
 function IsiTab({ tabs, variant, g }: { tabs: Tab[]; variant: "app" | "pub"; g: string | null }) {
   const path = usePathname();
   const active = (t: Tab) => (t.grup ? (path === "/app/pusat" && (g ?? "") === t.grup) || isActive(path, "/app/pusat?g", t.also) : isActive(path, t.href, t.also));
+  const nav = useRef<HTMLElement>(null);
+  // Tab bawah yang banyak digeser mendatar; pastikan tab yang sedang aktif selalu terlihat.
+  useEffect(() => { nav.current?.querySelector<HTMLElement>(".tab.on")?.scrollIntoView({ inline: "center", block: "nearest" }); }, [path]);
   return (
-    <nav className={`tabbar ${variant} ${tabs.length > 5 ? "many" : ""}`} aria-label="Menu utama">
+    <nav ref={nav} className={`tabbar ${variant} ${tabs.length > 5 ? "many" : ""} ${tabs.length > 7 ? "scroll" : ""}`} aria-label="Menu utama">
       {tabs.map((t) => (
         <Link key={t.href} href={t.href} className={`tab ${active(t) ? "on" : ""} ${t.featured ? "featured" : ""}`} aria-current={active(t) ? "page" : undefined}>
           <span className="ti"><Icon name={t.icon} size={22} /></span>
