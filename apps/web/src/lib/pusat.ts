@@ -20,6 +20,7 @@ const AKUN = G("akun", "", "Akun saya", "Data diri, kata sandi, dan bantuan.", "
 const CARI: PusatItem = { href: "/app/cari", icon: "search", t: "Cari resi", d: "Ketik nomor resi atau nama pengirim dan penerima." };
 const SERAH: PusatItem = { href: "/app/serah", icon: "swap", t: "Serah terima", d: "Terima atau serahkan barang ke petugas lain dengan tombol konfirmasi." };
 const CODM: PusatItem = { href: "/app/cod", icon: "cash", t: "Setoran COD", d: "Uang COD yang dicatat kurir. Finance mencocokkan uangnya sebelum tagihan lunas." };
+const HAPUS: PusatItem = { href: "/app/hapus-resi", icon: "trash", t: "Hapus resi", d: "Bersihkan data contoh atau data lama. Bisa banyak sekaligus, alasan wajib." };
 const DIHUBUNGI: PusatItem = { href: "/app/tindak-lanjut", icon: "chat", t: "Perlu dihubungi", d: "Pelanggan yang menunggu kabar: belum dijemput, belum diantar, atau tagihan jatuh tempo." };
 const JEMPUT: PusatItem = { href: "/app/jemput", icon: "box", t: "Pesanan jemput", d: "Pesanan penjemputan dari website: hubungi pelanggan dan atur jadwalnya." };
 const KLAIM: PusatItem = { href: "/app/klaim", icon: "shield", t: "Klaim dan keluhan", d: "Laporan barang rusak, hilang, atau keluhan layanan beserta usulan penyelesaiannya." };
@@ -63,17 +64,17 @@ const KELOLA: Record<string, PusatItem> = Object.fromEntries([
   { href: "/app/konten", icon: "image", t: "Konten website", d: "Unggah dan atur foto dokumentasi dan testimoni yang tampil di beranda." },
   { href: "/app/pengaturan", icon: "sliders", t: "Pengaturan dan rekening", d: "Data perusahaan dan rekening bank yang tampil di invoice." },
   { href: "/app/catatan", icon: "list", t: "Catatan aktivitas", d: "Siapa mengubah apa dan kapan: akun, tarif, lamaran, konten." },
-  CARI,
+  CARI, HAPUS,
 ].map((i) => [i.href, i]));
 const K = (...h: string[]) => h.map((x) => KELOLA[x]!).filter(Boolean);
 /** Halaman yang hanya boleh diubah Super Admin; Pemilik hanya memantau. */
-const HANYA_ADMIN = ["/app/mitra", "/app/petugas", "/app/pengaturan", "/app/korporat", "/app/calon-mitra", "/app/rekrutmen", "/app/lamaran", "/app/konten", "/app/jemput", "/app/klaim"];
+const HANYA_ADMIN = ["/app/mitra", "/app/petugas", "/app/pengaturan", "/app/korporat", "/app/calon-mitra", "/app/rekrutmen", "/app/lamaran", "/app/konten", "/app/jemput", "/app/klaim", "/app/hapus-resi"];
 
 export function grupPusat(role: string): { judul: string; sapa: string; grup: PusatGrup[] } {
   switch (role) {
     case "SUPER_ADMIN": case "OWNER": {
       const grup = [
-        G("operasional", "Operasi", "Operasional harian", "Pantau muatan, pelanggan, dan masalah.", "truck", K("/app/ringkasan", "/app/peta", "/app/manifest", "/app/mv", "/app/tindak-lanjut", "/app/kendala", "/app/jemput", "/app/klaim", "/app/cari")),
+        G("operasional", "Operasi", "Operasional harian", "Pantau muatan, pelanggan, dan masalah.", "truck", K("/app/ringkasan", "/app/peta", "/app/manifest", "/app/mv", "/app/tindak-lanjut", "/app/kendala", "/app/jemput", "/app/klaim", "/app/cari", "/app/hapus-resi")),
         G("uang", "Uang", "Uang dan laporan", "Pemasukan, piutang, margin, dan komisi.", "cash", K("/app/keuangan", "/app/keuangan/belum-ditagih", "/app/tagihan", "/app/margin", "/app/laba-rugi", "/app/keuangan/komisi", "/app/keuangan/input-absen", "/app/keuangan/kehadiran", "/app/laporan")),
         G("orang", "Orang", "Orang dan mitra", "Petugas, pegawai, mitra, pelanggan, dan rekrutmen.", "users", K("/app/petugas", "/app/karyawan", "/app/pegawai", "/app/absen/qr", "/app/mitra", "/app/korporat", "/app/calon-mitra", "/app/rekrutmen", "/app/lamaran")),
         G("sistem", "Sistem", "Harga, website, dan sistem", "Tarif, konten, pengaturan, dan catatan aktivitas.", "sliders", K("/app/tarif", "/app/rute-hub", "/app/tarif/riwayat", "/app/konten", "/app/pengaturan", "/app/catatan")),
@@ -82,7 +83,7 @@ export function grupPusat(role: string): { judul: string; sapa: string; grup: Pu
       return { judul: "Kelola bisnis", sapa: "Semua pengaturan dikelompokkan menurut pekerjaannya. Setiap perubahan tercatat permanen.", grup };
     }
     case "MITRA_POS": return { judul: "Pusat Kasir", sapa: "Semua alat Kasir, dikelompokkan menurut pekerjaannya.", grup: [
-      G("kontak", "Kontak", "Pelanggan", "Jaga hubungan dan jawab pertanyaan.", "users", [DIHUBUNGI, JEMPUT, CARI]),
+      G("kontak", "Kontak", "Pelanggan", "Jaga hubungan dan jawab pertanyaan.", "users", [DIHUBUNGI, JEMPUT, CARI, HAPUS]),
       G("muatan", "Muatan", "Manifest dan arus barang", "Susun manifest dan pantau barang masuk dan keluar.", "layers", [MANIFEST, ARUS]), AKUN] };
     case "DEPO": return { judul: "Pusat Depo", sapa: "Terima barang, buat resi cepat, dan susun manifest di depo Anda.", grup: [
       G("muatan", "Muatan", "Manifest dan arus barang", "Susun manifest dan pantau barang masuk dan keluar.", "layers", [TIMBANG, MANIFEST, ARUS, CARI]), AKUN] };

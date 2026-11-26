@@ -564,9 +564,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/Icon.tsx": {
-    "mtime": 1795214483.3902752,
-    "seen": 1795214549.5650954,
-    "ast_hash": "64d4d10bdfd999294a85f71ddc4d5d41",
+    "mtime": 1795698813.7367918,
+    "seen": 1795698916.8559632,
+    "ast_hash": "3cf62910b6707681d35a84859d985310",
     "semantic_hash": ""
   },
   "apps/web/src/components/Ilustrasi.tsx": {
@@ -900,9 +900,9 @@
     "semantic_hash": ""
   },
   "db/test/run.sh": {
-    "mtime": 1795691467.854768,
-    "seen": 1795691711.6756673,
-    "ast_hash": "5350592ac900d28725e38e10324bd9b8",
+    "mtime": 1795696290.3479948,
+    "seen": 1795698916.8624449,
+    "ast_hash": "e25649166c7e5e57e1937f74baedf1c6",
     "semantic_hash": ""
   },
   "db/test/tariff-cases.json": {
@@ -954,9 +954,9 @@
     "semantic_hash": ""
   },
   "e2e/setup.sh": {
-    "mtime": 1795691467.8483818,
-    "seen": 1795691711.6759593,
-    "ast_hash": "a8ca3473405ae98f1bd9d22184f16238",
+    "mtime": 1795698898.8898625,
+    "seen": 1795698916.8628762,
+    "ast_hash": "362cff538395870122cefe92a66ab3f4",
     "semantic_hash": ""
   },
   "e2e/skenario.cjs": {
@@ -2172,9 +2172,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/RevisiPanel.tsx": {
-    "mtime": 1795566301.0150378,
-    "seen": 1795566344.2112525,
-    "ast_hash": "b3c0279085dae4b21852e03862677673",
+    "mtime": 1795698813.7372787,
+    "seen": 1795698916.8575015,
+    "ast_hash": "9b954b28ee43a131ca307f9f86aa5802",
     "semantic_hash": ""
   },
   "db/migrations/036_prefiks_kml.sql": {
@@ -9036,9 +9036,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/lib/pusat.ts": {
-    "mtime": 1795595308.4985995,
-    "seen": 1795595652.3118758,
-    "ast_hash": "ba8b0a48c5f23c1c56e9417677c2e5d2",
+    "mtime": 1795698813.7365787,
+    "seen": 1795698916.8587976,
+    "ast_hash": "d64b7b88fc0ebc8bb3a81ebf767a22ef",
     "semantic_hash": ""
   },
   "db/migrations/056_data_awal_lengkap.sql": {
@@ -9234,9 +9234,9 @@
     "semantic_hash": ""
   },
   "apps/web/src/components/Daftar.tsx": {
-    "mtime": 1795487104.8229182,
-    "seen": 1795489355.1821911,
-    "ast_hash": "e53d936a339cbc597f73d80df53a5508",
+    "mtime": 1795696139.8785844,
+    "seen": 1795698916.8556633,
+    "ast_hash": "612b34c47b8bec6753aa4e8ba24c83b3",
     "semantic_hash": ""
   },
   "apps/web/src/components/Pager.tsx": {
@@ -9789,6 +9789,24 @@
     "mtime": 1795691474.4876544,
     "seen": 1795693202.9437683,
     "ast_hash": "1c939c8090ee3b36b74eb4ce09490d7d",
+    "semantic_hash": ""
+  },
+  "apps/web/src/app/app/hapus-resi/PilihSemua.tsx": {
+    "mtime": 1795698802.4805198,
+    "seen": 1795698916.8515203,
+    "ast_hash": "52dbcda158a63d593ef876fa588a26c5",
+    "semantic_hash": ""
+  },
+  "apps/web/src/app/app/hapus-resi/actions.ts": {
+    "mtime": 1795698802.4792395,
+    "seen": 1795698916.851525,
+    "ast_hash": "916f61c64871d2d5736ee7ec9aca4a3a",
+    "semantic_hash": ""
+  },
+  "apps/web/src/app/app/hapus-resi/page.tsx": {
+    "mtime": 1795698824.7182803,
+    "seen": 1795698916.8515282,
+    "ast_hash": "f0473f29b743191c36ba3cfbe593b750",
     "semantic_hash": ""
   },
   "package-lock.json": {

@@ -43,7 +43,7 @@ export default async function RevisiPanel({ s, role }: { s: D; role: string }) {
               <b>Batalkan resi</b>
               <label className="f" htmlFor="bt-al">Alasan pembatalan</label><input id="bt-al" name="alasan" required minLength={3} maxLength={300} autoComplete="off" placeholder="Contoh: salah rute, jumlah barang keliru" />
               <SubmitButton className="btn ghost" style={{ borderColor: "var(--danger)", color: "var(--danger)" }} steps={["Membatalkan resi…", "Mencatat…"]}>Batalkan resi ini</SubmitButton>
-              <p className="hint" style={{ margin: 0 }}>Invoice yang belum dibayar ikut dibatalkan. Setelah itu buat resi baru dengan data yang benar.</p>
+              <p className="hint" style={{ margin: 0 }}>Invoice yang belum dibayar ikut dibatalkan. Setelah itu buat resi baru dengan data yang benar. Untuk data contoh yang harus hilang total, pakai <a href="/app/hapus-resi">Hapus resi</a>.</p>
             </form>
           )}
         </details>

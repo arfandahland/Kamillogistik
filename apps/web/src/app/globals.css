@@ -2183,3 +2183,20 @@ main button.mini, main a.mini, .burger { min-width: var(--tap) !important; }
 .tabbar.scroll .tab { min-width: calc(76px / var(--z, 1)) !important; font-size: max(var(--tx), 1em) !important; scroll-snap-align: center; }
 footer a, footer nav a, .foot a, .mfoot a { min-height: var(--tap) !important; display: inline-flex; align-items: center; }
 @media print { :root { --tap: 44px; --tx: 13px; } }
+
+/* ===== DAFTAR PINTAR: cari dan saringan di semua daftar ===== */
+[hidden] { display: none !important; }
+.dp-w { display: contents; } .dp-w[hidden] { display: none !important; }
+.dp-bar { display: grid; gap: 8px; margin: 4px 0 10px; }
+.dp-cari { display: flex; align-items: center; gap: 8px; padding: 0 12px; border-radius: 16px; border: 1.5px solid var(--line); background: var(--card); color: var(--muted); min-height: var(--tap, 48px); }
+.dp-cari:focus-within { border-color: var(--teal); box-shadow: 0 0 0 3px color-mix(in srgb, var(--teal) 25%, transparent); }
+.dp-cari input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--ink); font: inherit; font-size: 16px; min-height: 40px; padding: 0; box-shadow: none; }
+.dp-x { border: 0; background: transparent; color: var(--muted); font-size: 24px; line-height: 1; width: 40px; height: 40px; border-radius: 99px; cursor: pointer; }
+.dp-chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
+.dp-chips::-webkit-scrollbar { display: none; }
+.dp-chip { flex: none; display: inline-flex; align-items: center; gap: 6px; min-height: var(--tap, 44px); padding: 0 14px; border-radius: 99px; border: 1.5px solid var(--line); background: var(--card); color: var(--ink); font: inherit; font-weight: 700; font-size: 14.5px; cursor: pointer; }
+.dp-chip b { min-width: 22px; height: 22px; padding: 0 6px; border-radius: 99px; display: grid; place-items: center; background: var(--teal-soft); color: var(--teal-dark); font-size: 13px; }
+.dp-chip.on { background: var(--grad-teal); color: #fff; border-color: transparent; } .dp-chip.on b { background: rgba(255, 255, 255, .25); color: #fff; }
+.dp-info { margin: 0; color: var(--muted); font-size: 14px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.dp-reset { border: 0; background: transparent; color: var(--teal-dark); font: inherit; font-weight: 800; text-decoration: underline; cursor: pointer; min-height: 40px; padding: 0 4px; }
+.dp-kosong { text-align: center; }
