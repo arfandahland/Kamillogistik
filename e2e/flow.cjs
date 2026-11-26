@@ -1745,7 +1745,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     ok("AO13 pemantauan laut memuat wilayah Kalimantan dan Sulawesi Utara", /Kalimantan/.test(await text(mv2.page)) && /Sulawesi Utara/.test(await text(mv2.page)));
     await mv2.page.goto(`${BASE}/app/mv/tracking?m=DARAT`, { waitUntil: "networkidle" });
     const tDarat = await text(mv2.page);
-    ok("AO14 pemantauan darat memuat Sumatera, Jawa Tengah, Jawa Timur, Bali, NTB, NTT", ["Sumatera", "Jawa Tengah", "Jawa Timur", "Bali", "Nusa Tenggara Barat", "Nusa Tenggara Timur"].every((w) => new RegExp(w).test(tDarat)));
+    ok("AO14 pemantauan darat memuat Sumatera, Jawa, Bali, NTB dan NTT (Kalimantan dan Sulawesi Utara disembunyikan untuk darat)", ["Sumatera", "Jawa", "Bali", "NTB dan NTT"].every((w) => new RegExp(w).test(tDarat)) && !/Kalimantan/.test(tDarat));
     for (const u of ["/app/mv/sj", "/app/mv/udara", "/app/mv/penjualan"]) {
       await mv2.page.goto(`${BASE}${u}`, { waitUntil: "networkidle" });
       ok(`AO15 halaman ${u} terbuka tanpa galat`, new RegExp(u).test(mv2.page.url()) && !/Terjadi kesalahan|Application error/.test(await text(mv2.page)));
