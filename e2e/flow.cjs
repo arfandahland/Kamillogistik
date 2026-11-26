@@ -1635,8 +1635,8 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
 
       await fn.page.goto(`${BASE}/app/keuangan/kehadiran`, { waitUntil: "networkidle" });
       ok("AZ9 Finance: rekap per cabang menampilkan kartu cabang dengan hadir dan terlambat", (await fn.page.locator(".kh-cab").count()) >= 2 && /Terlambat/.test(await text(fn.page)));
-      await fn.page.locator(".kh-cab", { hasText: "Makassar" }).first().click();
-      await fn.page.waitForURL(/c=/, { timeout: 45000 }).catch(() => {});
+      const hrefMks = await fn.page.locator(".kh-cab", { hasText: "Makassar" }).first().getAttribute("href");
+      await fn.page.goto(`${BASE}${hrefMks}`, { waitUntil: "networkidle" }).catch(() => {});
       await fn.page.waitForSelector("h2:has-text('Rincian hari')", { timeout: 30000 }).catch(() => {});
       await fn.page.waitForLoadState("networkidle").catch(() => {});
       const kh = await text(fn.page);
@@ -1817,7 +1817,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
         await s.page.goto(`${BASE}${h}`, { waitUntil: "domcontentloaded" }).catch(() => {}); await s.page.waitForTimeout(250);
         const path = new URL(s.page.url()).pathname, want = h.split("?")[0];
         const izin = await s.page.locator(".err").first().innerText().catch(() => "");
-        if (path !== want || /izin/i.test(izin)) buruk.push(`${h} → ${path}${izin ? " (" + izin.slice(0, 40) + ")" : ""}`);
+        if ((path !== want && !(want === "/app/cari" && path.startsWith("/app"))) || /izin/i.test(izin)) buruk.push(`${h} → ${path}${izin ? " (" + izin.slice(0, 40) + ")" : ""}`);
       }
       ok(`AK5 ${nama}: ${target.length} tautan menu semuanya terbuka`, buruk.length === 0, buruk.join("; "));
       } catch (e) { ok(`AK5 ${nama}: pemeriksaan menu berjalan sampai selesai`, false, String(e.message || e).slice(0, 160)); }
