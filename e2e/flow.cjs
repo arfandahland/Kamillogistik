@@ -1674,7 +1674,7 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     await mv.page.locator("details[open] input[name=nama]").first().fill("Vendor Laut Uji"); await mv.page.locator("details[open] select[name=jenis]").first().selectOption("LAUT");
     await mv.page.locator("details[open] input[name=kontak]").first().fill("Pak Laut"); await mv.page.locator("details[open] input[name=telepon]").first().fill("0812 7000 1111");
     const usul = await act(mv.page, mv.page.getByRole("button", { name: "Simpan vendor" }));
-    ok("AO6 MV mencatat vendor baru manual: langsung aktif, belum diverifikasi", !!usul.ok && /Vendor tersimpan/.test(usul.ok) && /Belum diverifikasi/.test(await text(mv.page)), JSON.stringify(usul));
+    ok("AO6 MV mencatat vendor baru manual: langsung aktif dan terverifikasi sendiri oleh MV cabang", !!usul.ok && /Vendor tersimpan/.test(usul.ok) && /Terverifikasi/.test(await text(mv.page)) && !/Belum diverifikasi\s*Laut/.test(await text(mv.page)), JSON.stringify(usul));
     await mv.page.goto(`${BASE}/app/mv/alokasi?s=BELUM`, { waitUntil: "networkidle" });
     ok("AO7 vendor yang baru dicatat langsung muncul sebagai saran nama di alokasi", (await mv.page.locator("datalist#vd-LAUT option[value='Vendor Laut Uji']").count()) === 1);
     await mv.ctx.close();
@@ -1682,9 +1682,8 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
     const mm = await login(browser, "mv.master@uji.id", "Sandi2026a", { width: 390, height: 844 });
     await mm.page.goto(`${BASE}/app/mv/vendor?s=BELUM_VERIFIKASI`, { waitUntil: "networkidle" });
     const kartuV = mm.page.locator("details", { hasText: "Vendor Laut Uji" }).first();
-    await kartuV.locator("summary").first().click();
-    const akt = await act(mm.page, kartuV.getByRole("button", { name: "Verifikasi" }).first());
-    ok("AO8 MV Master memverifikasi (mengaktifkan) vendor", !!akt.ok, JSON.stringify(akt));
+    await mm.page.goto(`${BASE}/app/mv/vendor`, { waitUntil: "networkidle" });
+    ok("AO8 MV Master hanya memantau: tidak ada tombol Verifikasi, Simpan vendor, atau bayar vendor", (await mm.page.getByRole("button", { name: /Verifikasi|Simpan vendor|Tandai dibayar|Nonaktifkan/i }).count()) === 0);
     await mm.page.goto(`${BASE}/app/mv/penjualan`, { waitUntil: "networkidle" });
     ok("AO9 MV Master melihat penjualan terpisah per cabang", /Cabang saya|Jakarta/.test(await text(mm.page)) && /Makassar/.test(await text(mm.page)) && /Surabaya/.test(await text(mm.page)));
     await mm.ctx.close();
@@ -1902,14 +1901,14 @@ const noOverflow = async (page, label) => ok(`${label}: tanpa geser samping`, !(
 
   console.log("\n[AR] MV cabang otonom, MV Master hanya baca, tab Finance, setoran COD, PWA, target sentuh HP");
   try {
-    const mm = await login(browser, "mv.master@uji.id", PASS, { width: 390, height: 844 });
+    const mm = await login(browser, "mv.master@uji.id", "Sandi2026a", { width: 390, height: 844 });
     await mm.page.goto(`${BASE}/app/mv`, { waitUntil: "networkidle" });
     const tm = await mm.page.locator("body").innerText();
     ok("AR1 MV Master melihat beranda pemantau, bukan kerja harian", /MV Master \(pemantau\)/.test(tm) && /Bandingkan antar kota/.test(tm) && !/Verifikasi vendor/.test(tm), tm.slice(0, 160));
     await mm.page.goto(`${BASE}/app/mv/alokasi`, { waitUntil: "networkidle" });
     ok("AR2 MV Master tidak punya tombol Simpan alokasi atau isi HPP", (await mm.page.getByRole("button", { name: /Simpan HPP|Simpan alokasi|Isi HPP|Pilih vendor/i }).count()) === 0);
     await mm.ctx.close();
-    const mv = await login(browser, "mv.jkt@uji.id", PASS, { width: 390, height: 844 });
+    const mv = await login(browser, "mv.jkt@uji.id", "Sandi2026a", { width: 390, height: 844 });
     await mv.page.goto(`${BASE}/app/mv`, { waitUntil: "networkidle" });
     const tv = await mv.page.locator("body").innerText();
     ok("AR3 MV cabang melihat menu kerja harian dan kiriman per moda", /Divisi MV/.test(tv) && /Kiriman darat/.test(tv) && /Alokasi dan HPP/.test(tv) && /Penjualan dan margin/.test(tv), tv.slice(0, 160));
