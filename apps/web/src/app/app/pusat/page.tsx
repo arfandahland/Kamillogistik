@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import Icon from "@/components/Icon";
 import MenuKaca, { type RingkasanHari } from "@/components/MenuKaca";
@@ -56,6 +57,11 @@ export default async function Pusat({ searchParams }: { searchParams: Promise<{ 
   return (
     <main className="wrap stack gl-halaman" style={{ paddingTop: 8 }}>
       <p className="overline">{judul}</p>
+      {grup.filter((x) => x.tab).length > 1 && (
+        <nav className="dp-chips" aria-label="Kelompok menu" style={{ marginBottom: 4 }}>
+          {grup.filter((x) => x.tab).map((x) => <Link key={x.slug} href={`/app/pusat?g=${x.slug}`} className={`dp-chip ${x.slug === pilih.slug ? "on" : ""}`} aria-current={x.slug === pilih.slug ? "page" : undefined}>{x.tab}</Link>)}
+        </nav>
+      )}
       <h1 style={{ marginTop: -6 }}>{pilih.judul}</h1>
       <p className="muted" style={{ marginTop: -6 }}>{pilih.ket || sapa}</p>
       {adaCari && (

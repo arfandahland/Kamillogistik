@@ -42,7 +42,12 @@ export default function StaffShell({ me, pending, children, forceFull }: { me: M
         ...(me.role === "MITRA_POS" ? [{ href: "/app/tagihan", label: "Tagihan", icon: "file" }] : me.role === "DEPO" ? [] : [{ href: "/app/serah", label: me.role === "WAREHOUSE" ? "Serah" : "Serah terima", icon: "swap", badge: pending }]),
       ];
   const klaim = lurus.flatMap((t) => [t.href, ...(t.also ?? [])]);
-  const tabsBawah: Tab[] = [...lurus, ...(PERAN_PUSAT.includes(me.role) ? tabsGrup(me.role, klaim) : [])];
+  // Menu bawah maksimal 7 tombol supaya muat di HP tanpa digeser. Bila kelompok fitur membuat lebih, semuanya dilipat jadi satu tombol "Pusat".
+  const grupTab = PERAN_PUSAT.includes(me.role) ? tabsGrup(me.role, klaim) : [];
+  const grupRingkas = lurus.length + grupTab.length > 7 && grupTab.length > 0
+    ? [{ href: grupTab[0]!.href, label: "Pusat", icon: "grid", grup: grupTab[0]!.grup, also: grupTab.flatMap((x) => ["/app/pusat", ...(x.also ?? [])]) }]
+    : grupTab;
+  const tabsBawah: Tab[] = [...lurus, ...grupRingkas];
   const navAll = me.role === "KONTEN" ? lurus : [
     ...lurus.map((t) => ({ ...t, featured: false })),
     ...(PERAN_PUSAT.includes(me.role) ? grupPusat(me.role).grup.flatMap((g) => g.items.filter((i) => !klaim.includes(i.href)).map((i) => ({ href: i.href, label: i.t, icon: i.icon, sec: g.judul }))) : []),
